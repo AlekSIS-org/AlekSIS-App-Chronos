@@ -1,0 +1,62 @@
+{% include 'partials/header.html' %}
+
+<main>
+    <h3>Übersicht</h3>
+    <div class="row">
+        <div class="col s12 m3">
+            <h4>Alle Lehrkräfte</h4>
+            <ul class="collection">
+                {% for teacher in teachers %}
+                    <li class="collection-item avatar">
+                        <i class="circle">{{ teacher.shortcode }}</i><!-- Shortcode -->
+                        <a href="{% url 'timetable_plan' 'teacher' teacher.id %}">{{ teacher.first_name }}
+                            <strong>{{ teacher.name }}</strong></a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col s12 m3">
+            <h4>Alle Klassen</h4>
+            <ul class="collection">
+                {% for class in classes %}
+                    <li class="collection-item avatar">
+                        <i class="circle">{{ class.name }}</i>
+                        <a href="{% url 'timetable_plan' 'class' class.id %}"><strong>{{ class.name }}</strong></a>
+                        <p>
+                            {{ class.text1|default:"" }} – {{ class.text2|default:"" }} <br>
+                            Raum: {{ class.room.name|default:"---" }}
+                        </p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col s12 m3">
+            <h4>Alle Räume</h4>
+            <ul class="collection">
+                {% for room in rooms %}
+                    <li class="collection-item avatar">
+                        <i class="circle">{{ room.shortcode }}</i>
+                        <a href="{% url 'timetable_plan' 'room' room.id %}"><strong>{{ room.name }}</strong></a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col s12 m3">
+            <h4>Alle Fächer</h4>
+            <ul class="collection">
+                {% for subject in subjects %}
+                    <li class="collection-item avatar">
+                        <i class="circle">{{ subject.shortcode }}</i>
+                        <strong>{{ subject.shortcode }}</strong>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+</main>
+
+{% include 'partials/footer.html' %}
