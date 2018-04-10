@@ -3,8 +3,8 @@
 <main>
     <h3>Übersicht</h3>
     <div class="row">
-        <div class="col s12 m3">
-            <h4>Alle Lehrkräfte</h4>
+        <div class="col s12 m4">
+            <h4>Lehrkräfte</h4>
             <ul class="collection">
                 {% for teacher in teachers %}
                     <li class="collection-item avatar">
@@ -16,8 +16,8 @@
             </ul>
         </div>
 
-        <div class="col s12 m3">
-            <h4>Alle Klassen</h4>
+        <div class="col s12 m4">
+            <h4>Klassen</h4>
             <ul class="collection">
                 {% for class in classes %}
                     <li class="collection-item avatar">
@@ -32,8 +32,8 @@
             </ul>
         </div>
 
-        <div class="col s12 m3">
-            <h4>Alle Räume</h4>
+        <div class="col s12 m4">
+            <h4>Räume</h4>
             <ul class="collection">
                 {% for room in rooms %}
                     <li class="collection-item avatar">
@@ -44,17 +44,7 @@
             </ul>
         </div>
 
-        <div class="col s12 m3">
-            <h4>Alle Fächer</h4>
-            <ul class="collection">
-                {% for subject in subjects %}
-                    <li class="collection-item avatar">
-                        <i class="circle">{{ subject.shortcode }}</i>
-                        <strong>{{ subject.shortcode }}</strong>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
+
     </div>
 
 </main>

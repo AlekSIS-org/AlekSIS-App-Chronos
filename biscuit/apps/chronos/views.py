@@ -23,7 +23,7 @@ def admin_all(request):
         'rooms': rooms,
         'subjects': subjects
     }
-    return render(request, 'timetable/admin/all.html', context)
+    return render(request, 'timetable/all.html', context)
 
 
 @login_required
