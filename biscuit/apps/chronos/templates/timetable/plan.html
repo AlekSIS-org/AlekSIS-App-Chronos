@@ -61,7 +61,7 @@
                 <div class="card timetable-title-card">
                     <div class="card-content">
                     <span class="card-title">
-                        0.
+                        {{ forloop.counter0|add:"+1" }}.
                     </span>
                     </div>
                 </div>
@@ -71,24 +71,22 @@
                 <div class="col s2">
                     <div class="card lesson-card">
                         <div class="card-content">
-                            {% for element in col %}
-                                <p>
+                            {% for element_container in col.elements %}
+                                <p style="background-color: {{ element_container.element.subject.hex_color }};">
 
                                     {% if type == 0 or type == 1 %}
-                                        {% for class in element.classes %}
+                                        {% for class in element_container.elements.classes %}
                                             {{ class.name }}
                                         {% endfor %}
                                     {% endif %}
                                     {% if type == 2 or type == 1 %}
                                         <span data-position="bottom" class="tooltipped"
-                                              data-tooltip="{{ element.teacher }}">{{ element.teacher.shortcode }}</span>
+                                              data-tooltip="{{ element_container.element.teacher }}">{{ element_container.element.teacher.shortcode }}</span>
                                     {% endif %}
-                                    <strong>{{ element.subject.shortcode }}</strong>
+                                    <strong>{{ element_container.element.subject.shortcode }}</strong>
                                     {% if type == 0 or type == 2 %}
-                                        {% for room in element.rooms %}
-                                            <span class="tooltipped" data-position="bottom"
-                                                  data-tooltip="{{ room.name }}">{{ room.shortcode }}</span>
-                                        {% endfor %}
+                                        <span class="tooltipped" data-position="bottom"
+                                              data-tooltip="{{ element_container.room.name }}">{{ element_container.room.shortcode }}</span>
                                     {% endif %}
                                 </p>
 
