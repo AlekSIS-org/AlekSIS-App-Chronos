@@ -10,9 +10,7 @@ except Exception:
     pass
 
 
-# Create your views here.
-@login_required
-def admin_all(request):
+def get_all_context():
     teachers = get_all_teachers()
     classes = get_all_classes()
     rooms = get_all_rooms()
@@ -23,7 +21,19 @@ def admin_all(request):
         'rooms': rooms,
         'subjects': subjects
     }
+    return context
+
+
+@login_required
+def all(request):
+    context = get_all_context()
     return render(request, 'timetable/all.html', context)
+
+
+@login_required
+def quicklaunch(request):
+    context = get_all_context()
+    return render(request, 'timetable/quicklaunch.html', context)
 
 
 @login_required
@@ -49,3 +59,8 @@ def plan(request, plan_type, plan_id):
     }
 
     return render(request, 'timetable/plan.html', context)
+
+
+@login_required
+def substitutions(request):
+    return render(request, 'timetable/substitution.html')

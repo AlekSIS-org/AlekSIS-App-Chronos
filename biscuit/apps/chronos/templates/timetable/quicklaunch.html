@@ -1,0 +1,43 @@
+{% include 'partials/header.html' %}
+
+<main>
+    <h3>Übersicht</h3>
+    <div class="row">
+        <div class="col s12 m4">
+            <h4>Lehrkräfte</h4>
+            {% for teacher in teachers %}
+                <a class="waves-effect waves-light btn btn-timetable-quicklaunch"
+                   href="{% url 'timetable_plan' 'teacher' teacher.id %}">
+                    {{ teacher.shortcode }}
+                </a><!-- Shortcode -->
+            {% endfor %}
+        </div>
+
+        <div class="col s12 m4">
+            <h4>Klassen</h4>
+
+            {% for class in classes %}
+                <a class="waves-effect waves-light btn btn-timetable-quicklaunch"
+                   href="{% url 'timetable_plan' 'class' class.id %}">
+                    {{ class.name }}
+                </a>
+            {% endfor %}
+
+        </div>
+
+        <div class="col s12 m4">
+            <h4>Räume</h4>
+            {% for room in rooms %}
+                <a class="waves-effect waves-light btn btn-timetable-quicklaunch"
+                   href="{% url 'timetable_plan' 'room' room.id %}">
+                    {{ room.shortcode }}
+                </a>
+            {% endfor %}
+        </div>
+
+
+    </div>
+
+</main>
+
+{% include 'partials/footer.html' %}
