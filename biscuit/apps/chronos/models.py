@@ -1,5 +1,7 @@
+from django import forms
 from django.db import models
-
+import dbsettings
+from untisconnect.api import get_terms
 
 # Create your models here.
 
@@ -19,3 +21,15 @@ from django.db import models
 #     text1 = models.CharField(max_length=200)
 #     text2 = models.CharField(max_length=200)
 #     room = models.ForeignKey(Room, on_delete=models.CASCADE)
+
+choices = []
+terms = get_terms()
+for term in terms:
+    choices.append((term.id, term.name))
+
+
+class UNTISSettings(dbsettings.Group):
+    term = dbsettings.IntegerValue(widget=forms.Select, choices=choices)
+
+
+untis_settings = UNTISSettings()
