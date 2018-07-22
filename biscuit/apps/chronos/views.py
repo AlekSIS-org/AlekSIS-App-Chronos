@@ -1,8 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render
-from untisconnect.api import *
-from .parse import *
+from untisconnect.parse import *
 
 try:
     from schoolapps.untisconnect.api import *
