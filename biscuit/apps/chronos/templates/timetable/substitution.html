@@ -1,7 +1,58 @@
 {% include 'partials/header.html' %}
 
+<script type="text/javascript">
+    function updateDatepicker() {
+        $("#date").val(formatDate(activeDate));
+
+    }
+
+    function update() {
+        console.log("Render new.");
+
+        updateDatepicker();
+    }
+
+    function onDateBeforeClick() {
+        activeDate.setDate(activeDate.getDate() - 1);
+        update();
+    }
+
+    function onDateNextClick() {
+        activeDate.setDate(activeDate.getDate() + 1);
+        update();
+    }
+
+    var activeDate = getNow();
+
+    $(document).ready(function () {
+        $("#date-before").click(onDateBeforeClick);
+        $("#date-next").click(onDateNextClick);
+
+        update();
+    })
+</script>
+
 <main>
     <h3>Vertretungen</h3>
+
+    <div class="row">
+        <div class="col s12 m6 l4 xl3">
+            <div class="col s2">
+                <a class="waves-effect waves-teal btn-flat btn-flat-medium right" id="date-before">
+                    <i class="material-icons center">navigate_before</i>
+                </a>
+
+            </div>
+            <div class="col s8">
+                <input type="text" class="datepicker center-align" id="date">
+            </div>
+            <div class="col s2">
+                <a class="waves-effect waves-teal btn-flat btn-flat-medium left" id="date-next">
+                    <i class="material-icons center">navigate_next</i>
+                </a>
+            </div>
+        </div>
+    </div>
 
     <p class="flow-text">
         Leider ist der Vertretungsplan noch nicht in Betrieb. Nutzen Sie solange die <a
