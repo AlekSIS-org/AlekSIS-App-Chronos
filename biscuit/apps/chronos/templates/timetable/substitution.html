@@ -69,6 +69,31 @@
         Leider ist der Vertretungsplan noch nicht in Betrieb. Nutzen Sie solange die <a
             href="https://info.katharineum.de/aktuell.pdf">alte Version</a>. Vielen Dank!
     </p>
+    {% for sub in subs %}
+        <div class="card ">
+            <div class="card-content">
+                <span class="card-title">9a</span>
+                <p>
+                    <strong>{{ sub.lesson }}. Stunde</strong>
+                    {% if sub.teacher_new %}
+                        <s>{{ sub.teacher_old.shortcode }}</s> → <strong>{{ sub.teacher_new.shortcode }}</strong>
+                    {% else %}
+                        <strong>{{ sub.teacher_old.shortcode }}</strong>
+                    {% endif %}
+                    ·
+                    {% if sub.subject_new %}
+                        <s>{{ sub.subject_old.shortcode }}</s> → <strong>{{ sub.subject_new.shortcode }}</strong>
+                    {% else %}
+                        <strong>{{ sub.subject_old.shortcode }}</strong>
+                    {% endif %}
+                    ·
+
+                </p>
+            </div>
+
+        </div>
+        {#        {{ sub.date }}#}
+    {% endfor %}
 </main>
 
 {% include 'partials/footer.html' %}

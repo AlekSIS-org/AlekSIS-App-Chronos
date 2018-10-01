@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render
 from untisconnect.parse import *
+from untisconnect.sub import get_substitutions_by_date
 
 try:
     from schoolapps.untisconnect.api import *
@@ -62,4 +63,10 @@ def plan(request, plan_type, plan_id):
 
 @login_required
 def substitutions(request):
-    return render(request, 'timetable/substitution.html')
+    subs = get_substitutions_by_date()
+
+    context = {
+        "subs": subs
+    }
+
+    return render(request, 'timetable/substitution.html', context)
