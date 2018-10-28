@@ -72,7 +72,9 @@
     {% for sub in subs %}
         <div class="card ">
             <div class="card-content">
-                <span class="card-title">9a</span>
+                <span class="card-title">{% for class_ in sub.classes %}
+                    {{ class_.name }}
+                {% endfor %}</span>
                 <p>
                     <strong>{{ sub.lesson }}. Stunde</strong>
                     {% if sub.teacher_new %}
@@ -87,7 +89,17 @@
                         <strong>{{ sub.subject_old.shortcode }}</strong>
                     {% endif %}
                     ·
+                    {% if sub.room_new %}
+                        <s>{{ sub.room_old.shortcode }}</s> → <strong>{{ sub.room_new.shortcode }}</strong>
+                    {% else %}
+                        <strong>{{ sub.room_old.shortcode }}</strong>
+                    {% endif %}
+                    ·
+                    <em>{{ sub.text|default:"" }}</em>
 
+                </p>
+                <p>
+                    <small>{{ sub.id }} {{ sub.lesson_id }}</small>
                 </p>
             </div>
 
