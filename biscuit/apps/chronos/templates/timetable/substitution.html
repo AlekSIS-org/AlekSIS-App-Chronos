@@ -90,10 +90,18 @@
             <tr
                     {% if sub.type == 1 or sub.type == 2 %}
                         class="green-text"
+                    {% elif sub.type == 3 %}
+                        class="blue-text"
                     {% endif %}
             >
                 <td>
-                    <strong>{{ sub.lesson }}.</strong>
+                    <strong>
+                        {% if sub.type == 3 %}
+                            {{ sub.lesson|add:-1 }}./{{ sub.lesson }}.
+                        {% else %}
+                            {{ sub.lesson }}.
+                        {% endif %}
+                    </strong>
                 </td>
                 <td>
                     {% for class_ in sub.classes %}
@@ -113,7 +121,9 @@
                     {% endif %}
                 </td>
                 <td>
-                    {% if sub.type == 1 or sub.type == 2 %}
+                    {% if sub.type == 3 %}
+                        <span class="badge new blue">Aufsicht</span>
+                    {% elif sub.type == 1 or sub.type == 2 %}
                         <s>{{ sub.subject_old.shortcode }}</s>
                     {% elif sub.subject_new and sub.subject_old %}
                         <s>{{ sub.subject_old.shortcode }}</s> →
@@ -125,7 +135,9 @@
                     {% endif %}
                 </td>
                 <td>
-                    {% if sub.type == 1 or sub.type == 2 %}
+                    {% if sub.type == 3 %}
+                        {{ sub.corridor.name }}
+                    {% elif sub.type == 1 or sub.type == 2 %}
                     {% elif sub.room_new and sub.room_old %}
                         <s>
                             {{ sub.room_old.shortcode }}
@@ -152,8 +164,7 @@
                             Lehrer frei</span>
                     {% endif %}
 
-                </td>
-                <td>
+
                     <small>{{ sub.id }} {{ sub.lesson_id }}</small>
                 </td>
             </tr>
