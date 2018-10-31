@@ -11,17 +11,23 @@
         updateDatepicker();
     }
 
+    function loadNew() {
+        window.location.href = "/timetable/substitutions/" + formatDateForDjango(activeDate);
+    }
+
     function onDateBeforeClick() {
         activeDate.setDate(activeDate.getDate() - 1);
         update();
+        loadNew();
     }
 
     function onDateNextClick() {
         activeDate.setDate(activeDate.getDate() + 1);
         update();
+        loadNew();
     }
 
-    var activeDate = getNow();
+    var activeDate = new Date({{ date_js }});
 
     $(document).ready(function () {
         $("#date-before").click(onDateBeforeClick);
@@ -65,71 +71,78 @@
         </div>
     </div>
 
-    <p class="flow-text">
-        Leider ist der Vertretungsplan noch nicht in Betrieb. Nutzen Sie solange die <a
-            href="https://info.katharineum.de/aktuell.pdf">alte Version</a>. Vielen Dank!
-    </p>
-    <div class="row">
-        <div class="col s12 m6">
-            <table>
-                <thead>
-                <tr>
-                    <th><i class="material-icons">access_time</i></th>
-                    <th><i class="material-icons">people</i></th>
-                    <th>Lehrer</th>
-                    <th>Fach</th>
-                    <th>Raum</th>
-                    <th><i class="material-icons">info</i></th>
-                    <th>i</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for sub in subs %}
-                    <tr>
-                        <td>
-                            <strong>{{ sub.lesson }}.</strong>
-                        </td>
-                        <td>
-                            {% for class_ in sub.classes %}
-                                {{ class_.name }}
-                            {% endfor %}
-                        </td>
-                        <td>
-                            {% if sub.teacher_new %}
-                                <s>{{ sub.teacher_old.shortcode }}</s> →
-                                <strong>{{ sub.teacher_new.shortcode }}</strong>
-                            {% else %}
-                                <strong>{{ sub.teacher_old.shortcode }}</strong>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if sub.subject_new %}
-                                <s>{{ sub.subject_old.shortcode }}</s> →
-                                <strong>{{ sub.subject_new.shortcode }}</strong>
-                            {% else %}
-                                <strong>{{ sub.subject_old.shortcode }}</strong>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if sub.room_new %}
-                                <s>{{ sub.room_old.shortcode }}</s> → <strong>{{ sub.room_new.shortcode }}</strong>
-                            {% else %}
-                                <strong>{{ sub.room_old.shortcode }}</strong>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <em>{{ sub.text|default:"" }}</em>
-                        </td>
-                        <td>
-                            <small>{{ sub.id }} {{ sub.lesson_id }}</small>
-                        </td>
-                    </tr>
-                    {#        {{ sub.date }}#}
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <h5>{{ date|date:"l, j. F Y" }}</h5>
+
+    <table>
+        <thead>
+        <tr>
+            <th><i class="material-icons">access_time</i></th>
+            <th><i class="material-icons">people</i></th>
+            <th>Lehrer</th>
+            <th>Fach</th>
+            <th>Raum</th>
+            <th><i class="material-icons">info</i></th>
+            <th>i</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for sub in subs %}
+            <tr>
+                <td>
+                    <strong>{{ sub.lesson }}.</strong>
+                </td>
+                <td>
+                    {% for class_ in sub.classes %}
+                        {{ class_.name }}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% if sub.teacher_new and sub.teacher_old %}
+                        <s>{{ sub.teacher_old.shortcode }}</s> →
+                        <strong>{{ sub.teacher_new.shortcode }}</strong>
+                    {% elif sub.teacher_new and not sub.teacher_old %}
+                        <strong>{{ sub.teacher_new.shortcode }}</strong>
+                    {% else %}
+                        <strong>{{ sub.teacher_old.shortcode }}</strong>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if sub.subject_new and sub.subject_old %}
+                        <s>{{ sub.subject_old.shortcode }}</s> →
+                        <strong>{{ sub.subject_new.shortcode }}</strong>
+                    {% elif sub.subject_new and not sub.subject_old %}
+                        <strong>{{ sub.subject_new.shortcode }}</strong>
+                    {% else %}
+                        <strong>{{ sub.subject_old.shortcode }}</strong>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if sub.room_new and sub.room_old %}
+                        <s>
+                            {{ sub.room_old.shortcode }}
+                        </s> → <strong>{{ sub.room_new.shortcode }}</strong>
+                    {% elif sub.room_new and not sub.room_old %}
+                        <strong>
+                            {{ sub.room_new.shortcode }}
+                        </strong>
+                    {% else %}
+                        <strong>
+                            {{ sub.room_old.shortcode }}
+                        </strong>
+                    {% endif %}
+                </td>
+                <td>
+                    <em>{{ sub.text|default:"" }}</em>
+                </td>
+                <td>
+                    <small>{{ sub.id }} {{ sub.lesson_id }}</small>
+                </td>
+            </tr>
+            {#        {{ sub.date }}#}
+        {% endfor %}
+        </tbody>
+    </table>
+
 </main>
 
 {% include 'partials/footer.html' %}

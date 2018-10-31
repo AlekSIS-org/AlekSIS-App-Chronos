@@ -2,7 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render
 from untisconnect.parse import *
-from untisconnect.sub import get_substitutions_by_date
+from untisconnect.sub import get_substitutions_by_date, date_to_untis_date, untis_date_to_date
+from django.utils import timezone
 
 try:
     from schoolapps.untisconnect.api import *
@@ -62,11 +63,19 @@ def plan(request, plan_type, plan_id):
 
 
 @login_required
-def substitutions(request):
-    subs = get_substitutions_by_date()
+def substitutions(request, year=None, day=None, month=None):
+    date = timezone.datetime.now()
+    if year is not None and day is not None and month is not None:
+        date = timezone.datetime(year=year, month=month, day=day)
+
+    print(date)
+
+    subs = get_substitutions_by_date(date)
 
     context = {
-        "subs": subs
+        "subs": subs,
+        "date": date,
+        "date_js": int(date.timestamp()) * 1000
     }
 
     return render(request, 'timetable/substitution.html', context)
