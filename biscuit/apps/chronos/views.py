@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404
 from django.shortcuts import render
 from untisconnect.parse import *
@@ -24,18 +24,21 @@ def get_all_context():
 
 
 @login_required
+@permission_required("timetable.show_plan")
 def all(request):
     context = get_all_context()
     return render(request, 'timetable/all.html', context)
 
 
 @login_required
+@permission_required("timetable.show_plan")
 def quicklaunch(request):
     context = get_all_context()
     return render(request, 'timetable/quicklaunch.html', context)
 
 
 @login_required
+@permission_required("timetable.show_plan")
 def plan(request, plan_type, plan_id):
     if plan_type == 'teacher':
         _type = TYPE_TEACHER
@@ -61,5 +64,6 @@ def plan(request, plan_type, plan_id):
 
 
 @login_required
+@permission_required("timetable.show_plan")
 def substitutions(request):
     return render(request, 'timetable/substitution.html')
