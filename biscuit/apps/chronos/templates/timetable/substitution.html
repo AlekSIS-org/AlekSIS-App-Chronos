@@ -87,7 +87,11 @@
         </thead>
         <tbody>
         {% for sub in subs %}
-            <tr>
+            <tr
+                    {% if sub.type == 1 or sub.type == 2 %}
+                        class="green-text"
+                    {% endif %}
+            >
                 <td>
                     <strong>{{ sub.lesson }}.</strong>
                 </td>
@@ -97,7 +101,9 @@
                     {% endfor %}
                 </td>
                 <td>
-                    {% if sub.teacher_new and sub.teacher_old %}
+                    {% if sub.type == 1 %}
+                        <s>{{ sub.teacher_old.shortcode }}</s>
+                    {% elif sub.teacher_new and sub.teacher_old %}
                         <s>{{ sub.teacher_old.shortcode }}</s> →
                         <strong>{{ sub.teacher_new.shortcode }}</strong>
                     {% elif sub.teacher_new and not sub.teacher_old %}
@@ -107,7 +113,9 @@
                     {% endif %}
                 </td>
                 <td>
-                    {% if sub.subject_new and sub.subject_old %}
+                    {% if sub.type == 1 or sub.type == 2 %}
+                        <s>{{ sub.subject_old.shortcode }}</s>
+                    {% elif sub.subject_new and sub.subject_old %}
                         <s>{{ sub.subject_old.shortcode }}</s> →
                         <strong>{{ sub.subject_new.shortcode }}</strong>
                     {% elif sub.subject_new and not sub.subject_old %}
@@ -117,7 +125,8 @@
                     {% endif %}
                 </td>
                 <td>
-                    {% if sub.room_new and sub.room_old %}
+                    {% if sub.type == 1 or sub.type == 2 %}
+                    {% elif sub.room_new and sub.room_old %}
                         <s>
                             {{ sub.room_old.shortcode }}
                         </s> → <strong>{{ sub.room_new.shortcode }}</strong>
@@ -133,6 +142,16 @@
                 </td>
                 <td>
                     <em>{{ sub.text|default:"" }}</em>
+                </td>
+                <td>
+                    {% if sub.type  == 1 %}
+                        <span class="badge green">
+                        Schüler frei</span>
+                    {% elif sub.type == 2 %}
+                        <span class="badge green">
+                            Lehrer frei</span>
+                    {% endif %}
+
                 </td>
                 <td>
                     <small>{{ sub.id }} {{ sub.lesson_id }}</small>
