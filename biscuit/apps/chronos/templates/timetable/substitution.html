@@ -86,86 +86,96 @@
         </tr>
         </thead>
         <tbody>
-        {% for sub in subs %}
+        {% for sub in sub_table %}
             <tr
-                    {% if sub.type == 1 or sub.type == 2 %}
-                        class="green-text"
-                    {% elif sub.type == 3 %}
-                        class="blue-text"
-                    {% endif %}
+                    {#                    {% if sub.type == 1 or sub.type == 2 %}#}
+                    {#                        class="green-text"#}
+                    {#                    {% elif sub.type == 3 %}#}
+                    {#                        class="blue-text"#}
+                    {#                    {% endif %}#}
+                    class="{{ sub.css_class }}"
             >
                 <td>
                     <strong>
-                        {% if sub.type == 3 %}
-                            {{ sub.lesson|add:-1 }}./{{ sub.lesson }}.
-                        {% else %}
-                            {{ sub.lesson }}.
-                        {% endif %}
+                        {#                        {% if sub.type == 3 %}#}
+                        {#                            {{ sub.lesson|add:-1 }}./{{ sub.lesson }}.#}
+                        {#                        {% else %}#}
+                        {#                            {{ sub.lesson }}.#}
+                        {#                        {% endif %}#}
+                        {{ sub.lesson }}
                     </strong>
                 </td>
                 <td>
-                    {% for class_ in sub.classes %}
-                        {{ class_.name }}
-                    {% endfor %}
+                    {#                    {% for class_ in sub.classes %}#}
+                    {#                        {{ class_.name }}#}
+                    {#                    {% endfor %}#}
+                    {{ sub.classes }}
                 </td>
                 <td>
-                    {% if sub.type == 1 %}
-                        <s>{{ sub.teacher_old.shortcode }}</s>
-                    {% elif sub.teacher_new and sub.teacher_old %}
-                        <s>{{ sub.teacher_old.shortcode }}</s> →
-                        <strong>{{ sub.teacher_new.shortcode }}</strong>
-                    {% elif sub.teacher_new and not sub.teacher_old %}
-                        <strong>{{ sub.teacher_new.shortcode }}</strong>
-                    {% else %}
-                        <strong>{{ sub.teacher_old.shortcode }}</strong>
-                    {% endif %}
+                    {#                    {% if sub.type == 1 %}#}
+                    {#                        <s>{{ sub.teacher_old.shortcode }}</s>#}
+                    {#                    {% elif sub.teacher_new and sub.teacher_old %}#}
+                    {#                        <s>{{ sub.teacher_old.shortcode }}</s> →#}
+                    {#                        <strong>{{ sub.teacher_new.shortcode }}</strong>#}
+                    {#                    {% elif sub.teacher_new and not sub.teacher_old %}#}
+                    {#                        <strong>{{ sub.teacher_new.shortcode }}</strong>#}
+                    {#                    {% else %}#}
+                    {#                        <strong>{{ sub.teacher_old.shortcode }}</strong>#}
+                    {#                    {% endif %}#}
+                    {{ sub.teacher|safe }}
                 </td>
                 <td>
-                    {% if sub.type == 3 %}
-                        <span class="badge new blue">Aufsicht</span>
-                    {% elif sub.type == 1 or sub.type == 2 %}
-                        <s>{{ sub.subject_old.shortcode }}</s>
-                    {% elif sub.subject_new and sub.subject_old %}
-                        <s>{{ sub.subject_old.shortcode }}</s> →
-                        <strong>{{ sub.subject_new.shortcode }}</strong>
-                    {% elif sub.subject_new and not sub.subject_old %}
-                        <strong>{{ sub.subject_new.shortcode }}</strong>
-                    {% else %}
-                        <strong>{{ sub.subject_old.shortcode }}</strong>
-                    {% endif %}
+                    {#                    {% if sub.type == 3 %}#}
+                    {#                        <span class="badge new blue">Aufsicht</span>#}
+                    {#                    {% elif sub.type == 1 or sub.type == 2 %}#}
+                    {#                        <s>{{ sub.subject_old.shortcode }}</s>#}
+                    {#                    {% elif sub.subject_new and sub.subject_old %}#}
+                    {#                        <s>{{ sub.subject_old.shortcode }}</s> →#}
+                    {#                        <strong>{{ sub.subject_new.shortcode }}</strong>#}
+                    {#                    {% elif sub.subject_new and not sub.subject_old %}#}
+                    {#                        <strong>{{ sub.subject_new.shortcode }}</strong>#}
+                    {#                    {% else %}#}
+                    {#                        <strong>{{ sub.subject_old.shortcode }}</strong>#}
+                    {#                    {% endif %}#}
+                    {{ sub.subject|safe }}
                 </td>
                 <td>
-                    {% if sub.type == 3 %}
-                        {{ sub.corridor.name }}
-                    {% elif sub.type == 1 or sub.type == 2 %}
-                    {% elif sub.room_new and sub.room_old %}
-                        <s>
-                            {{ sub.room_old.shortcode }}
-                        </s> → <strong>{{ sub.room_new.shortcode }}</strong>
-                    {% elif sub.room_new and not sub.room_old %}
-                        <strong>
-                            {{ sub.room_new.shortcode }}
-                        </strong>
-                    {% else %}
-                        <strong>
-                            {{ sub.room_old.shortcode }}
-                        </strong>
-                    {% endif %}
+                    {#                    {% if sub.type == 3 %}#}
+                    {#                        {{ sub.corridor.name }}#}
+                    {#                    {% elif sub.type == 1 or sub.type == 2 %}#}
+                    {#                    {% elif sub.room_new and sub.room_old %}#}
+                    {#                        <s>#}
+                    {#                            {{ sub.room_old.shortcode }}#}
+                    {#                        </s> → <strong>{{ sub.room_new.shortcode }}</strong>#}
+                    {#                    {% elif sub.room_new and not sub.room_old %}#}
+                    {#                        <strong>#}
+                    {#                            {{ sub.room_new.shortcode }}#}
+                    {#                        </strong>#}
+                    {#                    {% else %}#}
+                    {#                        <strong>#}
+                    {#                            {{ sub.room_old.shortcode }}#}
+                    {#                        </strong>#}
+                    {#                    {% endif %}#}
+                    {{ sub.room|safe }}
                 </td>
                 <td>
+                    {#                    <em>{{ sub.text|default:"" }}</em>#}
                     <em>{{ sub.text|default:"" }}</em>
                 </td>
                 <td>
-                    {% if sub.type  == 1 %}
-                        <span class="badge new green">
-                        Schüler frei</span>
-                    {% elif sub.type == 2 %}
-                        <span class="badge new green">
-                            Lehrer frei</span>
+                    {#                    {% if sub.type  == 1 %}#}
+                    {#                        <span class="badge new green">#}
+                    {#                        Schüler frei</span>#}
+                    {#                    {% elif sub.type == 2 %}#}
+                    {#                        <span class="badge new green">#}
+                    {#                            Lehrer frei</span>#}
+                    {#                    {% endif %}#}
+                    {% if sub.badge %}
+                        <span class="badge new green">{{ sub.badge }}</span>
                     {% endif %}
 
-
-                    <small>{{ sub.id }} {{ sub.lesson_id }}</small>
+                    {#                    <small>{{ sub.id }} {{ sub.lesson_id }}</small>#}
+                    <small>{{ sub.extra }}</small>
                 </td>
             </tr>
             {#        {{ sub.date }}#}

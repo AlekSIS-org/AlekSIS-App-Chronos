@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render
+
+from timetable.pdf import generate_sub_table, generate_class_pdf, generate_pdf
 from untisconnect.parse import *
 from untisconnect.sub import get_substitutions_by_date, date_to_untis_date, untis_date_to_date
 from django.utils import timezone
@@ -71,9 +73,19 @@ def substitutions(request, year=None, day=None, month=None):
     print(date)
 
     subs = get_substitutions_by_date(date)
+    sub_table = generate_sub_table(subs)
+    pdf = generate_class_pdf(sub_table, date)
+    print(pdf)
+
+    generate_pdf(pdf, "class")
+
+    for row in sub_table:
+        print(row.lesson)
+        print(row.teacher)
 
     context = {
         "subs": subs,
+        "sub_table": sub_table,
         "date": date,
         "date_js": int(date.timestamp()) * 1000
     }
