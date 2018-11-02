@@ -3,7 +3,7 @@ import subprocess
 from django.utils import timezone
 from django.utils import formats
 
-texheader = """\\documentclass[11pt]{article}
+TEX_HEADER = """\\documentclass[11pt]{article}
 \\usepackage[ngerman]{babel}
 \\usepackage[utf8]{inputenc}
 \\usepackage[a4paper,left=1cm,right=1cm,top=2cm,bottom=2cm,bindingoffset=0mm]{geometry}
@@ -40,13 +40,13 @@ texheader = """\\documentclass[11pt]{article}
 
 \\begin{document}"""
 
-texfooter = '\end{document}'
+TEX_FOOTER = '\end{document}'
 
-texdirpath = 'latex'
-teachertex = 'latex/teacher.tex'
-teacherpdf = 'latex/teacher.pdf'
-classtex = 'latex/class.tex'
-classpdf = 'latex/class.pdf'
+TEX_DIR_PATH = 'latex'
+TEACHER_TEX = 'latex/teacher.tex'
+TEACHER_PDF = 'latex/teacher.pdf'
+CLASS_TEX = 'latex/class.tex'
+CLASS_PDF = 'latex/class.pdf'
 
 
 class SubRow(object):
@@ -151,9 +151,9 @@ TEX_HEADER_CLASS = """
 
 
 def generate_pdf(tex, filename):
-    texfile = open(filename + ".tex", "w")
-    texfile.write(tex)
-    texfile.close()
+    tex_file = open(filename + ".tex", "w")
+    tex_file.write(tex)
+    tex_file.close()
 
     bash_command = "pdflatex {}.tex".format(filename)
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
@@ -173,31 +173,31 @@ def replacer(str):
 
 
 def generate_class_pdf(subs, date):
-    texbody = ""
+    tex_body = ""
 
     # Dates
     status_date = formats.date_format(date, format="j. F Y, \\K\\W W ")
     current_date = formats.date_format(timezone.datetime.now(), format="j. F Y H:i")
     head_date = formats.date_format(date, format="l, j. F Y")
 
-    texbody += TEX_HEADER_CLASS % (status_date, current_date, head_date)
+    tex_body += TEX_HEADER_CLASS % (status_date, current_date, head_date)
 
     # Begin table
-    texbody += TEX_TABLE_HEADER_CLASS
+    tex_body += TEX_TABLE_HEADER_CLASS
 
     color_background = True
     for sub in subs:
         if color_background:
-            texbody += '\\rowcolor{grey}'
+            tex_body += '\\rowcolor{grey}'
 
-        texbody += '\\textbf{' + sub.classes + '} & '
+        tex_body += '\\textbf{' + sub.classes + '} & '
         for i in [sub.lesson, sub.teacher, sub.subject, sub.room]:
-            texbody += replacer(i) + ' & '
+            tex_body += replacer(i) + ' & '
 
-        texbody += "\\textit{%s}\\\\\\hline\n" % (sub.text or "")
+        tex_body += "\\textit{%s}\\\\\\hline\n" % (sub.text or "")
         color_background = not color_background
     # End table
-    texbody += '\\end{longtable}'
+    tex_body += '\\end{longtable}'
 
-    texcontent = texheader + texbody + texfooter
+    texcontent = TEX_HEADER + tex_body + TEX_FOOTER
     return texcontent
