@@ -1,3 +1,4 @@
+import os
 import subprocess
 
 from django.utils import timezone
@@ -85,11 +86,11 @@ TEX_HEADER_CLASS = """
 
 
 def generate_pdf(tex, filename):
-    tex_file = open(filename + ".tex", "w")
+    tex_file = open(os.path.join("latex", filename + ".tex"), "w")
     tex_file.write(tex)
     tex_file.close()
 
-    bash_command = "pdflatex {}.tex".format(filename)
+    bash_command = "pdflatex -output-directory latex {}.tex".format(filename)
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
     output = process.communicate()[0]
     # bash_command = "xreader {}.pdf".format(filename)

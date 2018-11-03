@@ -1,5 +1,8 @@
+import datetime
+import os
+
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.http import Http404, FileResponse
 from django.shortcuts import render
 
 from timetable.pdf import generate_class_tex, generate_pdf
@@ -62,6 +65,28 @@ def plan(request, plan_type, plan_id):
     }
 
     return render(request, 'timetable/plan.html', context)
+
+
+def get_next_weekday(date):
+    if date.isoweekday() in {6, 7}:
+        date += datetime.timedelta(days=date.isoweekday() % 4)
+    return date
+
+
+@login_required
+def sub_pdf(request):
+    today = timezone.datetime.now()
+    first_day = get_next_weekday(today)
+
+    subs = get_substitutions_by_date(first_day)
+    sub_table = generate_sub_table(subs)
+    tex = generate_class_tex(sub_table, first_day)
+    print(first_day)
+    print(tex)
+
+    generate_pdf(tex, "class")
+    file = open(os.path.join("latex", "class.pdf"), "rb")
+    return FileResponse(file, content_type="application/pdf")
 
 
 @login_required

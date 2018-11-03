@@ -6,5 +6,6 @@ urlpatterns = [
     path('quick/', views.quicklaunch, name='timetable_quicklaunch'),
     path('<str:plan_type>/<int:plan_id>/', views.plan, name='timetable_plan'),
     path('substitutions/', views.substitutions, name='timetable_substitutions'),
-    path('substitutions/<int:year>/<int:month>/<int:day>/', views.substitutions, name='timetable_substitutions'),
+    path('substitutions/<int:year>/<int:month>/<int:day>/', views.substitutions, name='timetable_substitutions_date'),
+    path('class.pdf', views.sub_pdf, name="timetable_substitutions_pdf")
 ]
