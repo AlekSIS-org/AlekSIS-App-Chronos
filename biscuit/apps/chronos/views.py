@@ -71,7 +71,11 @@ def get_next_weekday(date):
     """Get the next weekday by a datetime object"""
 
     if date.isoweekday() in {6, 7}:
-        date += datetime.timedelta(days=date.isoweekday() % 4)
+        if date.isoweekday() == 6:
+            plus = 2
+        else:
+            plus = 1
+        date += datetime.timedelta(days=plus)
     return date
 
 
