@@ -68,6 +68,8 @@ def plan(request, plan_type, plan_id):
 
 
 def get_next_weekday(date):
+    """Get the next weekday by a datetime object"""
+
     if date.isoweekday() in {6, 7}:
         date += datetime.timedelta(days=date.isoweekday() % 4)
     return date
@@ -75,38 +77,38 @@ def get_next_weekday(date):
 
 @login_required
 def sub_pdf(request):
+    """Show substitutions as PDF for the next weekday (specially for monitors)"""
+
+    # Get the next weekday
     today = timezone.datetime.now()
     first_day = get_next_weekday(today)
 
+    # Get subs and generate table
     subs = get_substitutions_by_date(first_day)
     sub_table = generate_sub_table(subs)
-    tex = generate_class_tex(sub_table, first_day)
-    print(first_day)
-    print(tex)
 
+    # Generate LaTeX
+    tex = generate_class_tex(sub_table, first_day)
+
+    # Generate PDF
     generate_pdf(tex, "class")
+
+    # Read and response PDF
     file = open(os.path.join("latex", "class.pdf"), "rb")
     return FileResponse(file, content_type="application/pdf")
 
 
 @login_required
 def substitutions(request, year=None, day=None, month=None):
+    """Show substitutions in a classic view"""
+
     date = timezone.datetime.now()
     if year is not None and day is not None and month is not None:
         date = timezone.datetime(year=year, month=month, day=day)
 
-    print(date)
-
+    # Get subs and generate table
     subs = get_substitutions_by_date(date)
     sub_table = generate_sub_table(subs)
-    tex = generate_class_tex(sub_table, date)
-    print(tex)
-
-    generate_pdf(tex, "class")
-
-    for row in sub_table:
-        print(row.lesson)
-        print(row.teacher)
 
     context = {
         "subs": subs,

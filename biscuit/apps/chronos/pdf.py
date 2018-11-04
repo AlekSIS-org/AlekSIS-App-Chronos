@@ -4,6 +4,8 @@ import subprocess
 from django.utils import timezone
 from django.utils import formats
 
+# LaTeX constants
+
 TEX_HEADER = """\\documentclass[11pt]{article}
 \\usepackage[ngerman]{babel}
 \\usepackage[utf8]{inputenc}
@@ -86,28 +88,38 @@ TEX_HEADER_CLASS = """
 
 
 def generate_pdf(tex, filename):
+    """Generate a PDF by LaTeX code"""
+
+    # Read LaTeX file
     tex_file = open(os.path.join("latex", filename + ".tex"), "w")
     tex_file.write(tex)
     tex_file.close()
 
+    # Execute pdflatex to generate the PDF
     bash_command = "pdflatex -output-directory latex {}.tex".format(filename)
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
     output = process.communicate()[0]
-    # bash_command = "xreader {}.pdf".format(filename)
-    # process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
-    return True
 
 
 def tex_replacer(s):
+    """Replace HTML tags by LaTeX tags"""
+
+    # Strong text
     s = s.replace("<strong>", "\\textbf{")
-    s = s.replace("<s>", "\\sout{")
     s = s.replace("</strong>", "}")
+
+    # Struck out text
+    s = s.replace("<s>", "\\sout{")
     s = s.replace("</s>", "}")
+
+    # Arrow
     s = s.replace("→", "$\\rightarrow$")
+
     return s
 
 
 def generate_class_tex(subs, date):
+    """Generate LaTeX for a PDF by a substitution table"""
     tex_body = ""
 
     # Format dates
