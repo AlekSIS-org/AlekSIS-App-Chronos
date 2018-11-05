@@ -1,6 +1,11 @@
+import datetime
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404
 from django.shortcuts import render
+from django.utils import timezone
+
+from schoolapps.settings import LESSONS
 from untisconnect.parse import *
 
 try:
@@ -53,11 +58,13 @@ def plan(request, plan_type, plan_id):
         raise Http404('Page not found.')
 
     plan = get_plan(_type, plan_id)
+    print(parse_lesson_times())
 
     context = {
         "type": _type,
         "plan": plan,
-        "el": el
+        "el": el,
+        "times": parse_lesson_times()
     }
 
     return render(request, 'timetable/plan.html', context)
