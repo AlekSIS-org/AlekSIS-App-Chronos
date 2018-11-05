@@ -27,11 +27,20 @@
         loadNew();
     }
 
+    function onDateChanged() {
+        var str = $("#date").val();
+        var split = str.split(".")
+        activeDate = new Date(split[2], split[1] - 1, split[0]);
+        update();
+        loadNew();
+    }
+
     var activeDate = new Date({{ date_js }});
 
     $(document).ready(function () {
         $("#date-before").click(onDateBeforeClick);
         $("#date-next").click(onDateNextClick);
+        $("#date").change(onDateChanged);
 
         // Print the site
         $("#print").click(function () {
@@ -73,114 +82,54 @@
 
     <h5>{{ date|date:"l, j. F Y" }}</h5>
 
-    <table>
+    <table class="substitutions striped">
         <thead>
         <tr>
             <th><i class="material-icons">access_time</i></th>
-            <th><i class="material-icons">people</i></th>
+            <th>Klassen</th>
             <th>Lehrer</th>
             <th>Fach</th>
             <th>Raum</th>
-            <th><i class="material-icons">info</i></th>
-            <th>i</th>
+            <th>Hinweis</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
         {% for sub in sub_table %}
-            <tr
-                    {#                    {% if sub.type == 1 or sub.type == 2 %}#}
-                    {#                        class="green-text"#}
-                    {#                    {% elif sub.type == 3 %}#}
-                    {#                        class="blue-text"#}
-                    {#                    {% endif %}#}
-                    class="{{ sub.css_class }}"
-            >
+            <tr class="{{ sub.css_class }}">
                 <td>
                     <strong>
-                        {#                        {% if sub.type == 3 %}#}
-                        {#                            {{ sub.lesson|add:-1 }}./{{ sub.lesson }}.#}
-                        {#                        {% else %}#}
-                        {#                            {{ sub.lesson }}.#}
-                        {#                        {% endif %}#}
                         {{ sub.lesson }}
                     </strong>
                 </td>
                 <td>
-                    {#                    {% for class_ in sub.classes %}#}
-                    {#                        {{ class_.name }}#}
-                    {#                    {% endfor %}#}
                     {{ sub.classes }}
                 </td>
                 <td>
-                    {#                    {% if sub.type == 1 %}#}
-                    {#                        <s>{{ sub.teacher_old.shortcode }}</s>#}
-                    {#                    {% elif sub.teacher_new and sub.teacher_old %}#}
-                    {#                        <s>{{ sub.teacher_old.shortcode }}</s> →#}
-                    {#                        <strong>{{ sub.teacher_new.shortcode }}</strong>#}
-                    {#                    {% elif sub.teacher_new and not sub.teacher_old %}#}
-                    {#                        <strong>{{ sub.teacher_new.shortcode }}</strong>#}
-                    {#                    {% else %}#}
-                    {#                        <strong>{{ sub.teacher_old.shortcode }}</strong>#}
-                    {#                    {% endif %}#}
                     <span class="tooltipped" data-position="bottom"
                           data-tooltip="{{ sub.teacher_full|safe }}">{{ sub.teacher|safe }}</span>
                 </td>
                 <td>
-                    {#                    {% if sub.type == 3 %}#}
-                    {#                        <span class="badge new blue">Aufsicht</span>#}
-                    {#                    {% elif sub.type == 1 or sub.type == 2 %}#}
-                    {#                        <s>{{ sub.subject_old.shortcode }}</s>#}
-                    {#                    {% elif sub.subject_new and sub.subject_old %}#}
-                    {#                        <s>{{ sub.subject_old.shortcode }}</s> →#}
-                    {#                        <strong>{{ sub.subject_new.shortcode }}</strong>#}
-                    {#                    {% elif sub.subject_new and not sub.subject_old %}#}
-                    {#                        <strong>{{ sub.subject_new.shortcode }}</strong>#}
-                    {#                    {% else %}#}
-                    {#                        <strong>{{ sub.subject_old.shortcode }}</strong>#}
-                    {#                    {% endif %}#}
                     {{ sub.subject|safe }}
                 </td>
                 <td>
-                    {#                    {% if sub.type == 3 %}#}
-                    {#                        {{ sub.corridor.name }}#}
-                    {#                    {% elif sub.type == 1 or sub.type == 2 %}#}
-                    {#                    {% elif sub.room_new and sub.room_old %}#}
-                    {#                        <s>#}
-                    {#                            {{ sub.room_old.shortcode }}#}
-                    {#                        </s> → <strong>{{ sub.room_new.shortcode }}</strong>#}
-                    {#                    {% elif sub.room_new and not sub.room_old %}#}
-                    {#                        <strong>#}
-                    {#                            {{ sub.room_new.shortcode }}#}
-                    {#                        </strong>#}
-                    {#                    {% else %}#}
-                    {#                        <strong>#}
-                    {#                            {{ sub.room_old.shortcode }}#}
-                    {#                        </strong>#}
-                    {#                    {% endif %}#}
                     <span class="tooltipped" data-position="bottom"
                           data-tooltip="{{ sub.room_full|safe }}">{{ sub.room|safe }}</span>
                 </td>
                 <td>
-                    {#                    <em>{{ sub.text|default:"" }}</em>#}
+                    {% if sub.badge %}
+                        <span class="badge new green hide-on-med-and-up">{{ sub.badge }}</span>
+                    {% endif %}
                     <em>{{ sub.text|default:"" }}</em>
                 </td>
-                <td>
-                    {#                    {% if sub.type  == 1 %}#}
-                    {#                        <span class="badge new green">#}
-                    {#                        Schüler frei</span>#}
-                    {#                    {% elif sub.type == 2 %}#}
-                    {#                        <span class="badge new green">#}
-                    {#                            Lehrer frei</span>#}
-                    {#                    {% endif %}#}
+                <td class="hide-on-small-and-down">
+
                     {% if sub.badge %}
                         <span class="badge new green">{{ sub.badge }}</span>
                     {% endif %}
 
-                    {#                    <small>{{ sub.id }} {{ sub.lesson_id }}</small>#}
-                    <small>{{ sub.extra }}</small>
                 </td>
             </tr>
-            {#        {{ sub.date }}#}
         {% endfor %}
         </tbody>
     </table>
