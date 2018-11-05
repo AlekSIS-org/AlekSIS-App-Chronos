@@ -122,7 +122,8 @@
                     {#                    {% else %}#}
                     {#                        <strong>{{ sub.teacher_old.shortcode }}</strong>#}
                     {#                    {% endif %}#}
-                    {{ sub.teacher|safe }}
+                    <span class="tooltipped" data-position="bottom"
+                          data-tooltip="{{ sub.teacher_full|safe }}">{{ sub.teacher|safe }}</span>
                 </td>
                 <td>
                     {#                    {% if sub.type == 3 %}#}
@@ -156,7 +157,8 @@
                     {#                            {{ sub.room_old.shortcode }}#}
                     {#                        </strong>#}
                     {#                    {% endif %}#}
-                    {{ sub.room|safe }}
+                    <span class="tooltipped" data-position="bottom"
+                          data-tooltip="{{ sub.room_full|safe }}">{{ sub.room|safe }}</span>
                 </td>
                 <td>
                     {#                    <em>{{ sub.text|default:"" }}</em>#}
