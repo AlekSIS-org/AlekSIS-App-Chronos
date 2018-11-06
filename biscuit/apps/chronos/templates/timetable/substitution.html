@@ -42,11 +42,6 @@
         $("#date-next").click(onDateNextClick);
         $("#date").change(onDateChanged);
 
-        // Print the site
-        $("#print").click(function () {
-            window.print();
-        });
-
         update();
     })
 </script>
@@ -54,7 +49,7 @@
 <main>
     <h3>Vertretungen</h3>
 
-    <div class="row">
+    <div class="row no-print">
         <div class="col s12 m6 l4 xl3">
             <div class="col s2">
                 <a class="waves-effect waves-teal btn-flat btn-flat-medium right" id="date-before">
@@ -125,7 +120,7 @@
                 <td class="hide-on-small-and-down">
 
                     {% if sub.badge %}
-                        <span class="badge new green">{{ sub.badge }}</span>
+                        <span class="badge new green darken-2">{{ sub.badge }}</span>
                     {% endif %}
 
                 </td>
