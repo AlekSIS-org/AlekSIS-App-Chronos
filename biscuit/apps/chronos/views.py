@@ -1,14 +1,16 @@
 import datetime
 import os
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404, FileResponse
 from django.shortcuts import render
+from django.utils import timezone
 
 from timetable.pdf import generate_class_tex, generate_pdf
+from schoolapps.settings import LESSONS
+
 from untisconnect.parse import *
 from untisconnect.sub import get_substitutions_by_date, date_to_untis_date, untis_date_to_date, generate_sub_table
-from django.utils import timezone
 
 try:
     from schoolapps.untisconnect.api import *
@@ -31,18 +33,21 @@ def get_all_context():
 
 
 @login_required
+@permission_required("timetable.show_plan")
 def all(request):
     context = get_all_context()
     return render(request, 'timetable/all.html', context)
 
 
 @login_required
+@permission_required("timetable.show_plan")
 def quicklaunch(request):
     context = get_all_context()
     return render(request, 'timetable/quicklaunch.html', context)
 
 
 @login_required
+@permission_required("timetable.show_plan")
 def plan(request, plan_type, plan_id):
     if plan_type == 'teacher':
         _type = TYPE_TEACHER
@@ -57,11 +62,13 @@ def plan(request, plan_type, plan_id):
         raise Http404('Page not found.')
 
     plan = get_plan(_type, plan_id)
+    print(parse_lesson_times())
 
     context = {
         "type": _type,
         "plan": plan,
-        "el": el
+        "el": el,
+        "times": parse_lesson_times()
     }
 
     return render(request, 'timetable/plan.html', context)
@@ -79,7 +86,6 @@ def get_next_weekday(date):
     return date
 
 
-@login_required
 def sub_pdf(request):
     """Show substitutions as PDF for the next weekday (specially for monitors)"""
 
@@ -103,6 +109,7 @@ def sub_pdf(request):
 
 
 @login_required
+@permission_required("timetable.show_plan")
 def substitutions(request, year=None, day=None, month=None):
     """Show substitutions in a classic view"""
 
