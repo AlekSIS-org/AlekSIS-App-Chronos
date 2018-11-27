@@ -8,6 +8,7 @@ from django.utils import formats
 
 TEX_HEADER = """\\documentclass[11pt]{article}
 \\usepackage[ngerman]{babel}
+\\usepackage[sfdefault]{cabin}
 \\usepackage[utf8]{inputenc}
 \\usepackage[a4paper,left=1cm,right=1cm,top=2cm,bottom=2cm,bindingoffset=0mm]{geometry}
 
@@ -46,10 +47,10 @@ TEX_HEADER = """\\documentclass[11pt]{article}
   enlarge bottom by=3pt,coltext=white}
 
   
-\\usepackage{helvet} %Helvetica als Standardschriftart
-\\renewcommand{\\familydefault}{\\sfdefault} %Helvetica als Standardschriftart
+%\\usepackage{helvet} %Helvetica als Standardschriftart
+%\\renewcommand{\\familydefault}{\\sfdefault} %Helvetica als Standardschriftart
 
-\\definecolor{grey}{rgb}{0.95,0.95,0.95}
+\\definecolor{grey}{RGB}{208, 208, 208}
 \\definecolor{darkgrey}{rgb}{0.6,0.6,0.6}
 \\definecolor{white}{rgb}{1,1,1}
 \\definecolor{green}{RGB}{76,175,80}
@@ -68,15 +69,17 @@ TEX_FOOTER = '\end{document}'
 
 TEX_TABLE_HEADER_CLASS = """
 \def\\arraystretch{1.5}
-\\begin{longtable}{|p{20mm}|p{10mm}|p{32mm}|p{25mm}|p{30mm}|p{35mm}|}
-\\hline\n
-\\rowcolor{darkgrey}
-\\color{white}\\textbf{Klasse} & 
-\\color{white}\\textbf{Std.} & 
-\\color{white}\\textbf{Lehrer} & 
-\\color{white}\\textbf{Fach} & 
-\\color{white}\\textbf{Raum} & 
-\\color{white}\\textbf{Hinweis}\\\\\\hline
+\\begin{longtable}{p{20mm}p{10mm}p{32mm}p{25mm}p{30mm}p{35mm}}
+%\\arrayrulecolor{black}
+
+%\\hline\n
+%\\rowcolor{darkgrey}
+\\textbf{Klassen} & 
+\\textbf{Std.} & 
+\\textbf{Lehrer} & 
+\\textbf{Fach} & 
+\\textbf{Raum} & 
+\\textbf{Hinweis}\\\\\\hline
 """
 
 TEX_HEADER_CLASS = """
@@ -157,7 +160,7 @@ def generate_class_tex(subs, date):
 
         # Print notice and new line
         tex_body += color
-        tex_body += "\\Large\\textit{%s}\\\\\\hline\n" % (sub.text or "")
+        tex_body += "\\Large\\textit{%s}\\\\\n" % (sub.text or "")
 
         # Change background
         color_background = not color_background
