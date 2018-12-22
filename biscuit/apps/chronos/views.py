@@ -46,9 +46,41 @@ def quicklaunch(request):
     return render(request, 'timetable/quicklaunch.html', context)
 
 
+def get_calendar_weeks():
+    weeks = []
+
+    # Get first day of year > first calendar week
+    first_day_of_year = timezone.datetime(year=timezone.datetime.now().year, month=1, day=1)
+    if first_day_of_year.isoweekday() != 1:
+        days_to_next_monday = 1 - first_day_of_year.isoweekday()
+        first_day_of_year += datetime.timedelta(days=days_to_next_monday)
+
+    # Go for all weeks in year and create week dict
+    first_day_of_week = first_day_of_year
+    for i in range(52):
+        calendar_week = i + 1
+        last_day_of_week = first_day_of_week + datetime.timedelta(days=4)
+        weeks.append({
+            "calendar_week": calendar_week,
+            "first_day": first_day_of_week,
+            "last_day": last_day_of_week
+        })
+        first_day_of_week += datetime.timedelta(weeks=1)
+
+    return weeks
+
+
 @login_required
 @permission_required("timetable.show_plan")
-def plan(request, plan_type, plan_id):
+def plan(request, plan_type, plan_id, smart="", year=None, calendar_week=None):
+    if smart == "smart":
+        smart = True
+        year = timezone.datetime.now().year if year is None else year
+        calendar_week = timezone.datetime.now().isocalendar()[1] if calendar_week is None else calendar_week
+        print(get_calendar_weeks())
+    else:
+        smart = False
+
     if plan_type == 'teacher':
         _type = TYPE_TEACHER
         el = get_teacher_by_id(plan_id)
@@ -59,16 +91,22 @@ def plan(request, plan_type, plan_id):
         _type = TYPE_ROOM
         el = get_room_by_id(plan_id)
     else:
-        raise Http404('Page not found.')
+        raise Http404('Plan not found.')
 
     plan = get_plan(_type, plan_id)
     print(parse_lesson_times())
 
     context = {
+        "smart": smart,
         "type": _type,
+        "raw_type": plan_type,
+        "id": plan_id,
         "plan": plan,
         "el": el,
-        "times": parse_lesson_times()
+        "times": parse_lesson_times(),
+        "weeks": get_calendar_weeks(),
+        "selected_week": calendar_week,
+        "selected_year": year
     }
 
     return render(request, 'timetable/plan.html', context)

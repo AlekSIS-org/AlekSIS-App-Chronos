@@ -1,17 +1,65 @@
 {% include 'partials/header.html' %}
+<script type="text/javascript">
+    {% if smart %}
+        function goToCalendarWeek(cw) {
+            window.location.href = "{% url "timetable_smart_plan" raw_type id "smart" %}/{{ selected_year }}/" + cw;
+        }
+        function onCalendarWeekChanged() {
+            goToCalendarWeek($("#calendar-week").val());
+        }
 
+        $(document).ready(function () {
+            $("#calendar-week").change(onCalendarWeekChanged);
+        });
+    {% endif %}
+</script>
 <main>
     <div class="row">
         <div class="col s12 m6 l8 xl9">
             <h3>
                 Stundenplan <i>{{ el }}</i>
             </h3>
+
+
         </div>
-        <div class="col s12 m6 l4 xl3 right align-right">
+        <div class=" col s12 m6 l4 xl3 right align-right">
             <a class="waves-effect waves-teal btn-flat btn-flat-medium right" id="print">
                 <i class="material-icons center">print</i>
             </a>
         </div>
+    </div>
+    <div class="row">
+        {% if smart %}
+            <div class="col s12 m6">
+                <p class="left" style="margin: 0;"><span
+                        class="badge new primary-color left-align">SMART PLAN</span>
+                </p>&nbsp;
+
+                <a class="waves-effect waves-light btn" href="{% url "timetable_plan" raw_type id %}">
+                    <i class="material-icons left">slideshow</i>
+                    Regelplan anzeigen
+                </a>
+            </div>
+
+            <div class="input-field col s12 m6 right">
+                <select id="calendar-week">
+                    {% for week in weeks %}
+                        <option value="{{ week.calendar_week }}" {% if week.calendar_week == selected_week %}
+                                selected {% endif %}>
+                            KW {{ week.calendar_week }}
+                            ({{ week.first_day|date:"j. F Y" }}–{{ week.last_day|date:"j. F Y" }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+        {% else %}
+            <a class="waves-effect waves-light btn"
+               href="{% url "timetable_smart_plan" raw_type id "smart" %}">
+                <i class="material-icons left">slideshow</i>
+                SMART PLAN
+            </a>
+        {% endif %}
     </div>
     <div class="timetable-plan">
         <div class="row">
