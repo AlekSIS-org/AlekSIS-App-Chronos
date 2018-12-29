@@ -134,21 +134,56 @@
                         <div class="card lesson-card">
                             <div class="card-content">
                                 {% for element_container in col.elements %}
-                                    <div style="background-color: {{ element_container.element.subject.hex_color }};">
+                                    <div style="
+                                            {% if not element_container.substitution.table.badge %}
+                                                {% if not element_container.is_old or type != 1 %}
+                                                    background-color: {{ element_container.element.subject.hex_color }};
+                                                {% endif %}
+                                            {% endif %}"
+                                         class="{% if element_container.substitution %}lesson-with-sub{% endif %}">
                                         <p>
-                                            {% if type == 0 or type == 1 %}
-                                                {% for class in element_container.element.classes %}
-                                                    {{ class.name }}
-                                                {% endfor %}
-                                            {% endif %}
-                                            {% if type == 2 or type == 1 %}
-                                                <span data-position="bottom" class="tooltipped"
-                                                      data-tooltip="{{ element_container.element.teacher }}">{{ element_container.element.teacher.shortcode }}</span>
-                                            {% endif %}
-                                            <strong>{{ element_container.element.subject.shortcode }}</strong>
-                                            {% if type == 0 or type == 2 %}
-                                                <span class="tooltipped" data-position="bottom"
-                                                      data-tooltip="{{ element_container.room.name }}">{{ element_container.room.shortcode }}</span>
+                                            {% if element_container.substitution %}
+                                                {% if type == 1 and element_container.is_old %}
+
+                                                {% elif element_container.substitution.table.badge %}
+                                                    <span class="badge new green darken-2">{{ element_container.substitution.table.badge }}</span>
+                                                {% else %}
+                                                    {% if type == 0 or type == 1 %}
+                                                        {{ element_container.substitution.table.classes }}
+                                                    {% endif %}
+
+                                                    <span class="tooltipped" data-position="bottom"
+                                                          data-tooltip="{{ element_container.substitution.table.teacher_full|safe }}">{{ element_container.substitution.table.teacher|safe }}</span>
+
+
+                                                    {{ element_container.substitution.table.subject|safe }}
+
+                                                    {% if type == 0 or type == 2 %}
+                                                        <span class="tooltipped" data-position="bottom"
+                                                              data-tooltip="{{ element_container.substitution.table.room_full|safe }}">{{ element_container.substitution.table.room|safe }}</span>
+                                                    {% endif %}
+                                                {% endif %}<br>
+                                                {% if not type == 1 and not element_container.is_old %}
+
+                                                    <small>
+                                                        <em>{{ element_container.substitution.table.text|default:"" }}</em>
+                                                    </small>
+                                                {% endif %}
+                                            {% else %}
+                                                {% if type == 0 or type == 1 %}
+                                                    {% for class in element_container.element.classes %}
+                                                        {{ class.name }}
+                                                    {% endfor %}
+                                                {% endif %}
+                                                {% if type == 2 or type == 1 %}
+                                                    <span data-position="bottom" class="tooltipped"
+                                                          data-tooltip="{{ element_container.element.teacher }}">{{ element_container.element.teacher.shortcode }}</span>
+                                                {% endif %}
+                                                <strong>{{ element_container.element.subject.shortcode }}</strong>
+                                                {% if type == 0 or type == 2 %}
+                                                    <span class="tooltipped" data-position="bottom"
+                                                          data-tooltip="{{ element_container.room.name }}">{{ element_container.room.shortcode }}</span>
+                                                {% endif %}
                                             {% endif %}
                                         </p>
                                     </div>

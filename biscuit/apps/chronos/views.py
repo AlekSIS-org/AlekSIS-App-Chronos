@@ -7,15 +7,10 @@ from django.shortcuts import render
 from django.utils import timezone
 
 from timetable.pdf import generate_class_tex, generate_pdf
-from schoolapps.settings import LESSONS
 
-from untisconnect.parse import *
-from untisconnect.sub import get_substitutions_by_date, date_to_untis_date, untis_date_to_date, generate_sub_table
-
-try:
-    from schoolapps.untisconnect.api import *
-except Exception:
-    pass
+from untisconnect.plan import get_plan, TYPE_TEACHER, TYPE_CLASS, TYPE_ROOM, parse_lesson_times
+from untisconnect.sub import get_substitutions_by_date, generate_sub_table
+from untisconnect.api import *
 
 
 def get_all_context():
@@ -46,11 +41,11 @@ def quicklaunch(request):
     return render(request, 'timetable/quicklaunch.html', context)
 
 
-def get_calendar_weeks():
+def get_calendar_weeks(year=timezone.datetime.now().year):
     weeks = []
 
     # Get first day of year > first calendar week
-    first_day_of_year = timezone.datetime(year=timezone.datetime.now().year, month=1, day=1)
+    first_day_of_year = timezone.datetime(year=year, month=1, day=1)
     if first_day_of_year.isoweekday() != 1:
         days_to_next_monday = 1 - first_day_of_year.isoweekday()
         first_day_of_year += datetime.timedelta(days=days_to_next_monday)
@@ -70,16 +65,25 @@ def get_calendar_weeks():
     return weeks
 
 
+def get_calendar_week(calendar_week, year=timezone.datetime.now().year):
+    weeks = get_calendar_weeks(year=year)
+    for week in weeks:
+        if week["calendar_week"] == calendar_week:
+            return week
+    return None
+
+
 @login_required
 @permission_required("timetable.show_plan")
-def plan(request, plan_type, plan_id, smart="", year=None, calendar_week=None):
+def plan(request, plan_type, plan_id, smart="", year=timezone.datetime.now().year,
+         calendar_week=timezone.datetime.now().isocalendar()[1]):
     if smart == "smart":
         smart = True
-        year = timezone.datetime.now().year if year is None else year
-        calendar_week = timezone.datetime.now().isocalendar()[1] if calendar_week is None else calendar_week
-        print(get_calendar_weeks())
     else:
         smart = False
+
+    monday_of_week = get_calendar_week(calendar_week, year)["first_day"]
+    print(monday_of_week)
 
     if plan_type == 'teacher':
         _type = TYPE_TEACHER
@@ -93,8 +97,8 @@ def plan(request, plan_type, plan_id, smart="", year=None, calendar_week=None):
     else:
         raise Http404('Plan not found.')
 
-    plan = get_plan(_type, plan_id)
-    print(parse_lesson_times())
+    plan = get_plan(_type, plan_id, smart=smart, monday_of_week=monday_of_week)
+    # print(parse_lesson_times())
 
     context = {
         "smart": smart,
@@ -104,7 +108,7 @@ def plan(request, plan_type, plan_id, smart="", year=None, calendar_week=None):
         "plan": plan,
         "el": el,
         "times": parse_lesson_times(),
-        "weeks": get_calendar_weeks(),
+        "weeks": get_calendar_weeks(year=year),
         "selected_week": calendar_week,
         "selected_year": year
     }
