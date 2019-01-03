@@ -6,6 +6,7 @@ from django.http import Http404, FileResponse
 from django.shortcuts import render
 from django.utils import timezone
 
+from schoolapps.settings import WEEK_DAYS
 from timetable.pdf import generate_class_tex, generate_pdf
 
 from untisconnect.plan import get_plan, TYPE_TEACHER, TYPE_CLASS, TYPE_ROOM, parse_lesson_times
@@ -110,7 +111,8 @@ def plan(request, plan_type, plan_id, smart="", year=timezone.datetime.now().yea
         "times": parse_lesson_times(),
         "weeks": get_calendar_weeks(year=year),
         "selected_week": calendar_week,
-        "selected_year": year
+        "selected_year": year,
+        "week_days": WEEK_DAYS
     }
 
     return render(request, 'timetable/plan.html', context)
