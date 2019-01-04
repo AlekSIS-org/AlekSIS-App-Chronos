@@ -3,6 +3,8 @@ from . import views
 
 urlpatterns = [
     path('', views.all, name='timetable_admin_all'),
+    path('my', views.my_plan, name='timetable_my_plan'),
+    path('my/<int:year>/<int:month>/<int:day>/', views.my_plan, name='timetable_my_plan'),
     path('quick/', views.quicklaunch, name='timetable_quicklaunch'),
     path('<str:plan_type>/<int:plan_id>', views.plan, name='timetable_plan'),
     path('<str:plan_type>/<int:plan_id>/<str:smart>', views.plan, name='timetable_smart_plan'),
