@@ -1,49 +1,8 @@
 {% include 'partials/header.html' %}
 
+
 <script type="text/javascript">
-    function updateDatepicker() {
-        $("#date").val(formatDate(activeDate));
-    }
-
-    function update() {
-        console.log("Render new.");
-
-        updateDatepicker();
-    }
-
-    function loadNew() {
-        window.location.href = "/timetable/substitutions/" + formatDateForDjango(activeDate);
-    }
-
-    function onDateBeforeClick() {
-        activeDate.setDate(activeDate.getDate() - 1);
-        update();
-        loadNew();
-    }
-
-    function onDateNextClick() {
-        activeDate.setDate(activeDate.getDate() + 1);
-        update();
-        loadNew();
-    }
-
-    function onDateChanged() {
-        var str = $("#date").val();
-        var split = str.split(".")
-        activeDate = new Date(split[2], split[1] - 1, split[0]);
-        update();
-        loadNew();
-    }
-
-    var activeDate = new Date({{ date_js }});
-
-    $(document).ready(function () {
-        $("#date-before").click(onDateBeforeClick);
-        $("#date-next").click(onDateNextClick);
-        $("#date").change(onDateChanged);
-
-        update();
-    })
+    var dest = "/timetable/substitutions/";
 </script>
 
 <main>
@@ -51,20 +10,7 @@
 
     <div class="row no-print">
         <div class="col s12 m6 l4 xl3">
-            <div class="col s2">
-                <a class="waves-effect waves-teal btn-flat btn-flat-medium right" id="date-before">
-                    <i class="material-icons center">navigate_before</i>
-                </a>
-
-            </div>
-            <div class="col s8">
-                <input type="text" class="datepicker center-align" id="date">
-            </div>
-            <div class="col s2">
-                <a class="waves-effect waves-teal btn-flat btn-flat-medium left" id="date-next">
-                    <i class="material-icons center">navigate_next</i>
-                </a>
-            </div>
+            {% include "timetable/datepicker.html" %}
         </div>
         <div class="col l4 xl6">
         </div>

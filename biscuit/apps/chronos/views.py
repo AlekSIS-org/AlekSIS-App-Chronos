@@ -85,7 +85,7 @@ def plan(request, plan_type, plan_id, smart="", year=timezone.datetime.now().yea
         smart = False
 
     monday_of_week = get_calendar_week(calendar_week, year)["first_day"]
-    print(monday_of_week)
+    # print(monday_of_week)
 
     if plan_type == 'teacher':
         _type = TYPE_TEACHER
@@ -136,16 +136,16 @@ def my_plan(request, year=None, day=None, month=None):
         shortcode = request.user.username
         el = get_teacher_by_shortcode(shortcode)
         plan_id = el.id
-        print(el)
+        # print(el)
     elif _type == UserInformation.STUDENT:
         _type = TYPE_CLASS
         _name = UserInformation.user_classes(request.user)[0]
-        print(_name)
+        # print(_name)
         el = get_class_by_name(_name)
         plan_id = el.id
     else:
         redirect("timetable_admin_all")
-    print(monday_of_week)
+    # print(monday_of_week)
 
     plan = get_plan(_type, plan_id, smart=True, monday_of_week=monday_of_week)
     # print(parse_lesson_times())
@@ -161,7 +161,7 @@ def my_plan(request, year=None, day=None, month=None):
         "date": date,
         "date_js": int(date.timestamp()) * 1000
     }
-    print(context["week_day"])
+    # print(context["week_day"])
 
     return render(request, 'timetable/myplan.html', context)
 
