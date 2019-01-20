@@ -135,7 +135,9 @@
                 </div>
                 {% for col in row %}
                     {# A lesson #}
-                    {% include "timetable/lesson.html" %}
+                    <div class="col s2">
+                        {% include "timetable/lesson.html" %}
+                    </div>
                 {% endfor %}
             </div>
         {% endfor %}
