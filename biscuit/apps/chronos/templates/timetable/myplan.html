@@ -8,7 +8,7 @@
                 Mein Plan
                 <span class="badge new primary-color ">SMART PLAN</span>
             </h4>
-            <h6>für <em>{{ el }}</em></h6>
+            <h6>{{ el }}</h6>
         </div>
     </div>
 
@@ -21,33 +21,27 @@
             {% include "timetable/datepicker.html" %}
         </div>
     </div>
-    {#    <h5>{{ date|date:"l, j. F Y" }}</h5>#}
     <div class="row">
         <div class="timetable-plan col s12 m12 l6">
 
-            {#  Week days #}
+            {#  Date #}
+
             <div class="row">
-                <div class="col s6">
+                <div class="col s12">
+                    <div class="card timetable-title-card">
+                        <div class="card-content">
+                    <span class="card-title">
+                        {{ date|date:"l, j.n.Y" }}
+                    </span>
+                        </div>
+                    </div>
 
                 </div>
-                {% for week_daye in week_days %}
-                    {% if forloop.counter0 == week_day %}
-                        <div class="col s6">
-                            <div class="card timetable-title-card">
-                                <div class="card-content">
-                    <span class="card-title">
-                        {{ week_daye }}
-                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
             </div>
             {#  Lessons #}
             {% for row, time in plan %}
                 <div class="row">
-                    <div class="col s6">
+                    <div class="col s4">
                         <div class="card timetable-title-card">
                             <div class="card-content">
 
@@ -67,7 +61,7 @@
                     </div>
                     {% for col in row %}
                         {% if forloop.counter0 == week_day %}
-                            <div class="col s6">
+                            <div class="col s8">
                                 {# A lesson #}
                                 {% include "timetable/lesson.html" %}
                             </div>

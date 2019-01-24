@@ -21,8 +21,18 @@
                             {# When it's the old room, let it empty #}
 
                         {% elif element_container.substitution.table.badge %}
-                            {# When a badge (cancellation, etc.) exists, then display it #}
+                            {# When a badge (cancellation, etc.) exists, then display it with the teacher#}
+
+                            {# Class or room > Display teacher #}
+                            {% if type == 2 or type == 1 %}
+                                <span data-position="bottom" class="tooltipped"
+                                      data-tooltip="{{ element_container.element.teacher }}">{{ element_container.element.teacher.shortcode }}</span>
+                                <br>
+                            {% endif %}
+
+                            {# Badge #}
                             <span class="badge new green darken-2">{{ element_container.substitution.table.badge }}</span>
+
 
 
                         {% else %}
