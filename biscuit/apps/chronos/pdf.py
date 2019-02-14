@@ -4,6 +4,8 @@ import subprocess
 from django.utils import timezone
 from django.utils import formats
 
+from schoolapps.settings import BASE_DIR
+
 # LaTeX constants
 
 TEX_HEADER = """\\documentclass[11pt]{article}
@@ -94,7 +96,7 @@ def generate_pdf(tex, filename):
     """Generate a PDF by LaTeX code"""
 
     # Read LaTeX file
-    tex_file = open(os.path.join("latex", filename + ".tex"), "w")
+    tex_file = open(os.path.join(BASE_DIR, "latex", filename + ".tex"), "w")
     tex_file.write(tex)
     tex_file.close()
 

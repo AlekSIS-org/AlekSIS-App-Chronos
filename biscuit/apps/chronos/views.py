@@ -14,6 +14,7 @@ from untisconnect.sub import get_substitutions_by_date, generate_sub_table
 from untisconnect.api import *
 from userinformation import UserInformation
 
+from schoolapps.settings import BASE_DIR
 
 def get_all_context():
     teachers = get_all_teachers()
@@ -196,7 +197,7 @@ def sub_pdf(request):
     generate_pdf(tex, "class")
 
     # Read and response PDF
-    file = open(os.path.join("latex", "class.pdf"), "rb")
+    file = open(os.path.join(BASE_DIR, "latex", "class.pdf"), "rb")
     return FileResponse(file, content_type="application/pdf")
 
 
