@@ -63,7 +63,7 @@ TEX_HEADER = """\\documentclass[11pt]{article}
 \\lhead{\\includegraphics[width=5cm]{static/common/logo.png}}
 \\lfoot{Katharineum zu Lübeck}
 \\cfoot{\\thepage}
-\\rfoot{\\small Umsetzung: © 2018 by Computer-AG}
+\\rfoot{\\small Umsetzung: © 2018--2019 by Computer-AG}
 
 \\begin{document}"""
 
