@@ -70,9 +70,7 @@
 
                         {# Teacher or room > Display classes #}
                         {% if type == 0 or type == 1 %}
-                            {% for class in element_container.element.classes %}
-                                {{ class.name }}
-                            {% endfor %}
+                            {{ element_container.classes_formatted }}
                         {% endif %}
 
                         {# Class or room > Display teacher #}
