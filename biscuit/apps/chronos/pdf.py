@@ -7,6 +7,7 @@ from django.utils import formats
 from schoolapps.settings import BASE_DIR
 
 # LaTeX constants
+from untisconnect.sub import get_header_information
 
 TEX_HEADER = """\\documentclass[11pt]{article}
 \\usepackage[ngerman]{babel}
@@ -28,17 +29,6 @@ TEX_HEADER = """\\documentclass[11pt]{article}
   {\\bgroup}
   {\\bgroup\def\\ULthickness{1.5pt}}
   {}{}
-  
-\\usepackage[framemethod=tikz]{mdframed}
-\\newmdenv[
-  roundcorner=5pt,
-  backgroundcolor=green,
-  linecolor=green,
-  skipabove=0pt,
-  skipbelow=0pt,
-  leftmargin=0pt,
-  rightmargin=0pt
-]{badges}
 
 \\usepackage{tcolorbox}
 \\newtcbox{\\badge}{nobeforeafter,colframe=green,colback=green,boxrule=0.5pt,arc=4pt,
@@ -91,6 +81,26 @@ TEX_HEADER_CLASS = """
 \\section*{\\Huge Vertretungen %s}
 \n"""
 
+TEX_HEADER_BOX_START = """
+\\fbox{\\parbox{0.27\\linewidth}{
+"""
+
+TEX_HEADER_BOX_MIDDLE = """
+}\\parbox{0.73\\linewidth}{
+"""
+
+TEX_HEADER_BOX_END = """
+}} \n\n
+"""
+
+TEX_HEADER_BOX_ROW_A = """
+\\textbf{%s} 
+"""
+
+TEX_HEADER_BOX_ROW_B = """
+%s 
+"""
+
 
 def generate_pdf(tex, filename):
     """Generate a PDF by LaTeX code"""
@@ -123,8 +133,9 @@ def tex_replacer(s):
     return s
 
 
-def generate_class_tex(subs, date):
+def generate_class_tex(subs, date, header_info):
     """Generate LaTeX for a PDF by a substitution table"""
+
     tex_body = ""
 
     # Format dates
@@ -135,12 +146,26 @@ def generate_class_tex(subs, date):
     # Generate header with dates
     tex_body += TEX_HEADER_CLASS % (status_date, current_date, head_date)
 
+    if header_info.is_box_needed():
+        tex_body += TEX_HEADER_BOX_START
+        for row in header_info.rows:
+            tex_body += TEX_HEADER_BOX_ROW_A % row[0]
+        tex_body += TEX_HEADER_BOX_MIDDLE
+        for row in header_info.rows:
+            tex_body += TEX_HEADER_BOX_ROW_B % row[1]
+        tex_body += TEX_HEADER_BOX_END
     # Begin table
     tex_body += TEX_TABLE_HEADER_CLASS
 
     color_background = True
+    last_classes = ""
     for sub in subs:
-        # Color every second row in grey
+        # Color groups of classes in grey/white
+        if last_classes != sub.classes:
+            color_background = not color_background
+
+        last_classes = sub.classes
+
         if color_background:
             tex_body += '\\rowcolor{grey}'
 
@@ -148,6 +173,7 @@ def generate_class_tex(subs, date):
         color = "\color{%s}" % sub.color
 
         # Print classes
+        print(sub.classes)
         tex_body += color
         tex_body += '\\textbf{' + sub.classes + '} & '
 
@@ -164,8 +190,6 @@ def generate_class_tex(subs, date):
         tex_body += color
         tex_body += "\\Large\\textit{%s}\\\\\n" % (sub.text or "")
 
-        # Change background
-        color_background = not color_background
     # End table
     tex_body += '\\end{longtable}'
 

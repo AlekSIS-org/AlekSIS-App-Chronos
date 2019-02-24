@@ -10,11 +10,12 @@ from schoolapps.settings import WEEK_DAYS
 from timetable.pdf import generate_class_tex, generate_pdf
 
 from untisconnect.plan import get_plan, TYPE_TEACHER, TYPE_CLASS, TYPE_ROOM, parse_lesson_times
-from untisconnect.sub import get_substitutions_by_date, generate_sub_table
+from untisconnect.sub import get_substitutions_by_date, generate_sub_table, get_header_information
 from untisconnect.api import *
 from userinformation import UserInformation
 
 from schoolapps.settings import BASE_DIR
+
 
 def get_all_context():
     teachers = get_all_teachers()
@@ -189,9 +190,11 @@ def sub_pdf(request):
     # Get subs and generate table
     subs = get_substitutions_by_date(first_day)
     sub_table = generate_sub_table(subs)
+    header_info = get_header_information(subs)
+    print(header_info.affected_teachers)
 
     # Generate LaTeX
-    tex = generate_class_tex(sub_table, first_day)
+    tex = generate_class_tex(sub_table, first_day, header_info)
 
     # Generate PDF
     generate_pdf(tex, "class")
