@@ -127,6 +127,12 @@ def my_plan(request, year=None, day=None, month=None):
     date = timezone.datetime.now()
     if year is not None and day is not None and month is not None:
         date = timezone.datetime(year=year, month=month, day=day)
+        next_weekday = get_next_weekday(date)
+        if next_weekday != date:
+            print("Hi")
+            return redirect("timetable_my_plan", next_weekday.year, next_weekday.month, next_weekday.day)
+        print(date)
+        print(get_next_weekday(date))
 
     calendar_week = date.isocalendar()[1]
     monday_of_week = get_calendar_week(calendar_week, date.year)["first_day"]
@@ -161,7 +167,8 @@ def my_plan(request, year=None, day=None, month=None):
         "week_day": date.isoweekday() - 1,
         "week_days": WEEK_DAYS,
         "date": date,
-        "date_js": int(date.timestamp()) * 1000
+        "date_js": int(date.timestamp()) * 1000,
+        "display_date_only": True
     }
     # print(context["week_day"])
 
@@ -191,7 +198,7 @@ def sub_pdf(request):
     subs = get_substitutions_by_date(first_day)
     sub_table = generate_sub_table(subs)
     header_info = get_header_information(subs)
-    print(header_info.affected_teachers)
+    # print(header_info.affected_teachers)
 
     # Generate LaTeX
     tex = generate_class_tex(sub_table, first_day, header_info)

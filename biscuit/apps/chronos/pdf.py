@@ -173,7 +173,7 @@ def generate_class_tex(subs, date, header_info):
         color = "\color{%s}" % sub.color
 
         # Print classes
-        print(sub.classes)
+        # print(sub.classes)
         tex_body += color
         tex_body += '\\textbf{' + sub.classes + '} & '
 
