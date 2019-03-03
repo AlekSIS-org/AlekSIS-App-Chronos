@@ -79,12 +79,12 @@ def get_calendar_week(calendar_week, year=timezone.datetime.now().year):
 
 @login_required
 @permission_required("timetable.show_plan")
-def plan(request, plan_type, plan_id, smart="", year=timezone.datetime.now().year,
+def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().year,
          calendar_week=timezone.datetime.now().isocalendar()[1]):
-    if smart == "smart":
-        smart = True
-    else:
+    if regular == "regular":
         smart = False
+    else:
+        smart = True
 
     monday_of_week = get_calendar_week(calendar_week, year)["first_day"]
     # print(monday_of_week)
@@ -127,12 +127,11 @@ def my_plan(request, year=None, day=None, month=None):
     date = timezone.datetime.now()
     if year is not None and day is not None and month is not None:
         date = timezone.datetime(year=year, month=month, day=day)
-        next_weekday = get_next_weekday(date)
-        if next_weekday != date:
-            print("Hi")
-            return redirect("timetable_my_plan", next_weekday.year, next_weekday.month, next_weekday.day)
-        print(date)
-        print(get_next_weekday(date))
+
+    # Get next weekday if it is a weekend
+    next_weekday = get_next_weekday(date)
+    if next_weekday != date:
+        return redirect("timetable_my_plan", next_weekday.year, next_weekday.month, next_weekday.day)
 
     calendar_week = date.isocalendar()[1]
     monday_of_week = get_calendar_week(calendar_week, date.year)["first_day"]
