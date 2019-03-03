@@ -39,12 +39,12 @@
         {% for sub in sub_table %}
             <tr class="{{ sub.css_class }}">
                 <td>
+                    {{ sub.classes }}
+                </td>
+                <td>
                     <strong>
                         {{ sub.lesson }}
                     </strong>
-                </td>
-                <td>
-                    {{ sub.classes }}
                 </td>
                 <td>
                     <span class="tooltipped" data-position="bottom"
