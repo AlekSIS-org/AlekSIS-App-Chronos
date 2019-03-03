@@ -61,17 +61,15 @@ TEX_FOOTER = '\end{document}'
 
 TEX_TABLE_HEADER_CLASS = """
 \def\\arraystretch{1.5}
-\\begin{longtable}{p{20mm}p{10mm}p{32mm}p{25mm}p{30mm}p{35mm}}
-%\\arrayrulecolor{black}
-
-%\\hline\n
-%\\rowcolor{darkgrey}
+\\begin{longtable}{p{20mm}p{8mm}p{32mm}p{25mm}p{30mm}p{45mm}}
 \\textbf{Klassen} & 
 \\textbf{Std.} & 
 \\textbf{Lehrer} & 
 \\textbf{Fach} & 
 \\textbf{Raum} & 
-\\textbf{Hinweis}\\\\\\hline
+\\textbf{Hinweis}\\\\
+\\hline
+\\endhead
 """
 
 TEX_HEADER_CLASS = """
