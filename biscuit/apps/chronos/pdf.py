@@ -9,7 +9,8 @@ from schoolapps.settings import BASE_DIR
 # LaTeX constants
 from untisconnect.sub import get_header_information
 
-TEX_HEADER = """\\documentclass[11pt]{article}
+DIR = os.path.join(BASE_DIR, "static", "common", "logo.png")
+TEX_HEADER_1 = """\\documentclass[11pt]{article}
 \\usepackage[ngerman]{babel}
 \\usepackage[sfdefault]{cabin}
 \\usepackage[utf8]{inputenc}
@@ -50,12 +51,15 @@ TEX_HEADER = """\\documentclass[11pt]{article}
 \\pagestyle{fancy}
 %\\renewcommand{\\sectionmark}[1]{#1}
 %\\lhead{\\rightmark}
-\\lhead{\\includegraphics[width=5cm]{static/common/logo.png}}
+\\lhead{\\includegraphics[width=5cm]{"""
+
+TEX_HEADER_2 = """}}
 \\lfoot{Katharineum zu Lübeck}
 \\cfoot{\\thepage}
 \\rfoot{\\small Umsetzung: © 2018--2019 by Computer-AG}
 
 \\begin{document}"""
+TEX_HEADER = TEX_HEADER_1 + DIR + TEX_HEADER_2
 
 TEX_FOOTER = '\end{document}'
 
@@ -102,7 +106,7 @@ TEX_HEADER_BOX_ROW_B = """
 
 def generate_pdf(tex, filename):
     """Generate a PDF by LaTeX code"""
-
+    print(tex)
     # Read LaTeX file
     tex_file = open(os.path.join(BASE_DIR, "latex", filename + ".tex"), "w")
     tex_file.write(tex)
