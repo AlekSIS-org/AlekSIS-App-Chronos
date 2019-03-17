@@ -185,16 +185,24 @@ def sub_pdf(request):
 
     # Get the next weekday
     today = timezone.datetime.now()
-    first_day = get_next_weekday(today)
+    date = get_next_weekday(today)
+
 
     # Get subs and generate table
-    subs = get_substitutions_by_date(first_day)
+    subs = get_substitutions_by_date(date)
     sub_table = generate_sub_table(subs)
-    header_info = get_header_information(subs)
+    header_info = get_header_information(subs, date)
     print(header_info.affected_teachers)
 
+    # print("HI")
+    # print(absences, len(absences))
+    # for absence in absences:
+    #     print(absence.from_date)
+    #     print(absence.to_date)
+    #     print(absence.teacher, "\n")
+    #
     # Generate LaTeX
-    tex = generate_class_tex(sub_table, first_day, header_info)
+    tex = generate_class_tex(sub_table, date, header_info)
 
     # Generate PDF
     generate_pdf(tex, "class")
