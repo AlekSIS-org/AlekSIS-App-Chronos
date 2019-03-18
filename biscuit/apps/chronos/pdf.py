@@ -16,13 +16,12 @@ TEX_HEADER_1 = """\\documentclass[11pt]{article}
 \\usepackage[utf8]{inputenc}
 \\usepackage[a4paper,left=1cm,right=1cm,top=2cm,bottom=2cm,bindingoffset=0mm]{geometry}
 
+% Packages
 \\usepackage{fancyhdr}
 \\usepackage{graphicx}
-
 \\usepackage{longtable}
 \\usepackage{multirow}
 \\usepackage{color, colortbl}
-
 \\usepackage{geometry}
 
 \\usepackage{ulem, xpatch}
@@ -31,6 +30,7 @@ TEX_HEADER_1 = """\\documentclass[11pt]{article}
   {\\bgroup\def\\ULthickness{1.5pt}}
   {}{}
 
+% Badge box
 \\usepackage{tcolorbox}
 \\newtcbox{\\badge}{nobeforeafter,colframe=green,colback=green,boxrule=0.5pt,arc=4pt,
   boxsep=0pt,left=5pt,right=5pt,top=5pt,bottom=5pt,tcbox raise base,
@@ -39,21 +39,19 @@ TEX_HEADER_1 = """\\documentclass[11pt]{article}
   enlarge top by=3pt,
   enlarge bottom by=3pt,coltext=white}
 
-  
-%\\usepackage{helvet} %Helvetica als Standardschriftart
-%\\renewcommand{\\familydefault}{\\sfdefault} %Helvetica als Standardschriftart
-
+% Define colors
 \\definecolor{grey}{RGB}{208, 208, 208}
 \\definecolor{darkgrey}{rgb}{0.6,0.6,0.6}
 \\definecolor{white}{rgb}{1,1,1}
 \\definecolor{green}{RGB}{76,175,80}
 
+% Define header
 \\pagestyle{fancy}
-%\\renewcommand{\\sectionmark}[1]{#1}
-%\\lhead{\\rightmark}
+% Left header: logo
 \\lhead{\\includegraphics[width=5cm]{"""
 
 TEX_HEADER_2 = """}}
+% Define footer
 \\lfoot{Katharineum zu Lübeck}
 \\cfoot{\\thepage}
 \\rfoot{\\small Umsetzung: © 2018--2019 by Computer-AG}
@@ -64,6 +62,7 @@ TEX_HEADER = TEX_HEADER_1 + DIR + TEX_HEADER_2
 TEX_FOOTER = '\end{document}'
 
 TEX_TABLE_HEADER_CLASS = """
+% Init table
 \def\\arraystretch{1.5}
 \\begin{longtable}{p{20mm}p{8mm}p{32mm}p{25mm}p{30mm}p{45mm}}
 \\textbf{Klassen} & 
