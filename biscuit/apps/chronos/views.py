@@ -1,6 +1,7 @@
 import datetime
 import os
 
+from PyPDF2 import PdfFileMerger
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404, FileResponse
 from django.shortcuts import render, redirect
@@ -192,18 +193,34 @@ def sub_pdf(request):
     # Get the next weekday
     today = timezone.datetime.now()
     first_day = get_next_weekday(today)
+    second_day = get_next_weekday(today + datetime.timedelta(days=1))
+    print(second_day)
 
     # Get subs and generate table
-    subs = get_substitutions_by_date(first_day)
-    sub_table = generate_sub_table(subs)
-    header_info = get_header_information(subs)
-    # print(header_info.affected_teachers)
+    for i, day in enumerate([first_day, second_day]):
+        print(i, day)
+        subs = get_substitutions_by_date(day)
+        sub_table = generate_sub_table(subs)
+        header_info = get_header_information(subs)
+        # print(header_info.affected_teachers)
 
-    # Generate LaTeX
-    tex = generate_class_tex(sub_table, first_day, header_info)
+        # Generate LaTeX
+        tex = generate_class_tex(sub_table, day, header_info)
 
-    # Generate PDF
-    generate_pdf(tex, "class")
+        # Generate PDF
+        generate_pdf(tex, "class{}".format(i))
+
+    # Merge PDFs
+    merger = PdfFileMerger()
+    class0 = open(os.path.join(BASE_DIR, "latex", "class0.pdf"), "rb")
+    class1 = open(os.path.join(BASE_DIR, "latex", "class1.pdf"), "rb")
+    merger.append(fileobj=class0)
+    merger.append(fileobj=class1)
+
+    # Write merged PDF to class.pdf
+    output = open(os.path.join(BASE_DIR, "latex", "class.pdf"), "wb")
+    merger.write(output)
+    output.close()
 
     # Read and response PDF
     file = open(os.path.join(BASE_DIR, "latex", "class.pdf"), "rb")
