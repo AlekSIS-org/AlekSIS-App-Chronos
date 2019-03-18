@@ -115,8 +115,10 @@ def generate_pdf(tex, filename):
     # Execute pdflatex to generate the PDF
     bash_command = "pdflatex -output-directory {} {}.tex".format(os.path.join(BASE_DIR, "latex"),
                                                                  os.path.join(BASE_DIR, "latex", filename))
+    print(bash_command)
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
     output = process.communicate()[0]
+    print(output)
 
 
 def tex_replacer(s):
