@@ -9,7 +9,7 @@
                 {% for teacher in teachers %}
                     <li class="collection-item avatar">
                         <i class="circle">{{ teacher.shortcode }}</i><!-- Shortcode -->
-                        <a href="{% url 'timetable_plan' 'teacher' teacher.id %}">{{ teacher.first_name }}
+                        <a href="{% url 'timetable_smart_plan' 'teacher' teacher.id %}">{{ teacher.first_name }}
                             <strong>{{ teacher.name }}</strong></a>
                     </li>
                 {% endfor %}
@@ -22,7 +22,7 @@
                 {% for class in classes %}
                     <li class="collection-item avatar">
                         <i class="circle">{{ class.name }}</i>
-                        <a href="{% url 'timetable_plan' 'class' class.id %}"><strong>{{ class.name }}</strong></a>
+                        <a href="{% url 'timetable_smart_plan' 'class' class.id %}"><strong>{{ class.name }}</strong></a>
                         <p>
                             {{ class.text1|default:"" }} – {{ class.text2|default:"" }} <br>
                             Raum: {{ class.room.name|default:"---" }}
@@ -38,7 +38,7 @@
                 {% for room in rooms %}
                     <li class="collection-item avatar">
                         <i class="circle">{{ room.shortcode }}</i>
-                        <a href="{% url 'timetable_plan' 'room' room.id %}"><strong>{{ room.name }}</strong></a>
+                        <a href="{% url 'timetable_smart_plan' 'room' room.id %}"><strong>{{ room.name }}</strong></a>
                     </li>
                 {% endfor %}
             </ul>

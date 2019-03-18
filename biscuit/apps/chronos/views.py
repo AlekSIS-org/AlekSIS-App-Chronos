@@ -10,11 +10,12 @@ from schoolapps.settings import WEEK_DAYS
 from timetable.pdf import generate_class_tex, generate_pdf
 
 from untisconnect.plan import get_plan, TYPE_TEACHER, TYPE_CLASS, TYPE_ROOM, parse_lesson_times
-from untisconnect.sub import get_substitutions_by_date, generate_sub_table
+from untisconnect.sub import get_substitutions_by_date, generate_sub_table, get_header_information
 from untisconnect.api import *
 from userinformation import UserInformation
 
 from schoolapps.settings import BASE_DIR
+
 
 def get_all_context():
     teachers = get_all_teachers()
@@ -78,12 +79,12 @@ def get_calendar_week(calendar_week, year=timezone.datetime.now().year):
 
 @login_required
 @permission_required("timetable.show_plan")
-def plan(request, plan_type, plan_id, smart="", year=timezone.datetime.now().year,
+def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().year,
          calendar_week=timezone.datetime.now().isocalendar()[1]):
-    if smart == "smart":
-        smart = True
-    else:
+    if regular == "regular":
         smart = False
+    else:
+        smart = True
 
     monday_of_week = get_calendar_week(calendar_week, year)["first_day"]
     # print(monday_of_week)
@@ -127,6 +128,11 @@ def my_plan(request, year=None, day=None, month=None):
     if year is not None and day is not None and month is not None:
         date = timezone.datetime(year=year, month=month, day=day)
 
+    # Get next weekday if it is a weekend
+    next_weekday = get_next_weekday(date)
+    if next_weekday != date:
+        return redirect("timetable_my_plan", next_weekday.year, next_weekday.month, next_weekday.day)
+
     calendar_week = date.isocalendar()[1]
     monday_of_week = get_calendar_week(calendar_week, date.year)["first_day"]
 
@@ -160,7 +166,8 @@ def my_plan(request, year=None, day=None, month=None):
         "week_day": date.isoweekday() - 1,
         "week_days": WEEK_DAYS,
         "date": date,
-        "date_js": int(date.timestamp()) * 1000
+        "date_js": int(date.timestamp()) * 1000,
+        "display_date_only": True
     }
     # print(context["week_day"])
 
@@ -189,9 +196,11 @@ def sub_pdf(request):
     # Get subs and generate table
     subs = get_substitutions_by_date(first_day)
     sub_table = generate_sub_table(subs)
+    header_info = get_header_information(subs)
+    # print(header_info.affected_teachers)
 
     # Generate LaTeX
-    tex = generate_class_tex(sub_table, first_day)
+    tex = generate_class_tex(sub_table, first_day, header_info)
 
     # Generate PDF
     generate_pdf(tex, "class")

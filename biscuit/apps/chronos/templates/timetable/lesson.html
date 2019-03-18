@@ -26,7 +26,8 @@
                             {# Class or room > Display teacher #}
                             {% if type == 2 or type == 1 %}
                                 <span data-position="bottom" class="tooltipped"
-                                      data-tooltip="{{ element_container.element.teacher }}">{{ element_container.element.teacher.shortcode }}</span>
+                                      data-tooltip="{{ element_container.element.teacher }}"><a
+                                        href="{% url "timetable_smart_plan" "teacher" element_container.element.teacher.id %}">{{ element_container.element.teacher.shortcode }}</a></span>
                                 <br>
                             {% endif %}
 
@@ -70,15 +71,22 @@
 
                         {# Teacher or room > Display classes #}
                         {% if type == 0 or type == 1 %}
-                            {% for class in element_container.element.classes %}
-                                {{ class.name }}
-                            {% endfor %}
+                            {#                            {{ element_container.element.classes }}#}
+                            {% if element_container.element.classes %}
+                                <a href="{% url "timetable_smart_plan" "class" element_container.element.classes.0.id %}">
+                                    {{ element_container.classes_formatted }}
+                                </a>
+                            {% endif %}
                         {% endif %}
 
                         {# Class or room > Display teacher #}
                         {% if type == 2 or type == 1 %}
                             <span data-position="bottom" class="tooltipped"
-                                  data-tooltip="{{ element_container.element.teacher }}">{{ element_container.element.teacher.shortcode }}</span>
+                                  data-tooltip="{{ element_container.element.teacher }}">
+                                <a href="{% url "timetable_smart_plan" "teacher" element_container.element.teacher.id %}">
+                                    {{ element_container.element.teacher.shortcode }}
+                                </a>
+                            </span>
                         {% endif %}
 
                         {# Display subject #}
@@ -87,7 +95,13 @@
                         {# Teacher or class > Display room #}
                         {% if type == 0 or type == 2 %}
                             <span class="tooltipped" data-position="bottom"
-                                  data-tooltip="{{ element_container.room.name }}">{{ element_container.room.shortcode }}</span>
+                                  data-tooltip="{{ element_container.room.name }}">
+                            {% if element_container.room %}
+                                <a href="{% url "timetable_smart_plan" "room" element_container.room.id %}">
+                                    {{ element_container.room.shortcode }}
+                                </a>
+                            {% endif %}
+                            </span>
                         {% endif %}
                     {% endif %}
                 </p>
