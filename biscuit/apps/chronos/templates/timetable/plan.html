@@ -3,7 +3,7 @@
     {% if smart %}
         var week = {{ selected_week }};
         function goToCalendarWeek(cw) {
-            window.location.href = "{% url "timetable_smart_plan" raw_type id "smart" %}/{{ selected_year }}/" + cw;
+            window.location.href = "{% url "timetable_smart_plan" raw_type id %}/{{ selected_year }}/" + cw;
         }
         function onCalendarWeekChanged() {
             goToCalendarWeek($("#calendar-week").val(), {{ selected_year }});
@@ -53,7 +53,8 @@
                         class="badge new primary-color left-align">SMART PLAN</span>
                 </p>&nbsp;
 
-                <a class="waves-effect waves-light btn-flat no-print" href="{% url "timetable_plan" raw_type id %}">
+                <a class="waves-effect waves-light btn-flat no-print"
+                   href="{% url "timetable_regular_plan" raw_type id "regular" %}">
                     <i class="material-icons left">slideshow</i>
                     Regelplan anzeigen
                 </a>
@@ -86,7 +87,7 @@
         {% else %}
             {# Show if regular #}
             <a class="waves-effect waves-light btn-flat no-print"
-               href="{% url "timetable_smart_plan" raw_type id "smart" %}">
+               href="{% url "timetable_smart_plan" raw_type id %}">
                 <i class="material-icons left">slideshow</i>
                 SMART PLAN ANZEIGEN
             </a>

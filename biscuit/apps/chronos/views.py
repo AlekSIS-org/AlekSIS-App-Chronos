@@ -1,6 +1,7 @@
 import datetime
 import os
 
+from PyPDF2 import PdfFileMerger
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404, FileResponse
 from django.shortcuts import render, redirect
@@ -79,12 +80,12 @@ def get_calendar_week(calendar_week, year=timezone.datetime.now().year):
 
 @login_required
 @permission_required("timetable.show_plan")
-def plan(request, plan_type, plan_id, smart="", year=timezone.datetime.now().year,
+def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().year,
          calendar_week=timezone.datetime.now().isocalendar()[1]):
-    if smart == "smart":
-        smart = True
-    else:
+    if regular == "regular":
         smart = False
+    else:
+        smart = True
 
     monday_of_week = get_calendar_week(calendar_week, year)["first_day"]
     # print(monday_of_week)
@@ -128,6 +129,11 @@ def my_plan(request, year=None, day=None, month=None):
     if year is not None and day is not None and month is not None:
         date = timezone.datetime(year=year, month=month, day=day)
 
+    # Get next weekday if it is a weekend
+    next_weekday = get_next_weekday(date)
+    if next_weekday != date:
+        return redirect("timetable_my_plan", next_weekday.year, next_weekday.month, next_weekday.day)
+
     calendar_week = date.isocalendar()[1]
     monday_of_week = get_calendar_week(calendar_week, date.year)["first_day"]
 
@@ -161,7 +167,8 @@ def my_plan(request, year=None, day=None, month=None):
         "week_day": date.isoweekday() - 1,
         "week_days": WEEK_DAYS,
         "date": date,
-        "date_js": int(date.timestamp()) * 1000
+        "date_js": int(date.timestamp()) * 1000,
+        "display_date_only": True
     }
     # print(context["week_day"])
 
@@ -185,27 +192,34 @@ def sub_pdf(request):
 
     # Get the next weekday
     today = timezone.datetime.now()
-    date = get_next_weekday(today)
 
+    first_day = get_next_weekday(today)
+    second_day = get_next_weekday(today + datetime.timedelta(days=1))
 
     # Get subs and generate table
-    subs = get_substitutions_by_date(date)
-    sub_table = generate_sub_table(subs)
-    header_info = get_header_information(subs, date)
-    print(header_info.affected_teachers)
+    for i, date in enumerate([first_day, second_day]):
+        # Get subs and generate table
+        subs = get_substitutions_by_date(date)
+        sub_table = generate_sub_table(subs)
+        header_info = get_header_information(subs, date)
+        
+        # Generate LaTeX
+        tex = generate_class_tex(sub_table, date, header_info)
 
-    # print("HI")
-    # print(absences, len(absences))
-    # for absence in absences:
-    #     print(absence.from_date)
-    #     print(absence.to_date)
-    #     print(absence.teacher, "\n")
-    #
-    # Generate LaTeX
-    tex = generate_class_tex(sub_table, date, header_info)
+        # Generate PDF
+        generate_pdf(tex, "class{}".format(i))
 
-    # Generate PDF
-    generate_pdf(tex, "class")
+    # Merge PDFs
+    merger = PdfFileMerger()
+    class0 = open(os.path.join(BASE_DIR, "latex", "class0.pdf"), "rb")
+    class1 = open(os.path.join(BASE_DIR, "latex", "class1.pdf"), "rb")
+    merger.append(fileobj=class0)
+    merger.append(fileobj=class1)
+
+    # Write merged PDF to class.pdf
+    output = open(os.path.join(BASE_DIR, "latex", "class.pdf"), "wb")
+    merger.write(output)
+    output.close()
 
     # Read and response PDF
     file = open(os.path.join(BASE_DIR, "latex", "class.pdf"), "rb")
