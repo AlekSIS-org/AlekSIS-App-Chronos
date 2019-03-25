@@ -38,6 +38,7 @@
 
         </div>
         {% if not request.user_agent.is_mobile %}
+            {# Show print button not in same row as smart plan if user is not on mobile #}
         <div class=" col s12 m6 l4 xl3 right align-right no-print">
             <a class="waves-effect waves-teal btn-flat btn-flat-medium right" id="print">
                 <i class="material-icons center">print</i>
@@ -61,6 +62,7 @@
                     Regelplan anzeigen
                 </a>
                 {% if request.user_agent.is_mobile %}
+                    {# Show print button in same row as smart plan if user is on mobile #}
                 <a class="waves-effect waves-teal btn-flat btn-flat-medium right" id="print">
                     <i class="material-icons center">print</i>
                 </a>
