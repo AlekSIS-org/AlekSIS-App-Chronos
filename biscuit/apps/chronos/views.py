@@ -193,20 +193,19 @@ def sub_pdf(request):
 
     # Get the next weekday
     today = timezone.datetime.now()
+
     first_day = get_next_weekday(today)
     second_day = get_next_weekday(today + datetime.timedelta(days=1))
-    print(second_day)
 
     # Get subs and generate table
-    for i, day in enumerate([first_day, second_day]):
-        print(i, day)
-        subs = get_substitutions_by_date(day)
+    for i, date in enumerate([first_day, second_day]):
+        # Get subs and generate table
+        subs = get_substitutions_by_date(date)
         sub_table = generate_sub_table(subs)
-        header_info = get_header_information(subs)
-        # print(header_info.affected_teachers)
-
+        header_info = get_header_information(subs, date)
+        
         # Generate LaTeX
-        tex = generate_class_tex(sub_table, day, header_info)
+        tex = generate_class_tex(sub_table, date, header_info)
 
         # Generate PDF
         generate_pdf(tex, "class{}".format(i))
