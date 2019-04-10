@@ -93,11 +93,20 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="input-field col s8 no-margin hide-on-small-and-down">
+                <div class="input-field col s8 no-margin hide-on-med-and-down">
                     <select id="calendar-week">
                         {% for week in weeks %}
                             <option value="{{ week.calendar_week }}" {% if week.calendar_week == selected_week %}
                                     selected {% endif %}> KW {{ week.calendar_week }} ({{ week.first_day|date:"j.n.Y" }}–{{ week.last_day|date:"j.n.Y" }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="input-field col s8 no-margin hide-on-small-and-down hide-on-large-only">
+                    <select id="calendar-week">
+                        {% for week in weeks %}
+                            <option value="{{ week.calendar_week }}" {% if week.calendar_week == selected_week %}
+                                    selected {% endif %}> KW {{ week.calendar_week }} ({{ week.first_day|date:"j.n" }}–{{ week.last_day|date:"j.n.Y" }})
                             </option>
                         {% endfor %}
                     </select>
@@ -182,6 +191,7 @@
             </div>
         {% endfor %}
     </div>
+
     {# show 5 seperate ones on mobiles #}
     <div class="timetable-plan hide-on-med-and-up">
         {% for long_week_day in long_week_days %}
