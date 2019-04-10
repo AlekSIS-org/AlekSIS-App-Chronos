@@ -25,10 +25,12 @@
 
                             {# Class or room > Display teacher #}
                             {% if type == 2 or type == 1 %}
+                                {% if element_container.element.teacher %}
                                 <span data-position="bottom" class="tooltipped"
                                       data-tooltip="{{ element_container.element.teacher }}"><a
                                         href="{% url "timetable_smart_plan" "teacher" element_container.element.teacher.id %}">{{ element_container.element.teacher.shortcode }}</a></span>
                                 <br>
+                                {% endif %}
                             {% endif %}
 
                             {# Badge #}
@@ -81,12 +83,14 @@
 
                         {# Class or room > Display teacher #}
                         {% if type == 2 or type == 1 %}
+                            {% if element_container.element.teacher %}
                             <span data-position="bottom" class="tooltipped"
                                   data-tooltip="{{ element_container.element.teacher }}">
                                 <a href="{% url "timetable_smart_plan" "teacher" element_container.element.teacher.id %}">
                                     {{ element_container.element.teacher.shortcode }}
                                 </a>
                             </span>
+                            {% endif %}
                         {% endif %}
 
                         {# Display subject #}
