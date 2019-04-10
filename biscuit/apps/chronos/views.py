@@ -144,6 +144,7 @@ def my_plan(request, year=None, day=None, month=None):
         shortcode = request.user.username
         el = get_teacher_by_shortcode(shortcode)
         plan_id = el.id
+        raw_type = "teacher"
         # print(el)
     elif _type == UserInformation.STUDENT:
         _type = TYPE_CLASS
@@ -151,8 +152,9 @@ def my_plan(request, year=None, day=None, month=None):
         # print(_name)
         el = get_class_by_name(_name)
         plan_id = el.id
+        raw_type = "class"
     else:
-        redirect("timetable_admin_all")
+        return redirect("timetable_admin_all")
     # print(monday_of_week)
 
     plan = get_plan(_type, plan_id, smart=True, monday_of_week=monday_of_week)
@@ -160,6 +162,7 @@ def my_plan(request, year=None, day=None, month=None):
 
     context = {
         "type": _type,
+        "raw_type": raw_type,
         "id": plan_id,
         "plan": plan,
         "el": el,

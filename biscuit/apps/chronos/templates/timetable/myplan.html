@@ -5,10 +5,11 @@
     <div class="row nomargin">
         <div class="col m12 s12 l6">
             <h4>
-                Mein Plan
+                Mein Plan <i>{{ el }}</i>
                 <span class="badge new primary-color ">SMART PLAN</span>
             </h4>
-            <h6>{{ el }}</h6>
+            <a class="btn-flat waves-effect waves-light" href="{% url "timetable_smart_plan"  raw_type id %}">Wochenplan
+                anzeigen</a>
         </div>
     </div>
 
