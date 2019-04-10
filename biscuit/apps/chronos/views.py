@@ -17,7 +17,7 @@ from userinformation import UserInformation
 
 from schoolapps.settings import BASE_DIR
 
-
+from .models import Hint
 def get_all_context():
     teachers = get_all_teachers()
     classes = get_all_classes()
