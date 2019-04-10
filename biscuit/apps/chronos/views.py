@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 
 from schoolapps.settings import WEEK_DAYS
+from timetable.forms import HintForm
 from timetable.pdf import generate_class_tex, generate_pdf
 
 from untisconnect.plan import get_plan, TYPE_TEACHER, TYPE_CLASS, TYPE_ROOM, parse_lesson_times
@@ -18,6 +19,8 @@ from userinformation import UserInformation
 from schoolapps.settings import BASE_DIR
 
 from .models import Hint
+
+
 def get_all_context():
     teachers = get_all_teachers()
     classes = get_all_classes()
@@ -205,7 +208,7 @@ def sub_pdf(request):
         subs = get_substitutions_by_date(date)
         sub_table = generate_sub_table(subs)
         header_info = get_header_information(subs, date)
-        
+
         # Generate LaTeX
         tex = generate_class_tex(sub_table, date, header_info)
 
@@ -250,3 +253,23 @@ def substitutions(request, year=None, day=None, month=None):
     }
 
     return render(request, 'timetable/substitution.html', context)
+
+
+@login_required
+@permission_required("timetable.can_view_hint")
+def hints(request):
+    return render(request, "timetable/hints.html")
+
+
+@login_required
+@permission_required('timetable.can_add_hint')
+def add_hint(request):
+    if request.method == 'POST':
+        form = HintForm(request.POST)
+
+        if form.is_valid():
+            return redirect('aub_applied_for')
+    else:
+        form = HintForm()
+
+    return render(request, 'timetable/addhint.html', {'form': form, "martor": True})

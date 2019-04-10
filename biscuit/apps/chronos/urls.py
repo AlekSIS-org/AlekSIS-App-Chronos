@@ -13,5 +13,7 @@ urlpatterns = [
          name='timetable_smart_plan_week'),
     path('substitutions/', views.substitutions, name='timetable_substitutions'),
     path('substitutions/<int:year>/<int:month>/<int:day>/', views.substitutions, name='timetable_substitutions_date'),
-    path('class.pdf', views.sub_pdf, name="timetable_substitutions_pdf")
+    path('class.pdf', views.sub_pdf, name="timetable_substitutions_pdf"),
+    path('hints', views.hints, name="timetable_hints"),
+    path('hints/add', views.add_hint, name="timetable_add_hint"),
 ]

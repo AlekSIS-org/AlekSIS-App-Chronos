@@ -1,0 +1,64 @@
+{% include 'partials/header.html' %}
+
+<main>
+    <h4>Hinweise</h4>
+
+    <a href="{% url 'timetable_add_hint' %}" class="waves-effect waves-light btn green">
+        <i class="material-icons left">add</i>
+        Neuen Hinweis erstellen
+    </a>
+
+
+    {#    <form method="GET">#}
+    {#        {{ filter.form.as_p }}#}
+    {#        <button type="submit" class="waves-effect waves-light btn">#}
+    {#            <i class="material-icons left">refresh</i> Filter aktualisieren#}
+    {#        </button>#}
+    {#    </form>#}
+
+    <ul class="collection">
+        {% for aub in filter.qs %}
+            <li class="collection-item">
+                <div class="row">
+                    <div class="col s12 m4">
+                        <p class="title">
+                               <span class="item-text">
+                                <i class="material-icons">access_time</i>
+                                  {{ aub.from_date }}, {{ aub.from_time }} Uhr &mdash; {{ aub.to_date }}, {{ aub.to_time }} Uhr
+                                </span>
+                        </p>
+                        <p><a href="{% url 'aub_details' aub.id %}">{{ aub.description }}</a></p>
+                    </div>
+                    <div class="col s12 m6">
+                        <p>
+                               <span class="item-text">
+                                <i class="material-icons">person</i>
+                                {{ aub.created_by }}
+                                </span>
+                        </p>
+                    </div>
+                    <div class="col s12 m4">
+                        <p>
+                            {% csrf_token %}
+                            <button type="submit" name="allow"
+                                    class="waves-effect waves-light btn-flat btn-flat-large" title="Annehmen">
+                                <i class="material-icons center green-text">check_circle</i>
+                            </button>
+                            <button type="submit" name="deny"
+                                    class="waves-effect waves-light btn-flat btn-flat-large" title="Ablehnen">
+                                <i class="material-icons center red-text">not_interested</i>
+                            </button>
+                        </p>
+                    </div
+                    <div class="col s12 m2">
+                        <p>
+                            <span class="badge new {{ aub.status.style_classes }}">{{ aub.status.name }}</span>
+                        </p>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</main>
+
+{% include 'partials/footer.html' %}

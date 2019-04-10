@@ -1,0 +1,31 @@
+{% include 'partials/header.html' %}
+{% load material_form %}
+{% load martortags %}
+{% load static %}
+
+<main>
+    <h4>Neuen Hinweis erstellen</h4>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit" class="waves-effect waves-light btn green">
+            <i class="material-icons left">add</i> Hinweis erstellen und veröffentlichen
+        </button>
+    </form>
+
+    <script type="text/javascript" src="{% static 'plugins/js/ace.js' %}"></script>
+    {#    <script type="text/javascript" src="{% static 'plugins/js/semantic.min.js' %}"></script>#}
+    {#    <script type="text/javascript" src="{% static 'semantic/dropdown.min.js' %}"></script>#}
+    {#    <script type="text/javascript" src="{% static 'semantic/tab.min.js' %}"></script>#}
+
+    <script type="text/javascript" src="{% static 'plugins/js/mode-markdown.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/js/ext-language_tools.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/js/theme-github.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/js/highlight.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/js/resizable.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/js/emojis.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'martor/js/martor.min.js' %}"></script>
+</main>
+
+{% include 'partials/footer.html' %}
