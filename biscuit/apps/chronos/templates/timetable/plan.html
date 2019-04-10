@@ -118,7 +118,8 @@
             </a>
         {% endif %}
     </div>
-    <div class="timetable-plan">
+    {# show full timetable on tablets, laptops and pcs #}
+    <div class="timetable-plan hide-on-small-and-down">
 
         {#  Week days #}
         <div class="row">
@@ -143,7 +144,7 @@
                     <div class="card timetable-title-card">
                         <div class="card-content">
                     <span class="card-title">
-                        {{ long_week_day }}
+                        {{ long_week_day.0 }}
                     </span>
                         </div>
                     </div>
@@ -179,6 +180,48 @@
                     </div>
                 {% endfor %}
             </div>
+        {% endfor %}
+    </div>
+    {# show 5 seperate ones on mobiles #}
+    <div class="timetable-plan hide-on-med-and-up">
+        {% for long_week_day in long_week_days %}
+            <div class="card timetable-mobile-title-card">
+                <div class="card-content">
+                    <span class="card-title">
+                        {{ long_week_day.0 }}
+                    </span>
+                </div>
+            </div>
+            {% for row, time in plan %}
+                <div class="row">
+                    <div class="col s4">
+                        <div class="card timetable-title-card">
+                            <div class="card-content">
+
+                                {# Lesson number #}
+                                <span class="card-title left">
+                                {{ time.number_format }}
+                             </span>
+
+                                {# Time dimension of lesson #}
+                                <div class="right timetable-time grey-text text-darken-2">
+                                    <span>{{ time.start|date:"H:i" }}</span><br>
+                                    <span>{{ time.end|date:"H:i" }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    {% for col in row %}
+                        {% if forloop.counter0 == long_week_day.1 %}
+                            <div class="col s8">
+                                {# A lesson #}
+                                {% include "timetable/lesson.html" %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
         {% endfor %}
     </div>
 </main>

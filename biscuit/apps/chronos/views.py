@@ -166,7 +166,6 @@ def my_plan(request, year=None, day=None, month=None):
         "el": el,
         "times": parse_lesson_times(),
         "week_day": date.isoweekday() - 1,
-        "week_days": WEEK_DAYS,
         "date": date,
         "date_js": int(date.timestamp()) * 1000,
         "display_date_only": True
