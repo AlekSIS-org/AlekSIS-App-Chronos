@@ -2,13 +2,41 @@
 {% load material_form %}
 {% load martortags %}
 {% load static %}
+{% load widget_tweaks %}
 
 <main>
     <h4>Neuen Hinweis erstellen</h4>
 
     <form method="post">
         {% csrf_token %}
-        {{ form }}
+        {{ form.non_field_errors }}
+        <h5>Über welchen Zeitraum soll der Hinweis angezeigt werden? <span class="red-text">*</span></h5>
+
+        <div class="row">
+            <div class="col s12 m6">
+                {{ form.from_date.label_tag }}
+                {{ form.from_date|add_class:"datepicker" }}
+            </div>
+            <div class="col s12 m6">
+                {{ form.to_date.label_tag }}
+                {{ form.to_date|add_class:"datepicker" }}
+            </div>
+        </div>
+        <h5>Für wen soll der Hinweis angezeigt werden? <span class="red-text">*</span></h5>
+        {{ form.classes.label_tag }}
+        {{ form.classes }}
+
+        <p>
+            <label>
+                {{ form.teachers }}
+                <span>Für Lehrer anzeigen?</span>
+            </label>
+        </p>
+
+        <h5>Hinweistext <span class="red-text">*</span></h5>
+        {{ form.text }}
+
+
         <button type="submit" class="waves-effect waves-light btn green">
             <i class="material-icons left">add</i> Hinweis erstellen und veröffentlichen
         </button>

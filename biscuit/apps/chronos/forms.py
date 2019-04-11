@@ -17,4 +17,4 @@ class HintForm(ModelForm):
 
     class Meta:
         model = Hint
-        fields = ("from_date", "to_date", "text", "classes")
+        fields = ("from_date", "to_date", "text", "classes", "teachers")
