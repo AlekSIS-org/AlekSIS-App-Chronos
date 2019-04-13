@@ -6,8 +6,10 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404, FileResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from material import Fieldset, Row
 
 from schoolapps.settings import WEEK_DAYS
+from timetable.filters import HintFilter
 from timetable.forms import HintForm
 from timetable.pdf import generate_class_tex, generate_pdf
 
@@ -258,18 +260,24 @@ def substitutions(request, year=None, day=None, month=None):
 @login_required
 @permission_required("timetable.can_view_hint")
 def hints(request):
-    return render(request, "timetable/hints.html")
+    f = HintFilter(request.GET, queryset=Hint.objects.all())
+    # f.form.layout = Fieldset("Hi", Row("from_date", "to_date", "classes", "teachers"))
+    return render(request, "timetable/hints.html", {"f": f})
 
 
 @login_required
 @permission_required('timetable.can_add_hint')
 def add_hint(request):
+    msg = None
     if request.method == 'POST':
         form = HintForm(request.POST)
 
         if form.is_valid():
-            return redirect('aub_applied_for')
+            form.save()
+            # return redirect('timetable_add_hint')
+            form = HintForm()
+            msg = "success"
     else:
         form = HintForm()
 
-    return render(request, 'timetable/addhint.html', {'form': form, "martor": True})
+    return render(request, 'timetable/addhint.html', {'form': form, "martor": True, "msg": msg})

@@ -35,12 +35,20 @@ class Hint(models.Model):
     text = MartorField(verbose_name="Hinweistext")
 
     # Relations
-    classes = models.ManyToManyField(HintClass, related_name="hints", verbose_name="Klassen")
-    teachers = models.BooleanField(verbose_name="Lehrer?", default=False)
+    classes = models.ManyToManyField(HintClass, related_name="hints", verbose_name="Klassen", blank=True)
+    teachers = models.BooleanField(verbose_name="Lehrer?", default=False, blank=True)
 
     class Meta:
         verbose_name = "Hinweis"
         verbose_name_plural = "Hinweise"
+
+    def __str__(self):
+        classes_list = [str(x) for x in self.classes.all()]
+        if self.teachers:
+            classes_list.append("Lehrkräfte")
+        targets = ", ".join(classes_list)
+
+        return "[{}]: {}–{}".format(targets, self.from_date, self.to_date)
 
 
 class Timetable(models.Model):
