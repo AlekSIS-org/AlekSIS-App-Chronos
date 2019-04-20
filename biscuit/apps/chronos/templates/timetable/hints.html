@@ -24,40 +24,53 @@
         </form>
     </div>
 
-    <ul class="collection">
+    <ul class="collapsible">
         {% for hint in f.qs %}
-            <li class="collection-item row">
-                <div class="col s12 m4">
-                <span class="title">
-{#                    <i class="material-icons left">access_time</i>#}
-                    {{ hint.from_date }} &mdash; {{ hint.to_date }}
-                </span>
-                </div>
-                <div class="col s12 m4">
-                    <i class="material-icons left">people</i>
-                    {% for class in hint.classes.all %}
-                        {{ class }},
-                    {% endfor %}
-                    {% if hint.teachers %}
-                        <span class="badge new green no-float no-margin">Lehrkräfte</span>
-                    {% else %}
-                        <span class="badge new red no-float no-margin">Lehrkräfte</span>
-                    {% endif %}
-                </div>
+            <li>
+                <div class="collapsible-header row no-margin">
+                    <i class="material-icons">keyboard_arrow_down</i>
 
-                <div class="col s12 m4">
+                    <div class="col s10">
+                        <strong>{{ hint.from_date }} &mdash; {{ hint.to_date }}</strong> für
+                        <strong>
+                            {% for class in hint.classes.all %}
+                                {{ class }},
+                            {% endfor %}
+                        </strong>
+                        {% if hint.teachers %}
+                            <span class="badge new green no-float no-margin">Lehrkräfte</span>
+                        {% else %}
+                            <span class="badge new red no-float no-margin">Lehrkräfte</span>
+                        {% endif %}
+                    </div>
+                    <div class="col s2">
+                        <div class="right">
+                            {#                            <a class="btn-flat waves-effect waves-teal">#}
+                            <i class="material-icons center">more_vert</i>
+                            {#                            </a>#}
+                        </div>
+                    </div>
+
+                </div>
+                <div class="collapsible-body row">
+                    {#                    <div class="col s12 m4">#}
                     <div class="right">
-                        <a class="btn-flat waves-effect waves-teal"><i class="material-icons left">edit</i>
-                            Bearbeiten</a>
-                        <a class="btn-flat waves-effect waves-teal"><i class="material-icons left">delete</i>
-                            Löschen</a>
+                        <a class="btn-flat waves-effect waves-teal green-text">
+                            <i class="material-icons left">edit</i>
+                            <span class="hide-on-small-only">Bearbeiten</span>
+                        </a>
+                        <a class="btn-flat waves-effect waves-teal red-text">
+                            <i class="material-icons left">delete</i>
+                            <span class="hide-on-small-only">Löschen</span>
+                        </a>
 
                     </div>
-                </div>
-                <div class="col s12">
-                    <p>
-                        {#                    <i class="material-icons left">note</i>#}
-                        {{ hint.text|safe_markdown }}</p>
+                    {#                    </div>#}
+                    <div>
+                        <p>
+                            {#                    <i class="material-icons left">note</i>#}
+                            {{ hint.text|safe_markdown }}</p>
+                    </div>
                 </div>
             </li>
         {% endfor %}
