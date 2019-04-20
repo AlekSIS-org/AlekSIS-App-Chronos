@@ -21,7 +21,6 @@
                 <i class="material-icons left">add</i>
                 Neuen Hinweis erstellen
             </a>
-            {#        {{ f.form.as_p }}#}
             {% form form=f.form %}
             {% endform %}
             <button type="submit" class="waves-effect waves-light btn">
@@ -54,15 +53,12 @@
                     </div>
                     <div class="col s2">
                         <div class="right">
-                            {#                            <a class="btn-flat waves-effect waves-teal">#}
                             <i class="material-icons center">more_vert</i>
-                            {#                            </a>#}
                         </div>
                     </div>
 
                 </div>
                 <div class="collapsible-body row">
-                    {#                    <div class="col s12 m4">#}
                     <div class="right">
                         <a class="btn-flat waves-effect waves-teal green-text"
                            href="{% url "timetable_edit_hint" hint.id %}">
@@ -76,10 +72,8 @@
                         </a>
 
                     </div>
-                    {#                    </div>#}
                     <div>
                         <p>
-                            {#                    <i class="material-icons left">note</i>#}
                             {{ hint.text|safe_markdown }}</p>
                     </div>
                 </div>
