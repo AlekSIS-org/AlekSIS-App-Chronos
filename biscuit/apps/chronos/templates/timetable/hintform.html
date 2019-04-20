@@ -5,7 +5,13 @@
 {% load widget_tweaks %}
 
 <main>
-    <h4>Neuen Hinweis erstellen</h4>
+    <h4>
+        {% if mode == "new" %}
+            Neuen Hinweis erstellen
+        {% else %}
+            Hinweis bearbeiten
+        {% endif %}
+    </h4>
 
     {% if msg == "success" %}
         <div class="alert success">
@@ -100,7 +106,8 @@
 
 
         <button type="submit" class="waves-effect waves-light btn green">
-            <i class="material-icons left">add</i> Hinweis erstellen und veröffentlichen
+            <i class="material-icons left">save</i> Hinweis {% if mode == "new" %} erstellen und
+            veröffentlichen {% else %} aktualisieren {% endif %}
         </button>
     </form>
 

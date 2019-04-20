@@ -4,7 +4,7 @@ import os
 from PyPDF2 import PdfFileMerger
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404, FileResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from material import Fieldset, Row
 
@@ -261,8 +261,12 @@ def substitutions(request, year=None, day=None, month=None):
 @permission_required("timetable.can_view_hint")
 def hints(request):
     f = HintFilter(request.GET, queryset=Hint.objects.all())
+    msg = None
+    if request.session.get("msg", False):
+        msg = request.session["msg"]
+        request.session["msg"] = None
     # f.form.layout = Fieldset("Hi", Row("from_date", "to_date", "classes", "teachers"))
-    return render(request, "timetable/hints.html", {"f": f})
+    return render(request, "timetable/hints.html", {"f": f, "msg": msg})
 
 
 @login_required
@@ -280,4 +284,30 @@ def add_hint(request):
     else:
         form = HintForm()
 
-    return render(request, 'timetable/addhint.html', {'form': form, "martor": True, "msg": msg})
+    return render(request, 'timetable/hintform.html', {'form': form, "martor": True, "msg": msg, "mode": "new"})
+
+
+@login_required
+@permission_required("timetable.can_edit_hint")
+def edit_hint(request, id):
+    hint = get_object_or_404(Hint, pk=id)
+    if request.method == 'POST':
+        form = HintForm(request.POST, instance=hint)
+
+        if form.is_valid():
+            form.save()
+            request.session["msg"] = "success_edit"
+            return redirect('timetable_hints')
+    else:
+        form = HintForm(instance=hint)
+
+    return render(request, 'timetable/hintform.html', {'form': form, "martor": True, "mode": "edit"})
+
+
+@login_required
+@permission_required("timetable.can_delete_hint")
+def delete_hint(request, id):
+    hint = get_object_or_404(Hint, pk=id)
+    hint.delete()
+    request.session["msg"] = "success_delete"
+    return redirect('timetable_hints')

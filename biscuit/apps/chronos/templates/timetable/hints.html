@@ -3,6 +3,15 @@
 {% load martortags %}
 
 <main>
+    {% if msg %}
+        <div class="alert success">
+            <p>
+                <i class="material-icons left">check_circle</i>
+                Der Hinweis wurde erfolgreich {% if msg == "success_edit" %}gespeichert. {% else %}
+                gelöscht. {% endif %}
+            </p>
+        </div>
+    {% endif %}
     <h4>Hinweise</h4>
 
 
@@ -55,11 +64,13 @@
                 <div class="collapsible-body row">
                     {#                    <div class="col s12 m4">#}
                     <div class="right">
-                        <a class="btn-flat waves-effect waves-teal green-text">
+                        <a class="btn-flat waves-effect waves-teal green-text"
+                           href="{% url "timetable_edit_hint" hint.id %}">
                             <i class="material-icons left">edit</i>
                             <span class="hide-on-small-only">Bearbeiten</span>
                         </a>
-                        <a class="btn-flat waves-effect waves-teal red-text">
+                        <a class="btn-flat waves-effect waves-teal red-text delete-button"
+                           href="{% url "timetable_delete_hint" hint.id %}">
                             <i class="material-icons left">delete</i>
                             <span class="hide-on-small-only">Löschen</span>
                         </a>
