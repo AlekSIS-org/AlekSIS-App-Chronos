@@ -11,6 +11,7 @@ from material import Fieldset, Row
 from schoolapps.settings import WEEK_DAYS
 from timetable.filters import HintFilter
 from timetable.forms import HintForm
+from timetable.hints import get_all_hints_by_date, get_all_hints_by_time_period
 from timetable.pdf import generate_class_tex, generate_pdf
 
 from untisconnect.plan import get_plan, TYPE_TEACHER, TYPE_CLASS, TYPE_ROOM, parse_lesson_times
@@ -109,6 +110,12 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
 
     plan = get_plan(_type, plan_id, smart=smart, monday_of_week=monday_of_week)
     # print(parse_lesson_times())
+
+    # Get hints
+    if smart:
+        friday = monday_of_week + datetime.timedelta(days=4)
+        hints = list(get_all_hints_by_time_period(monday_of_week, friday))
+        print(hints)
 
     context = {
         "smart": smart,
