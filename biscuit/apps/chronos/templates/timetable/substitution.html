@@ -26,8 +26,8 @@
     <table class="substitutions striped">
         <thead>
         <tr>
+            <th><i class="material-icons">people</i></th>
             <th><i class="material-icons">access_time</i></th>
-            <th>Klassen</th>
             <th>Lehrer</th>
             <th>Fach</th>
             <th>Raum</th>
@@ -37,7 +37,7 @@
         </thead>
         <tbody>
         {% for sub in sub_table %}
-            <tr class="{{ sub.css_class }}">
+            <tr class="{{ sub.color }}-text">
                 <td>
                     {{ sub.classes }}
                 </td>
@@ -47,15 +47,82 @@
                     </strong>
                 </td>
                 <td>
-                    <span class="tooltipped" data-position="bottom"
-                          data-tooltip="{{ sub.teacher_full|safe }}">{{ sub.teacher|safe }}</span>
+                    {% if sub.sub.type == 1 %}
+                        <span class="tooltipped" data-position="bottom"
+                              data-tooltip="{{ sub.sub.teacher_old.name }}">
+
+                            <s>{{ sub.sub.teacher_old.shortcode }}</s>
+                        </span>
+                    {% elif sub.sub.teacher_new and sub.sub.teacher_old %}
+                        <span class="tooltipped" data-position="bottom"
+                              data-tooltip="{{ sub.sub.teacher_old.name }} → {{ sub.sub.teacher_new.name }}">
+
+                            <s>{{ sub.sub.teacher_old.shortcode }}</s> →
+                            <strong>{{ sub.sub.teacher_new.shortcode }}</strong>
+                        </span>
+                    {% elif sub.sub.teacher_new and not sub.sub.teacher_old %}
+                        <span class="tooltipped" data-position="bottom"
+                              data-tooltip="{{ sub.sub.teacher_new.name }}">
+
+                            <strong>{{ sub.sub.teacher_new.shortcode }}</strong>
+                        </span>
+                    {% elif sub.sub.teacher_old %}
+                        <span class="tooltipped" data-position="bottom"
+                              data-tooltip="{{ sub.sub.teacher_old.name }}">
+
+                            <strong>{{ sub.sub.teacher_old.shortcode }}</strong>
+                        </span>
+                    {% endif %}
+                    {#                    <span class="tooltipped" data-position="bottom"#}
+                    {#                          data-tooltip="{{ sub.teacher_full|safe }}">{{ sub.teacher|safe }}</span>#}
                 </td>
                 <td>
-                    {{ sub.subject|safe }}
+                    {% if sub.sub.type == 3 %}
+                        <strong>Aufsicht</strong>
+                    {% elif not sub.sub.subject_new and not sub.sub.subject_old %}
+                    {% elif sub.sub.type == 1 or sub.sub.type == 2 %}
+                        <s>{{ sub.sub.subject_old.shortcode }}</s>
+                    {% elif sub.sub.subject_new and sub.sub.subject_old %}
+                        <s>{{ sub.sub.subject_old.shortcode }}</s> →
+                        <strong>{{ sub.sub.subject_new.shortcode }}</strong>
+                    {% elif sub.sub.subject_new and not sub.sub.subject_old %}
+                        <strong>{{ sub.sub.subject_new.shortcode }}</strong>
+                    {% else %}
+                        <strong>{{ sub.sub.subject_old.shortcode }}</strong>
+                    {% endif %}
+                    {#                    {{ sub.subject|safe }}#}
                 </td>
                 <td>
-                    <span class="tooltipped" data-position="bottom"
-                          data-tooltip="{{ sub.room_full|safe }}">{{ sub.room|safe }}</span>
+                    {% if sub.sub.type == 3 %}
+                        {# Supervisement #}
+                        {{ sub.sub.corridor.name }}
+                    {% elif sub.sub.type == 1 or sub.sub.type == 2 %}
+                        {# Canceled lesson: no room #}
+                    {% elif sub.sub.roow_new and sub.sub.room_old %}
+                        {# New and old room available #}
+                        <span class="tooltipped" data-position="bottom"
+                              data-tooltip="{{ sub.sub.room_old.name }} → {{ sub.sub.room_new.name }}">
+                            <s>{{ sub.sub.room_old.shortcode }}</s> → <strong>{{ sub.sub.room_new.shortcode }}</strong>
+                        </span>
+                    {% elif sub.sub.room_new and not sub.sub.room_old %}
+                        {# Only new room available #}
+                        <span class="tooltipped" data-position="bottom"
+                              data-tooltip="{{ sub.sub.room_new.name }}">
+                            {{ sub.sub.room_new.shortcode }}
+                        </span>
+                    {% elif not sub.sub.room_new and not sub.sub.room_old %}
+                        {# Nothing to view #}
+                    {% else %}
+                        {# Only old room available #}
+                        <span class="tooltipped" data-position="bottom"
+                              data-tooltip="{{ sub.sub.room_old.name }}">
+                            {{ sub.sub.room_old.shortcode }}
+                        </span>
+                    {% endif %}
+                    {#                    <span class="tooltipped" data-position="bottom"#}
+                    {#                          data-tooltip="{{ sub.sub.room }}">#}
+                    {#                        {{ sub.sub.room }}#}
+                    {#                    </span>#}
                 </td>
                 <td>
                     {% if sub.badge %}
