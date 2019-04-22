@@ -50,27 +50,34 @@
                     {% if sub.sub.type == 1 %}
                         <span class="tooltipped" data-position="bottom"
                               data-tooltip="{{ sub.sub.teacher_old.name }}">
-
-                            <s>{{ sub.sub.teacher_old.shortcode }}</s>
+                            <a href="{% url "timetable_smart_plan" "teacher" sub.sub.teacher_old.id %}">
+                                <s>{{ sub.sub.teacher_old.shortcode }}</s>
+                            </a>
                         </span>
                     {% elif sub.sub.teacher_new and sub.sub.teacher_old %}
                         <span class="tooltipped" data-position="bottom"
                               data-tooltip="{{ sub.sub.teacher_old.name }} → {{ sub.sub.teacher_new.name }}">
-
-                            <s>{{ sub.sub.teacher_old.shortcode }}</s> →
-                            <strong>{{ sub.sub.teacher_new.shortcode }}</strong>
+                            <a href="{% url "timetable_smart_plan" "teacher" sub.sub.teacher_old.id %}">
+                                <s>{{ sub.sub.teacher_old.shortcode }}</s>
+                            </a>
+                            →
+                            <a href="{% url "timetable_smart_plan" "teacher" sub.sub.teacher_new.id %}">
+                                <strong>{{ sub.sub.teacher_new.shortcode }}</strong>
+                            </a>
                         </span>
                     {% elif sub.sub.teacher_new and not sub.sub.teacher_old %}
                         <span class="tooltipped" data-position="bottom"
                               data-tooltip="{{ sub.sub.teacher_new.name }}">
-
-                            <strong>{{ sub.sub.teacher_new.shortcode }}</strong>
+                            <a href="{% url "timetable_smart_plan" "teacher" sub.sub.teacher_new.id %}">
+                                <strong>{{ sub.sub.teacher_new.shortcode }}</strong>
+                            </a>
                         </span>
                     {% elif sub.sub.teacher_old %}
                         <span class="tooltipped" data-position="bottom"
                               data-tooltip="{{ sub.sub.teacher_old.name }}">
-
-                            <strong>{{ sub.sub.teacher_old.shortcode }}</strong>
+                            <a href="{% url "timetable_smart_plan" "teacher" sub.sub.teacher_old.id %}">
+                                <strong>{{ sub.sub.teacher_old.shortcode }}</strong>
+                            </a>
                         </span>
                     {% endif %}
                     {#                    <span class="tooltipped" data-position="bottom"#}
@@ -102,13 +109,21 @@
                         {# New and old room available #}
                         <span class="tooltipped" data-position="bottom"
                               data-tooltip="{{ sub.sub.room_old.name }} → {{ sub.sub.room_new.name }}">
-                            <s>{{ sub.sub.room_old.shortcode }}</s> → <strong>{{ sub.sub.room_new.shortcode }}</strong>
+                            <a href="{% url "timetable_smart_plan" "room" sub.sub.room_old.id %}">
+                                <s>{{ sub.sub.room_old.shortcode }}</s>
+                            </a>
+                            →
+                            <a href="{% url "timetable_smart_plan" "room" sub.sub.room_new.id %}">
+                                <strong>{{ sub.sub.room_new.shortcode }}</strong>
+                            </a>
                         </span>
                     {% elif sub.sub.room_new and not sub.sub.room_old %}
                         {# Only new room available #}
                         <span class="tooltipped" data-position="bottom"
                               data-tooltip="{{ sub.sub.room_new.name }}">
-                            {{ sub.sub.room_new.shortcode }}
+                            <a href="{% url "timetable_smart_plan" "room" sub.sub.room_new.id %}">
+                                {{ sub.sub.room_new.shortcode }}
+                            </a>
                         </span>
                     {% elif not sub.sub.room_new and not sub.sub.room_old %}
                         {# Nothing to view #}
@@ -116,7 +131,9 @@
                         {# Only old room available #}
                         <span class="tooltipped" data-position="bottom"
                               data-tooltip="{{ sub.sub.room_old.name }}">
-                            {{ sub.sub.room_old.shortcode }}
+                            <a href="{% url "timetable_smart_plan" "room" sub.sub.room_old.id %}">
+                                {{ sub.sub.room_old.shortcode }}
+                            </a>
                         </span>
                     {% endif %}
                     {#                    <span class="tooltipped" data-position="bottom"#}
