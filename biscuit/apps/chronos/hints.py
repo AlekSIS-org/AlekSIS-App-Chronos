@@ -1,3 +1,5 @@
+import datetime
+
 from timetable.models import Hint
 
 
@@ -6,9 +8,25 @@ def get_all_hints_by_date(date):
     return hints
 
 
+def get_all_hints_by_class_and_time_period(_class, from_date, to_date):
+    hints_tmp = get_all_hints_by_time_period(from_date, to_date)
+    hints_match = []
+    for hint in hints_tmp:
+        if _class.id in [x.class_id for x in hint.classes.all()]:
+            hints_match.append(hint)
+    return hints_match
+
+
 def get_all_hints_by_time_period(from_date, to_date):
     print(from_date, to_date)
-    hints = Hint.objects.filter(from_date__gte=from_date, to_date__lte=to_date).order_by("from_date", "classes")
+    week_days = [from_date + datetime.timedelta(days=i) for i in range(5)]
+
+    hints = []
+    for week_day in week_days:
+        hints_tmp = get_all_hints_by_date(week_day)
+        for hint in hints_tmp:
+            if hint not in hints:
+                hints.append(hint)
     print(hints)
     return hints
 
