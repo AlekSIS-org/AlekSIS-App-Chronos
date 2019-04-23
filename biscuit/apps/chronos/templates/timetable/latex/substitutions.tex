@@ -1,0 +1,138 @@
+{% load common %}
+
+\documentclass[11pt]{article}
+\usepackage[ngerman]{babel}
+\usepackage[sfdefault]{cabin}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,left=1cm,right=1cm,top=2cm,bottom=2cm,bindingoffset=0mm]{geometry}
+
+% Packages
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{color, colortbl}
+
+\usepackage{ulem, xpatch}
+\xpatchcmd{\sout}
+{\bgroup}
+{\bgroup\def\ULthickness{1.5pt}}
+{}{}
+
+% Badge box
+\usepackage{tcolorbox}
+\newtcbox{\badge}{nobeforeafter,colframe=green,colback=green,boxrule=0.5pt,arc=4pt,
+boxsep=0pt,left=5pt,right=5pt,top=5pt,bottom=5pt,tcbox raise base,
+grow to left by=0pt,
+grow to right by=-3pt,
+enlarge top by=3pt,
+enlarge bottom by=3pt,coltext=white}
+
+% Define colors
+\definecolor{grey}{RGB}{208, 208, 208}
+\definecolor{darkgrey}{rgb}{0.6,0.6,0.6}
+\definecolor{white}{rgb}{1,1,1}
+\definecolor{ green }{RGB}{76,175,80}
+\definecolor{green}{RGB}{76,175,80}
+\definecolor{ black }{RGB}{0,0,0}
+
+% Define header
+\pagestyle{fancy}
+
+% Left header: logo
+%\lhead{\includegraphics[width=5cm]{}}
+
+% Define footer
+\lfoot{Katharineum zu Lübeck}
+\cfoot{\thepage}
+\rfoot{\small Umsetzung: © 2018--2019 by Computer-AG}
+\rhead{\textbf{
+Vertretungen {{ date|date:"j. F Y, \\K\\W W"}}}\\
+Stand: {% now "j. F Y H:i" %}\\
+}
+
+\begin{document}
+    \Large
+    \subsubsection*{}
+    {#    \vspace{10pt}#}
+    \section*{\Huge Vertretungen {{ date|date:"l, j. F Y"}}}
+
+    {% if header_info.is_box_needed %}
+    \fbox{
+    \begin{tabular}{@{}ll@{}}
+    {% for row in header_info.rows %}
+        \textbf{ {{ row.0 }} } & {{ row.1 }} \\
+    {% endfor %}
+    \end{tabular}
+    }
+    {% endif %}
+
+    % Init table
+    {% set color_background = 1 %}
+    {% set last_classes = "" %}
+
+    \def\arraystretch{1.5}
+    \begin{longtable}{p{20mm}p{8mm}p{32mm}p{25mm}p{30mm}p{45mm}}
+        \textbf{Klassen} &
+        \textbf{Std.} &
+        \textbf{Lehrer} &
+        \textbf{Fach} &
+        \textbf{Raum} &
+        \textbf{Hinweis}\\
+        \hline
+        \endhead
+        {% for sub in subs %}
+
+        {# ------------------------------ #}
+        {#  Color groups of classes in grey/white #}
+        {% if last_classes != sub.classes %}
+
+        {% if color_background %}
+        {% set color_background = 0 %}
+        {% else %}
+        {% set color_background = 1 %}
+        {% endif %}
+
+        {% endif %}
+
+        {% set last_classes = sub.classes %}
+
+
+        {# Background color #}
+        {% if color_background %}
+        \rowcolor{grey}
+        {% endif %}
+
+        {# ------------------------------ #}
+
+        {% with c=sub.color %}
+        {#  Display classes #}
+        \color{ {{c}} }
+        \textbf{ {{ sub.classes }} } &
+
+        {# Display lesson number #}
+        \color{ {{c}} }
+        {{ sub.lesson }} &
+
+        \color{ {{c}} }
+        lehrer &
+
+        \color{ {{c}} }
+        fach &
+
+        \color{ {{c}} }
+        raum &
+
+        {# Display badge (for cancellations) #}
+        {% if sub.badge %}
+        \large\badge{ {{ sub.badge }} }
+        {% endif %}
+
+        {# Display notice and new line #}
+        \color{ {{c}} }
+        \Large\textit{ {{sub.text|default:""}} } \\
+    {% endwith %}
+    {% endfor %}
+    \end{longtable}
+
+\end{document}

@@ -1,6 +1,7 @@
 import os
 import subprocess
 
+from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils import formats
 
@@ -144,60 +145,66 @@ def generate_class_tex(subs, date, header_info):
     tex_body = ""
 
     # Format dates
-    status_date = formats.date_format(date, format="j. F Y, \\K\\W W ")
-    current_date = formats.date_format(timezone.datetime.now(), format="j. F Y H:i")
-    head_date = formats.date_format(date, format="l, j. F Y")
+    # status_date = formats.date_format(date, format="j. F Y, \\K\\W W ")
+    # current_date = formats.date_format(timezone.datetime.now(), format="j. F Y H:i")
+    # head_date = formats.date_format(date, format="l, j. F Y")
 
     # Generate header with dates
-    tex_body += TEX_HEADER_CLASS % (status_date, current_date, head_date)
+    # tex_body += TEX_HEADER_CLASS % (status_date, current_date, head_date)
 
-    if header_info.is_box_needed():
-        tex_body += TEX_HEADER_BOX_START
-        for row in header_info.rows:
-            tex_body += TEX_HEADER_BOX_ROW_A % row[0]
-        tex_body += TEX_HEADER_BOX_MIDDLE
-        for row in header_info.rows:
-            tex_body += TEX_HEADER_BOX_ROW_B % row[1]
-        tex_body += TEX_HEADER_BOX_END
+    # if header_info.is_box_needed():
+    #     tex_body += TEX_HEADER_BOX_START
+    #     for row in header_info.rows:
+    #         tex_body += TEX_HEADER_BOX_ROW_A % row[0]
+    #     tex_body += TEX_HEADER_BOX_MIDDLE
+    #     for row in header_info.rows:
+    #         tex_body += TEX_HEADER_BOX_ROW_B % row[1]
+    #     tex_body += TEX_HEADER_BOX_END
     # Begin table
-    tex_body += TEX_TABLE_HEADER_CLASS
+    # tex_body += TEX_TABLE_HEADER_CLASS
 
-    color_background = True
-    last_classes = ""
+    # color_background = True
+    # last_classes = ""
     for sub in subs:
         # Color groups of classes in grey/white
-        if last_classes != sub.classes:
-            color_background = not color_background
+        # if last_classes != sub.classes:
+        #     color_background = not color_background
+        #
+        # last_classes = sub.classes
 
-        last_classes = sub.classes
-
-        if color_background:
-            tex_body += '\\rowcolor{grey}'
+        # if color_background:
+        #     tex_body += '\\rowcolor{grey}'
 
         # Get color tag for row
-        color = "\color{%s}" % sub.color
+        # color = "\color{%s}" % sub.color
 
         # Print classes
         # print(sub.classes)
-        tex_body += color
-        tex_body += '\\textbf{' + sub.classes + '} & '
+        # tex_body += color
+        # tex_body += '\\textbf{' + sub.classes + '} & '
 
         # Print lesson number, teacher, subject and room
         for i in [sub.lesson, sub.teacher, sub.subject, sub.room]:
-            tex_body += color
+            # tex_body += color
             tex_body += tex_replacer(i) + ' & '
 
         # Print badge (Cancellation)
-        if sub.badge is not None:
-            tex_body += """\\large\\badge{%s}""" % sub.badge
+        # if sub.badge is not None:
+        #     tex_body += """\\large\\badge{%s}""" % sub.badge
 
         # Print notice and new line
-        tex_body += color
-        tex_body += "\\Large\\textit{%s}\\\\\n" % (sub.text or "")
+        # tex_body += color
+        # tex_body += "\\Large\\textit{%s}\\\\\n" % (sub.text or "")
 
     # End table
-    tex_body += '\\end{longtable}'
+    # tex_body += '\\end{longtable}'
 
     # Connect header, body and footer
-    tex_content = TEX_HEADER + tex_body + TEX_FOOTER
-    return tex_content
+    # tex_content = TEX_HEADER + tex_body + TEX_FOOTER
+    # return tex_content
+    context = {
+        "subs": subs,
+        "date": date,
+        "header_info": header_info
+    }
+    return render_to_string("timetable/latex/substitutions.tex", context)
