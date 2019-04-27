@@ -1,0 +1,14 @@
+{% load martortags %}
+{% if hints %}
+    <ul class="collapsible">
+        <li>
+            <div class="collapsible-header"><i class="material-icons">announcement</i>Es gibt Hinweise für diesen Tag.
+            </div>
+            <div class="collapsible-body">
+                {% for hint in hints %}
+                    {{ hint.text|safe_markdown }}
+                {% endfor %}
+            </div>
+        </li>
+    </ul>
+{% endif %}

@@ -269,11 +269,17 @@ def substitutions(request, year=None, month=None, day=None):
     subs = get_substitutions_by_date(date)
     sub_table = generate_sub_table(subs)
 
+    # Get header information and hints
+    header_info = get_header_information(subs, date)
+    hints = list(get_all_hints_by_time_period(date, date))
+
     context = {
         "subs": subs,
         "sub_table": sub_table,
         "date": date,
-        "date_js": int(date.timestamp()) * 1000
+        "date_js": int(date.timestamp()) * 1000,
+        "header_info": header_info,
+        "hints": hints,
     }
 
     return render(request, 'timetable/substitution.html', context)
