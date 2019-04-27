@@ -4,10 +4,14 @@ import os
 from PyPDF2 import PdfFileMerger
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404, FileResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from material import Fieldset, Row
 
-from schoolapps.settings import SHORT_WEEK_DAYS, LONG_WEEK_DAYS
+from schoolapps.settings import SHORT_WEEK_DAYS, LONG_WEEK_DAYS, WEEK_DAYS
+from timetable.filters import HintFilter
+from timetable.forms import HintForm
+from timetable.hints import get_all_hints_by_date, get_all_hints_by_time_period, get_all_hints_by_class_and_time_period
 from timetable.pdf import generate_class_tex, generate_pdf
 
 from untisconnect.plan import get_plan, TYPE_TEACHER, TYPE_CLASS, TYPE_ROOM, parse_lesson_times
@@ -16,6 +20,8 @@ from untisconnect.api import *
 from userinformation import UserInformation
 
 from schoolapps.settings import BASE_DIR
+
+from .models import Hint
 
 
 def get_all_context():
@@ -88,7 +94,10 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
         smart = True
 
     monday_of_week = get_calendar_week(calendar_week, year)["first_day"]
+    friday = monday_of_week + datetime.timedelta(days=4)
+
     # print(monday_of_week)
+    hints = None
 
     if plan_type == 'teacher':
         _type = TYPE_TEACHER
@@ -96,6 +105,12 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
     elif plan_type == 'class':
         _type = TYPE_CLASS
         el = get_class_by_id(plan_id)
+
+        # Get hints
+        if smart:
+            hints = list(get_all_hints_by_class_and_time_period(el, monday_of_week, friday))
+            print(hints)
+
     elif plan_type == 'room':
         _type = TYPE_ROOM
         el = get_room_by_id(plan_id)
@@ -118,6 +133,7 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
         "selected_year": year,
         "short_week_days": SHORT_WEEK_DAYS,
         "long_week_days": LONG_WEEK_DAYS,
+        "hints": hints
     }
 
     return render(request, 'timetable/plan.html', context)
@@ -147,6 +163,7 @@ def my_plan(request, year=None, day=None, month=None):
         plan_id = el.id
         raw_type = "teacher"
         # print(el)
+        hints = []
     elif _type == UserInformation.STUDENT:
         _type = TYPE_CLASS
         _name = UserInformation.user_classes(request.user)[0]
@@ -154,6 +171,10 @@ def my_plan(request, year=None, day=None, month=None):
         el = get_class_by_name(_name)
         plan_id = el.id
         raw_type = "class"
+
+        # Get hints
+        hints = list(get_all_hints_by_class_and_time_period(el, date, date))
+        print(hints)
     else:
         return redirect("timetable_admin_all")
     # print(monday_of_week)
@@ -171,7 +192,8 @@ def my_plan(request, year=None, day=None, month=None):
         "week_day": date.isoweekday() - 1,
         "date": date,
         "date_js": int(date.timestamp()) * 1000,
-        "display_date_only": True
+        "display_date_only": True,
+        "hints": hints
     }
     # print(context["week_day"])
 
@@ -205,7 +227,7 @@ def sub_pdf(request):
         subs = get_substitutions_by_date(date)
         sub_table = generate_sub_table(subs)
         header_info = get_header_information(subs, date)
-        
+
         # Generate LaTeX
         tex = generate_class_tex(sub_table, date, header_info)
 
@@ -250,3 +272,59 @@ def substitutions(request, year=None, day=None, month=None):
     }
 
     return render(request, 'timetable/substitution.html', context)
+
+
+@login_required
+@permission_required("timetable.can_view_hint")
+def hints(request):
+    f = HintFilter(request.GET, queryset=Hint.objects.all())
+    msg = None
+    if request.session.get("msg", False):
+        msg = request.session["msg"]
+        request.session["msg"] = None
+    # f.form.layout = Fieldset("Hi", Row("from_date", "to_date", "classes", "teachers"))
+    return render(request, "timetable/hints.html", {"f": f, "msg": msg})
+
+
+@login_required
+@permission_required('timetable.can_add_hint')
+def add_hint(request):
+    msg = None
+    if request.method == 'POST':
+        form = HintForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            # return redirect('timetable_add_hint')
+            form = HintForm()
+            msg = "success"
+    else:
+        form = HintForm()
+
+    return render(request, 'timetable/hintform.html', {'form': form, "martor": True, "msg": msg, "mode": "new"})
+
+
+@login_required
+@permission_required("timetable.can_edit_hint")
+def edit_hint(request, id):
+    hint = get_object_or_404(Hint, pk=id)
+    if request.method == 'POST':
+        form = HintForm(request.POST, instance=hint)
+
+        if form.is_valid():
+            form.save()
+            request.session["msg"] = "success_edit"
+            return redirect('timetable_hints')
+    else:
+        form = HintForm(instance=hint)
+
+    return render(request, 'timetable/hintform.html', {'form': form, "martor": True, "mode": "edit"})
+
+
+@login_required
+@permission_required("timetable.can_delete_hint")
+def delete_hint(request, id):
+    hint = get_object_or_404(Hint, pk=id)
+    hint.delete()
+    request.session["msg"] = "success_delete"
+    return redirect('timetable_hints')

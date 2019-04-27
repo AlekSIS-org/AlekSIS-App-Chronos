@@ -1,0 +1,18 @@
+{% load martortags %}
+{% if hints %}
+    {% for hint in hints %}
+        <div class="alert primary">
+            <div>
+                <em class="right">Hinweis für {{ hint.from_date|date:"D" }}
+                    {% if hint.from_date != hint.to_date %}
+                        bis {{ hint.to_date|date:"D" }}
+                    {% endif %} </em>
+
+                <i class="material-icons left">announcement</i>
+                {{ hint.text|safe_markdown }}
+
+                {#        {{ hint }}#}
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}

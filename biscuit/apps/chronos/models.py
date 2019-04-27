@@ -1,13 +1,54 @@
-from django import forms
-import dbsettings
+from datetime import date
+
 from django.db import models
+from django.db.models import ManyToManyField
+from martor.models import MartorField
 
-from untisconnect.api_helper import get_terms
+from untisconnect.api import get_class_by_id, get_all_classes
+from untisconnect.models import Class
 
-choices = []
-terms = get_terms()
-for term in terms:
-    choices.append((term.id, term.name))
+classes = get_all_classes()
+class_choices = [(x.id, x.name) for x in classes]
+
+
+class HintClass(models.Model):
+    class_id = models.IntegerField(choices=class_choices)
+
+    def __str__(self):
+        try:
+            _class = get_class_by_id(self.class_id)
+            return _class.name
+        except Exception:
+            return "Unbekannte Klasse"
+
+
+for x in classes:
+    HintClass.objects.get_or_create(class_id=x.id)
+
+
+class Hint(models.Model):
+    # Time
+    from_date = models.DateField(default=date.today, verbose_name="Startdatum")
+    to_date = models.DateField(default=date.today, verbose_name="Enddatum")
+
+    # Text
+    text = MartorField(verbose_name="Hinweistext")
+
+    # Relations
+    classes = models.ManyToManyField(HintClass, related_name="hints", verbose_name="Klassen", blank=True)
+    teachers = models.BooleanField(verbose_name="Lehrer?", default=False, blank=True)
+
+    class Meta:
+        verbose_name = "Hinweis"
+        verbose_name_plural = "Hinweise"
+
+    def __str__(self):
+        classes_list = [str(x) for x in self.classes.all()]
+        if self.teachers:
+            classes_list.append("Lehrkräfte")
+        targets = ", ".join(classes_list)
+
+        return "[{}]: {}–{}".format(targets, self.from_date, self.to_date)
 
 
 class Timetable(models.Model):
@@ -15,10 +56,3 @@ class Timetable(models.Model):
         permissions = (
             ('show_plan', 'Show plan'),
         )
-
-
-class UNTISSettings(dbsettings.Group):
-    term = dbsettings.IntegerValue(widget=forms.Select, choices=choices)
-
-
-untis_settings = UNTISSettings()
