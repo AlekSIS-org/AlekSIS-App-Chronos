@@ -5,8 +5,8 @@
         function goToCalendarWeek(cw) {
             window.location.href = "{% url "timetable_smart_plan" raw_type id %}/{{ selected_year }}/" + cw;
         }
-        function onCalendarWeekChanged() {
-            goToCalendarWeek($("#calendar-week").val(), {{ selected_year }});
+        function onCalendarWeekChanged(where) {
+            goToCalendarWeek($(where).val());
         }
 
         function weekBefore() {
@@ -22,7 +22,15 @@
         }
 
         $(document).ready(function () {
-            $("#calendar-week").change(onCalendarWeekChanged);
+            $("#calendar-week-1").change(function () {
+                onCalendarWeekChanged("#calendar-week-1");
+            });
+            $("#calendar-week-2").change(function () {
+                onCalendarWeekChanged("#calendar-week-2");
+            });
+            $("#calendar-week-3").change(function () {
+                onCalendarWeekChanged("#calendar-week-3");
+            });
             $("#week-before").click(weekBefore);
             $("#week-next").click(weekNext);
         });
@@ -35,7 +43,7 @@
                 Stundenplan <i>{{ el }}</i>
             </h3>
         </div>
-            {# Show print button only if not on mobile #}
+        {# Show print button only if not on mobile #}
         <div class="col s1 m6 l4 xl3 right align-right no-print">
             <a class="waves-effect waves-teal btn-flat btn-flat-medium right hide-on-small-and-down" id="print">
                 <i class="material-icons center">print</i>
@@ -64,16 +72,17 @@
                     </a>
                 </div>
                 <div class="input-field col s8 no-margin hide-on-med-and-up">
-                    <select id="calendar-week">
+                    <select id="calendar-week-1">
                         {% for week in weeks %}
                             <option value="{{ week.calendar_week }}" {% if week.calendar_week == selected_week %}
-                                    selected {% endif %}> KW {{ week.calendar_week }} ({{ week.first_day|date:"j.n" }}–{{ week.last_day|date:"j.n" }})
+                                    selected {% endif %}> KW {{ week.calendar_week }}
+                                ({{ week.first_day|date:"j.n" }}–{{ week.last_day|date:"j.n" }})
                             </option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="input-field col s8 no-margin hide-on-med-and-down">
-                    <select id="calendar-week">
+                    <select id="calendar-week-2">
                         {% for week in weeks %}
                             <option value="{{ week.calendar_week }}" {% if week.calendar_week == selected_week %}
                                     selected {% endif %}> KW {{ week.calendar_week }} ({{ week.first_day|date:"j.n.Y" }}–{{ week.last_day|date:"j.n.Y" }})
@@ -82,10 +91,11 @@
                     </select>
                 </div>
                 <div class="input-field col s8 no-margin hide-on-small-and-down hide-on-large-only">
-                    <select id="calendar-week">
+                    <select id="calendar-week-3">
                         {% for week in weeks %}
                             <option value="{{ week.calendar_week }}" {% if week.calendar_week == selected_week %}
-                                    selected {% endif %}> KW {{ week.calendar_week }} ({{ week.first_day|date:"j.n" }}–{{ week.last_day|date:"j.n.Y" }})
+                                    selected {% endif %}> KW {{ week.calendar_week }}
+                                ({{ week.first_day|date:"j.n" }}–{{ week.last_day|date:"j.n.Y" }})
                             </option>
                         {% endfor %}
                     </select>
@@ -115,26 +125,26 @@
             <div class="col s2">
 
             </div>
-                {# Show short weekdays on tablets #}
+            {# Show short weekdays on tablets #}
             {% for short_week_day in short_week_days %}
                 <div class="col s2 hide-on-large-only">
                     <div class="card timetable-title-card">
                         <div class="card-content">
-                    <span class="card-title">
-                        {{ short_week_day }}
-                    </span>
+                            <span class="card-title">
+                                {{ short_week_day }}
+                            </span>
                         </div>
                     </div>
                 </div>
             {% endfor %}
-                {# Show long weekdays elsewere #}
+            {# Show long weekdays elsewere #}
             {% for long_week_day in long_week_days %}
                 <div class="col s2 hide-on-med-only">
                     <div class="card timetable-title-card">
                         <div class="card-content">
-                    <span class="card-title">
-                        {{ long_week_day.0 }}
-                    </span>
+                            <span class="card-title">
+                                {{ long_week_day.0 }}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -151,11 +161,12 @@
                             {# Lesson number #}
                             <span class="card-title left">
                                 {{ time.number_format }}
-                             </span>
+                            </span>
 
                             {# Time dimension of lesson #}
                             <div class="right timetable-time grey-text text-darken-2">
-                                <span>{{ time.start|date:"H:i" }}</span><br>
+                                <span>{{ time.start|date:"H:i" }}</span>
+                                <br>
                                 <span>{{ time.end|date:"H:i" }}</span>
                             </div>
                         </div>
@@ -190,12 +201,13 @@
 
                                 {# Lesson number #}
                                 <span class="card-title left">
-                                {{ time.number_format }}
-                             </span>
+                                    {{ time.number_format }}
+                                </span>
 
                                 {# Time dimension of lesson #}
                                 <div class="right timetable-time grey-text text-darken-2">
-                                    <span>{{ time.start|date:"H:i" }}</span><br>
+                                    <span>{{ time.start|date:"H:i" }}</span>
+                                    <br>
                                     <span>{{ time.end|date:"H:i" }}</span>
                                 </div>
                             </div>
