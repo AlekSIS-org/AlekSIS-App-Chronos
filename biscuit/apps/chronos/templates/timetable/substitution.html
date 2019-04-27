@@ -36,6 +36,13 @@
         </tr>
         </thead>
         <tbody>
+        {% if not sub_table %}
+            <td colspan="7">
+                <p class="flow-text center">
+                    Keine Vertretungen vorhanden
+                </p>
+            </td>
+        {% endif %}
         {% for sub in sub_table %}
             <tr class="{{ sub.color }}-text">
                 <td>

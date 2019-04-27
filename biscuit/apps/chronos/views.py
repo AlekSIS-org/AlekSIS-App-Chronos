@@ -141,7 +141,7 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
 
 @login_required
 @permission_required("timetable.show_plan")
-def my_plan(request, year=None, day=None, month=None):
+def my_plan(request, year=None, month=None, day=None):
     date = timezone.datetime.now()
     if year is not None and day is not None and month is not None:
         date = timezone.datetime(year=year, month=month, day=day)
@@ -253,12 +253,17 @@ def sub_pdf(request):
 
 @login_required
 @permission_required("timetable.show_plan")
-def substitutions(request, year=None, day=None, month=None):
+def substitutions(request, year=None, month=None, day=None):
     """Show substitutions in a classic view"""
 
     date = timezone.datetime.now()
     if year is not None and day is not None and month is not None:
         date = timezone.datetime(year=year, month=month, day=day)
+
+    # Get next weekday if it is a weekend
+    next_weekday = get_next_weekday(date)
+    if next_weekday != date:
+        return redirect("timetable_substitutions_date", next_weekday.year, next_weekday.month, next_weekday.day)
 
     # Get subs and generate table
     subs = get_substitutions_by_date(date)
