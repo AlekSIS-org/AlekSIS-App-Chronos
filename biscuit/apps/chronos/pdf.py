@@ -10,7 +10,7 @@ from schoolapps.settings import BASE_DIR
 # LaTeX constants
 from untisconnect.sub import get_header_information
 
-DIR = os.path.join(BASE_DIR, "static", "common", "logo.png")
+LOGO_FILENAME = os.path.join(BASE_DIR, "static", "common", "logo.png")
 TEX_HEADER_1 = """\\documentclass[11pt]{article}
 \\usepackage[ngerman]{babel}
 \\usepackage[sfdefault]{cabin}
@@ -58,7 +58,7 @@ TEX_HEADER_2 = """}}
 \\rfoot{\\small Umsetzung: © 2018--2019 by Computer-AG}
 
 \\begin{document}"""
-TEX_HEADER = TEX_HEADER_1 + DIR + TEX_HEADER_2
+TEX_HEADER = TEX_HEADER_1 + LOGO_FILENAME + TEX_HEADER_2
 
 TEX_FOOTER = '\end{document}'
 
@@ -205,6 +205,7 @@ def generate_class_tex(subs, date, header_info):
     context = {
         "subs": subs,
         "date": date,
-        "header_info": header_info
+        "header_info": header_info,
+        "LOGO_FILENAME": LOGO_FILENAME
     }
     return render_to_string("timetable/latex/substitutions.tex", context)

@@ -1,0 +1,11 @@
+{% if sub.sub.type == 1 %}
+\sout{ {{ sub.sub.teacher_old.shortcode }} }
+{% elif sub.sub.teacher_new and sub.sub.teacher_old %}
+\sout{ {{ sub.sub.teacher_old.shortcode }} }
+$\rightarrow$
+\textbf{ {{ sub.sub.teacher_new.shortcode }} }
+{% elif sub.sub.teacher_new and not sub.sub.teacher_old %}
+\textbf{ {{ sub.sub.teacher_new.shortcode }} }
+{% elif sub.sub.teacher_old %}
+\textbf{ {{ sub.sub.teacher_old.shortcode }} }
+{% endif %}

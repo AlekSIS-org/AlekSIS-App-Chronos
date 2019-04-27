@@ -197,7 +197,7 @@ def sub_pdf(request):
     today = timezone.datetime.now()
 
     first_day = get_next_weekday(today)
-    second_day = get_next_weekday(today + datetime.timedelta(days=1))
+    second_day = get_next_weekday(first_day + datetime.timedelta(days=1))
 
     # Get subs and generate table
     for i, date in enumerate([first_day, second_day]):

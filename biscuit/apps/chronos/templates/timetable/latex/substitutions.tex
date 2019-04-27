@@ -40,7 +40,7 @@ enlarge bottom by=3pt,coltext=white}
 \pagestyle{fancy}
 
 % Left header: logo
-%\lhead{\includegraphics[width=5cm]{}}
+\lhead{\includegraphics[width=5cm]{% templatetag openbrace %}{{LOGO_FILENAME}}{% templatetag closebrace %}}
 
 % Define footer
 \lfoot{Katharineum zu Lübeck}
@@ -114,23 +114,17 @@ Stand: {% now "j. F Y H:i" %}\\
         \color{ {{c}} }
         {{ sub.lesson }} &
 
-        \color{ {{c}} }
-        lehrer &
+        \color{ {{c}} } {% include "timetable/latex/teacher.tex" %} &
 
-        \color{ {{c}} }
-        fach &
+        \color{ {{c}} } {% include "timetable/latex/subject.tex" %} &
 
-        \color{ {{c}} }
-        raum &
+        \color{ {{c}} } {% include "timetable/latex/room.tex" %} &
 
-        {# Display badge (for cancellations) #}
+        {# Display badge (for cancellations) #}     {# Display notice and new line #}
         {% if sub.badge %}
         \large\badge{ {{ sub.badge }} }
-        {% endif %}
+        {% endif %} \color{ {{c}} } \Large\textit{ {{sub.text|default:""}} } \\
 
-        {# Display notice and new line #}
-        \color{ {{c}} }
-        \Large\textit{ {{sub.text|default:""}} } \\
     {% endwith %}
     {% endfor %}
     \end{longtable}
