@@ -21,3 +21,46 @@
         </div>
     {% endfor %}
 {% endif %}
+
+{% if hints_b %}
+    <ul class="collapsible">
+        <li>
+            <div class="collapsible-header " style="font-size: 16px;">
+                <div class="col s12">
+                    <i class="material-icons left">add</i>
+                    Es gibt
+                    {% if hints_b_mode == "week" %}
+                        diese Woche
+                    {% else %}
+                        heute
+                    {% endif %}
+                    {% if hints %}
+                        noch
+                    {% endif %}
+                    {{ hints_b|length }}
+                    {% if hints %}
+                        weitere(n)
+                    {% endif %}
+                    Hinweis(e).
+                    <i class="material-icons right collapsible-trigger"></i>
+                </div>
+            </div>
+            <div class="collapsible-body">
+                {% for hint in hints_b %}
+                    {% if not hint.teachers %}
+                        <div>
+                            <strong>
+                                {{ hint.classes.all|join:", " }},
+                            </strong>
+                            {{ hint.from_date|date:"D, d.m." }},
+                            {% if hint.from_date != hint.to_date %}
+                                bis {{ hint.to_date|date:"D, d.m." }}
+                            {% endif %}:
+                            {{ hint.text|safe_markdown }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </li>
+    </ul>
+{% endif %}

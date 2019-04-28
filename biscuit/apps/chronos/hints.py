@@ -17,9 +17,29 @@ def get_all_hints_by_class_and_time_period(_class, from_date, to_date):
     return hints_match
 
 
+def get_all_hints_for_teachers_by_time_period(from_date, to_date):
+    hints_tmp = get_all_hints_by_time_period(from_date, to_date)
+    hints_match = []
+    for hint in hints_tmp:
+        if hint.teachers:
+            hints_match.append(hint)
+    return hints_match
+
+
+def get_all_hints_not_for_teachers_by_time_period(from_date, to_date):
+    hints_tmp = get_all_hints_by_time_period(from_date, to_date)
+    hints_match = []
+    for hint in hints_tmp:
+        if not hint.teachers:
+            hints_match.append(hint)
+    return hints_match
+
+
 def get_all_hints_by_time_period(from_date, to_date):
     print(from_date, to_date)
-    week_days = [from_date + datetime.timedelta(days=i) for i in range(5)]
+    delta = to_date - from_date
+    print(delta.days + 1)
+    week_days = [from_date + datetime.timedelta(days=i) for i in range(delta.days + 1)]
 
     hints = []
     for week_day in week_days:

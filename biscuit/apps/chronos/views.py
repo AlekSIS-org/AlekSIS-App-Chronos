@@ -11,7 +11,8 @@ from material import Fieldset, Row
 from schoolapps.settings import SHORT_WEEK_DAYS, LONG_WEEK_DAYS
 from timetable.filters import HintFilter
 from timetable.forms import HintForm
-from timetable.hints import get_all_hints_by_date, get_all_hints_by_time_period, get_all_hints_by_class_and_time_period
+from timetable.hints import get_all_hints_by_date, get_all_hints_by_time_period, get_all_hints_by_class_and_time_period, \
+    get_all_hints_for_teachers_by_time_period, get_all_hints_not_for_teachers_by_time_period
 from timetable.pdf import generate_class_tex, generate_pdf
 
 from untisconnect.plan import get_plan, TYPE_TEACHER, TYPE_CLASS, TYPE_ROOM, parse_lesson_times
@@ -98,10 +99,17 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
 
     # print(monday_of_week)
     hints = None
+    hints_b = None
 
     if plan_type == 'teacher':
         _type = TYPE_TEACHER
         el = get_teacher_by_id(plan_id)
+
+        # Get hints
+        if smart:
+            hints = list(get_all_hints_for_teachers_by_time_period(monday_of_week, friday))
+            hints_b = list(get_all_hints_not_for_teachers_by_time_period(monday_of_week, friday))
+            print(hints)
     elif plan_type == 'class':
         _type = TYPE_CLASS
         el = get_class_by_id(plan_id)
@@ -133,7 +141,9 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
         "selected_year": year,
         "short_week_days": SHORT_WEEK_DAYS,
         "long_week_days": LONG_WEEK_DAYS,
-        "hints": hints
+        "hints": hints,
+        "hints_b": hints_b,
+        "hints_b_mode": "week",
     }
 
     return render(request, 'timetable/plan.html', context)
@@ -162,25 +172,26 @@ def my_plan(request, year=None, month=None, day=None):
         el = get_teacher_by_shortcode(shortcode)
         plan_id = el.id
         raw_type = "teacher"
-        # print(el)
-        hints = []
+
+        # Get hints
+        hints = list(get_all_hints_for_teachers_by_time_period(date, date))
+        hints_b = list(get_all_hints_not_for_teachers_by_time_period(date, date))
+
     elif _type == UserInformation.STUDENT:
         _type = TYPE_CLASS
         _name = UserInformation.user_classes(request.user)[0]
-        # print(_name)
         el = get_class_by_name(_name)
         plan_id = el.id
         raw_type = "class"
 
         # Get hints
         hints = list(get_all_hints_by_class_and_time_period(el, date, date))
-        print(hints)
+        hints_b = None
+
     else:
         return redirect("timetable_admin_all")
-    # print(monday_of_week)
 
     plan = get_plan(_type, plan_id, smart=True, monday_of_week=monday_of_week)
-    # print(parse_lesson_times())
 
     context = {
         "type": _type,
@@ -193,9 +204,10 @@ def my_plan(request, year=None, month=None, day=None):
         "date": date,
         "date_js": int(date.timestamp()) * 1000,
         "display_date_only": True,
-        "hints": hints
+        "hints": hints,
+        "hints_b": hints_b,
+        "hints_b_mode": "day",
     }
-    # print(context["week_day"])
 
     return render(request, 'timetable/myplan.html', context)
 

@@ -36,7 +36,6 @@
         {% for hint in f.qs %}
             <li>
                 <div class="collapsible-header row no-margin">
-                    <i class="material-icons">keyboard_arrow_down</i>
 
                     <div class="col s10">
                         <strong>{{ hint.from_date }} &mdash; {{ hint.to_date }}</strong> für
@@ -52,9 +51,8 @@
                         {% endif %}
                     </div>
                     <div class="col s2">
-                        <div class="right">
-                            <i class="material-icons center">more_vert</i>
-                        </div>
+                        <i class="material-icons right collapsible-trigger v2"></i>
+
                     </div>
 
                 </div>
@@ -81,8 +79,10 @@
         {% endfor %}
     </ul>
     <p>
-        <span class="badge new green no-float no-margin">Lehrkräfte</span> Lehrkräfte sehen den Hinweis &nbsp;&nbsp;
-        <span class="badge new red no-float no-margin">Lehrkräfte</span> Lehrkräfte sehen den Hinweis
+        <span class="badge new green no-float no-margin">Lehrkräfte</span>
+        Lehrkräfte sehen den Hinweis &nbsp;&nbsp;
+        <span class="badge new red no-float no-margin">Lehrkräfte</span>
+        Lehrkräfte sehen den Hinweis
         <strong>nicht</strong>
     </p>
 </main>
