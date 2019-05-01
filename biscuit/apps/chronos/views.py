@@ -162,6 +162,9 @@ def my_plan(request, year=None, day=None, month=None):
     plan, holidays = get_plan(_type, plan_id, smart=True, monday_of_week=monday_of_week)
     # print(parse_lesson_times())
 
+    holiday_for_the_day = holidays[date.isoweekday() - 1]
+    # print(holiday_for_the_day)
+
     context = {
         "type": _type,
         "raw_type": raw_type,
@@ -172,7 +175,8 @@ def my_plan(request, year=None, day=None, month=None):
         "week_day": date.isoweekday() - 1,
         "date": date,
         "date_js": int(date.timestamp()) * 1000,
-        "display_date_only": True
+        "display_date_only": True,
+        "holiday": holiday_for_the_day,
     }
     # print(context["week_day"])
 
