@@ -12,6 +12,7 @@
 \usepackage{longtable}
 \usepackage{multirow}
 \usepackage{color, colortbl}
+\usepackage[colorlinks, linkcolor = black, citecolor = black, filecolor = black, urlcolor = black]{hyperref}
 
 \usepackage{ulem, xpatch}
 \xpatchcmd{\sout}
@@ -57,14 +58,14 @@ Stand: {% now "j. F Y H:i" %}\\
     {#    \vspace{10pt}#}
     \section*{\Huge Vertretungen {{ date|date:"l, j. F Y"}}}
 
+    {%  include "timetable/latex/hints.tex" %}
+
     {% if header_info.is_box_needed %}
-    \fbox{
     \begin{tabular}{@{}ll@{}}
     {% for row in header_info.rows %}
         \textbf{ {{ row.0 }} } & {{ row.1 }} \\
     {% endfor %}
     \end{tabular}
-    }
     {% endif %}
 
     % Init table

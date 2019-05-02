@@ -54,3 +54,4 @@ def get_all_hints_by_time_period(from_date, to_date):
 def filter_date(date):
     hints = Hint.objects.filter(from_date__lte=date, to_date__gte=date).order_by("from_date", "classes")
     return hints
+

@@ -6,12 +6,11 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404, FileResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
-from material import Fieldset, Row
 
 from schoolapps.settings import SHORT_WEEK_DAYS, LONG_WEEK_DAYS
 from timetable.filters import HintFilter
 from timetable.forms import HintForm
-from timetable.hints import get_all_hints_by_date, get_all_hints_by_time_period, get_all_hints_by_class_and_time_period, \
+from timetable.hints import get_all_hints_by_time_period, get_all_hints_by_class_and_time_period, \
     get_all_hints_for_teachers_by_time_period, get_all_hints_not_for_teachers_by_time_period
 from timetable.pdf import generate_class_tex, generate_pdf
 
@@ -239,9 +238,12 @@ def sub_pdf(request):
         subs = get_substitutions_by_date(date)
         sub_table = generate_sub_table(subs)
         header_info = get_header_information(subs, date)
+        hints = list(get_all_hints_by_time_period(date, date))
 
+        # latex = convert_markdown_2_latex(hints[0].text)
+        # print(latex)
         # Generate LaTeX
-        tex = generate_class_tex(sub_table, date, header_info)
+        tex = generate_class_tex(sub_table, date, header_info, hints)
 
         # Generate PDF
         generate_pdf(tex, "class{}".format(i))

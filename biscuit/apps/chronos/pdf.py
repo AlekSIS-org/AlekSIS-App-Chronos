@@ -114,8 +114,8 @@ def generate_pdf(tex, filename):
     tex_file.close()
 
     # Execute pdflatex to generate the PDF
-    bash_command = "pdflatex -output-directory {} {}.tex".format(os.path.join(BASE_DIR, "latex"),
-                                                                 os.path.join(BASE_DIR, "latex", filename))
+    bash_command = "pdflatex -halt-on-error -output-directory {} {}.tex".format(os.path.join(BASE_DIR, "latex"),
+                                                                                os.path.join(BASE_DIR, "latex", filename))
     print(bash_command)
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
     output = process.communicate()[0]
@@ -139,73 +139,14 @@ def tex_replacer(s):
     return s
 
 
-def generate_class_tex(subs, date, header_info):
+def generate_class_tex(subs, date, header_info, hints=None):
     """Generate LaTeX for a PDF by a substitution table"""
 
-    tex_body = ""
-
-    # Format dates
-    # status_date = formats.date_format(date, format="j. F Y, \\K\\W W ")
-    # current_date = formats.date_format(timezone.datetime.now(), format="j. F Y H:i")
-    # head_date = formats.date_format(date, format="l, j. F Y")
-
-    # Generate header with dates
-    # tex_body += TEX_HEADER_CLASS % (status_date, current_date, head_date)
-
-    # if header_info.is_box_needed():
-    #     tex_body += TEX_HEADER_BOX_START
-    #     for row in header_info.rows:
-    #         tex_body += TEX_HEADER_BOX_ROW_A % row[0]
-    #     tex_body += TEX_HEADER_BOX_MIDDLE
-    #     for row in header_info.rows:
-    #         tex_body += TEX_HEADER_BOX_ROW_B % row[1]
-    #     tex_body += TEX_HEADER_BOX_END
-    # Begin table
-    # tex_body += TEX_TABLE_HEADER_CLASS
-
-    # color_background = True
-    # last_classes = ""
-    for sub in subs:
-        # Color groups of classes in grey/white
-        # if last_classes != sub.classes:
-        #     color_background = not color_background
-        #
-        # last_classes = sub.classes
-
-        # if color_background:
-        #     tex_body += '\\rowcolor{grey}'
-
-        # Get color tag for row
-        # color = "\color{%s}" % sub.color
-
-        # Print classes
-        # print(sub.classes)
-        # tex_body += color
-        # tex_body += '\\textbf{' + sub.classes + '} & '
-
-        # Print lesson number, teacher, subject and room
-        for i in [sub.lesson, sub.teacher, sub.subject, sub.room]:
-            # tex_body += color
-            tex_body += tex_replacer(i) + ' & '
-
-        # Print badge (Cancellation)
-        # if sub.badge is not None:
-        #     tex_body += """\\large\\badge{%s}""" % sub.badge
-
-        # Print notice and new line
-        # tex_body += color
-        # tex_body += "\\Large\\textit{%s}\\\\\n" % (sub.text or "")
-
-    # End table
-    # tex_body += '\\end{longtable}'
-
-    # Connect header, body and footer
-    # tex_content = TEX_HEADER + tex_body + TEX_FOOTER
-    # return tex_content
     context = {
         "subs": subs,
         "date": date,
         "header_info": header_info,
-        "LOGO_FILENAME": LOGO_FILENAME
+        "LOGO_FILENAME": LOGO_FILENAME,
+        "hints": hints
     }
     return render_to_string("timetable/latex/substitutions.tex", context)
