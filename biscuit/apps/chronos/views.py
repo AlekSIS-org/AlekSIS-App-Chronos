@@ -24,6 +24,10 @@ from schoolapps.settings import BASE_DIR
 from .models import Hint
 
 
+####################
+# HELPER FUNCTIONS #
+####################
+
 def get_all_context():
     teachers = get_all_teachers()
     classes = get_all_classes()
@@ -36,20 +40,6 @@ def get_all_context():
         'subjects': subjects
     }
     return context
-
-
-@login_required
-@permission_required("timetable.show_plan")
-def all(request):
-    context = get_all_context()
-    return render(request, 'timetable/all.html', context)
-
-
-@login_required
-@permission_required("timetable.show_plan")
-def quicklaunch(request):
-    context = get_all_context()
-    return render(request, 'timetable/quicklaunch.html', context)
 
 
 def get_calendar_weeks(year=timezone.datetime.now().year):
@@ -84,23 +74,84 @@ def get_calendar_week(calendar_week, year=timezone.datetime.now().year):
     return None
 
 
+def get_next_weekday(date):
+    """Get the next weekday by a datetime object"""
+
+    if date.isoweekday() in {6, 7}:
+        if date.isoweekday() == 6:
+            plus = 2
+        else:
+            plus = 1
+        date += datetime.timedelta(days=plus)
+    return date
+
+
+#############
+# OVERVIEWS #
+#############
+
+@login_required
+@permission_required("timetable.show_plan")
+def all(request):
+    """
+    [DJANGO VIEW]
+    Show all plans as collection
+    :param request: Django request
+    :return: rendered template
+    """
+    context = get_all_context()
+    return render(request, 'timetable/all.html', context)
+
+
+@login_required
+@permission_required("timetable.show_plan")
+def quicklaunch(request):
+    """
+    [DJANGO VIEW]
+    Show all plans as buttons
+    :param request: Django request
+    :return: rendered template
+    """
+    context = get_all_context()
+    return render(request, 'timetable/quicklaunch.html', context)
+
+
+#########
+# PLANS #
+#########
+
 @login_required
 @permission_required("timetable.show_plan")
 def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().year,
          calendar_week=timezone.datetime.now().isocalendar()[1]):
+    """
+    [DJANGO VIEW]
+    Show a timetable (class, teacher, room, smart/regular)
+    :param request: Django requests
+    :param plan_type: "teacher", "class" or "room"
+    :param plan_id: UNTIS-ID of corresponding object
+    :param regular: regular plan = True, smart plan = False
+    :param year: year of plan (only for smart plan)
+    :param calendar_week: calendar week in year (only for smart plan)
+    :return:
+    """
+
+    # Regular or smart plan?
     if regular == "regular":
         smart = False
     else:
         smart = True
 
+    # Get monday and friday of week
     monday_of_week = get_calendar_week(calendar_week, year)["first_day"]
     friday = monday_of_week + datetime.timedelta(days=4)
 
-    # print(monday_of_week)
+    # Init hints
     hints = None
     hints_b = None
 
     if plan_type == 'teacher':
+        # Teacher
         _type = TYPE_TEACHER
         el = get_teacher_by_id(plan_id)
 
@@ -108,24 +159,25 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
         if smart:
             hints = list(get_all_hints_for_teachers_by_time_period(monday_of_week, friday))
             hints_b = list(get_all_hints_not_for_teachers_by_time_period(monday_of_week, friday))
-            print(hints)
+
     elif plan_type == 'class':
+        # Class
         _type = TYPE_CLASS
         el = get_class_by_id(plan_id)
 
         # Get hints
         if smart:
             hints = list(get_all_hints_by_class_and_time_period(el, monday_of_week, friday))
-            print(hints)
 
     elif plan_type == 'room':
+        # Room
         _type = TYPE_ROOM
         el = get_room_by_id(plan_id)
     else:
         raise Http404('Plan not found.')
 
+    # Get plan
     plan = get_plan(_type, plan_id, smart=smart, monday_of_week=monday_of_week)
-    # print(parse_lesson_times())
 
     context = {
         "smart": smart,
@@ -160,12 +212,15 @@ def my_plan(request, year=None, month=None, day=None):
     if next_weekday != date:
         return redirect("timetable_my_plan", next_weekday.year, next_weekday.month, next_weekday.day)
 
+    # Get calendar week and monday of week
     calendar_week = date.isocalendar()[1]
     monday_of_week = get_calendar_week(calendar_week, date.year)["first_day"]
 
+    # Get user type (student, teacher, etc.)
     _type = UserInformation.user_type(request.user)
 
     if _type == UserInformation.TEACHER:
+        # Teacher
         _type = TYPE_TEACHER
         shortcode = request.user.username
         el = get_teacher_by_shortcode(shortcode)
@@ -177,6 +232,7 @@ def my_plan(request, year=None, month=None, day=None):
         hints_b = list(get_all_hints_not_for_teachers_by_time_period(date, date))
 
     elif _type == UserInformation.STUDENT:
+        # Student
         _type = TYPE_CLASS
         _name = UserInformation.user_classes(request.user)[0]
         el = get_class_by_name(_name)
@@ -188,8 +244,10 @@ def my_plan(request, year=None, month=None, day=None):
         hints_b = None
 
     else:
+        # No student or teacher > no my plan
         return redirect("timetable_admin_all")
 
+    # Get plan
     plan = get_plan(_type, plan_id, smart=True, monday_of_week=monday_of_week)
 
     context = {
@@ -211,17 +269,9 @@ def my_plan(request, year=None, month=None, day=None):
     return render(request, 'timetable/myplan.html', context)
 
 
-def get_next_weekday(date):
-    """Get the next weekday by a datetime object"""
-
-    if date.isoweekday() in {6, 7}:
-        if date.isoweekday() == 6:
-            plus = 2
-        else:
-            plus = 1
-        date += datetime.timedelta(days=plus)
-    return date
-
+#################
+# SUBSTITUTIONS #
+#################
 
 def sub_pdf(request):
     """Show substitutions as PDF for the next weekday (specially for monitors)"""
@@ -299,6 +349,10 @@ def substitutions(request, year=None, month=None, day=None):
     return render(request, 'timetable/substitution.html', context)
 
 
+###################
+# HINT MANAGEMENT #
+###################
+
 @login_required
 @permission_required("timetable.can_view_hint")
 def hints(request):
@@ -307,7 +361,6 @@ def hints(request):
     if request.session.get("msg", False):
         msg = request.session["msg"]
         request.session["msg"] = None
-    # f.form.layout = Fieldset("Hi", Row("from_date", "to_date", "classes", "teachers"))
     return render(request, "timetable/hints.html", {"f": f, "msg": msg})
 
 
