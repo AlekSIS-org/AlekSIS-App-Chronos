@@ -127,12 +127,15 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
 @permission_required("timetable.show_plan")
 def my_plan(request, year=None, day=None, month=None):
     date = timezone.datetime.now()
+    time_now = datetime.datetime.now().time()
     if year is not None and day is not None and month is not None:
         date = timezone.datetime(year=year, month=month, day=day)
+        if date != timezone.datetime.now():
+            time_now = datetime.time(0)
 
     # Get next weekday if it is a weekend
-    next_weekday = get_next_weekday(date)
-    if next_weekday != date:
+    next_weekday = get_next_weekday(date, time_now)
+    if next_weekday != date :
         return redirect("timetable_my_plan", next_weekday.year, next_weekday.month, next_weekday.day)
 
     calendar_week = date.isocalendar()[1]
@@ -178,9 +181,11 @@ def my_plan(request, year=None, day=None, month=None):
     return render(request, 'timetable/myplan.html', context)
 
 
-def get_next_weekday(date):
+def get_next_weekday(date, time):
     """Get the next weekday by a datetime object"""
 
+    if time > datetime.time(15, 35):
+        date += datetime.timedelta(days=1)
     if date.isoweekday() in {6, 7}:
         if date.isoweekday() == 6:
             plus = 2
