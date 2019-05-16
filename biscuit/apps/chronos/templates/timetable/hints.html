@@ -3,6 +3,8 @@
 {% load martortags %}
 
 <main>
+    <h4>Hinweise</h4>
+
     {% if msg %}
         <div class="alert success">
             <p>
@@ -12,23 +14,27 @@
             </p>
         </div>
     {% endif %}
-    <h4>Hinweise</h4>
-
 
     <div class="card">
         <form method="GET" class="card-content">
-            <a href="{% url 'timetable_add_hint' %}" class="waves-effect waves-light btn green">
-                <i class="material-icons left">add</i>
-                Neuen Hinweis erstellen
-            </a>
+            <div class="row no-margin">
+                <div class="col s12 m4">
+                    <a href="{% url 'timetable_add_hint' %}" class="waves-effect waves-light btn green">
+                        <i class="material-icons left">add</i>
+                        Neuen Hinweis erstellen
+                    </a>
+                </div>
+                <div class="col s12 m8 right-align">
+                    <button type="submit" class="waves-effect waves-green btn-flat">
+                        <i class="material-icons left">refresh</i> Filter aktualisieren
+                    </button>
+                    <a class="waves-effect waves-red btn-flat " href="{% url "timetable_hints" %}">
+                        <i class="material-icons left">clear</i> Filter entfernen
+                    </a>
+                </div>
+            </div>
             {% form form=f.form %}
             {% endform %}
-            <button type="submit" class="waves-effect waves-light btn">
-                <i class="material-icons left">refresh</i> Filter aktualisieren
-            </button>
-            <a class="waves-effect waves-light btn red" href="{% url "timetable_hints" %}">
-                <i class="material-icons left">clear</i> Filter entfernen
-            </a>
         </form>
     </div>
 
@@ -40,14 +46,10 @@
                     <div class="col s10">
                         <strong>{{ hint.from_date }} &mdash; {{ hint.to_date }}</strong> für
                         <strong>
-                            {% for class in hint.classes.all %}
-                                {{ class }},
-                            {% endfor %}
+                            {{ hint.classes_formatted }}
                         </strong>
                         {% if hint.teachers %}
                             <span class="badge new green no-float no-margin">Lehrkräfte</span>
-                        {% else %}
-                            <span class="badge new red no-float no-margin">Lehrkräfte</span>
                         {% endif %}
                     </div>
                     <div class="col s2">
@@ -78,13 +80,6 @@
             </li>
         {% endfor %}
     </ul>
-    <p>
-        <span class="badge new green no-float no-margin">Lehrkräfte</span>
-        Lehrkräfte sehen den Hinweis &nbsp;&nbsp;
-        <span class="badge new red no-float no-margin">Lehrkräfte</span>
-        Lehrkräfte sehen den Hinweis
-        <strong>nicht</strong>
-    </p>
 </main>
 
 {% include 'partials/footer.html' %}

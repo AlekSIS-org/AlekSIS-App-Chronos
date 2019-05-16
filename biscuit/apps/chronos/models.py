@@ -1,6 +1,8 @@
 from datetime import date
 
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from martor.models import MartorField
 
 from timetable.m2l import convert_markdown_2_latex
@@ -63,6 +65,9 @@ class Hint(models.Model):
              update_fields=None):
         # Convert LaTeX already when saving as cache because then is no need to do it later > performance savings
         self.text_as_latex = convert_markdown_2_latex(self.text)
+
+        super(Hint, self).save(force_insert=force_insert, force_update=force_update, using=using,
+                               update_fields=update_fields)
 
         # Format classes already > cache, too
         self.classes_formatted = format_classes(self.classes.all())

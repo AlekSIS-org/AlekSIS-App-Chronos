@@ -372,7 +372,8 @@ def add_hint(request):
         form = HintForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            i = form.save()
+            i.save()
             # return redirect('timetable_add_hint')
             form = HintForm()
             msg = "success"
@@ -390,7 +391,8 @@ def edit_hint(request, id):
         form = HintForm(request.POST, instance=hint)
 
         if form.is_valid():
-            form.save()
+            i = form.save()
+            i.save()
             request.session["msg"] = "success_edit"
             return redirect('timetable_hints')
     else:
