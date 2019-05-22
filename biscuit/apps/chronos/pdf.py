@@ -4,6 +4,7 @@ import subprocess
 from django.template.loader import render_to_string
 
 from schoolapps.settings import BASE_DIR
+from timetable.models import register_log_with_filename
 
 LOGO_FILENAME = os.path.join(BASE_DIR, "static", "common", "logo.png")
 
@@ -22,6 +23,8 @@ def generate_pdf(tex, filename):
                                                                                              filename))
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
     output = process.communicate()[0]
+
+    register_log_with_filename("latex_{}".format(filename), "latex", "{}.log".format(filename), process.returncode)
     print("[LATEX]", output)
 
 

@@ -3,7 +3,7 @@
 {% load martortags %}
 
 <main>
-    <h4>Hinweise</h4>
+    <h4>Hinweismanagement</h4>
 
     {% if msg %}
         <div class="alert success">
@@ -60,12 +60,12 @@
                 </div>
                 <div class="collapsible-body row">
                     <div class="right">
-                        <a class="btn-flat waves-effect waves-teal green-text"
+                        <a class="btn-flat waves-effect waves-green green-text"
                            href="{% url "timetable_edit_hint" hint.id %}">
                             <i class="material-icons left">edit</i>
                             <span class="hide-on-small-only">Bearbeiten</span>
                         </a>
-                        <a class="btn-flat waves-effect waves-teal red-text delete-button"
+                        <a class="btn-flat waves-effect waves-red red-text delete-button"
                            href="{% url "timetable_delete_hint" hint.id %}">
                             <i class="material-icons left">delete</i>
                             <span class="hide-on-small-only">Löschen</span>

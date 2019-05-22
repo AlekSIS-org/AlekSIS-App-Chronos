@@ -18,6 +18,7 @@ def convert_markdown_2_latex(s):
         process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
         output = process.communicate()[0]
         print("[MD TO LATEX]", output)
+        print("[RETURN CODE]", process.returncode)
 
         # Read converted latex from file
         tex_file = open(os.path.join(BASE_DIR, "latex", "m2l.tex"), "r", encoding="utf8")
