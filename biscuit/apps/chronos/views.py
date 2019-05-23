@@ -1,5 +1,6 @@
 import datetime
 import os
+import traceback
 
 from PyPDF2 import PdfFileMerger
 from django.contrib.auth.decorators import login_required, permission_required
@@ -7,6 +8,7 @@ from django.http import Http404, FileResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 
+from debug.models import register_traceback, register_return_0
 from schoolapps.settings import SHORT_WEEK_DAYS, LONG_WEEK_DAYS
 from timetable.filters import HintFilter
 from timetable.forms import HintForm
@@ -299,16 +301,23 @@ def sub_pdf(request):
         generate_pdf(tex, "class{}".format(i))
 
     # Merge PDFs
-    merger = PdfFileMerger()
-    class0 = open(os.path.join(BASE_DIR, "latex", "class0.pdf"), "rb")
-    class1 = open(os.path.join(BASE_DIR, "latex", "class1.pdf"), "rb")
-    merger.append(fileobj=class0)
-    merger.append(fileobj=class1)
+    try:
+        merger = PdfFileMerger()
+        class0 = open(os.path.join(BASE_DIR, "latex", "class0.pdf"), "rb")
+        class1 = open(os.path.join(BASE_DIR, "latex", "class1.pdf"), "rb")
+        merger.append(fileobj=class0)
+        merger.append(fileobj=class1)
 
-    # Write merged PDF to class.pdf
-    output = open(os.path.join(BASE_DIR, "latex", "class.pdf"), "wb")
-    merger.write(output)
-    output.close()
+        # Write merged PDF to class.pdf
+        output = open(os.path.join(BASE_DIR, "latex", "class.pdf"), "wb")
+        merger.write(output)
+        output.close()
+
+        # Register successful merge in debugging tool
+        register_return_0("merge_class", "pypdf2")
+    except Exception:
+        # Register exception in debugging tool
+        register_traceback("merge_class", "pypdf2")
 
     # Read and response PDF
     file = open(os.path.join(BASE_DIR, "latex", "class.pdf"), "rb")

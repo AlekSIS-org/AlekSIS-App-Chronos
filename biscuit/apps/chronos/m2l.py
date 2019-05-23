@@ -1,6 +1,7 @@
 import os
 import subprocess
 
+from debug.models import register_log_with_filename
 from schoolapps.settings import BASE_DIR
 
 
@@ -21,9 +22,10 @@ def convert_markdown_2_latex(s):
             os.path.join(BASE_DIR, "latex", "m2l.md"))
         process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
         output = process.communicate()[0]
-        print("[MD TO LATEX]", output)
-        print("[RETURN CODE]", process.returncode)
-        # register_log_with_filename("m2l", "m2l", "m2l.log", process.returncode)
+        del output
+
+        # Register log file in debugging tool
+        register_log_with_filename("m2l", "m2l", "m2l.log", process.returncode)
 
         # Read converted latex from file
         tex_file = open(os.path.join(BASE_DIR, "latex", "m2l.tex"), "r", encoding="utf8")

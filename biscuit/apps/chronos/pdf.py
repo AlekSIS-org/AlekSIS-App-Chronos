@@ -23,9 +23,10 @@ def generate_pdf(tex, filename):
                                                                                              filename))
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
     output = process.communicate()[0]
+    del output
 
+    # Register log file in debugging tool
     register_log_with_filename("latex_{}".format(filename), "latex", "{}.log".format(filename), process.returncode)
-    print("[LATEX]", output)
 
 
 def generate_class_tex(subs, date, header_info, hints=None):
