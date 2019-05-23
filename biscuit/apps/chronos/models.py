@@ -77,52 +77,8 @@ class Hint(models.Model):
                                update_fields=update_fields)
 
 
-class DebugLogGroup(models.Model):
-    # Meta
-    id = models.CharField(primary_key=True, blank=False, max_length=100, verbose_name="ID")
-    name = models.CharField(blank=False, max_length=200, verbose_name="Name")
-
-    class Meta:
-        verbose_name = "Debug-Log-Gruppe"
-        verbose_name_plural = "Debug-Log-Gruppen"
-
-    def __str__(self):
-        return self.name or self.id
 
 
-class DebugLog(models.Model):
-    # Meta
-    id = models.CharField(primary_key=True, blank=False, max_length=100, verbose_name="ID")
-    name = models.CharField(blank=False, max_length=200, verbose_name="Name")
-    group = models.ForeignKey(DebugLogGroup, on_delete=models.SET_NULL, default=None, null=True, blank=True,
-                              related_name="logs", verbose_name="Gruppe")  # If null, it wouldn't be displayed
-
-    # Data
-    return_code = models.IntegerField(blank=True, null=True, verbose_name="UNIX-Rückgabecode")
-    filename = models.FilePathField(path=os.path.join(BASE_DIR, "latex"), match=".*.log",
-                                    verbose_name="Dateiname zur Logdatei")
-    updated_at = models.DateTimeField(blank=False, default=timezone.now, verbose_name="Aktualisierungszeitpunkt")
-
-    class Meta:
-        verbose_name = "Debug-Log"
-        verbose_name_plural = "Debug-Logs"
-
-    def __str__(self):
-        return self.name or self.id
-
-
-def get_log_group_by_id(id):
-    p, _ = DebugLogGroup.objects.get_or_create(id=id)
-    return p
-
-
-def register_log_with_filename(id, group_id, filename, return_code):
-    p, _ = DebugLog.objects.get_or_create(id=id)
-    group = get_log_group_by_id(group_id)
-    p.group = group
-    p.return_code = return_code
-    p.filename = filename
-    p.save()
 
 class Timetable(models.Model):
     class Meta:

@@ -4,6 +4,9 @@ import subprocess
 from schoolapps.settings import BASE_DIR
 
 
+# from .models import register_log_with_filename
+
+
 def convert_markdown_2_latex(s):
     try:
         # Write markdown file
@@ -12,13 +15,15 @@ def convert_markdown_2_latex(s):
         md_file.close()
 
         # Execute pandoc to convert markdown to latex
-        bash_command = "pandoc --from markdown --to latex --output {} {}".format(
+        bash_command = "pandoc --log={} --from markdown --to latex --output {} {}".format(
+            os.path.join(BASE_DIR, "latex", "m2l.log"),
             os.path.join(BASE_DIR, "latex", "m2l.tex"),
             os.path.join(BASE_DIR, "latex", "m2l.md"))
         process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
         output = process.communicate()[0]
         print("[MD TO LATEX]", output)
         print("[RETURN CODE]", process.returncode)
+        # register_log_with_filename("m2l", "m2l", "m2l.log", process.returncode)
 
         # Read converted latex from file
         tex_file = open(os.path.join(BASE_DIR, "latex", "m2l.tex"), "r", encoding="utf8")

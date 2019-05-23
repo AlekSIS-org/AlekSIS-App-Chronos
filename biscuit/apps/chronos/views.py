@@ -408,17 +408,3 @@ def delete_hint(request, id):
     hint.delete()
     request.session["msg"] = "success_delete"
     return redirect('timetable_hints')
-
-
-@login_required
-# @permission_required("timetable.")
-def debugging_tool(request):
-    f = open(os.path.join(BASE_DIR, "latex", "class0.log"), "r")
-    latex_1 = f.read()
-    f.close()
-
-    f = open(os.path.join(BASE_DIR, "latex", "class1.log"), "r")
-    latex_2 = f.read()
-    f.close()
-
-    return render(request, "timetable/debug.html", {"latex_1": latex_1, "latex_2": latex_2})
