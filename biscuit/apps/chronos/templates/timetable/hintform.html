@@ -77,6 +77,17 @@
         {% endif %}
         {{ form.classes.label_tag }}
         {{ form.classes }}
+        <a href="#" id="select-all-classes">Alle auswählen</a>
+        ·
+        <a href="#" id="deselect-all-classes">Alle abwählen</a>
+        <script type="text/javascript">
+            $("#select-all-classes").click(function () {
+                $(".select-wrapper ul li:not(.selected)").click();
+            })
+            $("#deselect-all-classes").click(function () {
+                $(".select-wrapper ul li.selected").click();
+            })
+        </script>
 
         {% if form.teachers.errors %}
             <div class="alert error">
