@@ -1,0 +1,26 @@
+{% load martortags %}
+{% if hints %}
+    <ul class="collapsible">
+        <li>
+            <div class="collapsible-header " style="font-size: 16px;">
+                <div class="col s12">
+                    <i class="material-icons left">announcement</i>Es gibt {{ hints|length }} Hinweis(e) für diesen Tag.
+                    <i class="material-icons right collapsible-trigger"></i>
+                </div>
+            </div>
+            <div class="collapsible-body">
+                {% for hint in hints %}
+                    <div>
+                        <strong>
+                            {{ hint.classes.all|join:", " }}{% if hint.teachers and hint.classes.all %},{% endif %}
+                        </strong>
+                        {% if hint.teachers %}
+                            <span class="badge new green no-float no-margin">Lehrkräfte</span>
+                        {% endif %}:
+                        {{ hint.text|safe_markdown }}
+                    </div>
+                {% endfor %}
+            </div>
+        </li>
+    </ul>
+{% endif %}
