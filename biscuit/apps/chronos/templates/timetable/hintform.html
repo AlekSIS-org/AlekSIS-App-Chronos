@@ -1,0 +1,134 @@
+{% include 'partials/header.html' %}
+{% load material_form %}
+{% load martortags %}
+{% load static %}
+{% load widget_tweaks %}
+
+<main>
+    <h4>
+        {% if mode == "new" %}
+            Neuen Hinweis erstellen
+        {% else %}
+            Hinweis bearbeiten
+        {% endif %}
+    </h4>
+
+    {% if msg == "success" %}
+        <div class="alert success">
+            <p>
+                <i class="material-icons left">check_circle</i>
+                Der Hinweis wurde erfolgreich erstellt und veröffentlicht. Weiteren Hinweis anlegen oder zur Übersicht
+                zurück?<br>
+                <a class="btn waves-effect waves-light" href="{% url "timetable_hints" %}"><i
+                        class="material-icons left">arrow_back</i> Zurück zur Übersicht</a>
+                <a class="btn waves-effect waves-light green" href="#add-hint"><i class="material-icons left">add</i>
+                    Weiteren Hinweis hinzufügen</a>
+            </p>
+        </div>
+    {% endif %}
+
+    <form method="post" action="" id="add-hint">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="alert error">
+                <div>
+                    <i class="material-icons left">warning</i>
+                    {{ form.non_field_errors }}
+                </div>
+            </div>
+        {% endif %}
+        <h5>Über welchen Zeitraum soll der Hinweis angezeigt werden? <span class="red-text">*</span></h5>
+
+        <div class="row">
+            <div class="col s12 m6">
+                {% if form.from_date.errors %}
+                    <div class="alert error">
+                        <div>
+                            <i class="material-icons left">warning</i>
+                            {{ form.from_date.errors }}
+                        </div>
+                    </div>
+                {% endif %}
+                {{ form.from_date.label_tag }}
+                {{ form.from_date|add_class:"datepicker required" }}
+            </div>
+            <div class="col s12 m6">
+                {% if form.to_date.errors %}
+                    <div class="alert error">
+                        <div>
+                            <i class="material-icons left">warning</i>
+                            {{ form.to_date.erros }}
+                        </div>
+                    </div>
+                {% endif %}
+                {{ form.to_date.label_tag }}
+                {{ form.to_date|add_class:"datepicker required" }}
+            </div>
+        </div>
+        <h5>Für wen soll der Hinweis angezeigt werden? <span class="red-text">*</span></h5>
+
+        {% if form.classes.errors %}
+            <div class="alert error">
+                <div>
+                    <i class="material-icons left">warning</i>
+                    {{ form.classes.erros }}
+                </div>
+            </div>
+        {% endif %}
+        {{ form.classes.label_tag }}
+        {{ form.classes }}
+        <a href="#" id="select-all-classes">Alle auswählen</a>
+        ·
+        <a href="#" id="deselect-all-classes">Alle abwählen</a>
+        <script type="text/javascript">
+            $("#select-all-classes").click(function () {
+                $(".select-wrapper ul li:not(.selected)").click();
+            })
+            $("#deselect-all-classes").click(function () {
+                $(".select-wrapper ul li.selected").click();
+            })
+        </script>
+
+        {% if form.teachers.errors %}
+            <div class="alert error">
+                <div>
+                    <i class="material-icons left">warning</i>
+                    {{ form.teachers.erros }}
+                </div>
+            </div>
+        {% endif %}
+        <p>
+            <label>
+                {{ form.teachers }}
+                <span>Für Lehrer anzeigen?</span>
+            </label>
+        </p>
+
+        <h5>Hinweistext <span class="red-text">*</span></h5>
+        {% if form.text.errors %}
+            <div class="alert error">
+                <div>
+                    <i class="material-icons left">warning</i>
+                    {{ form.text.erros }}
+                </div>
+            </div>
+        {% endif %}
+        {{ form.text }}
+
+
+        <button type="submit" class="waves-effect waves-light btn green">
+            <i class="material-icons left">save</i> Hinweis {% if mode == "new" %} erstellen und
+            veröffentlichen {% else %} aktualisieren {% endif %}
+        </button>
+    </form>
+
+    <script type="text/javascript" src="{% static 'plugins/js/ace.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/js/mode-markdown.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/js/ext-language_tools.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/js/theme-github.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/js/highlight.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/js/resizable.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'martor/js/martor.min.js' %}"></script>
+</main>
+
+{% include 'partials/footer.html' %}
