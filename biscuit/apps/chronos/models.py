@@ -7,11 +7,18 @@ from martor.models import MartorField
 
 from schoolapps.settings import BASE_DIR
 from timetable.m2l import convert_markdown_2_latex
-from untisconnect.api import get_all_classes, format_classes
-from untisconnect.models import Class
 
-classes = get_all_classes()
-class_choices = [(x.id, x.name) for x in classes]
+from untisconnect.models import Terms
+
+
+try:
+    from untisconnect.api import get_all_classes, format_classes
+    from untisconnect.models import Class
+    classes = get_all_classes()
+    class_choices = [(x.id, x.name) for x in classes]
+except Terms.DoesNotExist:
+    classes = []
+    class_choices = []
 
 
 class HintClass(models.Model):
