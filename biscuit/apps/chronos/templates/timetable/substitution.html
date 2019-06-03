@@ -6,18 +6,43 @@
 </script>
 
 <main>
-    <h3>Vertretungen</h3>
-
-    <div class="row no-print">
-        <div class="col s12 m6 l4 xl3">
-            {% include "timetable/datepicker.html" %}
+    <div class="row no-margin">
+        <div class="col s12 m10">
+            <h4>Vertretungen</h4>
         </div>
         <div class="col l4 xl6">
         </div>
         <div class="col s12 m6 l4 xl3 right align-right">
-            <a class="waves-effect waves-teal btn-flat btn-flat-medium right" href="{% url "timetable_substitutions_pdf %}">
+            <a class="waves-effect waves-teal btn-flat btn-flat-medium right"
+               href="{% url "timetable_substitutions_pdf" %}">
                 <i class="material-icons center">print</i>
             </a>
+        </div>
+    </div>
+
+    <div class="row no-print">
+        <div class="col s12 m6 l8 xl9">
+            {% if header_info.is_box_needed %}
+                <div class="card">
+                    <div class="card-content">
+                        {% for row in header_info.rows %}
+                            <div class="row no-margin">
+                                <div class="col s3">
+                                    <strong>{{ row.0 }}</strong>
+                                </div>
+                                <div class="col s9">
+                                    {{ row.1 }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% include "timetable/hintsinsub.html" %}
+        </div>
+        <div class="col s12 m6 l4 xl3">
+            {% include "timetable/datepicker.html" %}
         </div>
     </div>
 
@@ -26,8 +51,8 @@
     <table class="substitutions striped">
         <thead>
         <tr>
+            <th><i class="material-icons">people</i></th>
             <th><i class="material-icons">access_time</i></th>
-            <th>Klassen</th>
             <th>Lehrer</th>
             <th>Fach</th>
             <th>Raum</th>
@@ -36,8 +61,15 @@
         </tr>
         </thead>
         <tbody>
+        {% if not sub_table %}
+            <td colspan="7">
+                <p class="flow-text center">
+                    Keine Vertretungen vorhanden
+                </p>
+            </td>
+        {% endif %}
         {% for sub in sub_table %}
-            <tr class="{{ sub.css_class }}">
+            <tr class="{{ sub.color }}-text">
                 <td>
                     {{ sub.classes }}
                 </td>
@@ -47,15 +79,13 @@
                     </strong>
                 </td>
                 <td>
-                    <span class="tooltipped" data-position="bottom"
-                          data-tooltip="{{ sub.teacher_full|safe }}">{{ sub.teacher|safe }}</span>
+                    {% include "timetable/subs/teacher.html" %}
                 </td>
                 <td>
-                    {{ sub.subject|safe }}
+                    {% include "timetable/subs/subject.html" %}
                 </td>
                 <td>
-                    <span class="tooltipped" data-position="bottom"
-                          data-tooltip="{{ sub.room_full|safe }}">{{ sub.room|safe }}</span>
+                    {% include "timetable/subs/room.html" %}
                 </td>
                 <td>
                     {% if sub.badge %}

@@ -37,3 +37,10 @@ except Terms.DoesNotExist:
              name='timetable_substitutions_date'),
         path('class.pdf', failback_view.failback, name="timetable_substitutions_pdf")
     ]
+    
+urlpatterns += [
+    path('hints', views.hints, name="timetable_hints"),
+    path('hints/add', views.add_hint, name="timetable_add_hint"),
+    path('hints/<int:id>/edit', views.edit_hint, name="timetable_edit_hint"),
+    path('hints/<int:id>/delete', views.delete_hint, name="timetable_delete_hint"),
+]

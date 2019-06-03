@@ -1,0 +1,12 @@
+{% if sub.sub.type == 3 %}
+\textbf {Aufsicht }
+{% elif not sub.sub.subject_new and not sub.sub.subject_old %}
+{% elif sub.sub.type == 1 or sub.sub.type == 2 %}
+\sout { {{ sub.sub.subject_old.shortcode }} }
+{% elif sub.sub.subject_new and sub.sub.subject_old %}
+\sout { {{ sub.sub.subject_old.shortcode }} } $\rightarrow$ \textbf { {{ sub.sub.subject_new.shortcode }} }
+{% elif sub.sub.subject_new and not sub.sub.subject_old %}
+\textbf { {{ sub.sub.subject_new.shortcode }} }
+{% else %}
+\textbf { {{ sub.sub.subject_old.shortcode }} }
+{% endif %}
