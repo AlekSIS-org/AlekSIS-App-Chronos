@@ -5,6 +5,10 @@ try:
     from . import views
 
     urlpatterns = [
+        path('hints', views.hints, name="timetable_hints"),
+        path('hints/add', views.add_hint, name="timetable_add_hint"),
+        path('hints/<int:id>/edit', views.edit_hint, name="timetable_edit_hint"),
+        path('hints/<int:id>/delete', views.delete_hint, name="timetable_delete_hint"),
         path('', views.all, name='timetable_admin_all'),
         path('my', views.my_plan, name='timetable_my_plan'),
         path('my/<int:year>/<int:month>/<int:day>/', views.my_plan, name='timetable_my_plan'),
@@ -24,6 +28,10 @@ except Terms.DoesNotExist:
     from . import fallback_view
 
     urlpatterns = [
+        path('hints', fallback_view.fallback, name="timetable_hints"),
+        path('hints/add', fallback_view.fallback, name="timetable_add_hint"),
+        path('hints/<int:id>/edit', fallback_view.fallback, name="timetable_edit_hint"),
+        path('hints/<int:id>/delete', fallback_view.fallback, name="timetable_delete_hint"),
         path('', fallback_view.fallback, name='timetable_admin_all'),
         path('my', fallback_view.fallback, name='timetable_my_plan'),
         path('my/<int:year>/<int:month>/<int:day>/', fallback_view.fallback, name='timetable_my_plan'),
@@ -38,9 +46,4 @@ except Terms.DoesNotExist:
         path('class.pdf', fallback_view.fallback, name="timetable_substitutions_pdf")
     ]
     
-urlpatterns += [
-    path('hints', views.hints, name="timetable_hints"),
-    path('hints/add', views.add_hint, name="timetable_add_hint"),
-    path('hints/<int:id>/edit', views.edit_hint, name="timetable_edit_hint"),
-    path('hints/<int:id>/delete', views.delete_hint, name="timetable_delete_hint"),
-]
+
