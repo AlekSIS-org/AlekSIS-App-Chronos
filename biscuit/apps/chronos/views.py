@@ -19,6 +19,7 @@ from timetable.pdf import generate_class_tex, generate_pdf
 from untisconnect.plan import get_plan, TYPE_TEACHER, TYPE_CLASS, TYPE_ROOM, parse_lesson_times
 from untisconnect.sub import get_substitutions_by_date, generate_sub_table, get_header_information
 from untisconnect.api import *
+from untisconnect.events import get_all_events_by_date
 from userinformation import UserInformation
 
 from schoolapps.settings import BASE_DIR
@@ -339,8 +340,27 @@ def substitutions(request, year=None, month=None, day=None):
         return redirect("timetable_substitutions_date", next_weekday.year, next_weekday.month, next_weekday.day)
 
     # Get subs and generate table
+    events = get_all_events_by_date(date)
+
+    # for b in events:
+    #     print(b.text)
+    #     print("Lehrer")
+    #     for i in b.teachers:
+    #         print(i.name)
+    #
+    #     print("\nRäume")
+    #     for i in b.rooms:
+    #         print(i.name)
+    #
+    #     print("\nKlassen")
+    #     for i in b.classes:
+    #         print(i.name)
+    #
+    #     print("\nAbsenzen")
+    #     for i in b.absences:
+    #         print(i)
     subs = get_substitutions_by_date(date)
-    sub_table = generate_sub_table(subs)
+    sub_table = generate_sub_table(subs, events)
 
     # Get header information and hints
     header_info = get_header_information(subs, date)
