@@ -1,7 +1,7 @@
 import os
 from datetime import date
 
-from django.db import models
+from django.db import models, ProgrammingError
 from django.utils import timezone
 from martor.models import MartorField
 
@@ -10,10 +10,10 @@ from timetable.m2l import convert_markdown_2_latex
 
 from untisconnect.models import Terms
 
-
 try:
     from untisconnect.api import get_all_classes, format_classes
     from untisconnect.models import Class
+
     classes = get_all_classes()
     class_choices = [(x.id, x.name) for x in classes]
 except Terms.DoesNotExist:
@@ -31,10 +31,13 @@ class HintClass(models.Model):
 
 
 # Map all classes from UNTIS to HintClass objects
-for x in classes:
-    obj, _ = HintClass.objects.get_or_create(class_id=x.id)
-    obj.name = x.name
-    obj.save()
+try:
+    for x in classes:
+        obj, _ = HintClass.objects.get_or_create(class_id=x.id)
+        obj.name = x.name
+        obj.save()
+except ProgrammingError:
+    pass
 
 
 class Hint(models.Model):
@@ -82,9 +85,6 @@ class Hint(models.Model):
 
         super(Hint, self).save(force_insert=force_insert, force_update=force_update, using=using,
                                update_fields=update_fields)
-
-
-
 
 
 class Timetable(models.Model):
