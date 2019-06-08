@@ -75,14 +75,14 @@
                 </td>
                 <td>
                     <strong>
-                        {% if not sub.is_event %}
+                        {#                        {% if not sub.is_event %}#}
                         {{ sub.lesson }}
-                        {% else %}
-                            {% for absence in sub.absences %}
-                                {{ absence.lessonfrom }}
-                                {{ absence.lessonto }}
-                            {% endfor %}
-                        {% endif %}
+                        {#                        {% else %}#}
+                        {#                            {% for absence in sub.absences %}#}
+                        {#                                {{ absence.lessonfrom }}#}
+                        {#                                {{ absence.lessonto }}#}
+                        {#                            {% endfor %}#}
+                        {#                        {% endif %}#}
                     </strong>
                 </td>
                 <td>
