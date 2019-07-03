@@ -7,7 +7,7 @@ from django.utils import formats
 from schoolapps.settings import BASE_DIR
 
 # LaTeX constants
-from untisconnect.sub import get_header_information
+# from untisconnect.sub import get_header_information
 
 DIR = os.path.join(BASE_DIR, "static", "common", "logo.png")
 TEX_HEADER_1 = """\\documentclass[11pt]{article}
