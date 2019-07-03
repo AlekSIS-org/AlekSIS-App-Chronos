@@ -276,11 +276,18 @@ def my_plan(request, year=None, month=None, day=None):
 # SUBSTITUTIONS #
 #################
 
-def sub_pdf(request):
+def sub_pdf(request, plan_date=None):
     """Show substitutions as PDF for the next weekday (specially for monitors)"""
 
+    if plan_date:
+        splitted_date = [int(i) for i in plan_date.split("-")]
+        today = timezone.datetime(year=splitted_date[0], month=splitted_date[1], day=splitted_date[2])
+    else:
+        today = timezone.datetime.now()
+
     # Get the next weekday
-    today = timezone.datetime.now()
+    # today = parse_datetime(date)
+    print("Today is:", today)
 
     first_day = get_next_weekday(today)
     second_day = get_next_weekday(first_day + datetime.timedelta(days=1))

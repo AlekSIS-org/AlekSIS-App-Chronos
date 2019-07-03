@@ -102,30 +102,30 @@ Stand: {% now "j. F Y H:i" %}\\
 
         {# Background color #}
         {% if color_background %}
-        \rowcolor{grey}
+        \rowcolor{ grey}
         {% endif %}
 
         {# ------------------------------ #}
 
         {% with c=sub.color %}
         {#  Display classes #}
-        \color{ {{c}} }
+        \color{ {{c}}}
         \textbf{ {{ sub.classes }} } &
 
         {# Display lesson number #}
-        \color{ {{c}} }
+        \color{ {{c}}}
         {{ sub.lesson }} &
 
-        \color{ {{c}} } {% include "timetable/latex/teacher.tex" %} &
+        \color{ {{c}}} {% include "timetable/latex/teacher.tex" %} &
 
-        \color{ {{c}} } {% include "timetable/latex/subject.tex" %} &
+        \color{ {{c}}} {% include "timetable/latex/subject.tex" %} &
 
-        \color{ {{c}} } {% include "timetable/latex/room.tex" %} &
+        \color{ {{c}}} {% include "timetable/latex/room.tex" %} &
 
         {# Display badge (for cancellations) #}     {# Display notice and new line #}
         {% if sub.badge %}
         \large\badge{ {{ sub.badge }} }
-        {% endif %} \color{ {{c}} } \Large\textit{ {{sub.text|default:""}} } \\
+        {% endif %} \color{ {{c}}} \Large\textit{ {{sub.text|default:""}} } \\
 
     {% endwith %}
     {% endfor %}

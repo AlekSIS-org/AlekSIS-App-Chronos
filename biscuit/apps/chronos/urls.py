@@ -21,7 +21,8 @@ try:
         path('substitutions/', views.substitutions, name='timetable_substitutions'),
         path('substitutions/<int:year>/<int:month>/<int:day>/', views.substitutions,
              name='timetable_substitutions_date'),
-        path('class.pdf', views.sub_pdf, name="timetable_substitutions_pdf")
+        path('class.pdf', views.sub_pdf, name="timetable_substitutions_pdf"),
+        path('<str:plan_date>-class.pdf', views.sub_pdf, name="timetable_substitutions_pdf_date")
     ]
 
 except Terms.DoesNotExist:

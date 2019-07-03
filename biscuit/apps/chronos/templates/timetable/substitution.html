@@ -14,7 +14,13 @@
         </div>
         <div class="col s12 m6 l4 xl3 right align-right">
             <a class="waves-effect waves-teal btn-flat btn-flat-medium right"
-               href="{% url "timetable_substitutions_pdf" %}">
+               href="
+                    {% if debug %}
+                        {% url "timetable_substitutions_pdf_date" date|date:"Y-m-d" %}
+                    {% else %}
+                       {% url "timetable_substitutions_pdf" %}
+                    {% endif %}
+                    ">
                 <i class="material-icons center">print</i>
             </a>
         </div>
