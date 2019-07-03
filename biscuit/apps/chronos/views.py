@@ -295,8 +295,12 @@ def sub_pdf(request, plan_date=None):
     # Get subs and generate table
     for i, date in enumerate([first_day, second_day]):
         # Get subs and generate table
+        events = get_all_events_by_date(date)
         subs = get_substitutions_by_date(date)
-        sub_table = generate_sub_table(subs)
+
+        sub_table = generate_sub_table(subs, events)
+
+        # Get header information and hints
         header_info = get_header_information(subs, date)
         hints = list(get_all_hints_by_time_period(date, date))
 
