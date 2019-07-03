@@ -348,25 +348,8 @@ def substitutions(request, year=None, month=None, day=None):
 
     # Get subs and generate table
     events = get_all_events_by_date(date)
-
-    # for b in events:
-    #     print(b.text)
-    #     print("Lehrer")
-    #     for i in b.teachers:
-    #         print(i.name)
-    #
-    #     print("\nRäume")
-    #     for i in b.rooms:
-    #         print(i.name)
-    #
-    #     print("\nKlassen")
-    #     for i in b.classes:
-    #         print(i.name)
-    #
-    #     print("\nAbsenzen")
-    #     for i in b.absences:
-    #         print(i)
     subs = get_substitutions_by_date(date)
+
     sub_table = generate_sub_table(subs, events)
 
     # Get header information and hints
