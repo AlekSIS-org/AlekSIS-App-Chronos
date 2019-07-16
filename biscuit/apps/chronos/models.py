@@ -32,19 +32,20 @@ class Subject(models.Model):
         'Long name of subject'), max_length=30)
 
     colour_fg = models.CharField(verbose_name=_('Foreground colour in timetable'), blank=True, validators=[
-                                 validators.RegexValidator(r'#[0-9A-F]{6}')])
+                                 validators.RegexValidator(r'#[0-9A-F]{6}')], max_length=7)
     colour_bg = models.CharField(verbose_name=_('Background colour in timetable'), blank=True, validators=[
-                                 validators.RegexValidator(r'#[0-9A-F]{6}')])
+                                 validators.RegexValidator(r'#[0-9A-F]{6}')], max_length=7)
 
     def __str__(self):
         return '%s - %s' % (self.abbrev, self.name)
 
 
 class Lesson(models.Model):
-    subject = models.ForeignKey('Subject')
-    teachers = models.ManyToManyField('core.Person')
-    periods = models.ManyToManyField('TimePeriod')
-    groups = models.ManyToManyField('core.Group')
+    subject = models.ForeignKey(
+        'Subject', on_delete=models.CASCADE, related_name='lessons')
+    teachers = models.ManyToManyField('core.Person', related_name='lessons')
+    periods = models.ManyToManyField('TimePeriod', related_name='lessons')
+    groups = models.ManyToManyField('core.Group', related_name='lessons')
 
     date_start = models.DateField(verbose_name=_(
         'Effective start date of lesson'), null=True)
