@@ -17,7 +17,8 @@ setup(
     ],
     include_package_data=True,
     install_requires=[
-        'BiscuIT-ng'
+        'BiscuIT-ng',
+        'BiscuIT-App-Cambro'
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",
