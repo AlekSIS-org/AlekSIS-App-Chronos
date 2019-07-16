@@ -38,3 +38,15 @@ class Subject(models.Model):
 
     def __str__(self):
         return '%s - %s' % (self.abbrev, self.name)
+
+
+class Lesson(models.Model):
+    subject = models.ForeignKey('Subject')
+    teachers = models.ManyToManyField('core.Person')
+    periods = models.ManyToManyField('TimePeriod')
+    groups = models.ManyToManyField('core.Group')
+
+    date_start = models.DateField(verbose_name=_(
+        'Effective start date of lesson'), null=True)
+    date_end = models.DateField(verbose_name=_(
+        'Effective end date of lesson'), null=True)
