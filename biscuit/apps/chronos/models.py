@@ -44,12 +44,18 @@ class Lesson(models.Model):
     subject = models.ForeignKey(
         'Subject', on_delete=models.CASCADE, related_name='lessons')
     teachers = models.ManyToManyField('core.Person', related_name='lessons')
-    periods = models.ManyToManyField('TimePeriod', related_name='lessons')
+    periods = models.ManyToManyField(
+        'TimePeriod', related_name='lessons', through='LessonPeriod')
     groups = models.ManyToManyField('core.Group', related_name='lessons')
-    room = models.ForeignKey(
-        'cambro.Room', related_name='lessons', on_delete=models.CASCADE, null=True)
 
     date_start = models.DateField(verbose_name=_(
         'Effective start date of lesson'), null=True)
     date_end = models.DateField(verbose_name=_(
         'Effective end date of lesson'), null=True)
+
+
+class LessonPeriod(models.Model):
+    lesson = models.ForeignKey('Lesson', models.CASCADE)
+    period = models.ForeignKey('TimePeriod', models.CASCADE)
+
+    room = models.ForeignKey('cambro.Room', models.CASCADE, null=True)
