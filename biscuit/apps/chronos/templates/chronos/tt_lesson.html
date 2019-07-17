@@ -3,8 +3,8 @@
     <h5 class="card-title">{{ lesson.subject.abbrev }}</h5>
     <h6 class="card-text">Rooms {# Will be implemented soon#}</h6>
     <ul>
-     <li>{{ lesson.teachers }}</li>
-     <li>{{ lesson.groups }}</li>
+     <li>!lesson.teachers{{ lesson.teachers }}</li>
+     <li>!lesson.groups{{ lesson.groups }}</li>
     </ul>
     <a href="#" class="card-link">Room informations</a>
   </div>
