@@ -8,7 +8,7 @@
   {% for lesson_period in lesson_periods %}
    <div class="row">
     <div class="col-sm">
-     {% include "chronos/tt_lesson.html" with lesson=lesson_period.lesson %}
+     {% include "chronos/tt_lesson.html" with lesson_period=lesson_period %}
     </div>
    </div>
   {% endfor %}

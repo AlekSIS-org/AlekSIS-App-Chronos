@@ -2,23 +2,22 @@
  <div class="card-body">
   <div class="row">
    <div class="col-sm">
-    <span class="card-title">{{ lesson.subject.abbrev }}</span>
+    <span class="card-title">{{ lesson_period.lesson.subject.abbrev }}</span>
    </div>
   </div>
   <div class="row">
    <div class="col-sm">
-    {% for group in lesosn.groups %}
+    {% for group in lesson_period.lesosn.groups %}
      <span class="card-text">{{ group.short_name }}</span>
     {% endfor %}
    </div>
    <div class="col-sm">
-    {% for teacher in lesosn.teachers %}
+    {% for teacher in lesson_period.lesosn.teachers %}
      <span class="card-text">{{ teacher.short_name }}</span>
     {% endfor %}
    </div>
    <div class="col-sm">
-    {# FIXME really add room information #}
-    <span class="card-text">Room</span>
+    <span class="card-text">{{ lesson_period.room.short_name }}</span>
    </div>
   </div>
  </div>
