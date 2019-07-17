@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
@@ -28,6 +30,6 @@ def timetable(request):
         for period in lesson_period.periods.all():
             per_day.setdefault(period.weekday, []).append(lesson_period)
 
-    context['lesson_periods'] = per_day
+    context['lesson_periods'] = OrderedDict(sorted(per_day.items()))
 
     return render(request, 'chronos/tt_week.html', context)
