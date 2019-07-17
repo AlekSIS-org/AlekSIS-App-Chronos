@@ -8,7 +8,7 @@ from biscuit.apps.cambro.models import Room
 from biscuit.core.decorators import admin_required
 from biscuit.core.models import Group, Person
 
-from .models import LessonPeriod
+from .models import LessonPeriod, TimePeriod
 
 
 @login_required
@@ -42,5 +42,6 @@ def timetable(request):
 
     context['lesson_periods'] = OrderedDict(sorted(per_day.items()))
     context['filter_descs'] = ', '.join(filter_descs)
+    context['periods'] = TimePeriod.get_times_dict()
 
     return render(request, 'chronos/tt_week.html', context)
