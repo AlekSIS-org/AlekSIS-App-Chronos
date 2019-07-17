@@ -1,0 +1,54 @@
+{# -*- engine:django -*- #}
+{% extends "core/base.html" %}
+{% load bootstrap4 i18n %}
+
+{% block page_title %}Timetable{% endblock %}
+
+{% block content %}
+ <p>
+  {{ filter_descs }}
+ </p>
+
+ <div class="row">
+  <div class="col-sm">
+   <ul class="list-group">
+    <li class="list-group-item active">
+     {% blocktrans %}Times{% endblocktrans %}
+    </li>
+   </ul>
+   <div class="container">
+    {% for num, times in periods.items %}
+     <div class="row">
+      <div class="col-sm">
+       <div class="card chronos-lesson">
+        <div class="card-body">
+         <div class="row">
+          <div class="col-sm">
+           <span class="card-title">{{ num }}.</span>
+          </div>
+         </div>
+         <div class="row">
+          <div class="col-sm">
+           <span class="card-text">{{ times.0}}</span>
+          </div>
+          <div class="col-sm">
+           <span class="card-text">-</span>
+          </div>
+          <div class="col-sm">
+           <span class="card-text">{{ times.1 }}</span>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    {% endfor %}
+   </div>
+  </div>
+ 
+  {% for weekday, lesson_periods_day in lesson_periods.items %}
+   {% include "chronos/tt_day.html" with lesson_periods=lesson_periods_day %}
+  {% endfor %}
+ </div>
+{% endblock %}
+ 

@@ -1,0 +1,32 @@
+<div class="card chronos-lesson"
+ style="
+  {% if lesson_period.lesson.subject.colour_fg %}
+   color: {{ lesson_period.lesson.subject.colour_fg }};
+  {% endif %}
+  {% if lesson_period.lesson.subject.colour_bg %}
+   background-color: {{ lesson_period.lesson.subject.colour_bg }};
+  {% endif %}
+ ">
+ <div class="card-body">
+  <div class="row">
+   <div class="col-sm">
+    <span class="card-title">{{ lesson_period.lesson.subject.abbrev }}</span>
+   </div>
+  </div>
+  <div class="row">
+   <div class="col-sm">
+    {% for group in lesson_period.lesson.groups.all %}
+     <span class="card-text">{{ group.short_name }}</span>
+    {% endfor %}
+   </div>
+   <div class="col-sm">
+    {% for teacher in lesson_period.lesson.teachers.all %}
+     <span class="card-text">{{ teacher.short_name }}</span>
+    {% endfor %}
+   </div>
+   <div class="col-sm">
+    <span class="card-text">{{ lesson_period.room.short_name }}</span>
+   </div>
+  </div>
+ </div>
+</div>

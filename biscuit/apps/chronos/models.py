@@ -24,6 +24,14 @@ class TimePeriod(models.Model):
     def __str__(self):
         return '%s, %d. period (%s - %s)' % (self.weekday, self.period, self.time_start, self.time_end)
 
+    @classmethod
+    def get_times_dict(cls):
+        periods = {}
+        for period in cls.objects.all():
+            periods[period.period] = (period.time_start, period.time_end)
+
+        return periods
+
 
 class Subject(models.Model):
     abbrev = models.CharField(verbose_name=_(

@@ -1,0 +1,16 @@
+<div class="col-sm">
+ <ul class="list-group">
+  <li class="list-group-item active">
+   {{ lesson_periods.0.period.get_weekday_display }}
+  </li>
+ </ul>
+ <div class="container">
+  {% for lesson_period in lesson_periods %}
+   <div class="row">
+    <div class="col-sm">
+     {% include "chronos/tt_lesson.html" with lesson_period=lesson_period %}
+    </div>
+   </div>
+  {% endfor %}
+ </div>
+</div>
