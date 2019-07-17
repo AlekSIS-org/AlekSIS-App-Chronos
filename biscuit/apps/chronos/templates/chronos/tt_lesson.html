@@ -1,4 +1,12 @@
-<div class="card" style="{% if lesson.colour_fg %} color: {{ lesson.colour_fg }}; {% endif %} {% if lesson.colour_bg %} background-color: {{ lesson.colour_bg }}; {% endif %}">
+<div class="card"
+ style="
+  {% if lesson_period.lesson.subject.colour_fg %}
+   color: {{ lesson_period.lesson.subject.colour_fg }};
+  {% endif %}
+  {% if lesson_period.lesson.subject.colour_bg %}
+   background-color: {{ lesson_period.lesson.subject.colour_bg }};
+  {% endif %}
+ ">
  <div class="card-body">
   <div class="row">
    <div class="col-sm">
