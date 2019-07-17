@@ -1,11 +1,11 @@
-<div class="card" style="width: 18rem; {{% if lesson.color-fg %}} foreground-color: {{ lesson.color-fg }}; {% endif%} {{% if lesson.color-bg %}} background-color: {{% lesson.color-bg %}};">
+<div class="card" style="width: 18rem; {% if lesson.colour_fg %} color: {{ lesson.colour_fg }}; {% endif %} {% if lesson.colour_bg %} background-color: {{ lesson.colour_bg }}; {% endif %}">
   <div class="card-body">
     <h5 class="card-title">{{ lesson.subject.abbrev }}</h5>
-    <h6 class="">Rooms {# Will be implemented soon#}</h6>
+    <h6 class="card-text">Rooms {# Will be implemented soon#}</h6>
     <ul>
      <li>{{ lesson.teachers }}</li>
      <li>{{ lesson.groups }}</li>
     </ul>
-    <a href="{{% '#' %}}" class="card-link">Room informations</a>
+    <a href="#" class="card-link">Room informations</a>
   </div>
 </div>
