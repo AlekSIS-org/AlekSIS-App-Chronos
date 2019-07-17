@@ -5,6 +5,10 @@
 {% block page_title %}Timetable{% endblock %}
 
 {% block content %}
+ <p>
+  {{ filter_descs }}
+ </p>
+
  {% for weekday, lesson_periods_day in lesson_periods.items %}
   {% include "chronos/tt_day.html" with lesson_periods=lesson_periods_day %}
  {% endfor %}
