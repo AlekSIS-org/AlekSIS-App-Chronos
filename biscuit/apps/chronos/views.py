@@ -36,17 +36,35 @@ def timetable(request):
             pk=int(request.GET['room'])).name)
 
     per_day = {}
+    period_min, period_max = None, None
     for lesson_period in lesson_periods:
         per_day.setdefault(lesson_period.period.weekday,
-                           []).append(lesson_period)
+                           {})[lesson_period.period.period] = lesson_period
 
-    # Fill in weekdays without lessons (to get a compet timetable)
+        # Expand min and max lesson to later fill in empty lessons
+        if period_min is None or period_min > lesson_period.period.period:
+            period_min = lesson_period.period.period
+        if period_max is None or period_max < lesson_period.period.period:
+            period_max = lesson_period.period.period
+
+    # Fill in empty lessons
     for weekday_num in range(min(per_day.keys()), max(per_day.keys()) + 1):
+        # Fill in empty weekdays
         if weekday_num not in per_day.keys():
-            per_day[weekday_num] = []
+            per_day[weekday_num] = {}
+
+        # Fill in empty lessons on this workday
+        for period_num in range(period_min, period_max + 1):
+            if period_num not in per_day[weekday_num].keys():
+                per_day[weekday_num][period_num] = None
+
+        # Order this weekday by periods
+        per_day[weekday_num] = OrderedDict(
+            sorted(per_day[weekday_num].items()))
 
     context['lesson_periods'] = OrderedDict(sorted(per_day.items()))
     context['filter_descs'] = ', '.join(filter_descs)
     context['periods'] = TimePeriod.get_times_dict()
+    context['weekdays'] = dict(TimePeriod.WEEKDAY_CHOICES)
 
     return render(request, 'chronos/tt_week.html', context)
