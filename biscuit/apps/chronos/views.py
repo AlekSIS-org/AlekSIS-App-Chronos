@@ -40,6 +40,11 @@ def timetable(request):
         per_day.setdefault(lesson_period.period.weekday,
                            []).append(lesson_period)
 
+    # Fill in weekdays without lessons (to get a compet timetable)
+    for weekday_num in range(min(per_day.keys()), max(per_day.keys()) + 1):
+        if weekday_num not in per_day.keys():
+            per_day[weekday_num] = []
+
     context['lesson_periods'] = OrderedDict(sorted(per_day.items()))
     context['filter_descs'] = ', '.join(filter_descs)
     context['periods'] = TimePeriod.get_times_dict()
