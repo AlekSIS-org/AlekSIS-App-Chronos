@@ -10,10 +10,10 @@
  </p>
 
  <div class="row">
-  <div class="col-sm">
+  <div class="col-sm px-0">
    <div class="container">
     <div class="row">
-     <div class="col-sm">
+     <div class="col-sm px-0">
       <div class="card chronos-head">
        <div class="card-body">
         <span class="card-title">{% blocktrans %}Times{% endblocktrans %}</span>
@@ -23,22 +23,22 @@
     </div>
     {% for num, times in periods.items %}
      <div class="row">
-      <div class="col-sm">
+      <div class="col-sm px-0">
        <div class="card chronos-lesson">
         <div class="card-body">
          <div class="row">
-          <div class="col-sm">
+          <div class="col-sm px-0">
            <span class="card-title">{{ num }}.</span>
           </div>
          </div>
          <div class="row">
-          <div class="col-sm">
+          <div class="col-sm px-0">
            <span class="card-text">{{ times.0}}</span>
           </div>
-          <div class="col-sm">
+          <div class="col-sm px-0">
            <span class="card-text">-</span>
           </div>
-          <div class="col-sm">
+          <div class="col-sm px-0">
            <span class="card-text">{{ times.1 }}</span>
           </div>
          </div>

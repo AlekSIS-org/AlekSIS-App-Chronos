@@ -1,7 +1,7 @@
-<div class="col-sm">
+<div class="col-sm px-0">
  <div class="container">
   <div class="row">
-   <div class="col-sm">
+   <div class="col-sm px-0">
     <div class="card chronos-head">
      <div class="card-body">
       <span class="card-title">{{ weekday_name }}</span>
@@ -11,7 +11,7 @@
   </div>
   {% for period_num, lesson_period in lesson_periods.items %}
    <div class="row">
-    <div class="col-sm">
+    <div class="col-sm px-0">
      {% include "chronos/tt_lesson.html" with lesson_period=lesson_period %}
     </div>
    </div>
