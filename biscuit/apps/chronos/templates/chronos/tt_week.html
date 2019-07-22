@@ -1,6 +1,6 @@
 {# -*- engine:django -*- #}
 {% extends "core/base.html" %}
-{% load bootstrap4 i18n %}
+{% load bootstrap4 data_helpers i18n %}
 
 {% block page_title %}Timetable{% endblock %}
 
@@ -47,7 +47,7 @@
   </div>
  
   {% for weekday, lesson_periods_day in lesson_periods.items %}
-   {% include "chronos/tt_day.html" with weekday_name=weekdays.weekday lesson_periods=lesson_periods_day %}
+   {% include "chronos/tt_day.html" with weekday_name=weekdays|get_dict:weekday lesson_periods=lesson_periods_day %}
   {% endfor %}
  </div>
 {% endblock %}
