@@ -21,7 +21,12 @@
    </div>
    <div class="col-sm">
     {% for teacher in lesson_period.lesson.teachers.all %}
-     <span class="card-text">{{ teacher.short_name }}</span>
+     <a href="{% url 'person_by_id' teacher.id %}"
+      title="{{ teacher.first_name }} {{ teacher.last_name }}"
+      class="card-text"
+      data-poload="{% url 'person_by_id_card' teacher.id %}">
+      {{ teacher.short_name }}
+     </a>
     {% endfor %}
    </div>
    <div class="col-sm">
