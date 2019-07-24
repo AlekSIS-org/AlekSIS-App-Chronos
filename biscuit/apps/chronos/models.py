@@ -18,6 +18,7 @@ class TimePeriod(models.Model):
         'Week day'), choices=WEEKDAY_CHOICES)
     period = models.PositiveSmallIntegerField(
         verbose_name=_('Number of period'))
+
     time_start = models.TimeField(verbose_name=_('Time the period starts'))
     time_end = models.TimeField(verbose_name=_('Time the period ends'))
 
@@ -32,12 +33,15 @@ class TimePeriod(models.Model):
 
         return periods
 
+    class Meta:
+        unique_together = [['weekday', 'period']]
+
 
 class Subject(models.Model):
     abbrev = models.CharField(verbose_name=_(
-        'Abbreviation of subject in timetable'), max_length=10)
+        'Abbreviation of subject in timetable'), max_length=10, unique=True)
     name = models.CharField(verbose_name=_(
-        'Long name of subject'), max_length=30)
+        'Long name of subject'), max_length=30, unique=True)
 
     colour_fg = models.CharField(verbose_name=_('Foreground colour in timetable'), blank=True, validators=[
                                  validators.RegexValidator(r'#[0-9A-F]{6}')], max_length=7)
