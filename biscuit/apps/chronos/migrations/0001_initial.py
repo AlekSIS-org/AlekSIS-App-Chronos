@@ -10,7 +10,6 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('core', '0005_person_short_name'),
         ('cambro', '0001_initial'),
     ]
 
@@ -50,7 +49,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('lesson', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='chronos.Lesson')),
                 ('period', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='chronos.TimePeriod')),
-                ('room', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='cambro.Room')),
+                ('room', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='chronos.Room')),
             ],
         ),
         migrations.AddField(

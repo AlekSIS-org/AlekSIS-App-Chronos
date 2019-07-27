@@ -52,6 +52,15 @@ class Subject(models.Model):
         return '%s - %s' % (self.abbrev, self.name)
 
 
+class Room(models.Model):
+    short_name = models.CharField(verbose_name=_(
+        'Short name, e.g. room number'), max_length=10, unique=True)
+    name = models.CharField(verbose_name=_('Long name'), max_length=30, unique=True)
+
+    def __str__(self):
+        return '%s (%s)' % (self.name, self.short_name)
+
+
 class Lesson(models.Model):
     subject = models.ForeignKey(
         'Subject', on_delete=models.CASCADE, related_name='lessons')
@@ -70,4 +79,4 @@ class LessonPeriod(models.Model):
     lesson = models.ForeignKey('Lesson', models.CASCADE)
     period = models.ForeignKey('TimePeriod', models.CASCADE)
 
-    room = models.ForeignKey('cambro.Room', models.CASCADE, null=True)
+    room = models.ForeignKey('Room', models.CASCADE, null=True)

@@ -24,4 +24,14 @@ class Migration(migrations.Migration):
             name='timeperiod',
             unique_together={('weekday', 'period')},
         ),
+        migrations.AlterField(
+            model_name='room',
+            name='name',
+            field=models.CharField(max_length=30, unique=True, verbose_name='Long name'),
+        ),
+        migrations.AlterField(
+            model_name='room',
+            name='short_name',
+            field=models.CharField(max_length=10, unique=True, verbose_name='Short name, e.g. room number'),
+        ),
     ]
