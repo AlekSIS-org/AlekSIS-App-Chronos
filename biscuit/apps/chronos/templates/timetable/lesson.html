@@ -42,8 +42,8 @@
 
                         {% else %}
                             {# Display sub #}
-                            {% with sub=element_container.substitution %}
 
+                            {% with sub=element_container.substitution.table %}
                                 {# Teacher or room > display classes #}
                                 {% if type == 0 or type == 1 %}
                                     {{ element_container.substitution.table.classes }}
@@ -60,15 +60,33 @@
                                     {% include "timetable/subs/room.html" %}
                                 {% endif %}
                             {% endwith %}
-                        {% endif %}<br>
-
-                        {# When it isn't a room or the old plan, then display the extra text (e. g. work orders)#}
-                        {% if not type == 1 or not element_container.is_old %}
-                            <small>
-                                <em>{{ element_container.substitution.table.text|default:"" }}</em>
-                            </small>
                         {% endif %}
 
+                        {# When it isn't a room or the old plan, then display the extra text (e. g. work orders) AND NOT A EVENT#}
+                        {% if not   element_container.substitution.table.is_event %}
+                            {% if not type == 1  or not element_container.is_old %}
+                                <br>
+                                <small>
+                                    <em>{{ element_container.substitution.table.text|default:"" }}</em>
+                                </small>
+                            {% endif %}
+                        {% endif %}
+
+                        {# Display the extra text for events #}
+                        {% if element_container.substitution.table.is_event %}
+                            {% if type == 0 and element_container.substitution.table.classes == "" and element_container.substitution.table.rooms.length == 0 and element_container.substitutions.table.teachers.length == 0 %}
+                                <em>{{ element_container.substitution.table.text|default:"" }}</em>
+                            {% elif type == 2 and  element_container.substitution.table.teachers.length == 0  and  element_container.substitution.table.rooms.length == 0 %}
+                                <em>{{ element_container.substitution.table.text|default:"" }}</em>
+                            {% elif type == 1 and  element_container.substitution.table.teachers.length == 0  and  element_container.substitution.table.classes.length == 0 %}
+                                <em>{{ element_container.substitution.table.text|default:"" }}</em>
+                            {% else %}
+                                <br>
+                                <small>
+                                    <em>{{ element_container.substitution.table.text|default:"" }}</em>
+                                </small>
+                            {% endif %}
+                        {% endif %}
 
                     {% else %}
                         {# Normal plan #}
