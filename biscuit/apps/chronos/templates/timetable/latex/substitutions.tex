@@ -63,7 +63,7 @@ Stand: {% now "j. F Y H:i" %}\\
     {%  include "timetable/latex/hints.tex" %}
 
     {% if header_info.is_box_needed %}
-    \begin{tabular}{@{}ll@{}}
+    \begin{tabular}{p{0.26\linewidth}p{0.7\linewidth}}
     {% for row in header_info.rows %}
         \textbf{ {{ row.0 }} } & {{ row.1 }} \\
     {% endfor %}
@@ -103,7 +103,7 @@ Stand: {% now "j. F Y H:i" %}\\
 
         {# Background color #}
         {% if color_background %}
-        \rowcolor{ grey}
+        \rowcolor{grey}
         {% endif %}
 
         {# ------------------------------ #}
