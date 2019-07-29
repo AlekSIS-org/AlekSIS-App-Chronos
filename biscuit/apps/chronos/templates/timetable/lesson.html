@@ -71,14 +71,13 @@
                                 </small>
                             {% endif %}
                         {% endif %}
-
                         {# Display the extra text for events #}
                         {% if element_container.substitution.table.is_event %}
-                            {% if type == 0 and element_container.substitution.table.classes == "" and element_container.substitution.table.rooms.length == 0 and element_container.substitutions.table.teachers.length == 0 %}
+                            {% if type == 0 and element_container.substitution.table.classes == "" and element_container.substitution.table.rooms|length == 0 and element_container.substitutions.table.teachers|length == 0 %}
                                 <em>{{ element_container.substitution.table.text|default:"" }}</em>
-                            {% elif type == 2 and  element_container.substitution.table.teachers.length == 0  and  element_container.substitution.table.rooms.length == 0 %}
+                            {% elif type == 2 and  element_container.substitution.table.teachers|length == 0  and  element_container.substitution.table.rooms|length == 0 %}
                                 <em>{{ element_container.substitution.table.text|default:"" }}</em>
-                            {% elif type == 1 and  element_container.substitution.table.teachers.length == 0  and  element_container.substitution.table.classes.length == 0 %}
+                            {% elif type == 1  and  element_container.substitution.table.teachers|length == 0 and element_container.substitution.table.classes == "" %}
                                 <em>{{ element_container.substitution.table.text|default:"" }}</em>
                             {% else %}
                                 <br>

@@ -301,7 +301,7 @@ def sub_pdf(request, plan_date=None):
         sub_table = generate_sub_table(subs, events)
 
         # Get header information and hints
-        header_info = get_header_information(subs, date)
+        header_info = get_header_information(subs, date, events)
         hints = list(get_all_hints_by_time_period(date, date))
 
         # latex = convert_markdown_2_latex(hints[0].text)
@@ -357,7 +357,7 @@ def substitutions(request, year=None, month=None, day=None):
     sub_table = generate_sub_table(subs, events)
 
     # Get header information and hints
-    header_info = get_header_information(subs, date)
+    header_info = get_header_information(subs, date, events)
     hints = list(get_all_hints_by_time_period(date, date))
 
     context = {

@@ -24,7 +24,7 @@
 % Badge box
 \usepackage{tcolorbox}
 \newtcbox{\badge}{nobeforeafter,colframe=green,colback=green,boxrule=0.5pt,arc=4pt,
-boxsep=0pt,left=5pt,right=5pt,top=5pt,bottom=5pt,tcbox raise base,
+boxsep=0pt,left=4pt,right=4pt,top=4pt,bottom=4pt,tcbox raise base,
 grow to left by=0pt,
 grow to right by=-3pt,
 enlarge top by=3pt,
@@ -47,7 +47,6 @@ enlarge bottom by=3pt,coltext=white}
 
 % Define footer
 \lfoot{Katharineum zu Lübeck}
-\cfoot{\thepage}
 \rfoot{\small Umsetzung: © 2018--2019 by Computer-AG}
 \rhead{\textbf{
 Vertretungen {{ date|date:"j. F Y, \\K\\W W"}}}\\
@@ -55,15 +54,15 @@ Stand: {% now "j. F Y H:i" %}\\
 }
 
 \begin{document}
-    \Large
+    \large
     \subsubsection*{}
-    {#    \vspace{10pt}#}
+
     \section*{\Huge Vertretungen {{ date|date:"l, j. F Y"}}}
 
     {%  include "timetable/latex/hints.tex" %}
 
     {% if header_info.is_box_needed %}
-    \begin{tabular}{p{0.26\linewidth}p{0.7\linewidth}}
+    \begin{tabular}{p{0.22\linewidth}p{0.73\linewidth}}
     {% for row in header_info.rows %}
         \textbf{ {{ row.0 }} } & {{ row.1 }} \\
     {% endfor %}
@@ -125,8 +124,8 @@ Stand: {% now "j. F Y H:i" %}\\
 
         {# Display badge (for cancellations) #}     {# Display notice and new line #}
         {% if sub.badge %}
-        \large\badge{ {{ sub.badge }} }
-        {% endif %} \color{ {{c}}} \Large\textit{ {{sub.text|default:""}} } \\
+        \normalsize\badge{ {{ sub.badge }} }
+        {% endif %} \color{ {{c}}} \large\textit{ {{sub.text|default:""}} } \\
 
     {% endwith %}
     {% endfor %}
