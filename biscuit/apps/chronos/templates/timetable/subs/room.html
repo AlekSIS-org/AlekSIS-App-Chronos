@@ -39,7 +39,7 @@
     {% for room in sub.rooms %}
         <span class="tooltipped" data-position="bottom"
               data-tooltip="{{ room.name }}">
-            <a href="{% url "timetable_smart_plan" "teacher" room.id %}">
+            <a href="{% url "timetable_smart_plan" "room" room.id %}">
                 <strong>{{ room.shortcode }}{% if not forloop.last %},{% endif %}</strong>
             </a>
         </span>
