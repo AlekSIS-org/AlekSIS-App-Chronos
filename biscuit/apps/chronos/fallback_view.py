@@ -3,5 +3,5 @@ from django.shortcuts import render
 
 
 @login_required
-def failback(request, *args, **kwargs):
-    return render(request, "timetable/failback.html")
+def fallback(request, *args, **kwargs):
+    return render(request, "timetable/fallback.html")
