@@ -214,8 +214,8 @@ def my_plan(request, year=None, month=None, day=None):
             time_now = datetime.time(0)
 
     # Get next weekday if it is a weekend
-    next_weekday = get_next_weekday(date, time_now)
-    if next_weekday != date :
+    next_weekday = get_next_weekday_with_time(date, time_now)
+    if next_weekday != date:
         return redirect("timetable_my_plan", next_weekday.year, next_weekday.month, next_weekday.day)
 
     # Get calendar week and monday of week
@@ -275,7 +275,7 @@ def my_plan(request, year=None, month=None, day=None):
     return render(request, 'timetable/myplan.html', context)
 
 
-def get_next_weekday(date, time):
+def get_next_weekday_with_time(date, time):
     """Get the next weekday by a datetime object"""
 
     if time > datetime.time(15, 35):
@@ -287,6 +287,7 @@ def get_next_weekday(date, time):
             plus = 1
         date += datetime.timedelta(days=plus)
     return date
+
 
 #################
 # SUBSTITUTIONS #
@@ -305,7 +306,7 @@ def sub_pdf(request, plan_date=None):
     # today = parse_datetime(date)
     print("Today is:", today)
 
-    first_day = get_next_weekday(today)
+    first_day = get_next_weekday_with_time(today, today.time())
     second_day = get_next_weekday(first_day + datetime.timedelta(days=1))
 
     # Get subs and generate table
@@ -358,11 +359,14 @@ def substitutions(request, year=None, month=None, day=None):
     """Show substitutions in a classic view"""
 
     date = timezone.datetime.now()
+    time_now = datetime.datetime.now().time()
     if year is not None and day is not None and month is not None:
         date = timezone.datetime(year=year, month=month, day=day)
+        if date != timezone.datetime.now():
+            time_now = datetime.time(0)
 
     # Get next weekday if it is a weekend
-    next_weekday = get_next_weekday(date)
+    next_weekday = get_next_weekday_with_time(date, time_now)
     if next_weekday != date:
         return redirect("timetable_substitutions_date", next_weekday.year, next_weekday.month, next_weekday.day)
 
