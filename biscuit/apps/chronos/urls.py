@@ -1,5 +1,6 @@
 from django.urls import path
-from untisconnect.models import Terms
+
+from untisconnect.models import Terms, Schoolyear
 
 try:
     from . import views
@@ -25,7 +26,7 @@ try:
         path('<str:plan_date>-class.pdf', views.sub_pdf, name="timetable_substitutions_pdf_date")
     ]
 
-except Terms.DoesNotExist:
+except (Terms.DoesNotExist, Schoolyear.DoesNotExist):
     from . import fallback_view
 
     urlpatterns = [
@@ -46,5 +47,3 @@ except Terms.DoesNotExist:
              name='timetable_substitutions_date'),
         path('class.pdf', fallback_view.fallback, name="timetable_substitutions_pdf")
     ]
-    
-
