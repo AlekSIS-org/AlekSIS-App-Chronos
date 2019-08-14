@@ -39,9 +39,9 @@
                     {% endif %}
                     {{ hints_b|length }}
                     {% if hints %}
-                        weitere(n)
+                        weitere{{ hints_b|pluralize:"n," }}
                     {% endif %}
-                    Hinweis(e).
+                    Hinweis{{ hints_b|pluralize:"e" }}.
                     <i class="material-icons right collapsible-trigger"></i>
                 </div>
             </div>
@@ -50,12 +50,10 @@
                     {% if not hint.teachers %}
                         <div>
                             <strong>
-                                {{ hint.classes.all|join:", " }},
+                                {{ hint.classes_formatted }},
                             </strong>
-                            {{ hint.from_date|date:"D, d.m." }},
-                            {% if hint.from_date != hint.to_date %}
-                                bis {{ hint.to_date|date:"D, d.m." }}
-                            {% endif %}:
+                            {{ hint.from_date|date:"D, d.m." }}{% if hint.from_date != hint.to_date %}, bis
+                                {{ hint.to_date|date:"D, d.m." }}{% endif %}:
                             {{ hint.text|safe_markdown }}
                         </div>
                     {% endif %}
