@@ -125,7 +125,7 @@ Stand: {% now "j. F Y H:i" %}\\
         {# Display badge (for cancellations) #}     {# Display notice and new line #}
         {% if sub.badge %}
         \normalsize\badge{ {{ sub.badge }} }
-        {% endif %} \color{ {{c}}} \large\textit{ {{sub.text|default:""}} } \\
+        {% endif %} \color{ {{c}}} \large\textit{ {{sub.text|default:""|safe}} } \\
 
     {% endwith %}
     {% endfor %}
