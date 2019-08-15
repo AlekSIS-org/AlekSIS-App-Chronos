@@ -4,7 +4,7 @@
         {{ sub.sub.corridor.name }}
     {% elif sub.sub.type == 1 or sub.sub.type == 2 %}
         {# Canceled lesson: no room #}
-    {% elif sub.sub.roow_new and sub.sub.room_old %}
+    {% elif sub.sub.room_new and sub.sub.room_old %}
         {# New and old room available #}
         <span class="tooltipped" data-position="bottom"
               data-tooltip="{{ sub.sub.room_old.name }} → {{ sub.sub.room_new.name }}">
