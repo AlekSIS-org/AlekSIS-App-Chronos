@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('cambro', '0001_initial'),
+        ('core', '0001_initial'),
     ]
 
     operations = [
