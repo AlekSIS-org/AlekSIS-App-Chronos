@@ -34,6 +34,14 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='Room',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('short_name', models.CharField(max_length=10, unique=True, verbose_name='Short name, e.g. room number')),
+                ('name', models.CharField(max_length=30, unique=True, verbose_name='Long name')),
+            ],
+        ),
+        migrations.CreateModel(
             name='TimePeriod',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
