@@ -5,7 +5,7 @@ from menu import Menu, MenuItem
 
 
 menu_items = [
-    MenuItem(_('Stundenplan'),
+    MenuItem(_('Timetable'),
              reverse('timetable'),
              check=lambda request: request.user.is_authenticated and request.user.is_superuser),
 ]
