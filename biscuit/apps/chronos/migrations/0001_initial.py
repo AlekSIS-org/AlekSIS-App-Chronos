@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('cambro', '0001_initial'),
+        ('core', '0008_school_person_group'),
     ]
 
     operations = [
@@ -31,6 +31,14 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=30, verbose_name='Long name of subject')),
                 ('colour_fg', models.CharField(blank=True, max_length=7, validators=[django.core.validators.RegexValidator('#[0-9A-F]{6}')], verbose_name='Foreground colour in timetable')),
                 ('colour_bg', models.CharField(blank=True, max_length=7, validators=[django.core.validators.RegexValidator('#[0-9A-F]{6}')], verbose_name='Background colour in timetable')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Room',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('short_name', models.CharField(max_length=10, unique=True, verbose_name='Short name, e.g. room number')),
+                ('name', models.CharField(max_length=30, unique=True, verbose_name='Long name')),
             ],
         ),
         migrations.CreateModel(

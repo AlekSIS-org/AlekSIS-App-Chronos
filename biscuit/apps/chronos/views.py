@@ -4,11 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.utils.translation import gettext_lazy as _
 
-from biscuit.apps.cambro.models import Room
 from biscuit.core.decorators import admin_required
 from biscuit.core.models import Group, Person
 
-from .models import LessonPeriod, TimePeriod
+from .models import LessonPeriod, TimePeriod, Room
 
 
 @login_required
