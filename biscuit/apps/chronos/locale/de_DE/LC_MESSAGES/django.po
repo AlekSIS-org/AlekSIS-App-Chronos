@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-17 13:37+0200\n"
+"POT-Creation-Date: 2019-08-18 21:36+0200\n"
 "PO-Revision-Date: 2019-08-17 13:37+0200\n"
 "Last-Translator: Tom Teichler <tom.teichler@teckids.org>\n"
 "Language-Team: \n"
@@ -21,13 +21,13 @@ msgstr ""
 msgid "BiscuIT - Chronos (Timetables)"
 msgstr "BiscuIT - Chronos (Stundenpläne)"
 
-#: menus.py:8
-msgid "Timetable"
-msgstr "Stundenplan"
-
-#: menus.py:13
+#: menus.py:6
 msgid "Timetables"
 msgstr "Stundenpläne"
+
+#: menus.py:11
+msgid "Timetable"
+msgstr "Stundenplan"
 
 #: models.py:8
 msgid "Sunday"
