@@ -27,7 +27,7 @@ def timetable(request):
         lesson_periods = lesson_periods.filter(
             lesson__teachers__pk__contains=int(request.GET['teacher']))
         filter_descs.append(_('Teacher: %s') % Person.objects.get(
-            pk=int(request.GET['teacher'])).name)
+            pk=int(request.GET['teacher'])).full_name)
     if 'room' in request.GET:
         lesson_periods = lesson_periods.filter(
             room__pk=int(request.GET['room']))
