@@ -47,7 +47,8 @@ def timetable(request):
             period_max = lesson_period.period.period
 
     # Fill in empty lessons
-    for weekday_num in range(min(per_day.keys()), max(per_day.keys()) + 1):
+    for weekday_num in range(min(per_day.keys() or [0]),
+                             max(per_day.keys() or [6]) + 1):
         # Fill in empty weekdays
         if weekday_num not in per_day.keys():
             per_day[weekday_num] = {}
