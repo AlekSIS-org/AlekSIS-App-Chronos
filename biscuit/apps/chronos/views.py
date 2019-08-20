@@ -22,17 +22,17 @@ def timetable(request):
         lesson_periods = lesson_periods.filter(
             lesson__groups__pk__contains=int(request.GET['group']))
         filter_descs.append(_('Group: %s') % Group.objects.get(
-            pk=int(request.GET['group'])).name)
+            pk=int(request.GET['group'])))
     if 'teacher' in request.GET:
         lesson_periods = lesson_periods.filter(
             lesson__teachers__pk__contains=int(request.GET['teacher']))
         filter_descs.append(_('Teacher: %s') % Person.objects.get(
-            pk=int(request.GET['teacher'])).full_name)
+            pk=int(request.GET['teacher'])))
     if 'room' in request.GET:
         lesson_periods = lesson_periods.filter(
             room__pk=int(request.GET['room']))
         filter_descs.append(_('Room: %s') % Room.objects.get(
-            pk=int(request.GET['room'])).name)
+            pk=int(request.GET['room'])))
 
     per_day = {}
     period_min, period_max = None, None
