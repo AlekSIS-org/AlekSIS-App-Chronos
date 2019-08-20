@@ -20,12 +20,12 @@ def timetable(request):
 
     if 'group' in request.GET:
         lesson_periods = lesson_periods.filter(
-            lesson__groups__pk__contains=int(request.GET['group']))
+            lesson__groups__pk=int(request.GET['group']))
         filter_descs.append(_('Group: %s') % Group.objects.get(
             pk=int(request.GET['group'])))
     if 'teacher' in request.GET:
         lesson_periods = lesson_periods.filter(
-            lesson__teachers__pk__contains=int(request.GET['teacher']))
+            lesson__teachers__pk=int(request.GET['teacher']))
         filter_descs.append(_('Teacher: %s') % Person.objects.get(
             pk=int(request.GET['teacher'])))
     if 'room' in request.GET:
