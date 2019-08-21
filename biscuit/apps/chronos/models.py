@@ -85,6 +85,27 @@ class LessonPeriod(models.Model):
     substitution = models.OneToOneField('LessonSubstitution', models.CASCADE,
                                         'lesson_period', null=True)
 
+    def get_subject(self):
+        if self.substitution:
+            return self.substitution.subject
+        else:
+            return self.lesson.subject
+
+    def get_teachers(self):
+        if self.substitution:
+            return self.substitution.teachers
+        else:
+            return self.lesson.teachers
+
+    def get_room(self):
+        if self.substitution:
+            return self.substitution.room
+        else:
+            return self.room
+
+    def get_groups(self):
+        return self.lesson.groups
+
 
 class LessonSubstitution(models.Model):
     subject = models.ForeignKey(

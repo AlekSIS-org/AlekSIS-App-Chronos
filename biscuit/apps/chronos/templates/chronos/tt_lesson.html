@@ -1,4 +1,8 @@
-<div class="card chronos-lesson"
+<div class="card chronos-lesson
+  {% if lesson_period.substitution %}
+   border border-warning
+  {% endif %}
+ "
  style="
   {% if lesson_period.lesson.subject.colour_fg %}
    color: {{ lesson_period.lesson.subject.colour_fg }};
@@ -10,17 +14,19 @@
  <div class="card-body">
   <div class="row">
    <div class="col-sm">
-    <span class="card-title">{{ lesson_period.lesson.subject.abbrev }}</span>
+    <span class="card-title">
+     {{ lesson_period.get_subject.abbrev }}
+    </span>
    </div>
   </div>
   <div class="row">
    <div class="col-sm">
-    {% for group in lesson_period.lesson.groups.all %}
+    {% for group in lesson_period.get_groups.all %}
      <span class="card-text">{{ group.short_name }}</span>
     {% endfor %}
    </div>
    <div class="col-sm">
-    {% for teacher in lesson_period.lesson.teachers.all %}
+    {% for teacher in lesson_period.get_teachers.all %}
      <a href="{% url 'person_by_id' teacher.id %}"
       title="{{ teacher.first_name }} {{ teacher.last_name }}"
       class="card-text"
@@ -30,7 +36,7 @@
     {% endfor %}
    </div>
    <div class="col-sm">
-    <span class="card-text">{{ lesson_period.room.short_name }}</span>
+    <span class="card-text">{{ lesson_period.get_room.short_name }}</span>
    </div>
   </div>
  </div>
