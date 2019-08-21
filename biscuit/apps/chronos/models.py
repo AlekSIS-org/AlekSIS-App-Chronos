@@ -1,8 +1,13 @@
+from datetime import datetime
+from typing import List, Tuple, Optional
+
 from django.core import validators
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from .util import current_week
+
+from biscuit.core.models import Person
 
 
 class TimePeriod(models.Model):
@@ -24,11 +29,11 @@ class TimePeriod(models.Model):
     time_start = models.TimeField(verbose_name=_('Time the period starts'))
     time_end = models.TimeField(verbose_name=_('Time the period ends'))
 
-    def __str__(self):
+    def __str__(self): str:
         return '%s, %d. period (%s - %s)' % (self.weekday, self.period, self.time_start, self.time_end)
 
     @classmethod
-    def get_times_dict(cls):
+    def get_times_dict(cls) -> Dict[int, Tuple[datetime, datetime]]:
         periods = {}
         for period in cls.objects.all():
             periods[period.period] = (period.time_start, period.time_end)
@@ -50,7 +55,7 @@ class Subject(models.Model):
     colour_bg = models.CharField(verbose_name=_('Background colour in timetable'), blank=True, validators=[
                                  validators.RegexValidator(r'#[0-9A-F]{6}')], max_length=7)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '%s - %s' % (self.abbrev, self.name)
 
 
@@ -60,7 +65,7 @@ class Room(models.Model):
     name = models.CharField(verbose_name=_('Long name'),
                             max_length=30, unique=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '%s (%s)' % (self.name, self.short_name)
 
 
@@ -84,29 +89,29 @@ class LessonPeriod(models.Model):
 
     room = models.ForeignKey('Room', models.CASCADE, null=True)
 
-    def get_substitution(self, week=None):
+    def get_substitution(self, week: Optional[int] = None) -> LessonSubstitution:
         wanted_week = week or current_week()
         return self.substitutions.filter(week=wanted_week).first()
 
-    def get_subject(self):
+    def get_subject(self) -> Optional[Subject]:
         if self.get_substitution():
             return self.get_substitution().subject
         else:
             return self.lesson.subject
 
-    def get_teachers(self):
+    def get_teachers(self) -> models.query.QuerySet:
         if self.get_substitution():
             return self.get_substitution().teachers
         else:
             return self.lesson.teachers
 
-    def get_room(self):
+    def get_room(self) -> Optional[Room]:
         if self.get_substitution():
             return self.get_substitution().room
         else:
             return self.room
 
-    def get_groups(self):
+    def get_groups(self) -> models.query.QuerySet:
         return self.lesson.groups
 
 

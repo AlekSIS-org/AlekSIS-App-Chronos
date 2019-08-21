@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 from django.contrib.auth.decorators import login_required
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -14,7 +15,7 @@ from .util import current_week
 
 @login_required
 @admin_required
-def timetable(request):
+def timetable(request: HttpRequest) -> HttpResponse:
     context = {}
 
     lesson_periods = LessonPeriod.objects.all()

@@ -1,13 +1,16 @@
 from datetime import datetime
+from typing import Optional
+
+from django.db import models
 
 from .models import LessonPeriod
 
 
-def current_week():
+def current_week() -> int:
     return int(datetime.now().strftime('%V'))
 
 
-def current_lesson_periods(when=None):
+def current_lesson_periods(when: Optional[datetime] = None) -> models.query.QuerySet:
     now = when or datetime.now()
 
     return LessonPeriod.objects.filter(lesson__date_start__lte=now.date(),
