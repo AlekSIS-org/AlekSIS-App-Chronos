@@ -1,8 +1,8 @@
 from collections import OrderedDict
 
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from biscuit.core.decorators import admin_required
