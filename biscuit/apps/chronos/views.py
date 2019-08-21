@@ -1,7 +1,8 @@
 from collections import OrderedDict
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.core.urlresolvers import reverse
+from django.shortcuts import redirect, render
 from django.utils.translation import gettext_lazy as _
 
 from biscuit.core.decorators import admin_required
@@ -23,16 +24,22 @@ def timetable(request):
             lesson__groups__pk=int(request.GET['group']))
         filter_descs.append(_('Group: %s') % Group.objects.get(
             pk=int(request.GET['group'])))
-    if 'teacher' in request.GET:
+    elif 'teacher' in request.GET:
         lesson_periods = lesson_periods.filter(
             lesson__teachers__pk=int(request.GET['teacher']))
         filter_descs.append(_('Teacher: %s') % Person.objects.get(
             pk=int(request.GET['teacher'])))
-    if 'room' in request.GET:
+    elif 'room' in request.GET:
         lesson_periods = lesson_periods.filter(
             room__pk=int(request.GET['room']))
         filter_descs.append(_('Room: %s') % Room.objects.get(
             pk=int(request.GET['room'])))
+    else:
+        if request.user.person:
+            if request.user.person.primary_group:
+                return redirect(reverse('timetable') + '?group=%d' % request.user.person.primary_group.pk)
+            elif lesson_periods.filter(lesson__teachers=request.user.person).exists():
+                return redirect(reverse('timetable') + '?teacher=%d' % request.user.person.pk)
 
     per_day = {}
     period_min, period_max = None, None
