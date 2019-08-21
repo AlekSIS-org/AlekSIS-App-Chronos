@@ -2,6 +2,8 @@ from django.core import validators
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from .util import current_week
+
 
 class TimePeriod(models.Model):
     WEEKDAY_CHOICES = [
@@ -82,24 +84,25 @@ class LessonPeriod(models.Model):
 
     room = models.ForeignKey('Room', models.CASCADE, null=True)
 
-    substitution = models.OneToOneField('LessonSubstitution', models.CASCADE,
-                                        related_name='lesson_period', null=True)
+    def get_substitution(self, week=None):
+        wanted_week = week or current_week()
+        return self.substitutions.filter(week=wanted_week).first()
 
     def get_subject(self):
-        if self.substitution:
-            return self.substitution.subject
+        if self.get_substitution():
+            return self.get_substitution().subject
         else:
             return self.lesson.subject
 
     def get_teachers(self):
-        if self.substitution:
-            return self.substitution.teachers
+        if self.get_substitution():
+            return self.get_substitution().teachers
         else:
             return self.lesson.teachers
 
     def get_room(self):
-        if self.substitution:
-            return self.substitution.room
+        if self.get_substitution():
+            return self.get_substitution().room
         else:
             return self.room
 
@@ -108,6 +111,12 @@ class LessonPeriod(models.Model):
 
 
 class LessonSubstitution(models.Model):
+    week = models.IntegerField(verbose_name=_('Kalenderwoche'),
+                               default=current_week)
+
+    lesson_period = models.ForeignKey(
+        'LessonPeriod', models.CASCADE, 'substitutions')
+
     subject = models.ForeignKey(
         'Subject', on_delete=models.CASCADE,
         related_name='lesson_substitutions', null=True)

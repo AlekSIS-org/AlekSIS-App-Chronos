@@ -9,6 +9,7 @@ from biscuit.core.decorators import admin_required
 from biscuit.core.models import Group, Person
 
 from .models import LessonPeriod, TimePeriod, Room
+from .util import current_week
 
 
 @login_required
@@ -73,5 +74,6 @@ def timetable(request):
     context['filter_descs'] = ', '.join(filter_descs)
     context['periods'] = TimePeriod.get_times_dict()
     context['weekdays'] = dict(TimePeriod.WEEKDAY_CHOICES)
+    context['current_week'] = current_week()
 
     return render(request, 'chronos/tt_week.html', context)
