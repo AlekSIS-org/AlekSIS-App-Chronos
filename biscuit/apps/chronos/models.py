@@ -55,7 +55,8 @@ class Subject(models.Model):
 class Room(models.Model):
     short_name = models.CharField(verbose_name=_(
         'Short name, e.g. room number'), max_length=10, unique=True)
-    name = models.CharField(verbose_name=_('Long name'), max_length=30, unique=True)
+    name = models.CharField(verbose_name=_('Long name'),
+                            max_length=30, unique=True)
 
     def __str__(self):
         return '%s (%s)' % (self.name, self.short_name)
@@ -79,4 +80,16 @@ class LessonPeriod(models.Model):
     lesson = models.ForeignKey('Lesson', models.CASCADE)
     period = models.ForeignKey('TimePeriod', models.CASCADE)
 
+    room = models.ForeignKey('Room', models.CASCADE, null=True)
+
+    substitution = models.OneToOneField('LessonSubstitution', models.CASCADE,
+                                        'lesson_period', null=True)
+
+
+class LessonSubstitution(models.Model):
+    subject = models.ForeignKey(
+        'Subject', on_delete=models.CASCADE,
+        related_name='lesson_substitutions', null=True)
+    teachers = models.ManyToManyField('core.Person',
+                                      related_name='lesson_substitutions')
     room = models.ForeignKey('Room', models.CASCADE, null=True)
