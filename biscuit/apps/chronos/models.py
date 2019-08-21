@@ -83,7 +83,7 @@ class LessonPeriod(models.Model):
     room = models.ForeignKey('Room', models.CASCADE, null=True)
 
     substitution = models.OneToOneField('LessonSubstitution', models.CASCADE,
-                                        'lesson_period', null=True)
+                                        related_name='lesson_period', null=True)
 
     def get_subject(self):
         if self.substitution:
