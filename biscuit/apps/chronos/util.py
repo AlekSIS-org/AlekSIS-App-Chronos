@@ -1,10 +1,10 @@
 from datetime import datetime
 from typing import Optional
 
-from django.apps.AppConfig import get_model
+from django.apps import apps
 from django.db import models
 
-LessonPeriod = get_model('chronos.LessonPeriod')  # noqa
+LessonPeriod = apps.get_model('chronos.LessonPeriod')  # noqa
 
 
 def current_week() -> int:
