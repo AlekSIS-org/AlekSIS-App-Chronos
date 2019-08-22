@@ -29,7 +29,7 @@ class TimePeriod(models.Model):
     time_start = models.TimeField(verbose_name=_('Time the period starts'))
     time_end = models.TimeField(verbose_name=_('Time the period ends'))
 
-    def __str__(self): str:
+    def __str__(self) -> str:
         return '%s, %d. period (%s - %s)' % (self.weekday, self.period, self.time_start, self.time_end)
 
     @classmethod
