@@ -82,6 +82,20 @@ class Lesson(models.Model):
     date_end = models.DateField(verbose_name=_(
         'Effective end date of lesson'), null=True)
 
+class LessonSubstitution(models.Model):
+    week = models.IntegerField(verbose_name=_('Kalenderwoche'),
+                               default=current_week)
+
+    lesson_period = models.ForeignKey(
+        'LessonPeriod', models.CASCADE, 'substitutions')
+
+    subject = models.ForeignKey(
+        'Subject', on_delete=models.CASCADE,
+        related_name='lesson_substitutions', null=True)
+    teachers = models.ManyToManyField('core.Person',
+                                      related_name='lesson_substitutions')
+    room = models.ForeignKey('Room', models.CASCADE, null=True)
+
 
 class LessonPeriod(models.Model):
     lesson = models.ForeignKey('Lesson', models.CASCADE)
@@ -113,18 +127,3 @@ class LessonPeriod(models.Model):
 
     def get_groups(self) -> models.query.QuerySet:
         return self.lesson.groups
-
-
-class LessonSubstitution(models.Model):
-    week = models.IntegerField(verbose_name=_('Kalenderwoche'),
-                               default=current_week)
-
-    lesson_period = models.ForeignKey(
-        'LessonPeriod', models.CASCADE, 'substitutions')
-
-    subject = models.ForeignKey(
-        'Subject', on_delete=models.CASCADE,
-        related_name='lesson_substitutions', null=True)
-    teachers = models.ManyToManyField('core.Person',
-                                      related_name='lesson_substitutions')
-    room = models.ForeignKey('Room', models.CASCADE, null=True)
