@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Tuple, Optional
+from typing import Dict, Optional, List, Tuple
 
 from django.core import validators
 from django.db import models
