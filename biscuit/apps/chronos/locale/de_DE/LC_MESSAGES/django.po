@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-18 21:36+0200\n"
-"PO-Revision-Date: 2019-08-17 13:37+0200\n"
+"POT-Creation-Date: 2019-08-22 20:02+0200\n"
+"PO-Revision-Date: 2019-08-22 20:02+0200\n"
 "Last-Translator: Tom Teichler <tom.teichler@teckids.org>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -29,97 +29,101 @@ msgstr "Stundenpläne"
 msgid "Timetable"
 msgstr "Stundenplan"
 
-#: models.py:8
+#: models.py:15
 msgid "Sunday"
 msgstr "Sonntag"
 
-#: models.py:9
+#: models.py:16
 msgid "Monday"
 msgstr "Montag"
 
-#: models.py:10
+#: models.py:17
 msgid "Tuesday"
 msgstr "Dienstag"
 
-#: models.py:11
+#: models.py:18
 msgid "Wednesday"
 msgstr "Mittwoch"
 
-#: models.py:12
+#: models.py:19
 msgid "Thursday"
 msgstr "Donnerstag"
 
-#: models.py:13
+#: models.py:20
 msgid "Friday"
 msgstr "Freitag"
 
-#: models.py:14
+#: models.py:21
 msgid "Saturday"
 msgstr "Samstag"
 
-#: models.py:18
+#: models.py:25
 msgid "Week day"
 msgstr "Wochentag"
 
-#: models.py:20
+#: models.py:27
 msgid "Number of period"
 msgstr "Nummer der Stunde"
 
-#: models.py:22
+#: models.py:29
 msgid "Time the period starts"
 msgstr "Anfangszeit der Stunde"
 
-#: models.py:23
+#: models.py:30
 msgid "Time the period ends"
 msgstr "Endzeit der Stunde"
 
-#: models.py:42
+#: models.py:49
 msgid "Abbreviation of subject in timetable"
 msgstr "Kürzel des Faches im Stundenplan"
 
-#: models.py:44
+#: models.py:51
 msgid "Long name of subject"
 msgstr "Name des Faches"
 
-#: models.py:46
+#: models.py:53
 msgid "Foreground colour in timetable"
 msgstr "Vordergrundfarbe im Stundenplan"
 
-#: models.py:48
+#: models.py:55
 msgid "Background colour in timetable"
 msgstr "Hintergrundfarbe im Stundenplan"
 
-#: models.py:57
+#: models.py:64
 msgid "Short name, e.g. room number"
 msgstr "Kurzer Name, z.B. Raumnummer"
 
-#: models.py:58
+#: models.py:65
 msgid "Long name"
 msgstr "Langer Name"
 
-#: models.py:73
+#: models.py:81
 msgid "Effective start date of lesson"
 msgstr "Effektives Startdatum des Unterrichts"
 
-#: models.py:75
+#: models.py:83
 msgid "Effective end date of lesson"
 msgstr "Effektives Enddatum des Unterrichts"
+
+#: models.py:86
+msgid "Week"
+msgstr "Kalenderwoche"
 
 #: templates/chronos/tt_week.html:24
 msgid "Times"
 msgstr "Zeiten"
 
-#: views.py:24
+#: views.py:27
 #, python-format
 msgid "Group: %s"
 msgstr "Gruppen: %s"
 
-#: views.py:29
+#: views.py:32
 #, python-format
 msgid "Teacher: %s"
 msgstr "Lehrer: %s"
 
-#: views.py:34
+#: views.py:37
 #, python-format
 msgid "Room: %s"
 msgstr "Raum: %s"

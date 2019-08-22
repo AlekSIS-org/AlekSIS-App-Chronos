@@ -83,7 +83,7 @@ class Lesson(models.Model):
         'Effective end date of lesson'), null=True)
 
 class LessonSubstitution(models.Model):
-    week = models.IntegerField(verbose_name=_('Kalenderwoche'),
+    week = models.IntegerField(verbose_name=_('Week'),
                                default=current_week)
 
     lesson_period = models.ForeignKey(
