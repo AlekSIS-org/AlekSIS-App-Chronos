@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Max, Min
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
