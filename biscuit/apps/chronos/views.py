@@ -20,17 +20,17 @@ from .util import current_week
 def timetable(request: HttpRequest) -> HttpResponse:
     context = {}
 
-    if request.GET:
-        lesson_periods = LessonPeriod.objects.all()
+    lesson_periods = LessonPeriod.objects.all()
 
+    if request.GET:
         # Incrementally filter lesson periods by GET parameters
-        if 'group' in request.GET:
+        if 'group' in request.GET and request.GET['group']:
             lesson_periods = lesson_periods.filter(
                 lesson__groups__pk=int(request.GET['group']))
-        if 'teacher' in request.GET:
+        if 'teacher' in request.GET and request.GET['teacher']:
             lesson_periods = lesson_periods.filter(
                 lesson__teachers__pk=int(request.GET['teacher']))
-        if 'room' in request.GET:
+        if 'room' in request.GET and request.GET['room']:
             lesson_periods = lesson_periods.filter(
                 room__pk=int(request.GET['room']))
     else:
@@ -48,7 +48,7 @@ def timetable(request: HttpRequest) -> HttpResponse:
                            {})[lesson_period.period.period] = lesson_period
 
     # Determine overall first and last day and period
-    min_max = TimePeriod.objects..aggregate(
+    min_max = TimePeriod.objects.aggregate(
         Min('period'), Max('period'),
         Min('weekday'), Max('weekday'))
 

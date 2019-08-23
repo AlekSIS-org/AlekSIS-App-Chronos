@@ -101,7 +101,7 @@ class LessonPeriod(models.Model):
     lesson = models.ForeignKey('Lesson', models.CASCADE)
     period = models.ForeignKey('TimePeriod', models.CASCADE)
 
-    room = models.ForeignKey('Room', models.CASCADE, null=True)
+    room = models.ForeignKey('Room', models.CASCADE, null=True, related_name='lesson_periods')
 
     def get_substitution(self, week: Optional[int] = None) -> LessonSubstitution:
         wanted_week = week or current_week()
