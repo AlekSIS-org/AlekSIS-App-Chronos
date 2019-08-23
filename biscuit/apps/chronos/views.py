@@ -20,18 +20,21 @@ from .util import current_week
 def timetable(request: HttpRequest) -> HttpResponse:
     context = {}
 
-    lesson_periods = LessonPeriod.objects.all()
+    if request.GET:
+        lesson_periods = LessonPeriod.objects.all()
 
-    if 'group' in request.GET:
-        lesson_periods = lesson_periods.filter(
-            lesson__groups__pk=int(request.GET['group']))
-    elif 'teacher' in request.GET:
-        lesson_periods = lesson_periods.filter(
-            lesson__teachers__pk=int(request.GET['teacher']))
-    elif 'room' in request.GET:
-        lesson_periods = lesson_periods.filter(
-            room__pk=int(request.GET['room']))
+        # Incrementally filter lesson periods by GET parameters
+        if 'group' in request.GET:
+            lesson_periods = lesson_periods.filter(
+                lesson__groups__pk=int(request.GET['group']))
+        if 'teacher' in request.GET:
+            lesson_periods = lesson_periods.filter(
+                lesson__teachers__pk=int(request.GET['teacher']))
+        if 'room' in request.GET:
+            lesson_periods = lesson_periods.filter(
+                room__pk=int(request.GET['room']))
     else:
+        # Redirect to a selected view if no filter provided
         if request.user.person:
             if request.user.person.primary_group:
                 return redirect(reverse('timetable') + '?group=%d' % request.user.person.primary_group.pk)
