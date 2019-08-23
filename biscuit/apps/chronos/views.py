@@ -43,27 +43,27 @@ def timetable(request: HttpRequest) -> HttpResponse:
             elif lesson_periods.filter(lesson__teachers=request.user.person).exists():
                 return redirect(reverse('timetable') + '?teacher=%d' % request.user.person.pk)
 
+    # Regroup lesson periods per weekday
     per_day = {}
-    period_min, period_max = None, None
     for lesson_period in lesson_periods:
         per_day.setdefault(lesson_period.period.weekday,
                            {})[lesson_period.period.period] = lesson_period
 
-        # Expand min and max lesson to later fill in empty lessons
-        if period_min is None or period_min > lesson_period.period.period:
-            period_min = lesson_period.period.period
-        if period_max is None or period_max < lesson_period.period.period:
-            period_max = lesson_period.period.period
+    # Determine overall first and last day and period
+    min_max = TimePeriod.objects..aggregate(
+        Min('period'), Max('period'),
+        Min('weekday'), Max('weekday'))
 
     # Fill in empty lessons
-    for weekday_num in range(min(per_day.keys() or [0]),
-                             max(per_day.keys() or [6]) + 1):
+    for weekday_num in range(min_max.get('weekday__min', 0),
+                             min_max.get('weekday__max', 6) + 1):
         # Fill in empty weekdays
         if weekday_num not in per_day.keys():
             per_day[weekday_num] = {}
 
         # Fill in empty lessons on this workday
-        for period_num in range(period_min, period_max + 1):
+        for period_num in range(min_max.get('period__min', 1),
+                                min_max.get('period__max', 7) + 1):
             if period_num not in per_day[weekday_num].keys():
                 per_day[weekday_num][period_num] = None
 
