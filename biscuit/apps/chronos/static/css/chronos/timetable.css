@@ -1,3 +1,8 @@
 .chronos-lesson {
     height: 6em;
 }
+
+ul#timetable_select_form li {
+    dispaly: inline;
+
+}
