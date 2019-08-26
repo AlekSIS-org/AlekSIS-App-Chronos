@@ -84,8 +84,8 @@ class Lesson(models.Model):
 
 
 class LessonPeriod(models.Model):
-    lesson = models.ForeignKey('Lesson', models.CASCADE)
-    period = models.ForeignKey('TimePeriod', models.CASCADE)
+    lesson = models.ForeignKey('Lesson', models.CASCADE, related_name='lesson_periods')
+    period = models.ForeignKey('TimePeriod', models.CASCADE, related_name='lesson_periods')
 
     room = models.ForeignKey('Room', models.CASCADE, null=True)
 
