@@ -2,7 +2,7 @@ from datetime import date
 
 from django import template
 
-from .util import week_days
+from ..util import week_days
 
 
 register = template.Library()
