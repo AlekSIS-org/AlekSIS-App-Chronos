@@ -1,5 +1,5 @@
-from datetime import datetime
-from typing import Optional
+from datetime import date, datetime, timedelta
+from typing import Optional, Sequence
 
 from django.apps import apps
 from django.db import models
@@ -7,6 +7,18 @@ from django.db import models
 
 def current_week() -> int:
     return int(datetime.now().strftime('%V'))
+
+
+def week_days(week: Optional[int]) -> Sequence[date]:
+    # FIXME Make this aware of the school term concept
+    # cf. BiscuIT-ng#40
+
+    year = date.today().year
+    wanted_week = week or current_week()
+
+    first_day = datetime.strptime('%d-%d-1' % (year, wanted_week), '%Y-%W-%w')
+
+    return [(first_day + timedelta(days=offset)).date() for offset in range(0, 7)]
 
 
 def current_lesson_periods(when: Optional[datetime] = None) -> models.query.QuerySet:
