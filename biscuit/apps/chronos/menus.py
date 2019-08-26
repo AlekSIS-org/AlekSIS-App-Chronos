@@ -6,11 +6,12 @@ MENUS = {
             'name': _('Timetables'),
             'url': '#',
             'root': True,
+            'validators': ['menu_generator.validators.is_authenticated'],
             'submenu': [
                 {
                     'name': _('Timetable'),
                     'url': 'timetable',
-                    'validators': ['menu_generator.validators.is_authenticated', 'menu_generator.validators.is_superuser']
+                    'validators': ['menu_generator.validators.is_authenticated']
                 }
             ]
         }

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Tuple, Optional
+from typing import Dict, Optional, List, Tuple
 
 from django.core import validators
 from django.db import models
@@ -29,7 +29,7 @@ class TimePeriod(models.Model):
     time_start = models.TimeField(verbose_name=_('Time the period starts'))
     time_end = models.TimeField(verbose_name=_('Time the period ends'))
 
-    def __str__(self): str:
+    def __str__(self) -> str:
         return '%s, %d. period (%s - %s)' % (self.weekday, self.period, self.time_start, self.time_end)
 
     @classmethod
@@ -82,12 +82,26 @@ class Lesson(models.Model):
     date_end = models.DateField(verbose_name=_(
         'Effective end date of lesson'), null=True)
 
+class LessonSubstitution(models.Model):
+    week = models.IntegerField(verbose_name=_('Week'),
+                               default=current_week)
+
+    lesson_period = models.ForeignKey(
+        'LessonPeriod', models.CASCADE, 'substitutions')
+
+    subject = models.ForeignKey(
+        'Subject', on_delete=models.CASCADE,
+        related_name='lesson_substitutions', null=True)
+    teachers = models.ManyToManyField('core.Person',
+                                      related_name='lesson_substitutions')
+    room = models.ForeignKey('Room', models.CASCADE, null=True)
+
 
 class LessonPeriod(models.Model):
     lesson = models.ForeignKey('Lesson', models.CASCADE, related_name='lesson_periods')
     period = models.ForeignKey('TimePeriod', models.CASCADE, related_name='lesson_periods')
 
-    room = models.ForeignKey('Room', models.CASCADE, null=True)
+    room = models.ForeignKey('Room', models.CASCADE, null=True, related_name='lesson_periods')
 
     def get_substitution(self, week: Optional[int] = None) -> LessonSubstitution:
         wanted_week = week or current_week()
@@ -113,18 +127,3 @@ class LessonPeriod(models.Model):
 
     def get_groups(self) -> models.query.QuerySet:
         return self.lesson.groups
-
-
-class LessonSubstitution(models.Model):
-    week = models.IntegerField(verbose_name=_('Kalenderwoche'),
-                               default=current_week)
-
-    lesson_period = models.ForeignKey(
-        'LessonPeriod', models.CASCADE, 'substitutions')
-
-    subject = models.ForeignKey(
-        'Subject', on_delete=models.CASCADE,
-        related_name='lesson_substitutions', null=True)
-    teachers = models.ManyToManyField('core.Person',
-                                      related_name='lesson_substitutions')
-    room = models.ForeignKey('Room', models.CASCADE, null=True)
