@@ -22,7 +22,7 @@ def timetable(request: HttpRequest) -> HttpResponse:
 
     lesson_periods = LessonPeriod.objects.all()
 
-    if request.GET:
+    if request.GET.get('group', None) or request.GET.get('teacher', None) or request.GET.get('room', None):
         # Incrementally filter lesson periods by GET parameters
         if 'group' in request.GET and request.GET['group']:
             lesson_periods = lesson_periods.filter(
