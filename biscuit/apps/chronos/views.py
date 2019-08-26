@@ -16,7 +16,6 @@ from .util import current_week
 
 
 @login_required
-@admin_required
 def timetable(request: HttpRequest) -> HttpResponse:
     context = {}
 
