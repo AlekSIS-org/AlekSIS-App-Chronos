@@ -3,124 +3,124 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-27 15:24+0200\n"
-"PO-Revision-Date: 2019-08-24 13:55+0200\n"
-"Last-Translator: Tom Teichler <tom.teichler@teckids.org>\n"
-"Language-Team: \n"
-"Language: de_DE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.3\n"
 
 #: apps.py:7
 msgid "BiscuIT - Chronos (Timetables)"
-msgstr "BiscuIT - Chronos (Stundenpläne)"
+msgstr ""
 
 #: forms.py:13
 msgid "Group"
-msgstr "Gruppe"
+msgstr ""
 
 #: forms.py:16
 msgid "Teacher"
-msgstr "Lehrer"
+msgstr ""
 
 #: forms.py:19
 msgid "Room"
-msgstr "Raum"
+msgstr ""
 
 #: menus.py:6
 msgid "Timetables"
-msgstr "Stundenpläne"
+msgstr ""
 
 #: menus.py:12
 msgid "Timetable"
-msgstr "Stundenplan"
+msgstr ""
 
 #: models.py:15
 msgid "Sunday"
-msgstr "Sonntag"
+msgstr ""
 
 #: models.py:16
 msgid "Monday"
-msgstr "Montag"
+msgstr ""
 
 #: models.py:17
 msgid "Tuesday"
-msgstr "Dienstag"
+msgstr ""
 
 #: models.py:18
 msgid "Wednesday"
-msgstr "Mittwoch"
+msgstr ""
 
 #: models.py:19
 msgid "Thursday"
-msgstr "Donnerstag"
+msgstr ""
 
 #: models.py:20
 msgid "Friday"
-msgstr "Freitag"
+msgstr ""
 
 #: models.py:21
 msgid "Saturday"
-msgstr "Samstag"
+msgstr ""
 
 #: models.py:25
 msgid "Week day"
-msgstr "Wochentag"
+msgstr ""
 
 #: models.py:27
 msgid "Number of period"
-msgstr "Nummer der Stunde"
+msgstr ""
 
 #: models.py:29
 msgid "Time the period starts"
-msgstr "Anfangszeit der Stunde"
+msgstr ""
 
 #: models.py:30
 msgid "Time the period ends"
-msgstr "Endzeit der Stunde"
+msgstr ""
 
 #: models.py:49
 msgid "Abbreviation of subject in timetable"
-msgstr "Kürzel des Faches im Stundenplan"
+msgstr ""
 
 #: models.py:51
 msgid "Long name of subject"
-msgstr "Name des Faches"
+msgstr ""
 
 #: models.py:53
 msgid "Foreground colour in timetable"
-msgstr "Vordergrundfarbe im Stundenplan"
+msgstr ""
 
 #: models.py:55
 msgid "Background colour in timetable"
-msgstr "Hintergrundfarbe im Stundenplan"
+msgstr ""
 
 #: models.py:64
 msgid "Short name, e.g. room number"
-msgstr "Kurzer Name, z.B. Raumnummer"
+msgstr ""
 
 #: models.py:65
 msgid "Long name"
-msgstr "Langer Name"
+msgstr ""
 
 #: models.py:81
 msgid "Effective start date of lesson"
-msgstr "Effektives Startdatum des Unterrichts"
+msgstr ""
 
 #: models.py:83
 msgid "Effective end date of lesson"
-msgstr "Effektives Enddatum des Unterrichts"
+msgstr ""
 
 #: models.py:86
 msgid "Week"
-msgstr "Kalenderwoche"
+msgstr ""
 
 #: templates/chronos/tt_week.html:28
 msgid "Times"
-msgstr "Zeiten"
+msgstr ""
