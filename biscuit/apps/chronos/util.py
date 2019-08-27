@@ -16,7 +16,7 @@ def week_days(week: Optional[int]) -> Sequence[date]:
     year = date.today().year
     wanted_week = week or current_week()
 
-    first_day = datetime.strptime('%d-%d-1' % (year, wanted_week), '%Y-%W-%w')
+    first_day = datetime.strptime('%d-%d-0' % (year, wanted_week), '%Y-%V-%u')
 
     return [(first_day + timedelta(days=offset)).date() for offset in range(0, 7)]
 
