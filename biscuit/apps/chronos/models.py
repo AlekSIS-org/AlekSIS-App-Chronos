@@ -42,6 +42,7 @@ class TimePeriod(models.Model):
 
     class Meta:
         unique_together = [['weekday', 'period']]
+        ordering = ['weekday', 'period']
 
 
 class Subject(models.Model):
@@ -58,6 +59,9 @@ class Subject(models.Model):
     def __str__(self) -> str:
         return '%s - %s' % (self.abbrev, self.name)
 
+    class Meta:
+         ordering = ['name', 'abbrev']
+
 
 class Room(models.Model):
     short_name = models.CharField(verbose_name=_(
@@ -67,6 +71,9 @@ class Room(models.Model):
 
     def __str__(self) -> str:
         return '%s (%s)' % (self.name, self.short_name)
+
+    class Meta:
+        ordering = ['name', 'short_name']
 
 
 class Lesson(models.Model):
@@ -82,6 +89,10 @@ class Lesson(models.Model):
     date_end = models.DateField(verbose_name=_(
         'Effective end date of lesson'), null=True)
 
+    class Meta:
+        ordering = ['date_start']
+
+
 class LessonSubstitution(models.Model):
     week = models.IntegerField(verbose_name=_('Week'),
                                default=current_week)
@@ -95,6 +106,9 @@ class LessonSubstitution(models.Model):
     teachers = models.ManyToManyField('core.Person',
                                       related_name='lesson_substitutions')
     room = models.ForeignKey('Room', models.CASCADE, null=True)
+
+    class Meta:
+        ordering = ['lesson_period__lesson__date_start', 'week', 'lesson_period__period__weekday', 'lesson_period__period__period']
 
 
 class LessonPeriod(models.Model):
@@ -127,3 +141,6 @@ class LessonPeriod(models.Model):
 
     def get_groups(self) -> models.query.QuerySet:
         return self.lesson.groups
+
+    class Meta:
+        ordering = ['lesson__date_start', 'period__weekday', 'period__period']
