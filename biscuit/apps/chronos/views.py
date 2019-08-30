@@ -1,5 +1,6 @@
 import datetime
 import os
+import time
 import traceback
 
 from PyPDF2 import PdfFileMerger
@@ -127,6 +128,7 @@ def quicklaunch(request):
 @permission_required("timetable.show_plan")
 def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().year,
          calendar_week=timezone.datetime.now().isocalendar()[1]):
+    start = time.time()
     """
     [DJANGO VIEW]
     Show a timetable (class, teacher, room, smart/regular)
@@ -199,7 +201,8 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
         "hints_b": hints_b,
         "hints_b_mode": "week",
     }
-
+    stop = time.time()
+    print("TIME", stop - start)
     return render(request, 'timetable/plan.html', context)
 
 
