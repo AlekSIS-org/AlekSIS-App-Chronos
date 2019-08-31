@@ -32,5 +32,5 @@ def current_lesson_periods(when: Optional[datetime] = None) -> models.query.Quer
                                        period__time_end__gte=now.time())
 
 
-def week_weekday_from_date(when: date) -> Sequence[int, int]:
+def week_weekday_from_date(when: date) -> Sequence[int]:
     return (int(when.strftime('%V')), int(when.strftime('%u')))
