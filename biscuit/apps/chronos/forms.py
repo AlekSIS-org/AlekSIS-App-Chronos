@@ -17,3 +17,8 @@ class SelectForm(forms.Form):
     room = forms.ModelChoiceField(
         queryset=Room.objects.annotate(lessons_count=Count('lesson_periods')).filter(lessons_count__gt=0),
         label=_('Room'), required=False)
+
+class LessonSubstitution(forms.ModelForm):
+    class Meta:
+        model = LessonSubstitution
+        fields = ['week', 'lesson_period', 'subject', 'teachers', 'room']
