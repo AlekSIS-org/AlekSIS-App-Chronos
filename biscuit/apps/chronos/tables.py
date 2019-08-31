@@ -24,6 +24,7 @@ class LessonsTable(tables.Table):
     lesson__teachers = tables.Column(accessor='lesson.teacher_names')
     lesson__subject = tables.Column(accessor='lesson.subject')
     room = tables.Column(accessor='room')
+    edit = tables.LinkColumn('edit_substitution_by_id', args=[A('id')])
 
     def __init__(self, week, *args, **kwargs):
         self._week = week
