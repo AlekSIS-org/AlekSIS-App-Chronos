@@ -91,11 +91,11 @@ class Lesson(models.Model):
 
     @property
     def teacher_names(self, sep: Optional[str] = ', ') -> str:
-        return sep.join([teacher.name for teacher in self.teachers.all()])
+        return sep.join([teacher.full_name for teacher in self.teachers.all()])
 
     @property
     def group_names(self, sep: Optional[str] = ', ') -> str:
-        return sep.join([group.name for group in self.groups.all()])
+        return sep.join([group.short_name for group in self.groups.all()])
 
     class Meta:
         ordering = ['date_start']
