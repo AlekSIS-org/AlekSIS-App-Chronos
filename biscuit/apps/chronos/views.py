@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from datetime import date, timedelta
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max, Min
@@ -12,7 +13,7 @@ from biscuit.core.models import Group, Person
 
 from .forms import SelectForm
 from .models import LessonPeriod, TimePeriod, Room
-from .util import current_week
+from .util import current_week, week_weekday_from_date
 
 
 @login_required
@@ -78,3 +79,28 @@ def timetable(request: HttpRequest) -> HttpResponse:
     context['select_form'] = select_form
 
     return render(request, 'chronos/tt_week.html', context)
+
+
+@login_required
+def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpResponse:
+    context = {}
+
+    if when:
+        day = datetime.strptime(when, '%Y-%m-%d').date()
+    else:
+        day = date.today()
+
+    week, weekday = week_weekday_from_date(day)
+
+    lesson_periods = LessonPeriod.objects.filter(
+        lesson__date_start__lte=day, lesson__date_end__gte=day,
+        period__weekday=weekday
+    ).all()
+
+    context['day'] = day
+    context['day_prev'] = day + timedelta(days=-1)
+    context['day_next'] = day + timedelta(days=1)
+    context['week'] = week
+    context['lesson_periods'] = lesson_periods
+
+    return render(request, 'chronos/lessons_day.html', context)
