@@ -7,7 +7,7 @@ from django_tables2.utils import A
 from .models import LessonPeriod
 
 
-def _css_class_from_lesson_state(record: Optional[LessonPeriod] = None, table: Optional[LessonTable] = None) -> str:
+def _css_class_from_lesson_state(record: Optional[LessonPeriod] = None, table: Optional[LessonsTable] = None) -> str:
     if record.get_substitution(table._week):
         return 'table-warning'
     else:
