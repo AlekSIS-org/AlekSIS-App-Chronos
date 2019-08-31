@@ -1,5 +1,5 @@
 {% extends "core/base.html" %}
-{% load bootstrap4 i18n %}
+{% load bootstrap4 i18n font_awesome %}
 {% load render_table from django_tables2 %}
 
 {% block page_title %}{% blocktrans %}Lessons{% endblocktrans %}{% endblock %}
@@ -11,12 +11,10 @@
  </div>
  <div class="btn-group" role="group" aria-label="Day actions">
   <a href="{% url 'lessons_day_by_date' day_prev %}" class="btn btn-secondary">
-   Previos day
+   {% fa 'hand-point-right' %}
   </a>
- </div>
- <div class="btn-group" role="group" aria-label="Day actions">
   <a href="{% url 'lessons_day_by_date' day_next %}" class="btn btn-secondary">
-   Next day
+   {% fa 'hand-point-left' %}
   </a>
  </div>
 </div>
