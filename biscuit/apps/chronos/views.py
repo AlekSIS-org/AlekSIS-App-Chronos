@@ -8,6 +8,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.translation import ugettext as _
+from django_tables2 import RequestConfig
 
 from biscuit.core.decorators import admin_required
 from biscuit.core.models import Group, Person
