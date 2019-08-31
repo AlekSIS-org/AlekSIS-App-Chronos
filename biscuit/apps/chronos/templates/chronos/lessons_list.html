@@ -16,7 +16,7 @@
   <input type="submit" value="Select" /> 
  </form>
 
- {% for weekday, lesson_periods_day in lesson_periods %}
+ {% for weekday, lesson_periods_day in lesson_periods.items %}
   <h3>{{ weekday }}</h3>
   <table class="table table-striped table-bordered table-hover table-responsive-xl">
    <thead>
