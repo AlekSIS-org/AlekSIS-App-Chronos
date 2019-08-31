@@ -12,6 +12,11 @@ MENUS = {
                     'name': _('Timetable'),
                     'url': 'timetable',
                     'validators': ['menu_generator.validators.is_authenticated']
+                },
+                {
+                    'name': _('List of lessons'),
+                    'url': 'lessons_list',
+                    'validators': ['menu_generator.validators.is_authenticated']
                 }
             ]
         }
