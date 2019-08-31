@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from datetime import date, timedelta
 
+from typing import Optional
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max, Min
 from django.http import HttpRequest, HttpResponse
