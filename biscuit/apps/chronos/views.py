@@ -102,10 +102,10 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
     ).all()
 
     # Build table
-    lesson_table = LessonsTable(lesson_periods)
-    RequestConfig(request).configure(lesson_table)
+    lessons_table = LessonsTable(lesson_periods)
+    RequestConfig(request).configure(lessons_table)
 
-    context['lesson_table'] = lesson_table
+    context['lessons_table'] = lessons_table
     context['day'] = day
     context['day_prev'] = day + timedelta(days=-1)
     context['day_next'] = day + timedelta(days=1)
