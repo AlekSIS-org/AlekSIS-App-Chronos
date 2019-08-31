@@ -19,11 +19,11 @@ class LessonsTable(tables.Table):
         attrs = {'class': 'table table-striped table-bordered table-hover table-responsive-xl'}
         row_attrs = {'class': _css_class_from_lesson_state}
 
-    period__period = tables.Column(accessor='period.period')
-    lesson__groups = tables.Column(accessor='lesson.group_names')
-    lesson__teachers = tables.Column(accessor='lesson.teacher_names')
-    lesson__subject = tables.Column(accessor='lesson.subject')
-    room = tables.Column(accessor='room')
+    period__period = tables.LinkColumn('edit_substitution_by_id', args=[A('id')], accessor='period.period')
+    lesson__groups = tables.LinkColumn('edit_substitution_by_id', args=[A('id')], accessor='lesson.group_names')
+    lesson__teachers = tables.LinkColumn('edit_substitution_by_id', args=[A('id')], accessor='lesson.teacher_names')
+    lesson__subject = tables.LinkColumn('edit_substitution_by_id', args=[A('id')], accessor='lesson.subject')
+    room = tables.LinkColumn('edit_substitution_by_id', args=[A('id')], accessor='room')
 
     def __init__(self, week, *args, **kwargs):
         self._week = week
