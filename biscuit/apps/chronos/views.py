@@ -13,7 +13,7 @@ from django_tables2 import RequestConfig
 from biscuit.core.decorators import admin_required
 from biscuit.core.models import Group, Person
 
-from .forms import SelectForm
+from .forms import SelectForm, LessonSubstitutionForm
 from .models import LessonPeriod, TimePeriod, Room
 from .util import current_week, week_weekday_from_date
 from .tables import LessonsTable
@@ -113,3 +113,24 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
     context['lesson_periods'] = lesson_periods
 
     return render(request, 'chronos/lessons_day.html', context)
+
+@admin_required
+def edit_substitution(request: HttpRequest, id_: int) -> HttpResponse:
+    context = {}
+
+    substitution = get_object_or_404(Substitution, id=id_)
+
+    edit_substitution_form = LessonSubstitutionForm(request.POST or None, instance=substitution)
+
+    context['substitution'] = substitution
+
+    if request.method == 'POST':
+        if edit_substitution_form.is_valid():
+            edit_substitution_form.save(commit=True)
+
+            messages.success(request, _('The substitution has been saved.'))
+            return redirect('edit_substitution_by_id', id_=substitution.id)
+
+    context['edit_substitution_form'] = edit_substitution_form
+
+    return render(request, 'chronos/edit_substitution.html', context)

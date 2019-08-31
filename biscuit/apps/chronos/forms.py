@@ -18,7 +18,12 @@ class SelectForm(forms.Form):
         queryset=Room.objects.annotate(lessons_count=Count('lesson_periods')).filter(lessons_count__gt=0),
         label=_('Room'), required=False)
 
-class LessonSubstitution(forms.ModelForm):
+class LessonSubstitutionForm(forms.ModelForm):
     class Meta:
         model = LessonSubstitution
         fields = ['week', 'lesson_period', 'subject', 'teachers', 'room']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['teachers'].queryset = Person.objects.all()
+        self.fields['room'].queryset = Person.objects.all()
