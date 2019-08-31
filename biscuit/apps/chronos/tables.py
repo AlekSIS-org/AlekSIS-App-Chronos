@@ -7,7 +7,7 @@ class LessonsTable(tables.Table):
         attrs = {'class': 'table table-striped table-bordered table-hover table-responsive-xl'}
 
     period__period = tables.Column(accessor='period.period')
-    lesson__groups = tables.Column(accessor='lesson.groups')
-    lesson__teachers = tables.Column(accessor='lesson.teachers')
+    lesson__groups = tables.Column(accessor='lesson.group_names')
+    lesson__teachers = tables.Column(accessor='lesson.teacher_names')
     lesson__subject = tables.Column(accessor='lesson.subject')
     room = tables.Column(accessor='room')

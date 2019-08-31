@@ -89,6 +89,14 @@ class Lesson(models.Model):
     date_end = models.DateField(verbose_name=_(
         'Effective end date of lesson'), null=True)
 
+    @property
+    def teacher_names(self, sep: Optional[str] = ', ') -> str:
+        return sep.join([teacher.name for teacher in self.teachers.all()])
+
+    @property
+    def group_names(self, sep: Optional[str] = ', ') -> str:
+        return sep.join([group.name for group in self.groups.all()])
+
     class Meta:
         ordering = ['date_start']
 
