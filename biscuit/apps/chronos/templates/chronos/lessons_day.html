@@ -5,9 +5,21 @@
 {% block page_title %}{% blocktrans %}Lessons{% endblocktrans %}{% endblock %}
 
 {% block content %}
- <h2>
-  {{ day }}
- </h2>
+<div class="d-flex justify-content-between">
+ <div>
+  <h1>{{ day }}</h1>
+ </div>
+ <div class="btn-group" role="group" aria-label="Day actions">
+  <a href="{% url 'lessons_day_by_date' day_prev %}" class="btn btn-secondary">
+   Previos day
+  </a>
+ </div>
+ <div class="btn-group" role="group" aria-label="Day actions">
+  <a href="{% url 'lessons_day_by_date' day_next %}" class="btn btn-secondary">
+   Next day
+  </a>
+ </div>
+</div>
 
  {% render_table lessons_table %}
 
