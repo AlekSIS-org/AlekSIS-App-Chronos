@@ -102,7 +102,7 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
     ).all()
 
     # Build table
-    lessons_table = LessonsTable(lesson_periods)
+    lessons_table = LessonsTable(week, lesson_periods)
     RequestConfig(request).configure(lessons_table)
 
     context['lessons_table'] = lessons_table
