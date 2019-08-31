@@ -16,7 +16,7 @@ from .util import current_week
 
 
 @login_required
-def timetable(request: HttpRequest, template: str = 'tt_week') -> HttpResponse:
+def timetable(request: HttpRequest) -> HttpResponse:
     context = {}
 
     lesson_periods = LessonPeriod.objects.all()
@@ -32,7 +32,7 @@ def timetable(request: HttpRequest, template: str = 'tt_week') -> HttpResponse:
         if 'room' in request.GET and request.GET['room']:
             lesson_periods = lesson_periods.filter(
                 room__pk=int(request.GET['room']))
-    elif template == 'tt_week':
+    else:
         # Redirect to a selected view if no filter provided
         if request.user.person:
             if request.user.person.primary_group:
@@ -77,4 +77,4 @@ def timetable(request: HttpRequest, template: str = 'tt_week') -> HttpResponse:
     context['current_week'] = current_week()
     context['select_form'] = select_form
 
-    return render(request, 'chronos/%s.html' % template, context)
+    return render(request, 'chronos/tt_week.html', context)
