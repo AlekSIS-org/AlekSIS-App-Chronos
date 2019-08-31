@@ -1,0 +1,14 @@
+{% extends "core/base.html" %}
+{% load bootstrap4 i18n %}
+{% load render_table from django_tables2 %}
+
+{% block page_title %}{% blocktrans %}Lessons{% endblocktrans %}{% endblock %}
+
+{% block content %}
+ <h2>
+  {{ day }}
+ </h2>
+
+ {% render_table lessons_table %}
+
+{% endblock %}

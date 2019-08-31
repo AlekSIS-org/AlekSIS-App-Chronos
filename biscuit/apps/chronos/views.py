@@ -14,6 +14,7 @@ from biscuit.core.models import Group, Person
 from .forms import SelectForm
 from .models import LessonPeriod, TimePeriod, Room
 from .util import current_week, week_weekday_from_date
+from .tables import LessonsTable
 
 
 @login_required
@@ -92,11 +93,17 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
 
     week, weekday = week_weekday_from_date(day)
 
+    # Get lessons
     lesson_periods = LessonPeriod.objects.filter(
         lesson__date_start__lte=day, lesson__date_end__gte=day,
         period__weekday=weekday
     ).all()
 
+    # Build table
+    lesson_table = LessonsTable(lesson_periods)
+    RequestConfig(request).configure(lesson_table)
+
+    context['lesson_table'] = lesson_table
     context['day'] = day
     context['day_prev'] = day + timedelta(days=-1)
     context['day_next'] = day + timedelta(days=1)
