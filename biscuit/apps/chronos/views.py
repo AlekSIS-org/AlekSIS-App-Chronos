@@ -14,8 +14,8 @@ from biscuit.core.decorators import admin_required
 from biscuit.core.models import Group, Person
 
 from .forms import SelectForm, LessonSubstitutionForm
-from .models import LessonPeriod, TimePeriod, Room
-from .util import current_week, week_weekday_from_date
+from .models import LessonPeriod, TimePeriod, Room, LessonSubstitution
+from .util import current_week, week_weekday_from_date, week_days
 from .tables import LessonsTable
 
 
@@ -115,12 +115,16 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
     return render(request, 'chronos/lessons_day.html', context)
 
 @admin_required
-def edit_substitution(request: HttpRequest, id_: int) -> HttpResponse:
+def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse:
     context = {}
 
-    substitution = get_object_or_404(Substitution, id=id_)
+    lesson_period = get_object_or_404(LessonPeriod, id_)
 
-    edit_substitution_form = LessonSubstitutionForm(request.POST or None, instance=substitution)
+    lesson_substitution = LessonSubstitution.objects.filter(week=week, lesson_period=lesson_period).first()
+    if lesson_substitution:
+        edit_substitution_form = LessonSubstitutionForm(request.POST or None, instance=lesson_substitution)
+    else:
+        edit_substitution_form = LessonSubstitutionForm(request.POST or None, initial={'week': week, 'lesson_period': lesson_period})
 
     context['substitution'] = substitution
 
@@ -129,7 +133,7 @@ def edit_substitution(request: HttpRequest, id_: int) -> HttpResponse:
             edit_substitution_form.save(commit=True)
 
             messages.success(request, _('The substitution has been saved.'))
-            return redirect('edit_substitution_by_id', id_=substitution.id)
+            return redirect('lessons_day_by_date', when=week_days(week)[lesson_period.period.weekday].strftime('%Y-%m-%d'))
 
     context['edit_substitution_form'] = edit_substitution_form
 
