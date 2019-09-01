@@ -150,5 +150,8 @@ class LessonPeriod(models.Model):
     def get_groups(self) -> models.query.QuerySet:
         return self.lesson.groups
 
+    def __str__(self) -> str:
+        return '%s, %d' % (self.period.get_weekday_display(), self.period.period)
+
     class Meta:
         ordering = ['lesson__date_start', 'period__weekday', 'period__period']
