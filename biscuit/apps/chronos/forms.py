@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from biscuit.core.models import Person, Group
 
-from .models import Room, LessonSubstitution
+from .models import Room, LessonSubstitution, Subject, LessonPeriod
 
 
 class SelectForm(forms.Form):
