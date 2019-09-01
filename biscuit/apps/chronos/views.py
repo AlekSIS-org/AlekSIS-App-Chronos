@@ -126,7 +126,7 @@ def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse
     else:
         edit_substitution_form = LessonSubstitutionForm(request.POST or None, initial={'week': week, 'lesson_period': lesson_period})
 
-    context['substitution'] = substitution
+    context['substitution'] = lesson_substitution
 
     if request.method == 'POST':
         if edit_substitution_form.is_valid():
