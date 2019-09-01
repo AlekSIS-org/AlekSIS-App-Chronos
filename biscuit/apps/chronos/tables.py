@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Optional
 
 from django.utils.translation import ugettext_lazy as _
@@ -5,6 +7,13 @@ import django_tables2 as tables
 from django_tables2.utils import A
 
 from .models import LessonPeriod
+
+
+def _css_class_from_lesson_state(record: Optional[LessonPeriod] = None, table: Optional[LessonsTable] = None) -> str:
+    if record.get_substitution(table._week):
+        return 'table-warning'
+    else:
+        return ''
 
 
 class LessonsTable(tables.Table):
@@ -22,10 +31,3 @@ class LessonsTable(tables.Table):
     def __init__(self, week, *args, **kwargs):
         self._week = week
         super().__init__(*args, **kwargs)
-
-
-def _css_class_from_lesson_state(record: Optional[LessonPeriod] = None, table: Optional[LessonTable] = None) -> str:
-    if record.get_substitution(table._week):
-        return 'table-warning'
-    else:
-        return ''
