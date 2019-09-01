@@ -26,8 +26,4 @@ class LessonsTable(tables.Table):
     lesson__teachers = tables.Column(accessor='lesson.teacher_names', verbose_name=_('Teachers'))
     lesson__subject = tables.Column(accessor='lesson.subject')
     room = tables.Column(accessor='room')
-    edit_substitution = tables.LinkColumn('edit_substitution_by_id', args=[A('id')], text=_('Substitution'))
-
-    def __init__(self, week, *args, **kwargs):
-        self.edit_substitution.args.append(week)
-        super().__init__(*args, **kwargs)
+    edit_substitution = tables.LinkColumn('edit_substitution_by_id', args=[A('id'), A('week')], text=_('Substitution'))

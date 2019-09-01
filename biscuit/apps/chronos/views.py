@@ -99,10 +99,10 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
     lesson_periods = LessonPeriod.objects.filter(
         lesson__date_start__lte=day, lesson__date_end__gte=day,
         period__weekday=weekday
-    ).all()
+    ).annotate(_week=week).all()
 
     # Build table
-    lessons_table = LessonsTable(week, lesson_periods)
+    lessons_table = LessonsTable(lesson_periods)
     RequestConfig(request).configure(lessons_table)
 
     context['lessons_table'] = lessons_table
