@@ -60,7 +60,7 @@ class Subject(models.Model):
         return '%s - %s' % (self.abbrev, self.name)
 
     class Meta:
-         ordering = ['name', 'abbrev']
+        ordering = ['name', 'abbrev']
 
 
 class Room(models.Model):
@@ -116,7 +116,8 @@ class LessonSubstitution(models.Model):
     room = models.ForeignKey('Room', models.CASCADE, null=True)
 
     class Meta:
-        ordering = ['lesson_period__lesson__date_start', 'week', 'lesson_period__period__weekday', 'lesson_period__period__period']
+        ordering = ['lesson_period__lesson__date_start', 'week',
+                    'lesson_period__period__weekday', 'lesson_period__period__period']
 
 
 class LessonPeriod(models.Model):

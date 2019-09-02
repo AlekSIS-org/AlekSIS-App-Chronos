@@ -102,7 +102,7 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
     )
 
     # Build table
-    lessons_table = LessonsTable(lesson_periods.extra(select = {'_week': week}).all())
+    lessons_table = LessonsTable(lesson_periods.extra(select={'_week': week}).all())
     RequestConfig(request).configure(lessons_table)
 
     context['lessons_table'] = lessons_table
@@ -114,17 +114,21 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
 
     return render(request, 'chronos/lessons_day.html', context)
 
+
 @admin_required
 def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse:
     context = {}
 
     lesson_period = get_object_or_404(LessonPeriod, pk=id_)
 
-    lesson_substitution = LessonSubstitution.objects.filter(week=week, lesson_period=lesson_period).first()
+    lesson_substitution = LessonSubstitution.objects.filter(
+        week=week, lesson_period=lesson_period).first()
     if lesson_substitution:
-        edit_substitution_form = LessonSubstitutionForm(request.POST or None, instance=lesson_substitution)
+        edit_substitution_form = LessonSubstitutionForm(
+            request.POST or None, instance=lesson_substitution)
     else:
-        edit_substitution_form = LessonSubstitutionForm(request.POST or None, initial={'week': week, 'lesson_period': lesson_period})
+        edit_substitution_form = LessonSubstitutionForm(
+            request.POST or None, initial={'week': week, 'lesson_period': lesson_period})
 
     context['substitution'] = lesson_substitution
 

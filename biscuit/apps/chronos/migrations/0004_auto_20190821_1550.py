@@ -19,12 +19,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='lessonsubstitution',
             name='lesson_period',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='substitutions', to='chronos.LessonPeriod'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE,
+                                    related_name='substitutions', to='chronos.LessonPeriod'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='lessonsubstitution',
             name='week',
-            field=models.IntegerField(default=biscuit.apps.chronos.util.current_week, verbose_name='Kalenderwoche'),
+            field=models.IntegerField(
+                default=biscuit.apps.chronos.util.current_week, verbose_name='Kalenderwoche'),
         ),
     ]

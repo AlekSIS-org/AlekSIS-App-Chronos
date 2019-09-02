@@ -15,15 +15,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='LessonSubstitution',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('room', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='chronos.Room')),
-                ('subject', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='lesson_substitutions', to='chronos.Subject')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
+                ('room', models.ForeignKey(null=True,
+                                           on_delete=django.db.models.deletion.CASCADE, to='chronos.Room')),
+                ('subject', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
+                                              related_name='lesson_substitutions', to='chronos.Subject')),
                 ('teachers', models.ManyToManyField(related_name='lesson_substitutions', to='core.Person')),
             ],
         ),
         migrations.AddField(
             model_name='lessonperiod',
             name='substitution',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='lesson_period', to='chronos.LessonSubstitution'),
+            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE,
+                                       related_name='lesson_period', to='chronos.LessonSubstitution'),
         ),
     ]

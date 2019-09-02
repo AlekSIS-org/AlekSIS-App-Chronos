@@ -13,7 +13,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='subject',
             name='abbrev',
-            field=models.CharField(max_length=10, unique=True, verbose_name='Abbreviation of subject in timetable'),
+            field=models.CharField(max_length=10, unique=True,
+                                   verbose_name='Abbreviation of subject in timetable'),
         ),
         migrations.AlterField(
             model_name='subject',
@@ -32,6 +33,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='room',
             name='short_name',
-            field=models.CharField(max_length=10, unique=True, verbose_name='Short name, e.g. room number'),
+            field=models.CharField(max_length=10, unique=True,
+                                   verbose_name='Short name, e.g. room number'),
         ),
     ]
