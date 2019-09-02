@@ -1,13 +1,11 @@
 from datetime import datetime
-from typing import Dict, Optional, List, Tuple
+from typing import Dict, Optional, Tuple
 
 from django.core import validators
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from .util import current_week
-
-from biscuit.core.models import Person
 
 
 class TimePeriod(models.Model):

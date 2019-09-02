@@ -11,10 +11,10 @@ from django.utils.translation import ugettext as _
 from django_tables2 import RequestConfig
 
 from biscuit.core.decorators import admin_required
-from biscuit.core.models import Group, Person
+from biscuit.core.util import messages
 
 from .forms import SelectForm, LessonSubstitutionForm
-from .models import LessonPeriod, TimePeriod, Room, LessonSubstitution
+from .models import LessonPeriod, TimePeriod, LessonSubstitution
 from .util import current_week, week_weekday_from_date, week_days
 from .tables import LessonsTable
 
