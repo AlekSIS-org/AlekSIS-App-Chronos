@@ -3,7 +3,7 @@ from datetime import date, datetime, timedelta
 
 from typing import Optional
 from django.contrib.auth.decorators import login_required
-from django.db.models import Max, Min
+from django.db.models import Max, Min, Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -29,7 +29,7 @@ def timetable(request: HttpRequest) -> HttpResponse:
         # Incrementally filter lesson periods by GET parameters
         if 'group' in request.GET and request.GET['group']:
             lesson_periods = lesson_periods.filter(
-                lesson__groups__pk=int(request.GET['group']))
+                Q(lesson__groups__pk=int(request.GET['group'])) | Q(lesson__groups__child_groups__pk=int(request.GET['group'])))
         if 'teacher' in request.GET and request.GET['teacher']:
             lesson_periods = lesson_periods.filter(
                 lesson__teachers__pk=int(request.GET['teacher']))
