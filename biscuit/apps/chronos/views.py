@@ -23,7 +23,7 @@ from .tables import LessonsTable
 def timetable(request: HttpRequest) -> HttpResponse:
     context = {}
 
-    lesson_periods = LessonPeriod.objects.all()
+    lesson_periods = LessonPeriod.objects.select_related('substitutions')
 
     if request.GET.get('group', None) or request.GET.get('teacher', None) or request.GET.get('room', None):
         # Incrementally filter lesson periods by GET parameters
