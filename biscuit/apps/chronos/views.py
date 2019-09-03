@@ -32,9 +32,9 @@ def timetable(request: HttpRequest, week: Optional[int] = None) -> HttpResponse:
         lesson__date_start__lte=week_days(wanted_week)[0],
         lesson__date_end__gte=week_days(wanted_week)[-1]
     ).select_related(
-        'period', 'lesson'
+        'lesson', 'lesson__subject', 'period', 'room'
     ).prefetch_related(
-        'substitutions'
+        'lesson__groups', 'lesson__teachers', 'substitutions'
     ).extra(
         select={'_week': wanted_week}
     )
