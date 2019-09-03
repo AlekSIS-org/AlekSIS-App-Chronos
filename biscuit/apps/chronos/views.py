@@ -29,7 +29,7 @@ def timetable(request: HttpRequest) -> HttpResponse:
         # Incrementally filter lesson periods by GET parameters
         if 'group' in request.GET and request.GET['group']:
             lesson_periods = lesson_periods.filter(
-                Q(lesson__groups__pk=int(request.GET['group'])) | Q(lesson__groups__child_groups__pk=int(request.GET['group'])))
+                Q(lesson__groups__pk=int(request.GET['group'])) | Q(lesson__groups__parent_groups__pk=int(request.GET['group'])))
         if 'teacher' in request.GET and request.GET['teacher']:
             lesson_periods = lesson_periods.filter(
                 lesson__teachers__pk=int(request.GET['teacher']))
