@@ -130,7 +130,14 @@ class LessonPeriod(SchoolRelated):
 
     def get_substitution(self, week: Optional[int] = None) -> LessonSubstitution:
         wanted_week = week or getattr(self, '_week', None) or current_week()
-        return self.substitutions.filter(week=wanted_week).first()
+
+        # We iterate over all substitutions because this can make use of
+        # prefetching when this model is loaded from outside, in contrast
+        # to .filter()
+        for substitution in self.substitutions.all():
+            if substitution.weeb == wanted_week:
+                return substitution
+        return None
 
     def get_subject(self) -> Optional[Subject]:
         if self.get_substitution():
