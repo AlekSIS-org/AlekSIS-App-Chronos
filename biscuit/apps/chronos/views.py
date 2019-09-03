@@ -1,13 +1,15 @@
-from collections import OrderedDict
 from datetime import date, datetime, timedelta
-
+from collections import OrderedDict
 from typing import Optional
+
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max, Min, Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.cache import cache_page
 from django.urls import reverse
 from django.utils.translation import ugettext as _
+
 from django_tables2 import RequestConfig
 
 from biscuit.core.decorators import admin_required
@@ -20,6 +22,7 @@ from .tables import LessonsTable
 
 
 @login_required
+@cache_page(60 * 60 * 12)
 def timetable(request: HttpRequest) -> HttpResponse:
     context = {}
 
