@@ -31,7 +31,7 @@ def timetable(request: HttpRequest, week: Optional[int] = None) -> HttpResponse:
     lesson_periods = LessonPeriod.objects.filter(
         lesson__date_start__gte=week_days(wanted_week)[0],
         lesson__date_end__lte=week_days(wanted_week)[-1]
-    ).extra(select={'_week': wanted_week})
+    ).select_related('period', 'lesson').extra(select={'_week': wanted_week})
 
     if request.GET.get('group', None) or request.GET.get('teacher', None) or request.GET.get('room', None):
         # Incrementally filter lesson periods by GET parameters
