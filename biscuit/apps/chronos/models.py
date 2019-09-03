@@ -5,10 +5,12 @@ from django.core import validators
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from biscuit.core.mixins import SchoolRelated
+
 from .util import current_week
 
 
-class TimePeriod(models.Model):
+class TimePeriod(SchoolRelated):
     WEEKDAY_CHOICES = [
         (0, _('Sunday')),
         (1, _('Monday')),
@@ -39,15 +41,15 @@ class TimePeriod(models.Model):
         return periods
 
     class Meta:
-        unique_together = [['weekday', 'period']]
+        unique_together = [['school', 'weekday', 'period']]
         ordering = ['weekday', 'period']
 
 
-class Subject(models.Model):
+class Subject(SchoolRelated):
     abbrev = models.CharField(verbose_name=_(
-        'Abbreviation of subject in timetable'), max_length=10, unique=True)
+        'Abbreviation of subject in timetable'), max_length=10)
     name = models.CharField(verbose_name=_(
-        'Long name of subject'), max_length=30, unique=True)
+        'Long name of subject'), max_length=30)
 
     colour_fg = models.CharField(verbose_name=_('Foreground colour in timetable'), blank=True, validators=[
                                  validators.RegexValidator(r'#[0-9A-F]{6}')], max_length=7)
@@ -59,22 +61,24 @@ class Subject(models.Model):
 
     class Meta:
         ordering = ['name', 'abbrev']
+        unique_together = [['school', 'abbrev'], ['school', 'name']]
 
 
-class Room(models.Model):
+class Room(SchoolRelated):
     short_name = models.CharField(verbose_name=_(
-        'Short name, e.g. room number'), max_length=10, unique=True)
+        'Short name, e.g. room number'), max_length=10)
     name = models.CharField(verbose_name=_('Long name'),
-                            max_length=30, unique=True)
+                            max_length=30)
 
     def __str__(self) -> str:
         return '%s (%s)' % (self.name, self.short_name)
 
     class Meta:
         ordering = ['name', 'short_name']
+        unique_together = [['school', 'short_name'], ['school', 'name']]
 
 
-class Lesson(models.Model):
+class Lesson(SchoolRelated):
     subject = models.ForeignKey(
         'Subject', on_delete=models.CASCADE, related_name='lessons')
     teachers = models.ManyToManyField('core.Person', related_name='lessons')
@@ -99,7 +103,7 @@ class Lesson(models.Model):
         ordering = ['date_start']
 
 
-class LessonSubstitution(models.Model):
+class LessonSubstitution(SchoolRelated):
     week = models.IntegerField(verbose_name=_('Week'),
                                default=current_week)
 
@@ -118,14 +122,14 @@ class LessonSubstitution(models.Model):
                     'lesson_period__period__weekday', 'lesson_period__period__period']
 
 
-class LessonPeriod(models.Model):
+class LessonPeriod(SchoolRelated):
     lesson = models.ForeignKey('Lesson', models.CASCADE, related_name='lesson_periods')
     period = models.ForeignKey('TimePeriod', models.CASCADE, related_name='lesson_periods')
 
     room = models.ForeignKey('Room', models.CASCADE, null=True, related_name='lesson_periods')
 
     def get_substitution(self, week: Optional[int] = None) -> LessonSubstitution:
-        wanted_week = week or current_week()
+        wanted_week = week or getattr(self, '_week', None) or current_week()
         return self.substitutions.filter(week=wanted_week).first()
 
     def get_subject(self) -> Optional[Subject]:

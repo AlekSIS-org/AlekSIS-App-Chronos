@@ -1,13 +1,15 @@
-from collections import OrderedDict
 from datetime import date, datetime, timedelta
-
+from collections import OrderedDict
 from typing import Optional
+
 from django.contrib.auth.decorators import login_required
-from django.db.models import Max, Min
+from django.db.models import Max, Min, Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.cache import cache_page
 from django.urls import reverse
 from django.utils.translation import ugettext as _
+
 from django_tables2 import RequestConfig
 
 from biscuit.core.decorators import admin_required
@@ -20,16 +22,22 @@ from .tables import LessonsTable
 
 
 @login_required
-def timetable(request: HttpRequest) -> HttpResponse:
+@cache_page(60 * 60 * 12)
+def timetable(request: HttpRequest, week: Optional[int] = None) -> HttpResponse:
     context = {}
 
-    lesson_periods = LessonPeriod.objects.all()
+    wanted_week = week or current_week()
+
+    lesson_periods = LessonPeriod.objects.filter(
+        lesson__date_start__gte=week_days(wanted_week)[0],
+        lesson__date_end__lte=week_days(wanted_week)[-1]
+    ).extra(select={'_week': wanted_week})
 
     if request.GET.get('group', None) or request.GET.get('teacher', None) or request.GET.get('room', None):
         # Incrementally filter lesson periods by GET parameters
         if 'group' in request.GET and request.GET['group']:
             lesson_periods = lesson_periods.filter(
-                lesson__groups__pk=int(request.GET['group']))
+                Q(lesson__groups__pk=int(request.GET['group'])) | Q(lesson__groups__parent_groups__pk=int(request.GET['group'])))
         if 'teacher' in request.GET and request.GET['teacher']:
             lesson_periods = lesson_periods.filter(
                 lesson__teachers__pk=int(request.GET['teacher']))
@@ -78,7 +86,9 @@ def timetable(request: HttpRequest) -> HttpResponse:
     context['lesson_periods'] = OrderedDict(sorted(per_day.items()))
     context['periods'] = TimePeriod.get_times_dict()
     context['weekdays'] = dict(TimePeriod.WEEKDAY_CHOICES)
-    context['current_week'] = current_week()
+    context['week'] = wanted_week
+    context['week_prev'] = wanted_week - 1
+    context['week_next'] = wanted_week + 1
     context['select_form'] = select_form
 
     return render(request, 'chronos/tt_week.html', context)
