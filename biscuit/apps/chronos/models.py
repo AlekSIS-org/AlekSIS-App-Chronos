@@ -125,7 +125,7 @@ class LessonPeriod(models.Model):
     room = models.ForeignKey('Room', models.CASCADE, null=True, related_name='lesson_periods')
 
     def get_substitution(self, week: Optional[int] = None) -> LessonSubstitution:
-        wanted_week = week or current_week()
+        wanted_week = week or getattr(self, '_week', None) or current_week()
         return self.substitutions.filter(week=wanted_week).first()
 
     def get_subject(self) -> Optional[Subject]:

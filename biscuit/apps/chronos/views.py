@@ -23,10 +23,15 @@ from .tables import LessonsTable
 
 @login_required
 @cache_page(60 * 60 * 12)
-def timetable(request: HttpRequest) -> HttpResponse:
+def timetable(request: HttpRequest, week: Optional[int] = None) -> HttpResponse:
     context = {}
 
-    lesson_periods = LessonPeriod.objects.all()
+    wanted_week = week or current_week()
+
+    lesson_periods = LessonPeriod.objects.filter(
+        lesson__date_start__gte=week_days(wanted_week)[0],
+        lesson__date_end__lte=week_days(wanted_week)[-1]
+    ).extra(select={'_week': wanted_week})
 
     if request.GET.get('group', None) or request.GET.get('teacher', None) or request.GET.get('room', None):
         # Incrementally filter lesson periods by GET parameters
@@ -81,7 +86,9 @@ def timetable(request: HttpRequest) -> HttpResponse:
     context['lesson_periods'] = OrderedDict(sorted(per_day.items()))
     context['periods'] = TimePeriod.get_times_dict()
     context['weekdays'] = dict(TimePeriod.WEEKDAY_CHOICES)
-    context['current_week'] = current_week()
+    context['week'] = wanted_week
+    context['week_prev'] = wanted_week - 1
+    context['week_next'] = wanted_week + 1
     context['select_form'] = select_form
 
     return render(request, 'chronos/tt_week.html', context)

@@ -10,6 +10,20 @@
 {% block page_title %}Timetable{% endblock %}
 
 {% block content %}
+<div class="d-flex justify-content-between">
+ <div>
+  <h1>{{ day }}</h1>
+ </div>
+ <div class="btn-group" role="group" aria-label="Day actions">
+  <a href="{% url 'timetable_by_week' week_prev %}" class="btn btn-secondary">
+   {% fa 'arrow-left' %}
+  </a>
+  <a href="{% url 'timetable_by_week' week_next %}" class="btn btn-secondary">
+   {% fa 'arrow-right' %}
+  </a>
+ </div>
+</div>
+
  <form method="get">
   <ul id="timetable_select_form">
    {{ select_form.as_ul }}
