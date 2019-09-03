@@ -4,9 +4,10 @@
 
 {% block bootstrap4_extra_head %}
  {{ block.super }}
- <title>{% block bootstrap4_title %}{% blocktrans %}BiscuIT SIS - Timetable{% endblocktrans %}{% endblock %}</title>
  <link rel="stylesheet" href="{% static 'css/chronos/timetable.css' %}" />
 {% endblock %}
+
+{% block bootstrap4_title %}{% blocktrans %}Timetable{% endblocktrans %} - {{ block.super }}{% endblock %}
 
 {% block page_title %}{% blocktrans %}Timetable{% endblocktrans %}{% endblock %}
 

@@ -1,9 +1,7 @@
 {% extends "core/base.html" %}
 {% load bootstrap4 i18n %}
 
-{% block bootstrap4_extra_head%}
-    <title>{% block bootstrap4_title %}{% blocktrans %}BiscuIT SIS - Add book{% endblocktrans %}{% endblock %}</title>
-{% endblock %}
+{% block bootstrap4_title %}{% blocktrans %}Edit substitution{% endblocktrans %} - {{ block.super }}{% endblock %}
 
 {% block page_title %}{% blocktrans %}Edit substitution{% endblocktrans %}{% endblock %}
 

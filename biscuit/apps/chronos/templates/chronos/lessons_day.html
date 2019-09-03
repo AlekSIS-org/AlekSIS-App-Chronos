@@ -2,9 +2,7 @@
 {% load bootstrap4 i18n font_awesome %}
 {% load render_table from django_tables2 %}
 
-{% block bootstrap4_extra_head%}
-    <title>{% block bootstrap4_title %}{% blocktrans %}BiscuIT SIS - Add book{% endblocktrans %}{% endblock %}</title>
-{% endblock %}
+{% block bootstrap4_title %}{% blocktrans %}Lessons{% endblocktrans %} - {{ block.super }}{% endblock %}
 
 {% block page_title %}{% blocktrans %}Lessons{% endblocktrans %}{% endblock %}
 
