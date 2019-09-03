@@ -29,8 +29,8 @@ def timetable(request: HttpRequest, week: Optional[int] = None) -> HttpResponse:
     wanted_week = week or current_week()
 
     lesson_periods = LessonPeriod.objects.filter(
-        lesson__date_start__gte=week_days(wanted_week)[0],
-        lesson__date_end__lte=week_days(wanted_week)[-1]
+        lesson__date_start__lte=week_days(wanted_week)[0],
+        lesson__date_end__gte=week_days(wanted_week)[-1]
     ).select_related(
         'period', 'lesson'
     ).prefetch_related(
