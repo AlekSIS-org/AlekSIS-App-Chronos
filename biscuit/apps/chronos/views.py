@@ -203,6 +203,28 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
     return render(request, 'timetable/plan.html', context)
 
 
+def get_type_and_object_of_user(user):
+    _type = UserInformation.user_type(user)
+    if _type == UserInformation.TEACHER:
+        # Teacher
+        _type = TYPE_TEACHER
+        shortcode = user.username
+        el = get_teacher_by_shortcode(shortcode)
+        plan_id = el.id
+        raw_type = "teacher"
+
+    elif _type == UserInformation.STUDENT:
+        # Student
+        _type = TYPE_CLASS
+        _name = UserInformation.user_classes(user)[0]
+        el = get_class_by_name(_name)
+        plan_id = el.id
+        raw_type = "class"
+    else:
+        return None, None
+
+    return _type, el
+
 @login_required
 @permission_required("timetable.show_plan")
 def my_plan(request, year=None, month=None, day=None):
@@ -223,13 +245,9 @@ def my_plan(request, year=None, month=None, day=None):
     monday_of_week = get_calendar_week(calendar_week, date.year)["first_day"]
 
     # Get user type (student, teacher, etc.)
-    _type = UserInformation.user_type(request.user)
-
-    if _type == UserInformation.TEACHER:
+    _type, el = get_type_and_object_of_user(request.user)
+    if _type == TYPE_TEACHER:
         # Teacher
-        _type = TYPE_TEACHER
-        shortcode = request.user.username
-        el = get_teacher_by_shortcode(shortcode)
         plan_id = el.id
         raw_type = "teacher"
 
@@ -237,11 +255,9 @@ def my_plan(request, year=None, month=None, day=None):
         hints = list(get_all_hints_for_teachers_by_time_period(date, date))
         hints_b = list(get_all_hints_not_for_teachers_by_time_period(date, date))
 
-    elif _type == UserInformation.STUDENT:
+    elif _type == TYPE_CLASS:
         # Student
-        _type = TYPE_CLASS
-        _name = UserInformation.user_classes(request.user)[0]
-        el = get_class_by_name(_name)
+
         plan_id = el.id
         raw_type = "class"
 
@@ -275,7 +291,7 @@ def my_plan(request, year=None, month=None, day=None):
     return render(request, 'timetable/myplan.html', context)
 
 
-def get_next_weekday_with_time(date, time):
+def get_next_weekday_with_time(date, time) -> datetime.datetime:
     """Get the next weekday by a datetime object"""
 
     if time > datetime.time(15, 35):
