@@ -16,32 +16,32 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='lesson',
             name='school',
-            field=models.ForeignKey(default=biscuit.core.util.core_helpers.get_current_school, on_delete=django.db.models.deletion.CASCADE, to='core.School'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='core.School'),
         ),
         migrations.AddField(
             model_name='lessonperiod',
             name='school',
-            field=models.ForeignKey(default=biscuit.core.util.core_helpers.get_current_school, on_delete=django.db.models.deletion.CASCADE, to='core.School'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='core.School'),
         ),
         migrations.AddField(
             model_name='lessonsubstitution',
             name='school',
-            field=models.ForeignKey(default=biscuit.core.util.core_helpers.get_current_school, on_delete=django.db.models.deletion.CASCADE, to='core.School'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='core.School'),
         ),
         migrations.AddField(
             model_name='room',
             name='school',
-            field=models.ForeignKey(default=biscuit.core.util.core_helpers.get_current_school, on_delete=django.db.models.deletion.CASCADE, to='core.School'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='core.School'),
         ),
         migrations.AddField(
             model_name='subject',
             name='school',
-            field=models.ForeignKey(default=biscuit.core.util.core_helpers.get_current_school, on_delete=django.db.models.deletion.CASCADE, to='core.School'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='core.School'),
         ),
         migrations.AddField(
             model_name='timeperiod',
             name='school',
-            field=models.ForeignKey(default=biscuit.core.util.core_helpers.get_current_school, on_delete=django.db.models.deletion.CASCADE, to='core.School'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='core.School'),
         ),
         migrations.AlterField(
             model_name='room',
