@@ -37,4 +37,4 @@ def week_weekday_from_date(when: date) -> Sequence[int]:
 
 
 def week_weekday_to_date(week: int, weekday: int) -> date:
-    return week_days(week)[weekday]
+    return week_days(week)[weekday-1]
