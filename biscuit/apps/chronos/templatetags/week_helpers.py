@@ -2,7 +2,7 @@ from datetime import date
 from typing import Optional
 
 from django import template
-from django.db.query import QuerySet
+from django.db.models.query import QuerySet
 
 from ..util import current_week, week_days, week_weekday_to_date
 
