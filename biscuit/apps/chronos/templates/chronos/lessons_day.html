@@ -1,3 +1,5 @@
+{# -*- engine:django -*- #}
+
 {% extends "core/base.html" %}
 {% load bootstrap4 i18n font_awesome %}
 {% load render_table from django_tables2 %}
@@ -7,20 +9,19 @@
 {% block page_title %}{% blocktrans %}Lessons{% endblocktrans %}{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between">
- <div>
-  <h1>{{ day }}</h1>
- </div>
- <div class="btn-group" role="group" aria-label="Day actions">
-  <a href="{% url 'lessons_day_by_date' day_prev %}" class="btn btn-secondary">
-   {% fa 'arrow-left' %}
-  </a>
-  <a href="{% url 'lessons_day_by_date' day_next %}" class="btn btn-secondary">
-   {% fa 'arrow-right' %}
-  </a>
- </div>
-</div>
+  <div class="d-flex justify-content-between">
+    <div>
+      <h1>{{ day }}</h1>
+    </div>
+    <div class="btn-group" role="group" aria-label="Day actions">
+      <a href="{% url 'lessons_day_by_date' day_prev %}" class="btn btn-secondary">
+        {% fa 'arrow-left' %}
+      </a>
+      <a href="{% url 'lessons_day_by_date' day_next %}" class="btn btn-secondary">
+        {% fa 'arrow-right' %}
+      </a>
+    </div>
+  </div>
 
- {% render_table lessons_table %}
-
+  {% render_table lessons_table %}
 {% endblock %}
