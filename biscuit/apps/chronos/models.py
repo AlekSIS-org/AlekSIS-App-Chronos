@@ -138,7 +138,7 @@ class LessonPeriod(SchoolRelated):
         # prefetching when this model is loaded from outside, in contrast
         # to .filter()
         for substitution in self.substitutions.all():
-            if substitution.weeb == wanted_week:
+            if substitution.week == wanted_week:
                 return substitution
         return None
 
