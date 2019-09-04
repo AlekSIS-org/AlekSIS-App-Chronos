@@ -43,6 +43,7 @@ class TimePeriod(SchoolRelated):
     class Meta:
         unique_together = [['school', 'weekday', 'period']]
         ordering = ['weekday', 'period']
+        indexes = [models.Index(fields=['time_start', 'time_end'])]
 
 
 class Subject(SchoolRelated):
@@ -101,6 +102,7 @@ class Lesson(SchoolRelated):
 
     class Meta:
         ordering = ['date_start']
+        indexes = [models.Index(fields=['date_start', 'date_end'])]
 
 
 class LessonSubstitution(SchoolRelated):
@@ -118,6 +120,7 @@ class LessonSubstitution(SchoolRelated):
     room = models.ForeignKey('Room', models.CASCADE, null=True)
 
     class Meta:
+        unique_together = [['school', 'lesson_period', 'week']]
         ordering = ['lesson_period__lesson__date_start', 'week',
                     'lesson_period__period__weekday', 'lesson_period__period__period']
 
@@ -165,3 +168,4 @@ class LessonPeriod(SchoolRelated):
 
     class Meta:
         ordering = ['lesson__date_start', 'period__weekday', 'period__period']
+        indexes = [models.Index(fields=['lesson', 'period'])]
