@@ -1,8 +1,10 @@
 from datetime import date
+from typing import Optional
 
 from django import template
+from django.db.query import QuerySet
 
-from ..util import week_days, week_weekday_to_date
+from ..util import current_week, week_days, week_weekday_to_date
 
 
 register = template.Library()
@@ -16,6 +18,12 @@ def week_start(week: int) -> date:
 @register.filter
 def week_end(week: int) -> date:
     return week_days(week)[-1]
+
+
+@register.filter
+def only_week(qs: QuerySet, week: Optional[int]) -> QuerySet:
+   wanted_week = week or current_week()
+   return qs.filter(week=wanted_week)
 
 
 @register.simple_tag
