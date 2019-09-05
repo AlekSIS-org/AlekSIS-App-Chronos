@@ -8,6 +8,16 @@
 {% block page_title %}{% blocktrans %}Edit substitution{% endblocktrans %}{% endblock %}
 
 {% block content %}
+  <div class="d-flex justify-content-between">
+    <div class="btn-group" role="group" aria-label="Day actions">
+      {% if substitution %}
+        <a href="{% url 'delete_substitution' substitution.lesson_period.id substitution.week %}" class="btn btn-danger">
+          {% fa 'trash-o' %}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
   <form method="post">
     {% csrf_token %}
     {% bootstrap_form edit_substitution_form %}

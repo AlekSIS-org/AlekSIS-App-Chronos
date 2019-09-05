@@ -158,3 +158,14 @@ def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse
     context['edit_substitution_form'] = edit_substitution_form
 
     return render(request, 'chronos/edit_substitution.html', context)
+
+
+@admin_required
+def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse:
+    context = {}
+
+    LessonSubstitution.objects.filter(
+        week=week, lesson_period__id=id_
+    ).delete()
+
+    return redirect('edit_substitution', week, id_)
