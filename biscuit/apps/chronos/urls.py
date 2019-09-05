@@ -8,6 +8,6 @@ urlpatterns = [
     path('timetable/<int:week>', views.timetable, name='timetable_by_week'),
     path('lessons', views.lessons_day, name='lessons_day'),
     path('lessons/<when>', views.lessons_day, name='lessons_day_by_date'),
-    path('lessons/<int:id_>/<int:week>/substition', views.edit_substitution, name='edit_substitution')
+    path('lessons/<int:id_>/<int:week>/substition', views.edit_substitution, name='edit_substitution'),
     path('lessons/<int:id_>/<int:week>/substition/delete', views.delete_substitution, name='delete_substitution')
 ]
