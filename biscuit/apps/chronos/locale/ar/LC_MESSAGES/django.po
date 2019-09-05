@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-02 13:14+0000\n"
+"POT-Creation-Date: 2019-09-05 20:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,19 +18,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
-#: apps.py:7
-msgid "BiscuIT - Chronos (Timetables)"
-msgstr ""
-
 #: forms.py:13
 msgid "Group"
 msgstr ""
 
-#: forms.py:16
+#: forms.py:17
 msgid "Teacher"
 msgstr ""
 
-#: forms.py:19
+#: forms.py:21
 msgid "Room"
 msgstr ""
 
@@ -38,7 +34,8 @@ msgstr ""
 msgid "Timetables"
 msgstr ""
 
-#: menus.py:12
+#: menus.py:12 templates/chronos/tt_week.html:11
+#: templates/chronos/tt_week.html:13
 msgid "Timetable"
 msgstr ""
 
@@ -90,39 +87,39 @@ msgstr ""
 msgid "Time the period ends"
 msgstr ""
 
-#: models.py:50
+#: models.py:51
 msgid "Abbreviation of subject in timetable"
 msgstr ""
 
-#: models.py:52
+#: models.py:53
 msgid "Long name of subject"
 msgstr ""
 
-#: models.py:54
+#: models.py:55
 msgid "Foreground colour in timetable"
 msgstr ""
 
-#: models.py:56
+#: models.py:57
 msgid "Background colour in timetable"
 msgstr ""
 
-#: models.py:68
+#: models.py:70
 msgid "Short name, e.g. room number"
 msgstr ""
 
-#: models.py:69
+#: models.py:71
 msgid "Long name"
 msgstr ""
 
-#: models.py:88
+#: models.py:91
 msgid "Effective start date of lesson"
 msgstr ""
 
-#: models.py:90
+#: models.py:93
 msgid "Effective end date of lesson"
 msgstr ""
 
-#: models.py:105
+#: models.py:109
 msgid "Week"
 msgstr ""
 
@@ -134,22 +131,23 @@ msgstr ""
 msgid "Teachers"
 msgstr ""
 
-#: tables.py:29
+#: tables.py:30
 msgid "Substitution"
 msgstr ""
 
-#: templates/chronos/edit_substitution.html:4
+#: templates/chronos/edit_substitution.html:6
+#: templates/chronos/edit_substitution.html:8
 msgid "Edit substitution"
 msgstr ""
 
-#: templates/chronos/lessons_day.html:5
+#: templates/chronos/lessons_day.html:7 templates/chronos/lessons_day.html:9
 msgid "Lessons"
 msgstr ""
 
-#: templates/chronos/tt_week.html:28
+#: templates/chronos/tt_week.html:44
 msgid "Times"
 msgstr ""
 
-#: views.py:135
+#: views.py:155
 msgid "The substitution has been saved."
 msgstr ""
