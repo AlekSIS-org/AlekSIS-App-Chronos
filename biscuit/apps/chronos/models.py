@@ -164,7 +164,9 @@ class LessonPeriod(SchoolRelated):
         return self.lesson.groups
 
     def __str__(self) -> str:
-        return '%s, %d' % (self.period.get_weekday_display(), self.period.period)
+        return '%s, %d., %s, %s' % (self.period.get_weekday_display(), self.period.period,
+            ', '.join(list(self.lesson.groups.values_list('short_name', flat=True))),
+            self.lesson.subject.name)
 
     class Meta:
         ordering = ['lesson__date_start', 'period__weekday', 'period__period']
