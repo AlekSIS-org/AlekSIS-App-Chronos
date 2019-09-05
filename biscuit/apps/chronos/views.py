@@ -1,6 +1,5 @@
 import datetime
 import os
-import traceback
 
 from PyPDF2 import PdfFileMerger
 from django.contrib.auth.decorators import login_required, permission_required
@@ -12,81 +11,20 @@ from debug.models import register_traceback, register_return_0
 from schoolapps.settings import SHORT_WEEK_DAYS, LONG_WEEK_DAYS
 from timetable.filters import HintFilter
 from timetable.forms import HintForm
+from timetable.helper import get_type_and_object_of_user, get_all_context, get_calendar_week, get_calendar_weeks, \
+    get_next_weekday, current_calendar_week, current_year, find_out_what_is_today, get_next_weekday_with_time
 from timetable.hints import get_all_hints_by_time_period, get_all_hints_by_class_and_time_period, \
     get_all_hints_for_teachers_by_time_period, get_all_hints_not_for_teachers_by_time_period
 from timetable.pdf import generate_class_tex, generate_pdf
 
-from untisconnect.plan import get_plan, TYPE_TEACHER, TYPE_CLASS, TYPE_ROOM, parse_lesson_times
+from untisconnect.plan import get_plan, parse_lesson_times
 from untisconnect.sub import get_substitutions_by_date, generate_sub_table, get_header_information
 from untisconnect.api import *
 from untisconnect.events import get_all_events_by_date
-from userinformation import UserInformation
 
 from schoolapps.settings import BASE_DIR
 
 from .models import Hint
-
-
-####################
-# HELPER FUNCTIONS #
-####################
-
-def get_all_context():
-    teachers = get_all_teachers()
-    classes = get_all_classes()
-    rooms = get_all_rooms()
-    subjects = get_all_subjects()
-    context = {
-        'teachers': teachers,
-        'classes': classes,
-        'rooms': rooms,
-        'subjects': subjects
-    }
-    return context
-
-
-def get_calendar_weeks(year=timezone.datetime.now().year):
-    weeks = []
-
-    # Get first day of year > first calendar week
-    first_day_of_year = timezone.datetime(year=year, month=1, day=1)
-    if first_day_of_year.isoweekday() != 1:
-        days_to_next_monday = 1 - first_day_of_year.isoweekday()
-        first_day_of_year += datetime.timedelta(days=days_to_next_monday)
-
-    # Go for all weeks in year and create week dict
-    first_day_of_week = first_day_of_year
-    for i in range(52):
-        calendar_week = i + 1
-        last_day_of_week = first_day_of_week + datetime.timedelta(days=4)
-        weeks.append({
-            "calendar_week": calendar_week,
-            "first_day": first_day_of_week,
-            "last_day": last_day_of_week
-        })
-        first_day_of_week += datetime.timedelta(weeks=1)
-
-    return weeks
-
-
-def get_calendar_week(calendar_week, year=timezone.datetime.now().year):
-    weeks = get_calendar_weeks(year=year)
-    for week in weeks:
-        if week["calendar_week"] == calendar_week:
-            return week
-    return None
-
-
-def get_next_weekday(date):
-    """Get the next weekday by a datetime object"""
-
-    if date.isoweekday() in {6, 7}:
-        if date.isoweekday() == 6:
-            plus = 2
-        else:
-            plus = 1
-        date += datetime.timedelta(days=plus)
-    return date
 
 
 #############
@@ -125,8 +63,7 @@ def quicklaunch(request):
 
 @login_required
 @permission_required("timetable.show_plan")
-def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().year,
-         calendar_week=timezone.datetime.now().isocalendar()[1]):
+def plan(request, plan_type, plan_id, regular="", year=current_year(), calendar_week=current_calendar_week()):
     """
     [DJANGO VIEW]
     Show a timetable (class, teacher, room, smart/regular)
@@ -146,8 +83,8 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
         smart = True
 
     # Get monday and friday of week
-    monday_of_week = get_calendar_week(calendar_week, year)["first_day"]
-    friday = monday_of_week + datetime.timedelta(days=4)
+    monday = get_calendar_week(calendar_week, year)["first_day"]
+    friday = monday + datetime.timedelta(days=4)
 
     # Init hints
     hints = None
@@ -160,8 +97,8 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
 
         # Get hints
         if smart:
-            hints = list(get_all_hints_for_teachers_by_time_period(monday_of_week, friday))
-            hints_b = list(get_all_hints_not_for_teachers_by_time_period(monday_of_week, friday))
+            hints = list(get_all_hints_for_teachers_by_time_period(monday, friday))
+            hints_b = list(get_all_hints_not_for_teachers_by_time_period(monday, friday))
 
     elif plan_type == 'class':
         # Class
@@ -170,7 +107,7 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
 
         # Get hints
         if smart:
-            hints = list(get_all_hints_by_class_and_time_period(el, monday_of_week, friday))
+            hints = list(get_all_hints_by_class_and_time_period(el, monday, friday))
 
     elif plan_type == 'room':
         # Room
@@ -180,7 +117,7 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
         raise Http404('Plan not found.')
 
     # Get plan
-    plan = get_plan(_type, plan_id, smart=smart, monday_of_week=monday_of_week)
+    plan = get_plan(_type, plan_id, smart=smart, monday_of_week=monday)
 
     context = {
         "smart": smart,
@@ -203,40 +140,13 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
     return render(request, 'timetable/plan.html', context)
 
 
-def get_type_and_object_of_user(user):
-    _type = UserInformation.user_type(user)
-    if _type == UserInformation.TEACHER:
-        # Teacher
-        _type = TYPE_TEACHER
-        shortcode = user.username
-        el = get_teacher_by_shortcode(shortcode)
-        plan_id = el.id
-        raw_type = "teacher"
-
-    elif _type == UserInformation.STUDENT:
-        # Student
-        _type = TYPE_CLASS
-        _name = UserInformation.user_classes(user)[0]
-        el = get_class_by_name(_name)
-        plan_id = el.id
-        raw_type = "class"
-    else:
-        return None, None
-
-    return _type, el
-
 @login_required
 @permission_required("timetable.show_plan")
 def my_plan(request, year=None, month=None, day=None):
-    date = timezone.datetime.now()
-    time_now = datetime.datetime.now().time()
-    if year is not None and day is not None and month is not None:
-        date = timezone.datetime(year=year, month=month, day=day)
-        if date != timezone.datetime.now():
-            time_now = datetime.time(0)
+    date, time = find_out_what_is_today(year, month, day)
 
     # Get next weekday if it is a weekend
-    next_weekday = get_next_weekday_with_time(date, time_now)
+    next_weekday = get_next_weekday_with_time(date, time)
     if next_weekday != date:
         return redirect("timetable_my_plan", next_weekday.year, next_weekday.month, next_weekday.day)
 
@@ -289,20 +199,6 @@ def my_plan(request, year=None, month=None, day=None):
     }
 
     return render(request, 'timetable/myplan.html', context)
-
-
-def get_next_weekday_with_time(date, time) -> datetime.datetime:
-    """Get the next weekday by a datetime object"""
-
-    if time > datetime.time(15, 35):
-        date += datetime.timedelta(days=1)
-    if date.isoweekday() in {6, 7}:
-        if date.isoweekday() == 6:
-            plus = 2
-        else:
-            plus = 1
-        date += datetime.timedelta(days=plus)
-    return date
 
 
 #################
@@ -374,15 +270,10 @@ def sub_pdf(request, plan_date=None):
 def substitutions(request, year=None, month=None, day=None):
     """Show substitutions in a classic view"""
 
-    date = timezone.datetime.now()
-    time_now = datetime.datetime.now().time()
-    if year is not None and day is not None and month is not None:
-        date = timezone.datetime(year=year, month=month, day=day)
-        if date != timezone.datetime.now():
-            time_now = datetime.time(0)
+    date, time = find_out_what_is_today(year, month, day)
 
     # Get next weekday if it is a weekend
-    next_weekday = get_next_weekday_with_time(date, time_now)
+    next_weekday = get_next_weekday_with_time(date, time)
     if next_weekday != date:
         return redirect("timetable_substitutions_date", next_weekday.year, next_weekday.month, next_weekday.day)
 
@@ -433,7 +324,6 @@ def add_hint(request):
         if form.is_valid():
             i = form.save()
             i.save()
-            # return redirect('timetable_add_hint')
             form = HintForm()
             msg = "success"
     else:
