@@ -161,7 +161,7 @@ def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse
 
 
 @admin_required
-def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse:
+def delete_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse:
     context = {}
 
     LessonSubstitution.objects.filter(
