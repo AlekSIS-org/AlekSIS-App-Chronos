@@ -140,8 +140,14 @@ def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse
     lesson_substitution = LessonSubstitution.objects.filter(
         week=week, lesson_period=lesson_period).first()
     if lesson_substitution:
+        # Inject fields from URL as workaround for disabled form fields
+        # cf. https://stackoverflow.com/a/4664866/3035850
+        POST = request.POST.copy()
+        POST['week'] = week
+        POST['lesson_period'] = id_
+
         edit_substitution_form = LessonSubstitutionForm(
-            request.POST or None, instance=lesson_substitution)
+            POST or None, instance=lesson_substitution)
     else:
         edit_substitution_form = LessonSubstitutionForm(
             request.POST or None, initial={'week': week, 'lesson_period': lesson_period})
