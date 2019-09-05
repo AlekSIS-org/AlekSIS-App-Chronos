@@ -25,9 +25,3 @@ class LessonSubstitutionForm(forms.ModelForm):
     class Meta:
         model = LessonSubstitution
         fields = ['week', 'lesson_period', 'subject', 'teachers', 'room']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields['week'].disabled = True
-        self.fields['lesson_period'].disabled = True
