@@ -29,10 +29,5 @@ class LessonSubstitutionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['lesson_period'].queryset = LessonPeriod.objects.all()
-        self.fields['subject'].queryset = Subject.objects.all()
-        self.fields['teachers'].queryset = Person.objects.all()
-        self.fields['room'].queryset = Room.objects.all()
-
         self.fields['week'].disabled = True
         self.fields['lesson_period'].disabled = True
