@@ -168,4 +168,4 @@ def delete_substitution(request: HttpRequest, id_: int, week: int) -> HttpRespon
         week=week, lesson_period__id=id_
     ).delete()
 
-    return redirect('edit_substitution', week, id_)
+    return redirect('edit_substitution', id_, week)
