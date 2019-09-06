@@ -21,6 +21,8 @@
   <form method="post">
     {% csrf_token %}
     {% bootstrap_form edit_substitution_form %}
-    <input type="submit" value="Save" />
+    <button type="submit" class="btn btn-primary">
+      {% blocktrans %}Save{% endblocktrans %}
+    </button>
   </form>
 {% endblock %}
