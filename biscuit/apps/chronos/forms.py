@@ -24,4 +24,4 @@ class SelectForm(forms.Form):
 class LessonSubstitutionForm(forms.ModelForm):
     class Meta:
         model = LessonSubstitution
-        fields = ['week', 'lesson_period', 'subject', 'teachers', 'room']
+        fields = ['week', 'lesson_period', 'subject', 'teachers', 'room', 'cancelled']
