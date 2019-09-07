@@ -168,4 +168,5 @@ def delete_substitution(request: HttpRequest, id_: int, week: int) -> HttpRespon
         week=week, lesson_period__id=id_
     ).delete()
 
-    return redirect('edit_substitution', id_, week)
+    messages.success(request, _('The substitution has been deleted.'))
+    return redirect('lessons_day_by_date', when=week_days(week)[lesson_period.period.weekday - 1].strftime('%Y-%m-%d'))
