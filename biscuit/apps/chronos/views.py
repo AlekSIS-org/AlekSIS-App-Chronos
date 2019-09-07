@@ -22,7 +22,6 @@ from .tables import LessonsTable
 
 
 @login_required
-@cache_page(60 * 60 * 12)
 def timetable(request: HttpRequest, week: Optional[int] = None) -> HttpResponse:
     context = {}
 
