@@ -11,7 +11,10 @@ from .models import LessonPeriod
 
 def _css_class_from_lesson_state(record: Optional[LessonPeriod] = None, table: Optional[LessonsTable] = None) -> str:
     if record.get_substitution(record._week):
-        return 'table-warning'
+        if record.get_substitution(record._week).cancelled:
+            return 'table-danger'
+        else:
+            return 'table-warning'
     else:
         return ''
 
