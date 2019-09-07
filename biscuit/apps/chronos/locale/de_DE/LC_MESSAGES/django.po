@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-07 23:31+0200\n"
-"PO-Revision-Date: 2019-09-02 14:11+0000\n"
-"Last-Translator: Dominik George <dominik.george@teckids.org>\n"
+"PO-Revision-Date: 2019-09-07 22:04+0000\n"
+"Last-Translator: Tom Teichler <tom.teichler@teckids.org>\n"
 "Language-Team: German <https://translate.edugit.org/projects/biscuit-sis/"
 "biscuit-app-chronos/de/>\n"
 "Language: de_DE\n"
@@ -126,7 +126,7 @@ msgstr "Woche"
 
 #: models.py:128
 msgid "Lessons can only be either substituted or cancelled."
-msgstr ""
+msgstr "Unterrichtsstunden können nur entweder vertreten werden oder ausfallen."
 
 #: tables.py:28
 msgid "Groups"
@@ -147,7 +147,7 @@ msgstr "Vertretung bearbeiten"
 
 #: templates/chronos/edit_substitution.html:25
 msgid "Save"
-msgstr ""
+msgstr "Speichern"
 
 #: templates/chronos/lessons_day.html:7 templates/chronos/lessons_day.html:9
 msgid "Lessons"
@@ -155,7 +155,7 @@ msgstr "Unterrichtsstunden"
 
 #: templates/chronos/tt_week.html:35
 msgid "Select"
-msgstr ""
+msgstr "Auswählen"
 
 #: templates/chronos/tt_week.html:46
 msgid "Times"
@@ -166,10 +166,8 @@ msgid "The substitution has been saved."
 msgstr "Die Vertretung wurde gespeichert."
 
 #: views.py:170
-#, fuzzy
-#| msgid "The substitution has been saved."
 msgid "The substitution has been deleted."
-msgstr "Die Vertretung wurde gespeichert."
+msgstr "Die Vertretung wurde gelöscht."
 
 #~ msgid "BiscuIT - Chronos (Timetables)"
 #~ msgstr "BiscuIT - Chronos (Stundenpläne)"
