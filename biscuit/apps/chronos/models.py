@@ -133,7 +133,7 @@ class LessonSubstitution(SchoolRelated):
                     'lesson_period__period__weekday', 'lesson_period__period__period']
         constraints = [
             models.CheckConstraint(
-                check=Q(cancelled=False, subject__isnull=False) | Q(cancelled=True, subject__isnull=True, room__isnull=True),
+                check=~Q(cancelled=True, subject__isnull=False),
                 name='either_substituted_or_cancelled'
             )
         ]
