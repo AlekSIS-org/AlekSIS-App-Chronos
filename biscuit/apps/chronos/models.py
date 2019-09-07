@@ -119,7 +119,7 @@ class LessonSubstitution(SchoolRelated):
                                       related_name='lesson_substitutions')
     room = models.ForeignKey('Room', models.CASCADE, null=True)
 
-    canceled = models.BooleanField(default=False)
+    cancelled = models.BooleanField(default=False)
 
     class Meta:
         unique_together = [['school', 'lesson_period', 'week']]
