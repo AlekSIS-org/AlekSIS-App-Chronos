@@ -116,10 +116,10 @@ class LessonSubstitution(SchoolRelated):
 
     subject = models.ForeignKey(
         'Subject', on_delete=models.CASCADE,
-        related_name='lesson_substitutions', null=True)
+        related_name='lesson_substitutions', null=True, blank=True)
     teachers = models.ManyToManyField('core.Person',
-                                      related_name='lesson_substitutions')
-    room = models.ForeignKey('Room', models.CASCADE, null=True)
+                                      related_name='lesson_substitutions', blank=True, null=True)
+    room = models.ForeignKey('Room', models.CASCADE, null=True, blank=True)
 
     cancelled = models.BooleanField(default=False)
 
