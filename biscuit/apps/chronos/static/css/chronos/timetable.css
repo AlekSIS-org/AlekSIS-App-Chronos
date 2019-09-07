@@ -8,6 +8,6 @@ ul#timetable_select_form li {
 }
 
 .chronos-lesson-cancelled {
-    background-color: white;
+    background-color: inherit !important;
     text-decoration: line-through;
 }
