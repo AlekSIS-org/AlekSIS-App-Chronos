@@ -6,3 +6,8 @@ ul#timetable_select_form li {
     dispaly: inline;
 
 }
+
+.chronos-lesson-cancelled {
+    background-color: white;
+    text-decoration: line-through;
+}
