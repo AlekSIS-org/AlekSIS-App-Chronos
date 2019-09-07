@@ -46,7 +46,7 @@ def timetable(request: HttpRequest, week: Optional[int] = None) -> HttpResponse:
                 Q(lesson__groups__pk=int(request.GET['group'])) | Q(lesson__groups__parent_groups__pk=int(request.GET['group'])))
         if 'teacher' in request.GET and request.GET['teacher']:
             lesson_periods = lesson_periods.filter(
-                lesson__teachers__pk=int(request.GET['teacher']))
+                Q(substitutions__teachers__pk=int(request.GET['teacher']), substitutions__week=wanted_week) | Q(lesson__teachers__pk=int(request.GET['teacher'])))
         if 'room' in request.GET and request.GET['room']:
             lesson_periods = lesson_periods.filter(
                 room__pk=int(request.GET['room']))
