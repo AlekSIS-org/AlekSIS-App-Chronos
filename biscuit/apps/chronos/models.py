@@ -2,7 +2,9 @@ from datetime import datetime
 from typing import Dict, Optional, Tuple
 
 from django.core import validators
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
 from biscuit.core.mixins import SchoolRelated
@@ -121,10 +123,20 @@ class LessonSubstitution(SchoolRelated):
 
     cancelled = models.BooleanField(default=False)
 
+    def clean(self) -> None:
+        if self.subject and self.cancelled:
+            raise ValidationError(_('Lessons can only be either substituted or cancelled.'))
+
     class Meta:
         unique_together = [['school', 'lesson_period', 'week']]
         ordering = ['lesson_period__lesson__date_start', 'week',
                     'lesson_period__period__weekday', 'lesson_period__period__period']
+        constraints = [
+            models.CheckConstraint(
+                check=Q(cancelled=False, subject__isnull=False) | Q(cancelled=True, subject__isnull=True, room__isnull=True),
+                name='either_substituted_or_cancelled'
+            )
+        ]
 
 
 class LessonPeriod(SchoolRelated):
