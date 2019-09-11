@@ -88,12 +88,13 @@ def timetable(request: HttpRequest, week: Optional[int] = None) -> HttpResponse:
     # Add a form to filter the view
     select_form = SelectForm(request.GET or None)
 
+    context['current_head'] = _('Timetable')
     context['lesson_periods'] = OrderedDict(sorted(per_day.items()))
     context['periods'] = TimePeriod.get_times_dict()
     context['weekdays'] = dict(TimePeriod.WEEKDAY_CHOICES)
     context['week'] = wanted_week
-    context['week_prev'] = wanted_week - 1
-    context['week_next'] = wanted_week + 1
+    context['url_prev'] = '%s?%s' % (reverse('timetable_by_week', week=wanted_week - 1), request.GET.urlencode())
+    context['url_next'] = '%s?%s' % (reverse('timetable_by_week', week=wanted_week + 1), request.GET.urlencode())
     context['select_form'] = select_form
 
     return render(request, 'chronos/tt_week.html', context)
@@ -120,10 +121,11 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
     lessons_table = LessonsTable(lesson_periods.extra(select={'_week': week}).all())
     RequestConfig(request).configure(lessons_table)
 
+    context['current_head'] = _('Lessons')
     context['lessons_table'] = lessons_table
     context['day'] = day
-    context['day_prev'] = day + timedelta(days=-1)
-    context['day_next'] = day + timedelta(days=1)
+    context['url_prev'] = reverse('lessons_day_by_date', day + timedalta(days=-1)
+    context['url_next'] = reverse('lessons_day_by_data', day + timedalta(days=+1)
     context['week'] = week
     context['lesson_periods'] = lesson_periods
 
