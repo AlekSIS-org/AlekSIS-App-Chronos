@@ -157,7 +157,7 @@ class LessonPeriod(SchoolRelated):
         return None
 
     def get_subject(self) -> Optional[Subject]:
-        if self.get_substitution():
+        if self.get_substitution() and self.get_substitution().subject:
             return self.get_substitution().subject
         else:
             return self.lesson.subject
@@ -169,10 +169,13 @@ class LessonPeriod(SchoolRelated):
             return self.lesson.teachers
 
     def get_room(self) -> Optional[Room]:
-        if self.get_substitution():
+        if self.get_substitution() and self.get_substitution().room:
             return self.get_substitution().room
         else:
             return self.room
+
+    def get_teacher_names(self, sep: Optional[str] = ', ') -> str:
+        return sep.join([teacher.full_name for teacher in self.get_teachers().all()])
 
     def get_groups(self) -> models.query.QuerySet:
         return self.lesson.groups
