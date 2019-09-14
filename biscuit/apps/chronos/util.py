@@ -17,6 +17,8 @@ class CalendarWeek:
 
     @classmethod
     def from_date(cls, when: date):
+        """ Get the calendar week by a date object (the week this date is in). """
+
         return cls(year=when.strftime('%Y'), week=when.strftime('%V'))
 
     def __post_init__(self) -> None:
