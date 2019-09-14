@@ -28,7 +28,7 @@ class CalendarWeek:
         if not self.year:
             self.year = today.year
         if not self.week:
-            self.week = imt(today.strptime('%V'))
+            self.week = int(today.strptime('%V'))
 
     def __str__(self) -> str:
         return '%s %d (%s %s %s)' % (_('Kalenderwoche'), self.week, self[0], _('to'), self[-1])
