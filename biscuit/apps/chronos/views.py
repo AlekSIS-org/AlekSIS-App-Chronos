@@ -3,7 +3,7 @@ from collections import OrderedDict
 from typing import Optional
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Max, Min, Q
+from django.db.models import F, Max, Min, Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.cache import cache_page
@@ -31,8 +31,8 @@ def timetable(request: HttpRequest, year: Optional[int] = None, week: Optional[i
         wanted_week = CalendarWeek()
 
     lesson_periods = LessonPeriod.objects.filter(
-        lesson__date_start__lte=wanted_week[0],
-        lesson__date_end__gte=wanted_week[-1]
+        lesson__date_start__lte=wanted_week[0] + timedelta(days=1) * F('lesson__weekday') - 1,
+        lesson__date_end__gte=wanted_week[0] + timedelta(days=1) * F('lesson__weekday') - 1
     ).select_related(
         'lesson', 'lesson__subject', 'period', 'room'
     ).prefetch_related(
