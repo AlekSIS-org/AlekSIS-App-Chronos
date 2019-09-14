@@ -11,6 +11,7 @@
   <div class="d-flex justify-content-between">
     <div class="btn-group" role="group" aria-label="Day actions">
       {% if substitution %}
+        {# FIXME Respect year as well #}
         <a href="{% url 'delete_substitution' substitution.lesson_period.id substitution.week %}" class="btn btn-danger">
           {% fa 'trash-o' %}
         </a>
