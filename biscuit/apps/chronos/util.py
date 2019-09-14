@@ -6,6 +6,7 @@ from typing import Optional, Sequence, Tuple
 
 from django.apps import apps
 from django.db import models
+from django.utils.translation import ugettext as _
 
 
 @dataclass
@@ -28,6 +29,9 @@ class CalendarWeek:
             self.year = today.year
         if not self.week:
             self.week = today.isoweekday()
+
+    def __str__(self) -> str:
+        return '%s (%s %s %s)' % (_('Kalenderwoche'), self[0], _('to'), self[-1])
 
     def __len__(self) -> int:
         return 7
