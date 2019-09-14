@@ -78,7 +78,7 @@ class Room(SchoolRelated):
 
     class Meta:
         ordering = ['name', 'short_name']
-        unique_together = [['school', 'short_name'], ['school', 'name']]
+        unique_together = [['school', 'short_name']]
 
 
 class Lesson(SchoolRelated):
