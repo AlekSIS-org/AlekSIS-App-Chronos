@@ -100,8 +100,8 @@ def timetable(request: HttpRequest, year: Optional[int], week: Optional[int] = N
 
     week_prev = wanted_week - 1
     week_next = wanted_week + 1
-    context['url_prev'] = '%s?%s' % (reverse('timetable_by_week', year=week_prev.year, week=week_prev.week), request.GET.urlencode())
-    context['url_next'] = '%s?%s' % (reverse('timetable_by_week', year=week_next.year, week=week_next.week), request.GET.urlencode())
+    context['url_prev'] = '%s?%s' % (reverse('timetable_by_week', args=[week_prev.year, week_prev.week]), request.GET.urlencode())
+    context['url_next'] = '%s?%s' % (reverse('timetable_by_week', args=[week_next.year, week_next.week]), request.GET.urlencode())
 
     return render(request, 'chronos/tt_week.html', context)
 
@@ -130,10 +130,13 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
     context['current_head'] = _('Lessons')
     context['lessons_table'] = lessons_table
     context['day'] = day
-    context['url_prev'] = reverse('lessons_day_by_date', day + timedalta(days=-1))
-    context['url_next'] = reverse('lessons_day_by_data', day + timedalta(days=1))
     context['week'] = week
     context['lesson_periods'] = lesson_periods
+
+    day_prev = day - timedalta(days=1)
+    day_next = day + timedalta(days=1)
+    context['url_prev'] = reverse('lessons_day_by_date', args=[day_prev.strftime('%Y-%m-%d')])
+    context['url_next'] = reverse('lessons_day_by_date', args=[day_next.strftime('%Y-%m-%d')])
 
     return render(request, 'chronos/lessons_day.html', context)
 
