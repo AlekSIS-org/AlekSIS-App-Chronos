@@ -4,30 +4,30 @@ from typing import Optional
 from django import template
 from django.db.models.query import QuerySet
 
-from ..util import current_week, week_days, week_weekday_to_date
+from ..util import CalendarWeek, week_weekday_to_date
 
 
 register = template.Library()
 
 
 @register.filter
-def week_start(week: int) -> date:
-    return week_days(week)[0]
+def week_start(week: CalendarWeek) -> date:
+    return week[0]
 
 
 @register.filter
-def week_end(week: int) -> date:
-    return week_days(week)[-1]
+def week_end(week: CalendarWeek) -> date:
+    return week[-1]
 
 
 @register.filter
-def only_week(qs: QuerySet, week: Optional[int]) -> QuerySet:
-   wanted_week = week or current_week()
-   return qs.filter(week=wanted_week)
+def only_week(qs: QuerySet, week: Optional[CalendarWeek]) -> QuerySet:
+   wanted_week = week or CalendarWeek()
+   return qs.filter(week=wanted_week.week)
 
 
 @register.simple_tag
-def weekday_to_date(week: int, weekday: int) -> date:
+def weekday_to_date(week: CalendarWeek, weekday: int) -> date:
     return week_weekday_to_date(week, weekday)
 
 
