@@ -22,11 +22,11 @@ from .tables import LessonsTable
 
 
 @login_required
-def timetable(request: HttpRequest, week: Optional[int] = None) -> HttpResponse:
+def timetable(request: HttpRequest, year: Optional[int], week: Optional[int] = None) -> HttpResponse:
     context = {}
 
-    if week:
-        wanted_week = CalendarWeek(week)  # FIXME Respect year as well
+    if year and week:
+        wanted_week = CalendarWeek(year=year, week=week)
     else:
         wanted_week = CalendarWeek()
 
@@ -38,7 +38,7 @@ def timetable(request: HttpRequest, week: Optional[int] = None) -> HttpResponse:
     ).prefetch_related(
         'lesson__groups', 'lesson__teachers', 'substitutions'
     ).extra(
-        select={'_week': wanted_week.week}  # FIXME respect year as well
+        select={'_week': wanted_week.week}
     )
 
     if request.GET.get('group', None) or request.GET.get('teacher', None) or request.GET.get('room', None):
@@ -48,7 +48,7 @@ def timetable(request: HttpRequest, week: Optional[int] = None) -> HttpResponse:
                 Q(lesson__groups__pk=int(request.GET['group'])) | Q(lesson__groups__parent_groups__pk=int(request.GET['group'])))
         if 'teacher' in request.GET and request.GET['teacher']:
             lesson_periods = lesson_periods.filter(
-                Q(substitutions__teachers__pk=int(request.GET['teacher']), substitutions__week=wanted_week.week) | Q(lesson__teachers__pk=int(request.GET['teacher'])))  # FIXME Respect year as well
+                Q(substitutions__teachers__pk=int(request.GET['teacher']), substitutions__week=wanted_week.week) | Q(lesson__teachers__pk=int(request.GET['teacher'])))
         if 'room' in request.GET and request.GET['room']:
             lesson_periods = lesson_periods.filter(
                 room__pk=int(request.GET['room']))
@@ -124,7 +124,7 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
     )
 
     # Build table
-    lessons_table = LessonsTable(lesson_periods.extra(select={'_week': week.week}).all())  # FIXME Respect year as well
+    lessons_table = LessonsTable(lesson_periods.extra(select={'_week': week.week}).all())
     RequestConfig(request).configure(lessons_table)
 
     context['current_head'] = _('Lessons')
@@ -142,18 +142,15 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
 def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse:
     context = {}
 
-    wanted_week = CalendarWeek(week=week)  # FIXME Respect year as well
-
-    lesson_period = get_object_or_404(LessonPeriod, pk=id_)
 
     lesson_substitution = LessonSubstitution.objects.filter(
-        week=wanted_week.week, lesson_period=lesson_period).first()  # FIXME Respect year as well
+        week=wanted_week.week, lesson_period=lesson_period).first()
     if lesson_substitution:
         edit_substitution_form = LessonSubstitutionForm(
             request.POST or None, instance=lesson_substitution)
     else:
         edit_substitution_form = LessonSubstitutionForm(
-            request.POST or None, initial={'week': wanted_week.week, 'lesson_period': lesson_period})  # FIXME Respect year as well
+            request.POST or None, initial={'week': wanted_week.week, 'lesson_period': lesson_period})
 
     context['substitution'] = lesson_substitution
 
@@ -173,10 +170,11 @@ def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse
 def delete_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse:
     context = {}
 
-    wanted_week = CalendarWeek(week=week)  # FIXME Respect year as well
+    lesson_period = get_object_or_404(LessonPeriod, pk=id_)
+    wanted_week = lesson_period.lesson.get_calendar_week(week)
 
     LessonSubstitution.objects.filter(
-        week=wanted_week.week, lesson_period__id=id_  # FIXME Respect year as well
+        week=wanted_week.week, lesson_period=lesson_period
     ).delete()
 
     messages.success(request, _('The substitution has been deleted.'))

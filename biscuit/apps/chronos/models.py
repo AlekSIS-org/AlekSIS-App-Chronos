@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from biscuit.core.mixins import SchoolRelated
 
-from .util import current_week
+from .util import CalendarWeek
 
 
 class TimePeriod(SchoolRelated):
@@ -102,6 +102,13 @@ class Lesson(SchoolRelated):
     def group_names(self, sep: Optional[str] = ', ') -> str:
         return sep.join([group.short_name for group in self.groups.all()])
 
+    def get_calendar_week(self, week: int):
+        year = self.date_start.year
+        if week < int(self.date_start.strftime('%V')):
+           year += 1
+
+        return CalendarWeek(year=year, week=week)
+
     class Meta:
         ordering = ['date_start']
         indexes = [models.Index(fields=['date_start', 'date_end'])]
@@ -109,7 +116,7 @@ class Lesson(SchoolRelated):
 
 class LessonSubstitution(SchoolRelated):
     week = models.IntegerField(verbose_name=_('Week'),
-                               default=current_week)
+                               default=CalendarWeek().week)
 
     lesson_period = models.ForeignKey(
         'LessonPeriod', models.CASCADE, 'substitutions')
@@ -146,7 +153,7 @@ class LessonPeriod(SchoolRelated):
     room = models.ForeignKey('Room', models.CASCADE, null=True, related_name='lesson_periods')
 
     def get_substitution(self, week: Optional[int] = None) -> LessonSubstitution:
-        wanted_week = week or getattr(self, '_week', None) or current_week()
+        wanted_week = week or getattr(self, '_week', None) or CalendarWeek().week
 
         # We iterate over all substitutions because this can make use of
         # prefetching when this model is loaded from outside, in contrast
