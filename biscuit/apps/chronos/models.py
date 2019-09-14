@@ -116,7 +116,7 @@ class Lesson(SchoolRelated):
 
 class LessonSubstitution(SchoolRelated):
     week = models.IntegerField(verbose_name=_('Week'),
-                               default=CalendarWeek().week)
+                               default=CalendarWeek.current_week)
 
     lesson_period = models.ForeignKey(
         'LessonPeriod', models.CASCADE, 'substitutions')

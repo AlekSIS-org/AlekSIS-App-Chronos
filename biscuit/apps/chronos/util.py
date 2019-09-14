@@ -22,6 +22,12 @@ class CalendarWeek:
 
         return cls(year=when.year, week=int(when.strftime('%V')))
 
+    @classmethod
+    def current_week(cls) -> int:
+        """ Get the current week number. """
+
+        return cls().week
+
     def __post_init__(self) -> None:
         today = date.today()
 

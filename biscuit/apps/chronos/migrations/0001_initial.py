@@ -85,7 +85,7 @@ class Migration(migrations.Migration):
             name='LessonSubstitution',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('week', models.IntegerField(default=biscuit.apps.chronos.util.current_week, verbose_name='Week')),
+                ('week', models.IntegerField(default=biscuit.apps.chronos.util.CalendarWeek.current_week, verbose_name='Week')),
                 ('lesson_period', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='substitutions', to='chronos.LessonPeriod')),
                 ('room', models.ForeignKey(null=True, blank=True, on_delete=django.db.models.deletion.CASCADE, to='chronos.Room')),
                 ('school', models.ForeignKey(default=biscuit.core.util.core_helpers.get_current_school, on_delete=django.db.models.deletion.CASCADE, to='core.School')),
