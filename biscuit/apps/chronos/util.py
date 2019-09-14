@@ -31,7 +31,7 @@ class CalendarWeek:
             self.week = today.isoweekday()
 
     def __str__(self) -> str:
-        return '%s (%s %s %s)' % (_('Kalenderwoche'), self[0], _('to'), self[-1])
+        return '%s %d (%s %s %s)' % (_('Kalenderwoche'), self.week, self[0], _('to'), self[-1])
 
     def __len__(self) -> int:
         return 7
