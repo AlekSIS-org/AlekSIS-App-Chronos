@@ -22,7 +22,7 @@ from .tables import LessonsTable
 
 
 @login_required
-def timetable(request: HttpRequest, year: Optional[int], week: Optional[int] = None) -> HttpResponse:
+def timetable(request: HttpRequest, year: Optional[int] = None, week: Optional[int] = None) -> HttpResponse:
     context = {}
 
     if year and week:
