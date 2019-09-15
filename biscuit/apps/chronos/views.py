@@ -127,7 +127,7 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
     lessons_table = LessonsTable(lesson_periods.extra(select={'_week': week.week}).all())
     RequestConfig(request).configure(lessons_table)
 
-    context['current_head'] = _('Lessons')
+    context['current_head'] = _('Lessons %s') % (day)
     context['lessons_table'] = lessons_table
     context['day'] = day
     context['week'] = week
