@@ -145,6 +145,8 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
 def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse:
     context = {}
 
+    lesson_period = get_object_or_404(LessonPeriod, pk=id_)
+    wanted_week = lesson_period.lesson.get_calendar_week(week)
 
     lesson_substitution = LessonSubstitution.objects.filter(
         week=wanted_week.week, lesson_period=lesson_period).first()
