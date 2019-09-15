@@ -133,8 +133,8 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
     context['week'] = week
     context['lesson_periods'] = lesson_periods
 
-    day_prev = day - timedalta(days=1)
-    day_next = day + timedalta(days=1)
+    day_prev = day - timedelta(days=1)
+    day_next = day + timedelta(days=1)
     context['url_prev'] = reverse('lessons_day_by_date', args=[day_prev.strftime('%Y-%m-%d')])
     context['url_next'] = reverse('lessons_day_by_date', args=[day_next.strftime('%Y-%m-%d')])
 
