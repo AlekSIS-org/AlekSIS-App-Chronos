@@ -28,6 +28,21 @@ class CalendarWeek:
 
         return cls().week
 
+    @classmethod
+    def weeks_within(cls, start: date, end: date) -> Sequence[CalendarWeek]:
+        """ Get all calendar weeks within a date range. """
+
+        if start > end:
+            raise ValueError('End date must be after start date.')
+
+        current = start
+        weeks = []
+        while current < end:
+            weeks.append(cls.from_date(current))
+            current += timedelta(days=7)
+
+        return weeks
+
     def __post_init__(self) -> None:
         today = date.today()
 
