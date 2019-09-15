@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-07 23:31+0200\n"
+"POT-Creation-Date: 2019-09-15 14:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,8 +33,7 @@ msgstr ""
 msgid "Timetables"
 msgstr ""
 
-#: menus.py:12 templates/chronos/tt_week.html:11
-#: templates/chronos/tt_week.html:13
+#: menus.py:12 templates/chronos/tt_week.html:11 views.py:94
 msgid "Timetable"
 msgstr ""
 
@@ -118,11 +117,11 @@ msgstr ""
 msgid "Effective end date of lesson"
 msgstr ""
 
-#: models.py:111
+#: models.py:118
 msgid "Week"
 msgstr ""
 
-#: models.py:128
+#: models.py:135
 msgid "Lessons can only be either substituted or cancelled."
 msgstr ""
 
@@ -143,26 +142,34 @@ msgstr ""
 msgid "Edit substitution"
 msgstr ""
 
-#: templates/chronos/edit_substitution.html:25
+#: templates/chronos/edit_substitution.html:26
 msgid "Save"
 msgstr ""
 
-#: templates/chronos/lessons_day.html:7 templates/chronos/lessons_day.html:9
+#: templates/chronos/lessons_day.html:7 views.py:130
 msgid "Lessons"
 msgstr ""
 
-#: templates/chronos/tt_week.html:35
+#: templates/chronos/tt_week.html:19
 msgid "Select"
 msgstr ""
 
-#: templates/chronos/tt_week.html:46
+#: templates/chronos/tt_week.html:30
 msgid "Times"
 msgstr ""
 
-#: views.py:154
+#: util.py:40
+msgid "Kalenderwoche"
+msgstr ""
+
+#: util.py:40
+msgid "to"
+msgstr ""
+
+#: views.py:164
 msgid "The substitution has been saved."
 msgstr ""
 
-#: views.py:170
+#: views.py:183
 msgid "The substitution has been deleted."
 msgstr ""

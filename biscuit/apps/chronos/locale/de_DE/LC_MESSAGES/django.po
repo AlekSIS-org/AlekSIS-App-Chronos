@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-07 23:31+0200\n"
+"POT-Creation-Date: 2019-09-15 14:11+0200\n"
 "PO-Revision-Date: 2019-09-07 22:04+0000\n"
 "Last-Translator: Tom Teichler <tom.teichler@teckids.org>\n"
 "Language-Team: German <https://translate.edugit.org/projects/biscuit-sis/"
@@ -35,8 +35,7 @@ msgstr "Raum"
 msgid "Timetables"
 msgstr "Stundenpläne"
 
-#: menus.py:12 templates/chronos/tt_week.html:11
-#: templates/chronos/tt_week.html:13
+#: menus.py:12 templates/chronos/tt_week.html:11 views.py:94
 msgid "Timetable"
 msgstr "Stundenplan"
 
@@ -120,13 +119,14 @@ msgstr "Effektives Startdatum des Unterrichts"
 msgid "Effective end date of lesson"
 msgstr "Effektives Enddatum des Unterrichts"
 
-#: models.py:111
+#: models.py:118
 msgid "Week"
 msgstr "Woche"
 
-#: models.py:128
+#: models.py:135
 msgid "Lessons can only be either substituted or cancelled."
-msgstr "Unterrichtsstunden können nur entweder vertreten werden oder ausfallen."
+msgstr ""
+"Unterrichtsstunden können nur entweder vertreten werden oder ausfallen."
 
 #: tables.py:28
 msgid "Groups"
@@ -145,27 +145,35 @@ msgstr "Vertretung"
 msgid "Edit substitution"
 msgstr "Vertretung bearbeiten"
 
-#: templates/chronos/edit_substitution.html:25
+#: templates/chronos/edit_substitution.html:26
 msgid "Save"
 msgstr "Speichern"
 
-#: templates/chronos/lessons_day.html:7 templates/chronos/lessons_day.html:9
+#: templates/chronos/lessons_day.html:7 views.py:130
 msgid "Lessons"
 msgstr "Unterrichtsstunden"
 
-#: templates/chronos/tt_week.html:35
+#: templates/chronos/tt_week.html:19
 msgid "Select"
 msgstr "Auswählen"
 
-#: templates/chronos/tt_week.html:46
+#: templates/chronos/tt_week.html:30
 msgid "Times"
 msgstr "Zeiten"
 
-#: views.py:154
+#: util.py:40
+msgid "Kalenderwoche"
+msgstr ""
+
+#: util.py:40
+msgid "to"
+msgstr ""
+
+#: views.py:164
 msgid "The substitution has been saved."
 msgstr "Die Vertretung wurde gespeichert."
 
-#: views.py:170
+#: views.py:183
 msgid "The substitution has been deleted."
 msgstr "Die Vertretung wurde gelöscht."
 
