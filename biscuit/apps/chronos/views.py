@@ -180,7 +180,7 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
         raise Http404('Plan not found.')
 
     # Get plan
-    plan = get_plan(_type, plan_id, smart=smart, monday_of_week=monday_of_week)
+    plan, holidays = get_plan(_type, plan_id, smart=smart, monday_of_week=monday_of_week)
 
     context = {
         "smart": smart,
@@ -193,8 +193,9 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
         "weeks": get_calendar_weeks(year=year),
         "selected_week": calendar_week,
         "selected_year": year,
-        "short_week_days": SHORT_WEEK_DAYS,
-        "long_week_days": LONG_WEEK_DAYS,
+        "short_week_days": zip(SHORT_WEEK_DAYS, holidays),
+        "long_week_days": zip(LONG_WEEK_DAYS, holidays),
+        "holidays": holidays,
         "hints": hints,
         "hints_b": hints_b,
         "hints_b_mode": "week",
@@ -254,7 +255,11 @@ def my_plan(request, year=None, month=None, day=None):
         return redirect("timetable_admin_all")
 
     # Get plan
-    plan = get_plan(_type, plan_id, smart=True, monday_of_week=monday_of_week)
+    plan, holidays = get_plan(_type, plan_id, smart=True, monday_of_week=monday_of_week)
+    # print(parse_lesson_times())
+
+    holiday_for_the_day = holidays[date.isoweekday() - 1]
+    # print(holiday_for_the_day)
 
     context = {
         "type": _type,
@@ -267,6 +272,7 @@ def my_plan(request, year=None, month=None, day=None):
         "date": date,
         "date_js": int(date.timestamp()) * 1000,
         "display_date_only": True,
+        "holiday": holiday_for_the_day,
         "hints": hints,
         "hints_b": hints_b,
         "hints_b_mode": "day",
