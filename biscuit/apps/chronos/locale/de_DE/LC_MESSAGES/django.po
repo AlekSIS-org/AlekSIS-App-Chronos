@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-17 21:31+0200\n"
-"PO-Revision-Date: 2019-09-07 22:04+0000\n"
+"PO-Revision-Date: 2019-09-17 19:44+0000\n"
 "Last-Translator: Tom Teichler <tom.teichler@teckids.org>\n"
 "Language-Team: German <https://translate.edugit.org/projects/biscuit-sis/"
 "biscuit-app-chronos/de/>\n"
@@ -25,7 +25,7 @@ msgstr "Gruppe"
 
 #: forms.py:17
 msgid "Teacher"
-msgstr "Lehrer"
+msgstr "Lehrkraft"
 
 #: forms.py:21
 msgid "Room"
@@ -163,17 +163,16 @@ msgstr "Zeiten"
 
 #: util.py:55
 msgid "Calendar Week"
-msgstr ""
+msgstr "Kalenderwoche"
 
 #: util.py:55
 msgid "to"
-msgstr ""
+msgstr "bis"
 
 #: views.py:130
-#, fuzzy, python-format
-#| msgid "Lessons"
+#, python-format
 msgid "Lessons %s"
-msgstr "Unterrichtsstunden"
+msgstr "Unterrichtsstunden %s"
 
 #: views.py:166
 msgid "The substitution has been saved."
