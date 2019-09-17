@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-15 14:11+0200\n"
+"POT-Creation-Date: 2019-09-17 15:42+0200\n"
 "PO-Revision-Date: 2019-09-07 22:04+0000\n"
 "Last-Translator: Tom Teichler <tom.teichler@teckids.org>\n"
 "Language-Team: German <https://translate.edugit.org/projects/biscuit-sis/"
@@ -149,7 +149,7 @@ msgstr "Vertretung bearbeiten"
 msgid "Save"
 msgstr "Speichern"
 
-#: templates/chronos/lessons_day.html:7 views.py:130
+#: templates/chronos/lessons_day.html:7
 msgid "Lessons"
 msgstr "Unterrichtsstunden"
 
@@ -161,19 +161,25 @@ msgstr "Auswählen"
 msgid "Times"
 msgstr "Zeiten"
 
-#: util.py:40
+#: util.py:55
 msgid "Kalenderwoche"
 msgstr ""
 
-#: util.py:40
+#: util.py:55
 msgid "to"
 msgstr ""
 
-#: views.py:164
+#: views.py:130
+#, fuzzy, python-format
+#| msgid "Lessons"
+msgid "Lessons %s"
+msgstr "Unterrichtsstunden"
+
+#: views.py:166
 msgid "The substitution has been saved."
 msgstr "Die Vertretung wurde gespeichert."
 
-#: views.py:183
+#: views.py:185
 msgid "The substitution has been deleted."
 msgstr "Die Vertretung wurde gelöscht."
 
