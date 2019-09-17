@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-17 21:31+0200\n"
+"POT-Creation-Date: 2019-09-17 23:02+0200\n"
 "PO-Revision-Date: 2019-09-17 19:44+0000\n"
 "Last-Translator: Tom Teichler <tom.teichler@teckids.org>\n"
 "Language-Team: German <https://translate.edugit.org/projects/biscuit-sis/"
@@ -27,7 +27,7 @@ msgstr "Gruppe"
 msgid "Teacher"
 msgstr "Lehrkraft"
 
-#: forms.py:21
+#: forms.py:21 models.py:129
 msgid "Room"
 msgstr "Raum"
 
@@ -122,6 +122,10 @@ msgstr "Effektives Enddatum des Unterrichts"
 #: models.py:118
 msgid "Week"
 msgstr "Woche"
+
+#: models.py:126
+msgid "Subject"
+msgstr ""
 
 #: models.py:135
 msgid "Lessons can only be either substituted or cancelled."
