@@ -5,7 +5,7 @@
 \usepackage[ngerman]{babel}
 \usepackage[sfdefault]{cabin}
 \usepackage[utf8]{inputenc}
-\usepackage[a4paper,left=1cm,right=1cm,top=2cm,bottom=2cm,bindingoffset=0mm]{geometry}
+\usepackage[a4paper,left=1cm,right=1cm,top=1.5cm,bottom=1.5cm,bindingoffset=0mm]{geometry}
 
 % Packages
 \usepackage{fancyhdr}
@@ -24,12 +24,12 @@
 
 % Badge box
 \usepackage{tcolorbox}
-\newtcbox{\badge}{nobeforeafter,colframe=green,colback=green,boxrule=0.5pt,arc=4pt,
-boxsep=0pt,left=4pt,right=4pt,top=4pt,bottom=4pt,tcbox raise base,
+\newtcbox{\badge}{nobeforeafter,colframe=green,colback=green,boxrule=0pt,arc=4pt,
+boxsep=0pt,left=4pt,right=4pt,top=1pt,bottom=1pt,tcbox raise base,
 grow to left by=0pt,
 grow to right by=-3pt,
-enlarge top by=3pt,
-enlarge bottom by=3pt,coltext=white}
+enlarge top by=1pt,
+enlarge bottom by=1pt,coltext=white}
 
 % Define colors
 \definecolor{grey}{RGB}{208, 208, 208}
@@ -48,6 +48,7 @@ enlarge bottom by=3pt,coltext=white}
 
 % Define footer
 \lfoot{Katharineum zu Lübeck}
+\cfoot{}
 \rfoot{\small Umsetzung: © 2018--2019 by Computer-AG}
 \rhead{\textbf{
 Vertretungen {{ date|date:"j. F Y, \\K\\W W"}}}\\
@@ -74,7 +75,7 @@ Stand: {% now "j. F Y H:i" %}\\
     {% set color_background = 1 %}
     {% set last_classes = "" %}
 
-    \def\arraystretch{1.5}
+    \def\arraystretch{1.0}
     \begin{longtable}{p{20mm}p{8mm}p{32mm}p{25mm}p{30mm}p{45mm}}
         \textbf{Klassen} &
         \textbf{Std.} &
@@ -125,7 +126,7 @@ Stand: {% now "j. F Y H:i" %}\\
 
         {# Display badge (for cancellations) #}     {# Display notice and new line #}
         {% if sub.badge %}
-        \normalsize\badge{ {{ sub.badge }} }
+        \footnotesize\badge{ {{ sub.badge }} }
         {% endif %} \color{ {{c}}} \large\textit{ {{sub.text|default:""|safe|texify|safe}} } \\
 
     {% endwith %}
