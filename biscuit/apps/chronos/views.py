@@ -338,13 +338,13 @@ def sub_pdf(request, plan_date=None):
     # Merge PDFs
     try:
         merger = PdfFileMerger()
-        class0 = open(os.path.join(BASE_DIR, "latex", "class0.pdf"), "rb")
-        class1 = open(os.path.join(BASE_DIR, "latex", "class1.pdf"), "rb")
+        class0 = open(os.path.join(BASE_DIR, "latex", "aktuell0.pdf"), "rb")
+        class1 = open(os.path.join(BASE_DIR, "latex", "aktuell1.pdf"), "rb")
         merger.append(fileobj=class0)
         merger.append(fileobj=class1)
 
-        # Write merged PDF to class.pdf
-        output = open(os.path.join(BASE_DIR, "latex", "class.pdf"), "wb")
+        # Write merged PDF to aktuell.pdf
+        output = open(os.path.join(BASE_DIR, "latex", "aktuell.pdf"), "wb")
         merger.write(output)
         output.close()
 
@@ -355,7 +355,7 @@ def sub_pdf(request, plan_date=None):
         register_traceback("merge_class", "pypdf2")
 
     # Read and response PDF
-    file = open(os.path.join(BASE_DIR, "latex", "class.pdf"), "rb")
+    file = open(os.path.join(BASE_DIR, "latex", "aktuell.pdf"), "rb")
     return FileResponse(file, content_type="application/pdf")
 
 
