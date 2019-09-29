@@ -24,8 +24,8 @@
 
 % Badge box
 \usepackage{tcolorbox}
-\newtcbox{\badge}{nobeforeafter,colframe=green,colback=green,boxrule=0pt,arc=4pt,
-boxsep=0pt,left=4pt,right=4pt,top=1pt,bottom=1pt,tcbox raise base,
+\newtcbox{\badge}{nobeforeafter,colframe=green,colback=green,boxrule=0pt,arc=2pt,
+boxsep=0pt,left=4pt,right=4pt,top=2pt,bottom=3pt,tcbox raise base,
 grow to left by=0pt,
 grow to right by=-3pt,
 enlarge top by=1pt,
@@ -64,7 +64,7 @@ Stand: {% now "j. F Y H:i" %}\\
     {%  include "timetable/latex/hints.tex" %}
 
     {% if header_info.is_box_needed %}
-    \begin{tabular}{p{0.22\linewidth}p{0.73\linewidth}}
+    \begin{tabular}{@{\hspace{-1em}}p{0.22\linewidth}p{0.73\linewidth}}
     {% for row in header_info.rows %}
         \textbf{ {{ row.0 }} } & {{ row.1 }} \\
     {% endfor %}
@@ -75,8 +75,8 @@ Stand: {% now "j. F Y H:i" %}\\
     {% set color_background = 1 %}
     {% set last_classes = "" %}
 
-    \def\arraystretch{1.0}
-    \begin{longtable}{p{20mm}p{8mm}p{32mm}p{25mm}p{30mm}p{45mm}}
+    \def\arraystretch{1.1}
+    \begin{longtable}{p{20mm}p{10mm}p{30mm}p{25mm}p{30mm}p{45mm}}
         \textbf{Klassen} &
         \textbf{Std.} &
         \textbf{Lehrer} &
