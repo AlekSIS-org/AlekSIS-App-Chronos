@@ -125,8 +125,7 @@ def quicklaunch(request):
 
 @login_required
 @permission_required("timetable.show_plan")
-def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().year,
-         calendar_week=timezone.datetime.now().isocalendar()[1]):
+def plan(request, plan_type, plan_id, regular="", year=None, calendar_week=None):
     """
     [DJANGO VIEW]
     Show a timetable (class, teacher, room, smart/regular)
@@ -138,6 +137,10 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
     :param calendar_week: calendar week in year (only for smart plan)
     :return:
     """
+    if year is None or calendar_week is None:
+        date = get_next_weekday_with_time(timezone.datetime.now(), timezone.datetime.now().time())
+        year = date.year
+        calendar_week = date.isocalendar()[1]
 
     # Regular or smart plan?
     if regular == "regular":
