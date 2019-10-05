@@ -25,37 +25,26 @@
     \textbf{Klassen} & \textbf{Std.} & \textbf{Lehrer} & \textbf{Fach} & \textbf{Raum} & \textbf{Hinweis}\\\hline
     \endhead
     {% for sub in subs %}
-        {# ------------------------------ #}
         {#  Color groups of classes in grey/white #}
         {% if last_classes != sub.classes %}
-            {% if color_background %}
-            {% set color_background = 0 %}
-            {% else %}
-            {% set color_background = 1 %}
+            {% if color_background %}{% set color_background = 0 %}
+            {% else %}{% set color_background = 1 %}
             {% endif %}
         {% endif %}
-
         {% set last_classes = sub.classes %}
-
         {# Background color #}
-        {% if color_background %}
-        \rowcolor{grey}
-        {% endif %}
-        {# ------------------------------ #}
+        {% if color_background %}\rowcolor{ grey }{% endif %}
         {% with c=sub.color %}
             {#  Display classes #}
-            \color{ {{c}}}
-            \textbf{ {{ sub.classes }} } &
+            \color{ {{c}} }\textbf{ {{ sub.classes }} } &
             {# Display lesson number #}
-            \color{ {{c}}}
-            {{ sub.lesson }} &
-            \color{ {{c}}} {% include "timetable/latex/teacher.tex" %} &
-            \color{ {{c}}} {% include "timetable/latex/subject.tex" %} &
-            \color{ {{c}}} {% include "timetable/latex/room.tex" %} &
+            \color{ {{c}} } {{ sub.lesson }} &
+            \color{ {{c}} } {% include "timetable/latex/teacher.tex" %} &
+            \color{ {{c}} } {% include "timetable/latex/subject.tex" %} &
+            \color{ {{c}} } {% include "timetable/latex/room.tex" %} &
             {# Display badge (for cancellations) #}     {# Display notice and new line #}
-            {% if sub.badge %}
-                \footnotesize\badge{ {{ sub.badge }} }
-            {% endif %} \color{ {{c}}} \large\textit{ {{sub.text|default:""|safe|texify|safe}} } \\
+            {% if sub.badge %} \footnotesize\badge{ {{ sub.badge }} } {% endif %}
+            \color{ {{c}} } \large\textit{ {{sub.text|default:""|safe|texify|safe}} } \\
         {% endwith %}
     {% endfor %}
 \end{longtable}
