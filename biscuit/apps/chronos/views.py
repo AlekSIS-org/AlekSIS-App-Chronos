@@ -14,7 +14,7 @@ from timetable.filters import HintFilter
 from timetable.forms import HintForm
 from timetable.hints import get_all_hints_by_time_period, get_all_hints_by_class_and_time_period, \
     get_all_hints_for_teachers_by_time_period, get_all_hints_not_for_teachers_by_time_period
-from timetable.pdf import generate_class_tex, generate_pdf
+from timetable.pdf import generate_class_tex_header, generate_class_tex_body, generate_pdf
 
 from untisconnect.plan import get_plan, TYPE_TEACHER, TYPE_CLASS, TYPE_ROOM, parse_lesson_times
 from untisconnect.sub import get_substitutions_by_date, generate_sub_table, get_header_information
@@ -318,6 +318,7 @@ def sub_pdf(request, plan_date=None):
     first_day = get_next_weekday_with_time(today, today.time())
     second_day = get_next_weekday(first_day + datetime.timedelta(days=1))
 
+    tex = generate_class_tex_header()
     # Get subs and generate table
     for i, date in enumerate([first_day, second_day]):
         # Get subs and generate table
@@ -333,10 +334,12 @@ def sub_pdf(request, plan_date=None):
         # latex = convert_markdown_2_latex(hints[0].text)
         # print(latex)
         # Generate LaTeX
-        tex = generate_class_tex(sub_table, date, header_info, hints)
+        tex += generate_class_tex_body(sub_table, date, header_info, hints)
 
-        # Generate PDF
-        generate_pdf(tex, "aktuell{}".format(i))
+    tex += "\end{document}"
+    print(tex)
+    # Generate PDF
+    generate_pdf(tex, "aktuell")
 
     # Merge PDFs
     try:

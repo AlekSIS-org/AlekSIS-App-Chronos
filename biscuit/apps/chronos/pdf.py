@@ -29,8 +29,16 @@ def generate_pdf(tex, filename):
     # Register log file in debugging tool
     register_log_with_filename("latex_{}".format(filename), "latex", "{}.log".format(filename), process.returncode)
 
+def generate_class_tex_header():
+    """Generate LaTeX for a PDF by a substitution table"""
 
-def generate_class_tex(subs, date, header_info, hints=None):
+    context = {
+        "LOGO_FILENAME": LOGO_FILENAME,
+    }
+    return render_to_string("timetable/latex/header.tex", context)
+
+
+def generate_class_tex_body(subs, date, header_info, hints=None):
     """Generate LaTeX for a PDF by a substitution table"""
 
     context = {
