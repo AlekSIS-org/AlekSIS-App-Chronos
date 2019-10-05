@@ -337,28 +337,27 @@ def sub_pdf(request, plan_date=None):
         tex += generate_class_tex_body(sub_table, date, header_info, hints)
 
     tex += "\end{document}"
-    print(tex)
     # Generate PDF
     generate_pdf(tex, "aktuell")
 
-    # Merge PDFs
-    try:
-        merger = PdfFileMerger()
-        class0 = open(os.path.join(BASE_DIR, "latex", "aktuell0.pdf"), "rb")
-        class1 = open(os.path.join(BASE_DIR, "latex", "aktuell1.pdf"), "rb")
-        merger.append(fileobj=class0)
-        merger.append(fileobj=class1)
-
-        # Write merged PDF to aktuell.pdf
-        output = open(os.path.join(BASE_DIR, "latex", "aktuell.pdf"), "wb")
-        merger.write(output)
-        output.close()
-
-        # Register successful merge in debugging tool
-        register_return_0("merge_class", "pypdf2")
-    except Exception:
-        # Register exception in debugging tool
-        register_traceback("merge_class", "pypdf2")
+    # # Merge PDFs
+    # try:
+    #     merger = PdfFileMerger()
+    #     class0 = open(os.path.join(BASE_DIR, "latex", "aktuell0.pdf"), "rb")
+    #     class1 = open(os.path.join(BASE_DIR, "latex", "aktuell1.pdf"), "rb")
+    #     merger.append(fileobj=class0)
+    #     merger.append(fileobj=class1)
+    #
+    #     # Write merged PDF to aktuell.pdf
+    #     output = open(os.path.join(BASE_DIR, "latex", "aktuell.pdf"), "wb")
+    #     merger.write(output)
+    #     output.close()
+    #
+    #     # Register successful merge in debugging tool
+    #     register_return_0("merge_class", "pypdf2")
+    # except Exception:
+    #     # Register exception in debugging tool
+    #     register_traceback("merge_class", "pypdf2")
 
     # Read and response PDF
     file = open(os.path.join(BASE_DIR, "latex", "aktuell.pdf"), "rb")

@@ -22,6 +22,10 @@ def generate_pdf(tex, filename):
     bash_command = "pdflatex -halt-on-error -output-directory {} {}.tex".format(os.path.join(BASE_DIR, "latex"),
                                                                                 os.path.join(BASE_DIR, "latex",
                                                                                              filename))
+    # Execute two times to get number of last page
+    process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+    del output
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
     output = process.communicate()[0]
     del output
