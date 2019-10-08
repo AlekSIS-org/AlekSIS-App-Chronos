@@ -1,6 +1,6 @@
 import os
 import subprocess
-import inspect
+import inspect # delete this line
 
 from django.template.loader import render_to_string
 
