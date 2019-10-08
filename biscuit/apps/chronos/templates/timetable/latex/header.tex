@@ -1,0 +1,63 @@
+\documentclass[11pt]{article}
+\usepackage[ngerman]{babel}
+\usepackage[sfdefault]{cabin}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,left=1cm,right=1cm,top=2cm,bottom=2.8cm,bindingoffset=0mm]{geometry}
+
+% Packages
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{color, colortbl}
+\usepackage[colorlinks, linkcolor = black, citecolor = black, filecolor = black, urlcolor = black]{hyperref}
+
+\usepackage{ulem, xpatch}
+\xpatchcmd{\sout}
+{\bgroup}
+{\bgroup\def\ULthickness{1.5pt}}
+{}{}
+
+% Badge box
+\usepackage{tcolorbox}
+\newtcbox{\badge}{nobeforeafter,colframe=green,colback=green,boxrule=0.5pt,arc=4pt,
+boxsep=0pt,left=4pt,right=4pt,top=4pt,bottom=4pt,tcbox raise base,
+grow to left by=0pt,
+grow to right by=-3pt,
+enlarge top by=3pt,
+enlarge bottom by=3pt,coltext=white}
+
+% Define colors
+\definecolor{ grey }{RGB}{208, 208, 208}
+\definecolor{ darkgrey }{rgb}{0.6,0.6,0.6}
+\definecolor{ white }{rgb}{1,1,1}
+\definecolor{ green }{RGB}{76,175,80}
+\definecolor{green}{RGB}{76,175,80}
+\definecolor{ blue }{RGB}{41,7,249}
+\definecolor{ black }{RGB}{0,0,0}
+\definecolor{ purple }{RGB}{156, 39, 176}
+
+% Define header
+\pagestyle{fancy}
+
+% Left header: logo
+\lhead{\includegraphics[width=5cm]{% templatetag openbrace %}{{LOGO_FILENAME}}{% templatetag closebrace %}}
+
+% Define footer
+\lfoot{Katharineum zu Lübeck}
+\cfoot{\thepage\ von \pageref{LastPage}}
+\rfoot{\small Umsetzung: © 2018--2019 by Computer-AG}
+\rhead{\textbf{
+Vertretungen }\\
+Stand: {% now "j. F Y H:i" %}\\
+}
+
+% Define own commands
+%% tightlist from pandoc is missing in default.latex
+%% see https://tex.stackexchange.com/questions/257418/error-tightlist-converting-md-file-into-pdf-using-pandoc
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\begin{document}
