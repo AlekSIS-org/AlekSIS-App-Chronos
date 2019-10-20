@@ -8,7 +8,9 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404, FileResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from django.views.decorators.cache import cache_page
 
+from dashboard.caches import SUBS_VIEW_CACHE, MY_PLAN_VIEW_CACHE, PLAN_VIEW_CACHE
 from debug.models import register_traceback, register_return_0
 from schoolapps.settings import SHORT_WEEK_DAYS, LONG_WEEK_DAYS
 from timetable.filters import HintFilter
@@ -126,6 +128,7 @@ def quicklaunch(request):
 
 @login_required
 @permission_required("timetable.show_plan")
+@cache_page(PLAN_VIEW_CACHE.expiration_time)
 def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().year,
          calendar_week=timezone.datetime.now().isocalendar()[1]):
     start = time.time()
@@ -208,6 +211,7 @@ def plan(request, plan_type, plan_id, regular="", year=timezone.datetime.now().y
 
 @login_required
 @permission_required("timetable.show_plan")
+@cache_page(MY_PLAN_VIEW_CACHE.expiration_time)
 def my_plan(request, year=None, month=None, day=None):
     date = timezone.datetime.now()
     time_now = datetime.datetime.now().time()
@@ -358,6 +362,7 @@ def sub_pdf(request, plan_date=None):
 
 @login_required
 @permission_required("timetable.show_plan")
+@cache_page(SUBS_VIEW_CACHE.expiration_time)
 def substitutions(request, year=None, month=None, day=None):
     """Show substitutions in a classic view"""
 
