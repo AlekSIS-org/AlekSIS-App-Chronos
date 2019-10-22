@@ -336,7 +336,7 @@ def sub_pdf(request, plan_date=None):
         tex = generate_class_tex(sub_table, date, header_info, hints)
 
         # Generate PDF
-        generate_pdf(tex, "class{}".format(i))
+        generate_pdf(tex, "aktuell{}".format(i))
 
     # Merge PDFs
     try:
