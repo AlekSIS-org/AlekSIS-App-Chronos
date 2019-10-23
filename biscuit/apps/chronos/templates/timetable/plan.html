@@ -1,4 +1,5 @@
 {% include 'partials/header.html' %}
+{% load copy_filter %}
 <script type="text/javascript">
     {% if smart %}
         var week = {{ selected_week }};
@@ -128,7 +129,7 @@
 
             </div>
             {# Show short weekdays on tablets #}
-            {% for day in short_week_days %}
+            {% for day in short_week_days|deepcopy %}
                 <div class="col s2 hide-on-large-only">
                     <div class="card timetable-title-card">
                         <div class="card-content">
@@ -143,7 +144,7 @@
                 </div>
             {% endfor %}
             {# Show long weekdays elsewere #}
-            {% for day in long_week_days %}
+            {% for day in long_week_days|deepcopy %}
                 <div class="col s2 hide-on-med-only">
                     <div class="card timetable-title-card">
                         <div class="card-content">
@@ -193,7 +194,7 @@
 
     {# show 5 seperate ones on mobiles #}
     <div class="timetable-plan hide-on-med-and-up">
-        {% for day in long_week_days %}
+        {% for day in long_week_days|deepcopy %}
             <div class="card timetable-mobile-title-card">
                 <div class="card-content">
                     <span class="card-title">
