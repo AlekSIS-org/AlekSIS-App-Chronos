@@ -161,7 +161,7 @@
         </div>
 
         {#  Lessons #}
-        {% for row, time in plan %}
+        {% for row, time in plan|deepcopy %}
             <div class="row">
                 <div class="col s2">
                     <div class="card timetable-title-card">
@@ -202,7 +202,7 @@
                     </span>
                 </div>
             </div>
-            {% for row, time in plan %}
+            {% for row, time in plan|deepcopy %}
                 <div class="row">
                     <div class="col s4">
                         <div class="card timetable-title-card">
@@ -224,7 +224,7 @@
 
                     </div>
                     {% for col in row %}
-                        {% if forloop.counter0 == long_week_day.0.1 %}
+                        {% if forloop.counter0 == long_week_days.0.1 %}
                             <div class="col s8">
                                 {# A lesson #}
                                 {% include "timetable/lesson.html" %}
