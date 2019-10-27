@@ -43,7 +43,7 @@ class LessonPeriodQuerySet(models.QuerySet):
     def within_dates(self, start: date, end: date):
         """ Filter for all lessons within a date range. """
 
-        return self.filter(lesson__date_start__gte=start, lesson__date_end__lte=end)
+        return self.filter(lesson__date_start__lte=start, lesson__date_end__gte=end)
 
     def on_day(self, day: date):
         """ Filter for all lessons on a certain day. """
