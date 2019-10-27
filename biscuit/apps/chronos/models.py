@@ -66,6 +66,10 @@ class LessonPeriodQuerySet(models.QuerySet):
             select={'_week': week.week}
         )
 
+    def filter_participant(self, person: Union[Person, int]):
+        return self.filter(
+                Q(lesson__groups__members=person) | Q(lesson__groups__parent_groups__members=person))
+
     def filter_group(self, group: Union[Group, int]):
         return self.filter(
                 Q(lesson__groups=group) | Q(lesson__groups__parent_groups=group))
