@@ -47,7 +47,7 @@ class LessonPeriodQuerySet(models.QuerySet):
         week, weekday = week_weekday_from_date(day)
 
         return self.within_dates(day, day).filter(
-            period_weekday=weekday
+            period__weekday=weekday
         ).extra(
             select={'_week': week.week}
         )
