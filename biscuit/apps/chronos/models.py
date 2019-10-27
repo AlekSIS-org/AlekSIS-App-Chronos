@@ -82,6 +82,10 @@ class LessonPeriodQuerySet(models.QuerySet):
         return self.filter(
                 Q(substitutions__room=room, substitutions__week=models.F('_week')) | Q(room=room))
 
+    def next(self, reference: LessonPeriod, offset: Optional[int] = 1) -> LessonPeriod:
+        id_ = list(self.values_list('id', flat=True)).index(reference.id)
+        return self.all()[id_+offset]
+
     def filter_from_query(self, query_data: QueryDict):
         if query_data.get('group', None):
             return self.filter_group(int(query_data['group']))
