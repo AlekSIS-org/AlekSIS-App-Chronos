@@ -16,7 +16,7 @@ from biscuit.core.util import messages
 
 from .forms import SelectForm, LessonSubstitutionForm
 from .models import LessonPeriod, TimePeriod, LessonSubstitution
-from .util import CalendarWeek, week_weekday_from_date
+from .util import CalendarWeek
 from .tables import LessonsTable
 
 
@@ -97,22 +97,16 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
     else:
         day = date.today()
 
-    week, weekday = week_weekday_from_date(day)
-
     # Get lessons
-    lesson_periods = LessonPeriod.objects.filter(
-        lesson__date_start__lte=day, lesson__date_end__gte=day,
-        period__weekday=weekday
-    )
+    lesson_periods = LessonPeriod.objects.on_day(day)
 
     # Build table
-    lessons_table = LessonsTable(lesson_periods.extra(select={'_week': week.week}).all())
+    lessons_table = LessonsTable(lesson_periods.all())
     RequestConfig(request).configure(lessons_table)
 
     context['current_head'] = _('Lessons %s') % (day)
     context['lessons_table'] = lessons_table
     context['day'] = day
-    context['week'] = week
     context['lesson_periods'] = lesson_periods
 
     day_prev = day - timedelta(days=1)

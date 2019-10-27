@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import Dict, Optional, Tuple
 
 from django.core import validators
@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from biscuit.core.mixins import SchoolRelated
 
-from .util import CalendarWeek
+from .util import CalendarWeek, week_weekday_from_date
 
 
 class LessonPeriodManager(models.Manager):
@@ -35,6 +35,16 @@ class LessonPeriodQuerySet(models.QuerySet):
             lesson__date_end__gte=wanted_week[0] + timedelta(days=1) * (models.F('period__weekday') - 1)
         ).extra(
             select={'_week': wanted_week.week}
+        )
+
+    def on_day(self, day: date):
+        week, weekday = week_weekday_from_date(day)
+
+        return self.filter(
+            lesson__date_start__lte=day, lesson__date_end__gte=day,
+            period__weekday=weekday
+        ).extra(
+            select={'_week': week.week}
         )
 
     def filter_group(self, group: int):
