@@ -33,10 +33,6 @@ def timetable(request: HttpRequest, year: Optional[int] = None, week: Optional[i
     lesson_periods = LessonPeriod.objects.filter(
         lesson__date_start__lte=wanted_week[0] + timedelta(days=1) * (F('period__weekday') - 1),
         lesson__date_end__gte=wanted_week[0] + timedelta(days=1) * (F('period__weekday') - 1)
-    ).select_related(
-        'lesson', 'lesson__subject', 'period', 'room'
-    ).prefetch_related(
-        'lesson__groups', 'lesson__teachers', 'substitutions'
     ).extra(
         select={'_week': wanted_week.week}
     )

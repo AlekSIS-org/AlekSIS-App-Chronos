@@ -12,6 +12,19 @@ from biscuit.core.mixins import SchoolRelated
 from .util import CalendarWeek
 
 
+class LessonPeriodManager(models.Manager):
+    ''' Manager adding specific methods to lesson periods. '''
+
+    def get_queryset(self):
+        ''' Ensures all related lesson data is loaded as well. '''
+
+        return super().get_queryset().select_related(
+            'lesson', 'lesson__subject', 'period', 'room'
+        ).prefetch_related(
+            'lesson__groups', 'lesson__teachers', 'substitutions'
+        )
+
+
 class TimePeriod(SchoolRelated):
     WEEKDAY_CHOICES = [
         (0, _('Sunday')),
@@ -147,6 +160,8 @@ class LessonSubstitution(SchoolRelated):
 
 
 class LessonPeriod(SchoolRelated):
+    objects = LessonPeriodManager()
+
     lesson = models.ForeignKey('Lesson', models.CASCADE, related_name='lesson_periods')
     period = models.ForeignKey('TimePeriod', models.CASCADE, related_name='lesson_periods')
 
