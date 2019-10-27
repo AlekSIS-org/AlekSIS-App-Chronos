@@ -17,10 +17,10 @@ from .util import CalendarWeek, week_weekday_from_date
 
 
 class LessonPeriodManager(models.Manager):
-    ''' Manager adding specific methods to lesson periods. '''
+    """ Manager adding specific methods to lesson periods. """
 
     def get_queryset(self):
-        ''' Ensures all related lesson data is loaded as well. '''
+        """ Ensures all related lesson data is loaded as well. """
 
         return super().get_queryset().select_related(
             'lesson', 'lesson__subject', 'period', 'room'
@@ -30,7 +30,7 @@ class LessonPeriodManager(models.Manager):
 
 
 class LessonPeriodQuerySet(models.QuerySet):
-    ''' Overrides default QuerySet to add specific methods for lesson data. '''
+    """ Overrides default QuerySet to add specific methods for lesson data. """
 
     def in_week(self, wanted_week: CalendarWeek):
         return self.filter(
