@@ -83,8 +83,18 @@ class LessonPeriodQuerySet(models.QuerySet):
                 Q(substitutions__room=room, substitutions__week=models.F('_week')) | Q(room=room))
 
     def next(self, reference: LessonPeriod, offset: Optional[int] = 1) -> LessonPeriod:
-        id_ = list(self.values_list('id', flat=True)).index(reference.id)
-        return self.all()[id_+offset]
+        index = list(self.values_list('id', flat=True)).index(reference.id)
+
+        next_index = index + offset
+        if next_index > self.count() - 1:
+            next_index %= self.count()
+            week = reference._week + 1
+        else:
+            week = reference._week
+
+        return self.extra(
+            select={'_week': week}
+        ).all()[next_index]
 
     def filter_from_query(self, query_data: QueryDict):
         if query_data.get('group', None):
