@@ -50,6 +50,15 @@ class LessonPeriodQuerySet(models.QuerySet):
             select={'_week': week.week}
         )
 
+    def at_time(self, when: Optional[datetime] = None):
+        now = when or datetime.now()
+
+        return self.filter(lesson__date_start__lte=now.date(),
+                           lesson__date_end__gte=now.date(),
+                           period__weekday=now.isoweekday(),
+                           period__time_start__lte=now.time(),
+                           period__time_end__gte=now.time())
+
     def filter_group(self, group: Union[Group, int]):
         return self.filter(
                 Q(lesson__groups=group) | Q(lesson__groups__parent_groups=group))

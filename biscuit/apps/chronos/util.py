@@ -91,17 +91,6 @@ class CalendarWeek:
         return self.__class__.from_date(self[0] - timedelta(days=weeks * 7))
 
 
-def current_lesson_periods(when: Optional[datetime] = None) -> models.query.QuerySet:
-    now = when or datetime.now()
-
-    LessonPeriod = apps.get_model('chronos.LessonPeriod')
-    return LessonPeriod.objects.filter(lesson__date_start__lte=now.date(),
-                                       lesson__date_end__gte=now.date(),
-                                       period__weekday=now.isoweekday(),
-                                       period__time_start__lte=now.time(),
-                                       period__time_end__gte=now.time())
-
-
 def week_weekday_from_date(when: date) -> Tuple[CalendarWeek, int]:
     return (CalendarWeek.from_date(when), when.isoweekday())
 
