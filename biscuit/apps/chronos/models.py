@@ -32,18 +32,18 @@ class LessonPeriodManager(models.Manager):
 class LessonPeriodQuerySet(models.QuerySet):
     """ Overrides default QuerySet to add specific methods for lesson data. """
 
-    def in_week(self, wanted_week: CalendarWeek):
-        """ Filter for all lessons within a calendar week. """
-
-        return self.filter(
-            lesson__date_start__lte=wanted_week[0] + timedelta(days=1) * (models.F('period__weekday') - 1),
-            lesson__date_end__gte=wanted_week[0] + timedelta(days=1) * (models.F('period__weekday') - 1)
-        ).annotate_week(wanted_week)
-
     def within_dates(self, start: date, end: date):
         """ Filter for all lessons within a date range. """
 
         return self.filter(lesson__date_start__lte=start, lesson__date_end__gte=end)
+
+    def in_week(self, wanted_week: CalendarWeek):
+        """ Filter for all lessons within a calendar week. """
+
+        return self.within_dates(
+            wanted_week[0] + timedelta(days=1) * (models.F('period__weekday') - 1),
+            wanted_week[0] + timedelta(days=1) * (models.F('period__weekday') - 1)
+        ).annotate_week(wanted_week)
 
     def on_day(self, day: date):
         """ Filter for all lessons on a certain day. """
