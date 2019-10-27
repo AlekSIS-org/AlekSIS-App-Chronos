@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Dict, Optional, Tuple
 
 from django.core import validators
@@ -22,6 +22,18 @@ class LessonPeriodManager(models.Manager):
             'lesson', 'lesson__subject', 'period', 'room'
         ).prefetch_related(
             'lesson__groups', 'lesson__teachers', 'substitutions'
+        )
+
+
+class LessonPeriodQuerySet(models.QuerySet):
+    ''' Overrides default QuerySet to add specific methods for lesson data. '''
+
+    def in_week(self, wanted_week: CalendarWeek):
+        return self.filter(
+            lesson__date_start__lte=wanted_week[0] + timedelta(days=1) * (models.F('period__weekday') - 1),
+            lesson__date_end__gte=wanted_week[0] + timedelta(days=1) * (models.F('period__weekday') - 1)
+        ).extra(
+            select={'_week': wanted_week.week}
         )
 
 
@@ -160,7 +172,7 @@ class LessonSubstitution(SchoolRelated):
 
 
 class LessonPeriod(SchoolRelated):
-    objects = LessonPeriodManager()
+    objects = LessonPeriodManager.from_queryset(LessonPeriodQuerySet)()
 
     lesson = models.ForeignKey('Lesson', models.CASCADE, related_name='lesson_periods')
     period = models.ForeignKey('TimePeriod', models.CASCADE, related_name='lesson_periods')
