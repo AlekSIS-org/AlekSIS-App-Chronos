@@ -3,9 +3,9 @@ from collections import OrderedDict
 from typing import Optional
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Max, Min
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.cache import cache_page
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 
