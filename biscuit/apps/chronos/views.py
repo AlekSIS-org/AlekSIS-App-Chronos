@@ -31,17 +31,14 @@ def timetable(request: HttpRequest, year: Optional[int] = None, week: Optional[i
 
     lesson_periods = LessonPeriod.objects.in_week(wanted_week)
 
+    # Incrementally filter lesson periods by GET parameters
     if request.GET.get('group', None) or request.GET.get('teacher', None) or request.GET.get('room', None):
-        # Incrementally filter lesson periods by GET parameters
         if 'group' in request.GET and request.GET['group']:
-            lesson_periods = lesson_periods.filter(
-                Q(lesson__groups__pk=int(request.GET['group'])) | Q(lesson__groups__parent_groups__pk=int(request.GET['group'])))
+            lesson_periods = lesson_periods.filter_group(int(request.GET['group']))
         if 'teacher' in request.GET and request.GET['teacher']:
-            lesson_periods = lesson_periods.filter(
-                Q(substitutions__teachers__pk=int(request.GET['teacher']), substitutions__week=wanted_week.week) | Q(lesson__teachers__pk=int(request.GET['teacher'])))
+            lesson_periods = lesson_periods.filter_teacher(int(request.GET['teacher']))
         if 'room' in request.GET and request.GET['room']:
-            lesson_periods = lesson_periods.filter(
-                room__pk=int(request.GET['room']))
+            lesson_periods = lesson_periods.room_filter(int(request.GET['room']))
     else:
         # Redirect to a selected view if no filter provided
         if request.user.person:

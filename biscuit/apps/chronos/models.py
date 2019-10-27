@@ -36,6 +36,18 @@ class LessonPeriodQuerySet(models.QuerySet):
             select={'_week': wanted_week.week}
         )
 
+    def filter_group(self, group: int):
+        return self.filter(
+                Q(lesson__groups__pk=group) | Q(lesson__groups__parent_groups__pk=group))
+
+    def filter_teacher(self, teacher: int):
+        return self.filter(
+                Q(substitutions__teachers__pk=teacher, substitutions__week=models.F('_week')) | Q(lesson__teachers__pk=teacher))
+
+    def filter_room(self, room: int):
+        return self.filter(
+                Q(substitutions__room__pk=room, substitutions__week=models.F('_week')) | Q(room__pk=room))
+
 
 class TimePeriod(SchoolRelated):
     WEEKDAY_CHOICES = [
