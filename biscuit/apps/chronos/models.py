@@ -5,6 +5,7 @@ from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
+from django.http.request import QueryDict
 from django.utils.translation import ugettext_lazy as _
 
 from biscuit.core.mixins import SchoolRelated
@@ -47,6 +48,14 @@ class LessonPeriodQuerySet(models.QuerySet):
     def filter_room(self, room: int):
         return self.filter(
                 Q(substitutions__room__pk=room, substitutions__week=models.F('_week')) | Q(room__pk=room))
+
+    def filter_from_query(self, query_data: QueryDict):
+        if query_data.get('group', None):
+            return self.filter_group(int(query_data['group']))
+        if query_data.get('teacher', None):
+            return self.filter_teacher(int(query_data['teacher']))
+        if query_data.get('room', None):
+            return self.filter_room(int(query_data['room']))
 
 
 class TimePeriod(SchoolRelated):
