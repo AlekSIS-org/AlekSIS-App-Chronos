@@ -33,15 +33,21 @@ class LessonPeriodQuerySet(models.QuerySet):
     """ Overrides default QuerySet to add specific methods for lesson data. """
 
     def in_week(self, wanted_week: CalendarWeek):
+        """ Filter for all lessons within a calendar week. """
+
         return self.filter(
             lesson__date_start__lte=wanted_week[0] + timedelta(days=1) * (models.F('period__weekday') - 1),
             lesson__date_end__gte=wanted_week[0] + timedelta(days=1) * (models.F('period__weekday') - 1)
         ).annotate_week(wanted_week)
 
     def within_dates(self, start: date, end: date):
+        """ Filter for all lessons within a date range. """
+
         return self.filter(lesson__date_start__gte=start, lesson__date_end__lte=end)
 
     def on_day(self, day: date):
+        """ Filter for all lessons on a certain day. """
+
         week, weekday = week_weekday_from_date(day)
 
         return self.within_dates(day, day).filter(
@@ -49,6 +55,8 @@ class LessonPeriodQuerySet(models.QuerySet):
         ).annotate_week(week)
 
     def at_time(self, when: Optional[datetime] = None):
+        """ Filter for the lessons taking place at a certain point in time. """
+
         now = when or datetime.now()
         week, weekday = week_weekday_from_date(now.date())
 
@@ -61,22 +69,32 @@ class LessonPeriodQuerySet(models.QuerySet):
         ).annotate_week(week)
 
     def filter_participant(self, person: Union[Person, int]):
+        """ Filter for all lessons a participant (student) attends. """
+
         return self.filter(
                 Q(lesson__groups__members=person) | Q(lesson__groups__parent_groups__members=person))
 
     def filter_group(self, group: Union[Group, int]):
+        """ Filter for all lessons a group (class) regularly attends. """
+
         return self.filter(
                 Q(lesson__groups=group) | Q(lesson__groups__parent_groups=group))
 
     def filter_teacher(self, teacher: Union[Person, int]):
+        """ Filter for all lessons given by a certain teacher. """
+
         return self.filter(
                 Q(substitutions__teachers=teacher, substitutions__week=models.F('_week')) | Q(lesson__teachers=teacher))
 
     def filter_room(self, room: Union[Room, int]):
+        """ Filter for all lessons taking part in a certain room. """
+
         return self.filter(
                 Q(substitutions__room=room, substitutions__week=models.F('_week')) | Q(room=room))
 
     def annotate_week(self, week: Union[CalendarWeek, int]):
+        """ Annotate all lessons in the QuerySet with the number of the provided calendar week. """
+
         if isinstance(week, CalendarWeek):
             week_num = week.week
         else:
@@ -87,6 +105,13 @@ class LessonPeriodQuerySet(models.QuerySet):
         )
 
     def next(self, reference: LessonPeriod, offset: Optional[int] = 1) -> LessonPeriod:
+        """ Get another lesson in an ordered set of lessons.
+
+        By default, it returns the next lesson in the set. By passing the offset argument,
+        the n-th next lesson can be selected. By passing a negative number, the n-th
+        previous lesson can be selected.
+        """
+
         index = list(self.values_list('id', flat=True)).index(reference.id)
 
         next_index = index + offset
@@ -99,6 +124,14 @@ class LessonPeriodQuerySet(models.QuerySet):
         return self.annotate_week(week).all()[next_index]
 
     def filter_from_query(self, query_data: QueryDict):
+        """ Apply all filters from a GET or POST query.
+
+        This method expects a QueryDict, like the GET or POST attribute of a Request
+        object, that contains one or more of the keys group, teacher or room.
+
+        All three fields are filtered, in order.
+        """
+
         if query_data.get('group', None):
             return self.filter_group(int(query_data['group']))
         if query_data.get('teacher', None):
