@@ -36,9 +36,7 @@ class LessonPeriodQuerySet(models.QuerySet):
         return self.filter(
             lesson__date_start__lte=wanted_week[0] + timedelta(days=1) * (models.F('period__weekday') - 1),
             lesson__date_end__gte=wanted_week[0] + timedelta(days=1) * (models.F('period__weekday') - 1)
-        ).extra(
-            select={'_week': wanted_week.week}
-        )
+        ).annotate_week(wanted_week)
 
     def within_dates(self, start: date, end: date):
         return self.filter(lesson__date_start__gte=start, lesson__date_end__lte=end)
@@ -48,9 +46,7 @@ class LessonPeriodQuerySet(models.QuerySet):
 
         return self.within_dates(day, day).filter(
             period__weekday=weekday
-        ).extra(
-            select={'_week': week.week}
-        )
+        ).annotate_week(week)
 
     def at_time(self, when: Optional[datetime] = None):
         now = when or datetime.now()
@@ -62,9 +58,7 @@ class LessonPeriodQuerySet(models.QuerySet):
             period__weekday=now.isoweekday(),
             period__time_start__lte=now.time(),
             period__time_end__gte=now.time()
-        ).extra(
-            select={'_week': week.week}
-        )
+        ).annotate_week(week)
 
     def filter_participant(self, person: Union[Person, int]):
         return self.filter(
@@ -82,6 +76,16 @@ class LessonPeriodQuerySet(models.QuerySet):
         return self.filter(
                 Q(substitutions__room=room, substitutions__week=models.F('_week')) | Q(room=room))
 
+    def annotate_week(self, week: Union[CalendarWeek, int]):
+        if isinstance(week, CalendarWeek):
+            week_num = week.week
+        else:
+            week_num = week
+
+        return self.annotate(
+            _week=models.Value(week_num, models.IntegerField())
+        )
+
     def next(self, reference: LessonPeriod, offset: Optional[int] = 1) -> LessonPeriod:
         index = list(self.values_list('id', flat=True)).index(reference.id)
 
@@ -92,9 +96,7 @@ class LessonPeriodQuerySet(models.QuerySet):
         else:
             week = reference._week
 
-        return self.extra(
-            select={'_week': week}
-        ).all()[next_index]
+        return self.annotate_week(week).all()[next_index]
 
     def filter_from_query(self, query_data: QueryDict):
         if query_data.get('group', None):
