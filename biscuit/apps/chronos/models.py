@@ -40,24 +40,31 @@ class LessonPeriodQuerySet(models.QuerySet):
             select={'_week': wanted_week.week}
         )
 
+    def within_dates(self, start: date, end: date):
+        return self.filter(lesson__date_start__gte=start, lesson__date_end__lte=end)
+
     def on_day(self, day: date):
         week, weekday = week_weekday_from_date(day)
 
-        return self.filter(
-            lesson__date_start__lte=day, lesson__date_end__gte=day,
-            period__weekday=weekday
+        return self.within_dates(day, day).filter(
+            period_weekday=weekday
         ).extra(
             select={'_week': week.week}
         )
 
     def at_time(self, when: Optional[datetime] = None):
         now = when or datetime.now()
+        week, weekday = week_weekday_from_date(now.date())
 
-        return self.filter(lesson__date_start__lte=now.date(),
-                           lesson__date_end__gte=now.date(),
-                           period__weekday=now.isoweekday(),
-                           period__time_start__lte=now.time(),
-                           period__time_end__gte=now.time())
+        return self.filter(
+            lesson__date_start__lte=now.date(),
+            lesson__date_end__gte=now.date(),
+            period__weekday=now.isoweekday(),
+            period__time_start__lte=now.time(),
+            period__time_end__gte=now.time()
+        ).extra(
+            select={'_week': week.week}
+        )
 
     def filter_group(self, group: Union[Group, int]):
         return self.filter(
