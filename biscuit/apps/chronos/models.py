@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from datetime import date, datetime, timedelta
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, Union
 
 from django.core import validators
 from django.core.exceptions import ValidationError
@@ -9,6 +11,7 @@ from django.http.request import QueryDict
 from django.utils.translation import ugettext_lazy as _
 
 from biscuit.core.mixins import SchoolRelated
+from biscuit.core.models import Group, Person
 
 from .util import CalendarWeek, week_weekday_from_date
 
@@ -47,17 +50,17 @@ class LessonPeriodQuerySet(models.QuerySet):
             select={'_week': week.week}
         )
 
-    def filter_group(self, group: int):
+    def filter_group(self, group: Union[Group, int]):
         return self.filter(
-                Q(lesson__groups__pk=group) | Q(lesson__groups__parent_groups__pk=group))
+                Q(lesson__groups=group) | Q(lesson__groups__parent_groups=group))
 
-    def filter_teacher(self, teacher: int):
+    def filter_teacher(self, teacher: Union[Person, int]):
         return self.filter(
-                Q(substitutions__teachers__pk=teacher, substitutions__week=models.F('_week')) | Q(lesson__teachers__pk=teacher))
+                Q(substitutions__teachers=teacher, substitutions__week=models.F('_week')) | Q(lesson__teachers=teacher))
 
-    def filter_room(self, room: int):
+    def filter_room(self, room: Union[Room, int]):
         return self.filter(
-                Q(substitutions__room__pk=room, substitutions__week=models.F('_week')) | Q(room__pk=room))
+                Q(substitutions__room=room, substitutions__week=models.F('_week')) | Q(room=room))
 
     def filter_from_query(self, query_data: QueryDict):
         if query_data.get('group', None):
