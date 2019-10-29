@@ -1,5 +1,6 @@
 {% include 'partials/header.html' %}
 {% load copy_filter %}
+{% load list_filter %}
 <script type="text/javascript">
     {% if smart %}
         var week = {{ selected_week }};
@@ -223,13 +224,13 @@
                         </div>
 
                     </div>
-                    {% for col in row %}
-                        {% if forloop.counter0 == long_week_days.0.1 %}
-                            <div class="col s8">
-                                {# A lesson #}
-                                {% include "timetable/lesson.html" %}
-                            </div>
-                        {% endif %}
+                    {% for col in row|deepcopy %}
+                            {% if forloop.counter0 == day.0.1 %}
+                                <div class="col s8">
+                                    {# A lesson #}
+                                    {% include "timetable/lesson.html" %}
+                                </div>
+                            {% endif %}
                     {% endfor %}
                 </div>
             {% endfor %}
