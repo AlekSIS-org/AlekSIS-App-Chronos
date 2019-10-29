@@ -224,12 +224,12 @@
 
                     </div>
                     {% for col in row|deepcopy %}
-                            {% if forloop.counter0 == day.0.1 %}
-                                <div class="col s8">
-                                    {# A lesson #}
-                                    {% include "timetable/lesson.html" %}
-                                </div>
-                            {% endif %}
+                        {% if forloop.counter0 == day.0.1 %}
+                            <div class="col s8">
+                                {# A lesson #}
+                                {% include "timetable/lesson.html" %}
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
             {% endfor %}
