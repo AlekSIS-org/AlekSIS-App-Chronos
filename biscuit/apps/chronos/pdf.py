@@ -21,11 +21,12 @@ def generate_pdf(tex, filename):
     # Execute pdflatex to generate the PDF
     bash_command = "pdflatex -halt-on-error -output-directory {} {}.tex".format(os.path.join(BASE_DIR, "latex"),
                                                                                 os.path.join(BASE_DIR, "latex",
-                                                                                             filename))
+                                                                                filename))
+    run_args = list(bash_command.split())
+
     # Execute two times to get number of last page
-    process = subprocess.Popen("{}; {}".format(bash_command, bash_command), stdout=subprocess.PIPE, shell=True)
-    output = process.communicate()[0]
-    del output
+    subprocess.run(run_args, stdout=None)
+    process = subprocess.run(run_args, stdout=None)
 
     # Register log file in debugging tool
     register_log_with_filename("latex_{}".format(filename), "latex", "{}.log".format(filename), process.returncode)
