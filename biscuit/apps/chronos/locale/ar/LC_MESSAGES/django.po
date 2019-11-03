@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-17 23:02+0200\n"
+"POT-Creation-Date: 2019-11-03 20:10+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,7 +27,7 @@ msgstr ""
 msgid "Teacher"
 msgstr ""
 
-#: forms.py:21 models.py:129
+#: forms.py:21 models.py:257
 msgid "Room"
 msgstr ""
 
@@ -35,7 +35,7 @@ msgstr ""
 msgid "Timetables"
 msgstr ""
 
-#: menus.py:12 templates/chronos/tt_week.html:11 views.py:94
+#: menus.py:12 templates/chronos/tt_week.html:11 views.py:76
 msgid "Timetable"
 msgstr ""
 
@@ -43,91 +43,91 @@ msgstr ""
 msgid "Daily lessons"
 msgstr ""
 
-#: models.py:17
+#: models.py:145
 msgid "Sunday"
 msgstr ""
 
-#: models.py:18
+#: models.py:146
 msgid "Monday"
 msgstr ""
 
-#: models.py:19
+#: models.py:147
 msgid "Tuesday"
 msgstr ""
 
-#: models.py:20
+#: models.py:148
 msgid "Wednesday"
 msgstr ""
 
-#: models.py:21
+#: models.py:149
 msgid "Thursday"
 msgstr ""
 
-#: models.py:22
+#: models.py:150
 msgid "Friday"
 msgstr ""
 
-#: models.py:23
+#: models.py:151
 msgid "Saturday"
 msgstr ""
 
-#: models.py:27
+#: models.py:155
 msgid "Week day"
 msgstr ""
 
-#: models.py:29
+#: models.py:157
 msgid "Number of period"
 msgstr ""
 
-#: models.py:31
+#: models.py:159
 msgid "Time the period starts"
 msgstr ""
 
-#: models.py:32
+#: models.py:160
 msgid "Time the period ends"
 msgstr ""
 
-#: models.py:53
+#: models.py:181
 msgid "Abbreviation of subject in timetable"
 msgstr ""
 
-#: models.py:55
+#: models.py:183
 msgid "Long name of subject"
 msgstr ""
 
-#: models.py:57
+#: models.py:185
 msgid "Foreground colour in timetable"
 msgstr ""
 
-#: models.py:59
+#: models.py:187
 msgid "Background colour in timetable"
 msgstr ""
 
-#: models.py:72
+#: models.py:200
 msgid "Short name, e.g. room number"
 msgstr ""
 
-#: models.py:73
+#: models.py:201
 msgid "Long name"
 msgstr ""
 
-#: models.py:93
+#: models.py:221
 msgid "Effective start date of lesson"
 msgstr ""
 
-#: models.py:95
+#: models.py:223
 msgid "Effective end date of lesson"
 msgstr ""
 
-#: models.py:118
+#: models.py:246
 msgid "Week"
 msgstr ""
 
-#: models.py:126
+#: models.py:254
 msgid "Subject"
 msgstr ""
 
-#: models.py:135
+#: models.py:263
 msgid "Lessons can only be either substituted or cancelled."
 msgstr ""
 
@@ -172,15 +172,15 @@ msgstr ""
 msgid "to"
 msgstr ""
 
-#: views.py:130
+#: views.py:107
 #, python-format
 msgid "Lessons %s"
 msgstr ""
 
-#: views.py:166
+#: views.py:142
 msgid "The substitution has been saved."
 msgstr ""
 
-#: views.py:185
+#: views.py:161
 msgid "The substitution has been deleted."
 msgstr ""
