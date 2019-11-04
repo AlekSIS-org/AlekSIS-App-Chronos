@@ -212,7 +212,7 @@ class Room(SchoolRelated):
 class Lesson(SchoolRelated):
     subject = models.ForeignKey(
         'Subject', on_delete=models.CASCADE, related_name='lessons')
-    teachers = models.ManyToManyField('core.Person', related_name='lessons')
+    teachers = models.ManyToManyField('core.Person', related_name='lessons_as_teacher')
     periods = models.ManyToManyField(
         'TimePeriod', related_name='lessons', through='LessonPeriod')
     groups = models.ManyToManyField('core.Group', related_name='lessons')
