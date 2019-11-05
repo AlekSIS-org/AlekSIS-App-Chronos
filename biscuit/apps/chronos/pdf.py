@@ -1,11 +1,11 @@
 import os
 import subprocess
+import inspect # delete this line
 
 from django.template.loader import render_to_string
 
 from schoolapps.settings import BASE_DIR
 from debug.models import register_log_with_filename
-
 
 LOGO_FILENAME = os.path.join(BASE_DIR, "static", "common", "logo.png")
 
