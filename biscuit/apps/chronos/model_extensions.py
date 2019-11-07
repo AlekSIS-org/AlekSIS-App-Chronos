@@ -5,4 +5,4 @@ from .models import Lesson
 
 @Person.property
 def lessons_as_participant(self):
-    return Lesson.objects.filter(groups__member=self)
+    return Lesson.objects.filter(groups__members=self)
