@@ -1,6 +1,6 @@
 {% load martortags %}
 {% if hints %}
-\subsection*{Hinweise}
+\subsection*{\hspace{0.7em}Hinweise}
 \vspace{-0.7em}
 \begin{itemize}
     \setlength\itemsep{0.1em}
@@ -12,5 +12,4 @@
 {{ hint.text_as_latex|safe }}
 {% endfor %}
 \end{itemize}
-\vspace{-1em}
 {% endif %}
