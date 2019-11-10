@@ -24,7 +24,7 @@ def get_name_for_next_week_day_from_today() -> str:
         date_formatted = "morgen"
     else:
         # Other weekday
-        date_formatted = LONG_WEEK_DAYS[next_weekday.isoweekday() - 2]
+        date_formatted = LONG_WEEK_DAYS[next_weekday.isoweekday() - 1][0]
 
     return date_formatted
 
@@ -36,16 +36,11 @@ def get_type_and_object_of_user(user):
         _type = TYPE_TEACHER
         shortcode = user.username
         el = get_teacher_by_shortcode(shortcode)
-        plan_id = el.id
-        raw_type = "teacher"
-
     elif _type == UserInformation.STUDENT:
         # Student
         _type = TYPE_CLASS
         _name = UserInformation.user_classes(user)[0]
         el = get_class_by_name(_name)
-        plan_id = el.id
-        raw_type = "class"
     else:
         return None, None
 
