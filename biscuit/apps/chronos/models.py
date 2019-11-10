@@ -10,7 +10,7 @@ from django.db.models import Q
 from django.http.request import QueryDict
 from django.utils.translation import ugettext_lazy as _
 
-from biscuit.core.mixins import SchoolRelated
+from biscuit.core.mixins import ExtensibleModel, SchoolRelated
 from biscuit.core.models import Group, Person
 
 from .util import CalendarWeek, week_weekday_from_date
@@ -274,7 +274,7 @@ class LessonSubstitution(SchoolRelated):
         ]
 
 
-class LessonPeriod(SchoolRelated):
+class LessonPeriod(SchoolRelated, ExtensibleModel):
     objects = LessonPeriodManager.from_queryset(LessonPeriodQuerySet)()
 
     lesson = models.ForeignKey('Lesson', models.CASCADE, related_name='lesson_periods')
