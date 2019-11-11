@@ -22,8 +22,8 @@ def week_end(week: CalendarWeek) -> date:
 
 @register.filter
 def only_week(qs: QuerySet, week: Optional[CalendarWeek]) -> QuerySet:
-   wanted_week = week or CalendarWeek()
-   return qs.filter(week=wanted_week.week)
+    wanted_week = week or CalendarWeek()
+    return qs.filter(week=wanted_week.week)
 
 
 @register.simple_tag

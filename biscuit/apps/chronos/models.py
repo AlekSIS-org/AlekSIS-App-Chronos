@@ -72,25 +72,25 @@ class LessonPeriodQuerySet(models.QuerySet):
         """ Filter for all lessons a participant (student) attends. """
 
         return self.filter(
-                Q(lesson__groups__members=person) | Q(lesson__groups__parent_groups__members=person))
+            Q(lesson__groups__members=person) | Q(lesson__groups__parent_groups__members=person))
 
     def filter_group(self, group: Union[Group, int]):
         """ Filter for all lessons a group (class) regularly attends. """
 
         return self.filter(
-                Q(lesson__groups=group) | Q(lesson__groups__parent_groups=group))
+            Q(lesson__groups=group) | Q(lesson__groups__parent_groups=group))
 
     def filter_teacher(self, teacher: Union[Person, int]):
         """ Filter for all lessons given by a certain teacher. """
 
         return self.filter(
-                Q(substitutions__teachers=teacher, substitutions__week=models.F('_week')) | Q(lesson__teachers=teacher))
+            Q(substitutions__teachers=teacher, substitutions__week=models.F('_week')) | Q(lesson__teachers=teacher))
 
     def filter_room(self, room: Union[Room, int]):
         """ Filter for all lessons taking part in a certain room. """
 
         return self.filter(
-                Q(substitutions__room=room, substitutions__week=models.F('_week')) | Q(room=room))
+            Q(substitutions__room=room, substitutions__week=models.F('_week')) | Q(room=room))
 
     def annotate_week(self, week: Union[CalendarWeek, int]):
         """ Annotate all lessons in the QuerySet with the number of the provided calendar week. """
@@ -233,7 +233,7 @@ class Lesson(SchoolRelated):
     def get_calendar_week(self, week: int):
         year = self.date_start.year
         if week < int(self.date_start.strftime('%V')):
-           year += 1
+            year += 1
 
         return CalendarWeek(year=year, week=week)
 
@@ -319,8 +319,8 @@ class LessonPeriod(SchoolRelated):
 
     def __str__(self) -> str:
         return '%s, %d., %s, %s' % (self.period.get_weekday_display(), self.period.period,
-            ', '.join(list(self.lesson.groups.values_list('short_name', flat=True))),
-            self.lesson.subject.name)
+                                    ', '.join(list(self.lesson.groups.values_list('short_name', flat=True))),
+                                    self.lesson.subject.name)
 
     class Meta:
         ordering = ['lesson__date_start', 'period__weekday', 'period__period']
