@@ -21,16 +21,26 @@ def generate_pdf(tex, filename):
     # Execute pdflatex to generate the PDF
     bash_command = "pdflatex -halt-on-error -output-directory {} {}.tex".format(os.path.join(BASE_DIR, "latex"),
                                                                                 os.path.join(BASE_DIR, "latex",
-                                                                                             filename))
-    process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
-    output = process.communicate()[0]
-    del output
+                                                                                filename))
+    run_args = list(bash_command.split())
+
+    # Execute two times to get number of last page
+    subprocess.run(run_args, stdout=None)
+    process = subprocess.run(run_args, stdout=None)
 
     # Register log file in debugging tool
     register_log_with_filename("latex_{}".format(filename), "latex", "{}.log".format(filename), process.returncode)
 
+def generate_class_tex_header():
+    """Generate LaTeX for a PDF by a substitution table"""
 
-def generate_class_tex(subs, date, header_info, hints=None):
+    context = {
+        "LOGO_FILENAME": LOGO_FILENAME,
+    }
+    return render_to_string("timetable/latex/header.tex", context)
+
+
+def generate_class_tex_body(subs, date, header_info, hints=None):
     """Generate LaTeX for a PDF by a substitution table"""
 
     context = {
