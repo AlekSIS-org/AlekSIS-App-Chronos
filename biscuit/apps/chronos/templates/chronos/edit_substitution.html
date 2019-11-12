@@ -3,6 +3,17 @@
 {% extends "core/base.html" %}
 {% load bootstrap4 font_awesome i18n %}
 
+{% block bootstrap4_extra_head %}
+  {{ block.super }}
+  {{ edit_substitution_form.media.css }}
+{% endblock %}
+
+{% block bootstrap4_extra_script %}
+  {{ block.super }}
+  {{ edit_substitution_form.media.js }}
+{% endblock %}
+
+
 {% block bootstrap4_title %}{% blocktrans %}Edit substitution{% endblocktrans %} - {{ block.super }}{% endblock %}
 
 {% block page_title %}{% blocktrans %}Edit substitution{% endblocktrans %}{% endblock %}
