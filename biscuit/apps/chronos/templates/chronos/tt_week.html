@@ -6,6 +6,12 @@
 {% block bootstrap4_extra_head %}
   {{ block.super }}
   <link rel="stylesheet" href="{% static 'css/chronos/timetable.css' %}" />
+  {{ select_form.media.css }}
+{% endblock %}
+
+{% block bootstrap4_extra_script %}
+  {{ block.super }}
+  {{ select_form.media.js }}
 {% endblock %}
 
 {% block bootstrap4_title %}{% blocktrans %}Timetable{% endblocktrans %} - {{ block.super }}{% endblock %}
