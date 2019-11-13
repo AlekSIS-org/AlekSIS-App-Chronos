@@ -4,17 +4,24 @@
         {# Every element of the lesson #}
         {% for element_container in col.elements %}
             <div style="
-                    {# Display background color only if no badge exists and it is not the old room #}
+            
+                    {# Display background color only if no badge exists and it is not the old room and there are no holidays #}
                     {% if not element_container.substitution.table.badge %}
                         {% if not element_container.is_old or type != 1 %}
-                            background-color: {{ element_container.element.subject.hex_color }};
+                            {% if not element_container.is_hol %}
+                                background-color: {{ element_container.element.subject.hex_color }};
+                            {% endif %}
                         {% endif %}
                     {% endif %}"
 
                     {# Add CSS class for sub when it's a sub #}
                  class="{% if element_container.substitution %}{% if element_container.substitution.table.is_event %}lesson-with-event{% else %}lesson-with-sub{% endif %}{% endif %}">
                 <p>
-                    {% if element_container.substitution %}
+                    {% if element_container.is_hol %}
+
+                        {# <p><strong>{ element_container.element.holiday_reason }}</strong></p>span class="badge new blue darken-2">Schulfrei</span>#}
+
+                    {% elif element_container.substitution %}
                         {# SUBSTITUTION #}
                         {% if type == 1 and element_container.is_old %}
                             {# When it's the old room, let it empty #}

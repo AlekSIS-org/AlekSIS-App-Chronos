@@ -63,7 +63,7 @@ def quicklaunch(request):
 
 @login_required
 @permission_required("timetable.show_plan")
-def plan(request, plan_type, plan_id, regular="", year=current_year(), calendar_week=current_calendar_week()):
+def plan(request, plan_type, plan_id, regular="", year=None, calendar_week=None):
     """
     [DJANGO VIEW]
     Show a timetable (class, teacher, room, smart/regular)
@@ -75,6 +75,10 @@ def plan(request, plan_type, plan_id, regular="", year=current_year(), calendar_
     :param calendar_week: calendar week in year (only for smart plan)
     :return:
     """
+    if year is None or calendar_week is None:
+        date = get_next_weekday_with_time(timezone.datetime.now(), timezone.datetime.now().time())
+        year = date.year
+        calendar_week = date.isocalendar()[1]
 
     # Regular or smart plan?
     if regular == "regular":
@@ -117,7 +121,7 @@ def plan(request, plan_type, plan_id, regular="", year=current_year(), calendar_
         raise Http404('Plan not found.')
 
     # Get plan
-    plan = get_plan(_type, plan_id, smart=smart, monday_of_week=monday)
+    plan, holidays = get_plan(_type, plan_id, smart=smart, monday_of_week=monday)
 
     context = {
         "smart": smart,
@@ -130,8 +134,9 @@ def plan(request, plan_type, plan_id, regular="", year=current_year(), calendar_
         "weeks": get_calendar_weeks(year=year),
         "selected_week": calendar_week,
         "selected_year": year,
-        "short_week_days": SHORT_WEEK_DAYS,
-        "long_week_days": LONG_WEEK_DAYS,
+        "short_week_days": zip(SHORT_WEEK_DAYS, holidays),
+        "long_week_days": zip(LONG_WEEK_DAYS, holidays),
+        "holidays": holidays,
         "hints": hints,
         "hints_b": hints_b,
         "hints_b_mode": "week",
@@ -180,7 +185,11 @@ def my_plan(request, year=None, month=None, day=None):
         return redirect("timetable_admin_all")
 
     # Get plan
-    plan = get_plan(_type, plan_id, smart=True, monday_of_week=monday_of_week)
+    plan, holidays = get_plan(_type, plan_id, smart=True, monday_of_week=monday_of_week)
+    # print(parse_lesson_times())
+
+    holiday_for_the_day = holidays[date.isoweekday() - 1]
+    # print(holiday_for_the_day)
 
     context = {
         "type": _type,
@@ -193,12 +202,15 @@ def my_plan(request, year=None, month=None, day=None):
         "date": date,
         "date_js": int(date.timestamp()) * 1000,
         "display_date_only": True,
+        "holiday": holiday_for_the_day,
         "hints": hints,
         "hints_b": hints_b,
         "hints_b_mode": "day",
     }
 
     return render(request, 'timetable/myplan.html', context)
+
+
 
 
 #################
@@ -239,18 +251,18 @@ def sub_pdf(request, plan_date=None):
         tex = generate_class_tex(sub_table, date, header_info, hints)
 
         # Generate PDF
-        generate_pdf(tex, "class{}".format(i))
+        generate_pdf(tex, "aktuell{}".format(i))
 
     # Merge PDFs
     try:
         merger = PdfFileMerger()
-        class0 = open(os.path.join(BASE_DIR, "latex", "class0.pdf"), "rb")
-        class1 = open(os.path.join(BASE_DIR, "latex", "class1.pdf"), "rb")
+        class0 = open(os.path.join(BASE_DIR, "latex", "aktuell0.pdf"), "rb")
+        class1 = open(os.path.join(BASE_DIR, "latex", "aktuell1.pdf"), "rb")
         merger.append(fileobj=class0)
         merger.append(fileobj=class1)
 
-        # Write merged PDF to class.pdf
-        output = open(os.path.join(BASE_DIR, "latex", "class.pdf"), "wb")
+        # Write merged PDF to aktuell.pdf
+        output = open(os.path.join(BASE_DIR, "latex", "aktuell.pdf"), "wb")
         merger.write(output)
         output.close()
 
@@ -261,7 +273,7 @@ def sub_pdf(request, plan_date=None):
         register_traceback("merge_class", "pypdf2")
 
     # Read and response PDF
-    file = open(os.path.join(BASE_DIR, "latex", "class.pdf"), "rb")
+    file = open(os.path.join(BASE_DIR, "latex", "aktuell.pdf"), "rb")
     return FileResponse(file, content_type="application/pdf")
 
 
