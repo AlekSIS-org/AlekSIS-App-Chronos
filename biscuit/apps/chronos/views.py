@@ -8,22 +8,20 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 
 from debug.models import register_traceback, register_return_0
+from schoolapps.settings import BASE_DIR
 from schoolapps.settings import SHORT_WEEK_DAYS, LONG_WEEK_DAYS
 from timetable.filters import HintFilter
 from timetable.forms import HintForm
-from timetable.helper import get_type_and_object_of_user, get_all_context, get_calendar_week, get_calendar_weeks, \
-    get_next_weekday, current_calendar_week, current_year, find_out_what_is_today, get_next_weekday_with_time
+from untisconnect.datetimeutils import get_calendar_week, get_calendar_weeks, get_next_weekday, find_out_what_is_today, \
+    get_next_weekday_with_time
+from untisconnect.utils import get_type_and_object_of_user, overview_dict
 from timetable.hints import get_all_hints_by_time_period, get_all_hints_by_class_and_time_period, \
     get_all_hints_for_teachers_by_time_period, get_all_hints_not_for_teachers_by_time_period
 from timetable.pdf import generate_class_tex, generate_pdf
-
-from untisconnect.plan import get_plan, parse_lesson_times
-from untisconnect.sub import get_substitutions_by_date, generate_sub_table, get_header_information
 from untisconnect.api import *
 from untisconnect.events import get_all_events_by_date
-
-from schoolapps.settings import BASE_DIR
-
+from untisconnect.plan import get_plan, parse_lesson_times
+from untisconnect.sub import get_substitutions_by_date, generate_sub_table, get_header_information
 from .models import Hint
 
 
@@ -40,7 +38,7 @@ def all(request):
     :param request: Django request
     :return: rendered template
     """
-    context = get_all_context()
+    context = overview_dict()
     return render(request, 'timetable/all.html', context)
 
 
@@ -53,7 +51,7 @@ def quicklaunch(request):
     :param request: Django request
     :return: rendered template
     """
-    context = get_all_context()
+    context = overview_dict()
     return render(request, 'timetable/quicklaunch.html', context)
 
 
@@ -209,8 +207,6 @@ def my_plan(request, year=None, month=None, day=None):
     }
 
     return render(request, 'timetable/myplan.html', context)
-
-
 
 
 #################
