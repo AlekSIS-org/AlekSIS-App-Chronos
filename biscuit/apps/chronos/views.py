@@ -1,7 +1,5 @@
 import datetime
 import os
-import time
-import traceback
 from typing import List
 
 from PyPDF2 import PdfFileMerger
@@ -17,19 +15,17 @@ from schoolapps.settings import BASE_DIR
 from schoolapps.settings import SHORT_WEEK_DAYS, LONG_WEEK_DAYS
 from timetable.filters import HintFilter
 from timetable.forms import HintForm
-from untisconnect.datetimeutils import get_calendar_week, get_calendar_weeks, get_next_weekday, find_out_what_is_today, \
-    get_next_weekday_with_time
-from untisconnect.utils import get_type_and_object_of_user, overview_dict
 from timetable.hints import get_all_hints_by_time_period, get_all_hints_by_class_and_time_period, \
     get_all_hints_for_teachers_by_time_period, get_all_hints_not_for_teachers_by_time_period
 from timetable.pdf import generate_class_tex, generate_pdf
-
-from untisconnect.plan import get_plan, TYPE_TEACHER, TYPE_CLASS, TYPE_ROOM, parse_lesson_times
-from untisconnect.sub import get_substitutions_by_date, generate_sub_table, get_header_information, SubRow
 from untisconnect.api import *
+from untisconnect.datetimeutils import get_calendar_week, get_calendar_weeks, get_next_weekday, find_out_what_is_today, \
+    get_next_weekday_with_time
 from untisconnect.events import get_all_events_by_date
 from untisconnect.plan import get_plan, parse_lesson_times
+from untisconnect.sub import SubRow
 from untisconnect.sub import get_substitutions_by_date, generate_sub_table, get_header_information
+from untisconnect.utils import get_type_and_object_of_user, overview_dict
 from .models import Hint
 
 
