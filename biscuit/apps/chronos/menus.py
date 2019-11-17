@@ -17,6 +17,11 @@ MENUS = {
                     'name': _('Daily lessons'),
                     'url': 'lessons_day',
                     'validators': ['menu_generator.validators.is_authenticated']
+                },
+                {
+                    'name': _('Substitutions'),
+                    'url': 'substitutions',
+                    'validators': ['menu_generator.validators.is_authenticated']
                 }
             ]
         }

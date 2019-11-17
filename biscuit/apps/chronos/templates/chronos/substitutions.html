@@ -1,0 +1,11 @@
+{# -*- engine:django -*- #}
+
+{% extends "core/turnable.html" %}
+{% load bootstrap4 i18n font_awesome %}
+{% load render_table from django_tables2 %}
+
+{% block bootstrap4_title %}{% blocktrans %}Substitutions{% endblocktrans %} - {{ block.super }}{% endblock %}
+
+{% block current_content %}
+  {% render_table substitutions_table %}
+{% endblock %}
