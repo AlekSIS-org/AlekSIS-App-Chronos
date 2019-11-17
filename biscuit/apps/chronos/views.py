@@ -17,7 +17,7 @@ from biscuit.core.util import messages
 from .forms import SelectForm, LessonSubstitutionForm
 from .models import LessonPeriod, TimePeriod, LessonSubstitution
 from .util import CalendarWeek
-from .tables import LessonsTable
+from .tables import LessonsTable, SubstitutionsTable
 
 
 @login_required
@@ -160,3 +160,27 @@ def delete_substitution(request: HttpRequest, id_: int, week: int) -> HttpRespon
 
     messages.success(request, _('The substitution has been deleted.'))
     return redirect('lessons_day_by_date', when=wanted_week[lesson_period.period.weekday - 1].strftime('%Y-%m-%d'))
+
+
+def substitutions(request: HttpRequest, year: Optional[int] = None, week: Optional[int] = None) -> HttpResponse:
+    context = {}
+
+    if week:
+        wanted_week = CalendarWeek(year=year, week=week)
+    else:
+        wanted_week = CalendarWeek()
+
+    substitutions = LessonSubstitution.objects.filter(week=wanted_week.week)
+
+    # Prepare table
+    substitutions_table = SubstitutionsTable(substitutions)
+    RequestConfig(request).configure(substitutions_table)
+
+    context['current_head'] = str(wanted_week)
+    context['substitutions_table'] = substitutions_table
+    week_prev = wanted_week - 1
+    week_next = wanted_week + 1
+    context['url_prev'] = '%s' % (reverse('substitutions_by_week', args=[week_prev.year, week_prev.week]))
+    context['url_next'] = '%s' % (reverse('substitutions_by_week', args=[week_next.year, week_next.week]))
+
+    return render(request, 'chronos/substitutions.html', context)

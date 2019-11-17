@@ -7,6 +7,15 @@ Changelog
 New features
 ~~~~~~~~~~~~
 
+* Add list of all future substitutions
+
+
+`1.0a2`_
+--------
+
+New features
+~~~~~~~~~~~~
+
 * Devs: LessonPeriod now has a custom QuerySet and manager for advanced filtering
 
 Bugfixes
@@ -37,3 +46,4 @@ Minor changes
 
 _`1.0a1`: https://edugit.org/Teckids/BiscuIT/BiscuIT-App-Chronos/-/tags/1.0a1
 _`1.0a2`: https://edugit.org/Teckids/BiscuIT/BiscuIT-App-Chronos/-/tags/1.0a2
+_`1.0a3`: https://edugit.org/Teckids/BiscuIT/BiscuIT-App-Chronos/-/tags/1.0a3
