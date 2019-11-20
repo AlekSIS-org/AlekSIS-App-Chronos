@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
-from typing import Optional, Sequence, Tuple
+from typing import Optional, Sequence, Tuple, Union
 
 from django.apps import apps
 from django.db import models
@@ -97,3 +97,7 @@ def week_weekday_from_date(when: date) -> Tuple[CalendarWeek, int]:
 
 def week_weekday_to_date(week: CalendarWeek, weekday: int) -> date:
     return week[weekday - 1]
+
+
+def week_period_to_date(week: Union[CalendarWeek, int], period) -> date:
+    return period.get_date(week)

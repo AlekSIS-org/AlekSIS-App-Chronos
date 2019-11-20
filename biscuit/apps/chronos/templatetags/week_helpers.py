@@ -1,10 +1,10 @@
 from datetime import date
-from typing import Optional
+from typing import Optional, Union
 
 from django import template
 from django.db.models.query import QuerySet
 
-from ..util import CalendarWeek, week_weekday_to_date
+from ..util import CalendarWeek, week_weekday_to_date, week_period_to_date
 
 
 register = template.Library()
@@ -29,6 +29,11 @@ def only_week(qs: QuerySet, week: Optional[CalendarWeek]) -> QuerySet:
 @register.simple_tag
 def weekday_to_date(week: CalendarWeek, weekday: int) -> date:
     return week_weekday_to_date(week, weekday)
+
+
+@register.simple_tag
+def period_to_date(week: Union[CalendarWeek, int], period) -> date:
+    return week_period_to_date(week, period)
 
 
 @register.simple_tag

@@ -170,6 +170,20 @@ class TimePeriod(SchoolRelated):
 
         return periods
 
+    def get_date(self, week: Optional[Union[CalendarWeek, int]] = None) -> date:
+        if isinstance(week, CalendarWeek):
+            wanted_week = week
+        else:
+            year = date.today().year
+            week_number = week or getattr(self, '_week', None) or CalendarWeek().week
+
+            if week_number < self.school.current_term.date_start.isocalendar()[1]:
+                year += 1
+
+            wanted_week = CalendarWeek(year=year, week=week_number)
+
+        return wanted_week[self.weekday-1]
+
     class Meta:
         unique_together = [['school', 'weekday', 'period']]
         ordering = ['weekday', 'period']
