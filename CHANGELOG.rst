@@ -1,13 +1,14 @@
 Changelog
 =========
 
-`1.0a2`_
+`1.0a3`_
 --------
 
 New features
 ~~~~~~~~~~~~
 
 * Add list of all future substitutions
+* Devs: Add API to get date of a period
 
 
 `1.0a2`_
