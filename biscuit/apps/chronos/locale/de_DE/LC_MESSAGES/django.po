@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-03 20:10+0100\n"
+"POT-Creation-Date: 2019-11-23 10:05+0100\n"
 "PO-Revision-Date: 2019-09-17 21:08+0000\n"
 "Last-Translator: Tom Teichler <tom.teichler@teckids.org>\n"
 "Language-Team: German <https://translate.edugit.org/projects/biscuit-sis/"
@@ -19,15 +19,15 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.8\n"
 
-#: forms.py:13
+#: forms.py:14
 msgid "Group"
 msgstr "Gruppe"
 
-#: forms.py:17
+#: forms.py:18
 msgid "Teacher"
 msgstr "Lehrkraft"
 
-#: forms.py:21 models.py:257
+#: forms.py:22 models.py:271
 msgid "Room"
 msgstr "Raum"
 
@@ -35,13 +35,19 @@ msgstr "Raum"
 msgid "Timetables"
 msgstr "Stundenpläne"
 
-#: menus.py:12 templates/chronos/tt_week.html:11 views.py:76
+#: menus.py:12 templates/chronos/tt_week.html:17 views.py:76
 msgid "Timetable"
 msgstr "Stundenplan"
 
 #: menus.py:17
 msgid "Daily lessons"
 msgstr "Tages-Stunden"
+
+#: menus.py:22 templates/chronos/substitutions.html:7
+#, fuzzy
+#| msgid "Substitution"
+msgid "Substitutions"
+msgstr "Vertretung"
 
 #: models.py:145
 msgid "Sunday"
@@ -87,56 +93,56 @@ msgstr "Anfangszeit der Stunde"
 msgid "Time the period ends"
 msgstr "Endzeit der Stunde"
 
-#: models.py:181
+#: models.py:195
 msgid "Abbreviation of subject in timetable"
 msgstr "Kürzel des Faches im Stundenplan"
 
-#: models.py:183
+#: models.py:197
 msgid "Long name of subject"
 msgstr "Name des Faches"
 
-#: models.py:185
+#: models.py:199
 msgid "Foreground colour in timetable"
 msgstr "Vordergrundfarbe im Stundenplan"
 
-#: models.py:187
+#: models.py:201
 msgid "Background colour in timetable"
 msgstr "Hintergrundfarbe im Stundenplan"
 
-#: models.py:200
+#: models.py:214
 msgid "Short name, e.g. room number"
 msgstr "Kurzer Name, z.B. Raumnummer"
 
-#: models.py:201
+#: models.py:215
 msgid "Long name"
 msgstr "Langer Name"
 
-#: models.py:221
+#: models.py:235
 msgid "Effective start date of lesson"
 msgstr "Effektives Startdatum des Unterrichts"
 
-#: models.py:223
+#: models.py:237
 msgid "Effective end date of lesson"
 msgstr "Effektives Enddatum des Unterrichts"
 
-#: models.py:246
+#: models.py:260
 msgid "Week"
 msgstr "Woche"
 
-#: models.py:254
+#: models.py:268
 msgid "Subject"
 msgstr "Fach"
 
-#: models.py:263
+#: models.py:277
 msgid "Lessons can only be either substituted or cancelled."
 msgstr ""
 "Unterrichtsstunden können nur entweder vertreten werden oder ausfallen."
 
-#: tables.py:28
+#: tables.py:28 tables.py:41
 msgid "Groups"
 msgstr "Gruppen"
 
-#: tables.py:29
+#: tables.py:29 tables.py:42
 msgid "Teachers"
 msgstr "Lehrkräfte"
 
@@ -144,12 +150,22 @@ msgstr "Lehrkräfte"
 msgid "Substitution"
 msgstr "Vertretung"
 
-#: templates/chronos/edit_substitution.html:6
-#: templates/chronos/edit_substitution.html:8
+#: tables.py:40
+#, fuzzy
+#| msgid "Lessons"
+msgid "Lesson"
+msgstr "Unterrichtsstunden"
+
+#: tables.py:45
+msgid "Cancelled"
+msgstr ""
+
+#: templates/chronos/edit_substitution.html:17
+#: templates/chronos/edit_substitution.html:19
 msgid "Edit substitution"
 msgstr "Vertretung bearbeiten"
 
-#: templates/chronos/edit_substitution.html:26
+#: templates/chronos/edit_substitution.html:37
 msgid "Save"
 msgstr "Speichern"
 
@@ -157,11 +173,11 @@ msgstr "Speichern"
 msgid "Lessons"
 msgstr "Unterrichtsstunden"
 
-#: templates/chronos/tt_week.html:19
+#: templates/chronos/tt_week.html:25
 msgid "Select"
 msgstr "Auswählen"
 
-#: templates/chronos/tt_week.html:30
+#: templates/chronos/tt_week.html:36
 msgid "Times"
 msgstr "Zeiten"
 

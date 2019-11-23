@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-03 20:10+0100\n"
+"POT-Creation-Date: 2019-11-23 10:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,15 +18,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: forms.py:13
+#: forms.py:14
 msgid "Group"
 msgstr ""
 
-#: forms.py:17
+#: forms.py:18
 msgid "Teacher"
 msgstr ""
 
-#: forms.py:21 models.py:257
+#: forms.py:22 models.py:271
 msgid "Room"
 msgstr ""
 
@@ -34,12 +34,16 @@ msgstr ""
 msgid "Timetables"
 msgstr ""
 
-#: menus.py:12 templates/chronos/tt_week.html:11 views.py:76
+#: menus.py:12 templates/chronos/tt_week.html:17 views.py:76
 msgid "Timetable"
 msgstr ""
 
 #: menus.py:17
 msgid "Daily lessons"
+msgstr ""
+
+#: menus.py:22 templates/chronos/substitutions.html:7
+msgid "Substitutions"
 msgstr ""
 
 #: models.py:145
@@ -86,55 +90,55 @@ msgstr ""
 msgid "Time the period ends"
 msgstr ""
 
-#: models.py:181
+#: models.py:195
 msgid "Abbreviation of subject in timetable"
 msgstr ""
 
-#: models.py:183
+#: models.py:197
 msgid "Long name of subject"
 msgstr ""
 
-#: models.py:185
+#: models.py:199
 msgid "Foreground colour in timetable"
 msgstr ""
 
-#: models.py:187
+#: models.py:201
 msgid "Background colour in timetable"
 msgstr ""
 
-#: models.py:200
+#: models.py:214
 msgid "Short name, e.g. room number"
 msgstr ""
 
-#: models.py:201
+#: models.py:215
 msgid "Long name"
 msgstr ""
 
-#: models.py:221
+#: models.py:235
 msgid "Effective start date of lesson"
 msgstr ""
 
-#: models.py:223
+#: models.py:237
 msgid "Effective end date of lesson"
 msgstr ""
 
-#: models.py:246
+#: models.py:260
 msgid "Week"
 msgstr ""
 
-#: models.py:254
+#: models.py:268
 msgid "Subject"
 msgstr ""
 
-#: models.py:263
+#: models.py:277
 msgid "Lessons can only be either substituted or cancelled."
 msgstr ""
 
-#: tables.py:28
+#: tables.py:28 tables.py:41
 msgid "Groups"
 msgstr ""
 
-#: tables.py:29
+#: tables.py:29 tables.py:42
 msgid "Teachers"
 msgstr ""
 
@@ -142,12 +146,20 @@ msgstr ""
 msgid "Substitution"
 msgstr ""
 
-#: templates/chronos/edit_substitution.html:6
-#: templates/chronos/edit_substitution.html:8
+#: tables.py:40
+msgid "Lesson"
+msgstr ""
+
+#: tables.py:45
+msgid "Cancelled"
+msgstr ""
+
+#: templates/chronos/edit_substitution.html:17
+#: templates/chronos/edit_substitution.html:19
 msgid "Edit substitution"
 msgstr ""
 
-#: templates/chronos/edit_substitution.html:26
+#: templates/chronos/edit_substitution.html:37
 msgid "Save"
 msgstr ""
 
@@ -155,11 +167,11 @@ msgstr ""
 msgid "Lessons"
 msgstr ""
 
-#: templates/chronos/tt_week.html:19
+#: templates/chronos/tt_week.html:25
 msgid "Select"
 msgstr ""
 
-#: templates/chronos/tt_week.html:30
+#: templates/chronos/tt_week.html:36
 msgid "Times"
 msgstr ""
 
