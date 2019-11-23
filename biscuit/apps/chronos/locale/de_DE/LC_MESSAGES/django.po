@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-23 10:05+0100\n"
-"PO-Revision-Date: 2019-09-17 21:08+0000\n"
+"PO-Revision-Date: 2019-11-23 11:07+0000\n"
 "Last-Translator: Tom Teichler <tom.teichler@teckids.org>\n"
 "Language-Team: German <https://translate.edugit.org/projects/biscuit-sis/"
 "biscuit-app-chronos/de/>\n"
@@ -44,10 +44,8 @@ msgid "Daily lessons"
 msgstr "Tages-Stunden"
 
 #: menus.py:22 templates/chronos/substitutions.html:7
-#, fuzzy
-#| msgid "Substitution"
 msgid "Substitutions"
-msgstr "Vertretung"
+msgstr "Vertretungen"
 
 #: models.py:145
 msgid "Sunday"
@@ -151,14 +149,12 @@ msgid "Substitution"
 msgstr "Vertretung"
 
 #: tables.py:40
-#, fuzzy
-#| msgid "Lessons"
 msgid "Lesson"
-msgstr "Unterrichtsstunden"
+msgstr "Unterrichtsstunde"
 
 #: tables.py:45
 msgid "Cancelled"
-msgstr ""
+msgstr "Fällt aus"
 
 #: templates/chronos/edit_substitution.html:17
 #: templates/chronos/edit_substitution.html:19
