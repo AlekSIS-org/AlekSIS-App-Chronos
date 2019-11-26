@@ -4,7 +4,7 @@ version = "1.0a4dev0"
 packages = [
     { include = "biscuit" }
 ]
-readme = "README.md"
+readme = "README.rst"
 
 authors = ["Dominik George <dominik.george@teckids.org>", "mirabilos <thorsten.glaser@teckids.org>", "Tom Teichler <tom.teichler@teckids.org>"]
 license = "EUPL-1.2"
