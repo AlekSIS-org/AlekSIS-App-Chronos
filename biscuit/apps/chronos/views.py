@@ -2,7 +2,6 @@ import datetime
 import os
 from typing import List
 
-from PyPDF2 import PdfFileMerger
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404, FileResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -10,18 +9,13 @@ from django.utils import timezone
 from django.views.decorators.cache import cache_page
 
 from dashboard.caches import SUBS_VIEW_CACHE, MY_PLAN_VIEW_CACHE, PLAN_VIEW_CACHE
-from debug.models import register_traceback, register_return_0
 from schoolapps.settings import BASE_DIR
 from schoolapps.settings import SHORT_WEEK_DAYS, LONG_WEEK_DAYS
 from timetable.filters import HintFilter
 from timetable.forms import HintForm
 from timetable.hints import get_all_hints_by_time_period, get_all_hints_by_class_and_time_period, \
     get_all_hints_for_teachers_by_time_period, get_all_hints_not_for_teachers_by_time_period
-from timetable.pdf import generate_class_tex, generate_pdf
 from timetable.pdf import generate_class_tex_header, generate_class_tex_body, generate_pdf
-
-from untisconnect.plan import get_plan, TYPE_TEACHER, TYPE_CLASS, TYPE_ROOM, parse_lesson_times
-from untisconnect.sub import get_substitutions_by_date, generate_sub_table, get_header_information, SubRow
 from untisconnect.api import *
 from untisconnect.datetimeutils import get_calendar_week, get_calendar_weeks, get_next_weekday, find_out_what_is_today, \
     get_next_weekday_with_time
