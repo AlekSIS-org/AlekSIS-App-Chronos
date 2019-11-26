@@ -7,7 +7,7 @@ packages = [
 readme = "README.rst"
 
 description = "BiscuIT School Information System (SIS) - App Chronos (Time tables)"
-authors = ["Dominik George <dominik.george@teckids.org>", "mirabilos <thorsten.glaser@teckids.org>", "Tom Teichler <tom.teichler@teckids.org>"]
+authors = ["Dominik George <dominik.george@teckids.org>", "Tom Teichler <tom.teichler@teckids.org>"]
 license = "EUPL-1.2"
 homepage = "https://biscuit.edugit.io/"
 repository = "https://edugit.org/BiscuIT/BiscuIT-App-Chronos"
