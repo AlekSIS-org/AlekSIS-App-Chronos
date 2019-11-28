@@ -90,7 +90,7 @@ class Migration(migrations.Migration):
                 ('room', models.ForeignKey(null=True, blank=True, on_delete=django.db.models.deletion.CASCADE, to='chronos.Room', verbose_name='Room')),
                 ('school', models.ForeignKey(default=biscuit.core.util.core_helpers.get_current_school, on_delete=django.db.models.deletion.CASCADE, to='core.School')),
                 ('subject', models.ForeignKey(null=True, blank=True, on_delete=django.db.models.deletion.CASCADE, related_name='lesson_substitutions', to='chronos.Subject', verbose_name='Subject')),
-                ('teachers', models.ManyToManyField(null=True, blank=True, related_name='lesson_substitutions', to='core.Person')),
+                ('teachers', models.ManyToManyField(blank=True, related_name='lesson_substitutions', to='core.Person')),
             ],
             options={
                 'ordering': ['lesson_period__lesson__date_start', 'week', 'lesson_period__period__weekday', 'lesson_period__period__period'],
