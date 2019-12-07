@@ -1,0 +1,111 @@
+{% load common %}
+{% include 'partials/paper/header.html' %}
+
+<script type="text/javascript">
+    var dest = "/timetable/substitutions/";
+</script>
+
+<style>
+    table.substitutions td, table.substitutions th {
+        padding: 0 2px;
+    }
+
+    span.badge.new {
+        font-size: 0.9rem;
+        line-height: 20px;
+        height: 20px;
+        margin: 2px;
+        letter-spacing: 0.3pt;
+    }
+</style>
+
+<h4>Vertretungen {{ date|date:"l, j. F Y" }}</h4>
+
+
+{% include "timetable/hintsinsubprint.html" %}
+
+<div class="row no-print">
+    <div class="col">
+        {% if header_info.is_box_needed %}
+
+            {% for row in header_info.rows %}
+                <div class="row no-margin">
+                    <div class="col s3">
+                        <strong>{{ row.0 }}</strong>
+                    </div>
+                    <div class="col s9">
+                        {{ row.1 }}
+                    </div>
+                </div>
+            {% endfor %}
+
+        {% endif %}
+    </div>
+</div>
+
+<table class="substitutions">
+    <thead>
+    <tr>
+        <th><i class="material-icons">people</i></th>
+        <th><i class="material-icons">access_time</i></th>
+        <th>Lehrer</th>
+        <th>Fach</th>
+        <th>Raum</th>
+        <th>Hinweis</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% if not sub_table %}
+        <td colspan="7">
+            <p class="flow-text center">
+                Keine Vertretungen vorhanden
+            </p>
+        </td>
+    {% endif %}
+
+    {% set color_background = 1 %}
+    {% set last_classes = "" %}
+
+    {% for sub in sub_table %}
+
+        {#  Color groups of classes in grey/white #}
+        {% if last_classes != sub.classes %}
+            {% if color_background %}{% set color_background = 0 %}
+                {% else %}{% set color_background = 1 %}
+            {% endif %}
+        {% endif %}
+        {% set last_classes = sub.classes %}
+
+
+        <tr class="{{ sub.color }}-text {% if color_background %}striped{% endif %}">
+            <td>
+                {{ sub.classes }}
+            </td>
+            <td>
+                <strong>
+                    {{ sub.lesson }}
+                </strong>
+            </td>
+            <td>
+                {% include "timetable/subs/teacher.html" %}
+            </td>
+            <td>
+                {% include "timetable/subs/subject.html" %}
+            </td>
+            <td>
+                {% include "timetable/subs/room.html" %}
+            </td>
+            <td>
+                {% if sub.badge %}
+                    <span class="badge new green">{{ sub.badge }}</span>
+                {% endif %}
+                <em>{{ sub.text|default:"" }}</em>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+{% include 'partials/paper/footer.html' %}

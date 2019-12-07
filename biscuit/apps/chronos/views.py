@@ -331,8 +331,10 @@ def sub_pdf(request, plan_date=None):
 @login_required
 @permission_required("timetable.show_plan")
 @cache_page(SUBS_VIEW_CACHE.expiration_time)
-def substitutions(request, year=None, month=None, day=None):
+def substitutions(request, year=None, month=None, day=None, print_view: str = False):
     """Show substitutions in a classic view"""
+
+    print_view = print_view == "print"
 
     date, time = find_out_what_is_today(year, month, day)
 
@@ -363,7 +365,12 @@ def substitutions(request, year=None, month=None, day=None):
         "hints": hints,
     }
 
-    return render(request, 'timetable/substitution.html', context)
+    if not print_view:
+        template_name = 'timetable/substitution.html'
+    else:
+        template_name = 'timetable/substitutionprint.html'
+
+    return render(request, template_name, context)
 
 
 ###################
