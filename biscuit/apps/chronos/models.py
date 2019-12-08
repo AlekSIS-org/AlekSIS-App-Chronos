@@ -10,7 +10,7 @@ from django.db.models import Q
 from django.http.request import QueryDict
 from django.utils.translation import ugettext_lazy as _
 
-from biscuit.core.mixins import ExtensibleModel, SchoolRelated
+from biscuit.core.mixins import ExtensibleModel
 from biscuit.core.models import Group, Person
 
 from .util import CalendarWeek, week_weekday_from_date
@@ -140,7 +140,7 @@ class LessonPeriodQuerySet(models.QuerySet):
             return self.filter_room(int(query_data['room']))
 
 
-class TimePeriod(SchoolRelated):
+class TimePeriod(models.Model):
     WEEKDAY_CHOICES = [
         (0, _('Sunday')),
         (1, _('Monday')),
@@ -185,16 +185,16 @@ class TimePeriod(SchoolRelated):
         return wanted_week[self.weekday-1]
 
     class Meta:
-        unique_together = [['school', 'weekday', 'period']]
+        unique_together = [['weekday', 'period']]
         ordering = ['weekday', 'period']
         indexes = [models.Index(fields=['time_start', 'time_end'])]
 
 
-class Subject(SchoolRelated):
+class Subject(models.Model):
     abbrev = models.CharField(verbose_name=_(
-        'Abbreviation of subject in timetable'), max_length=10)
+        'Abbreviation of subject in timetable'), max_length=10, unique=True)
     name = models.CharField(verbose_name=_(
-        'Long name of subject'), max_length=30)
+        'Long name of subject'), max_length=30, unique=True)
 
     colour_fg = models.CharField(verbose_name=_('Foreground colour in timetable'), blank=True, validators=[
                                  validators.RegexValidator(r'#[0-9A-F]{6}')], max_length=7)
@@ -206,12 +206,11 @@ class Subject(SchoolRelated):
 
     class Meta:
         ordering = ['name', 'abbrev']
-        unique_together = [['school', 'abbrev'], ['school', 'name']]
 
 
-class Room(SchoolRelated):
+class Room(models.Model):
     short_name = models.CharField(verbose_name=_(
-        'Short name, e.g. room number'), max_length=10)
+        'Short name, e.g. room number'), max_length=10, unique=True)
     name = models.CharField(verbose_name=_('Long name'),
                             max_length=30)
 
@@ -220,10 +219,9 @@ class Room(SchoolRelated):
 
     class Meta:
         ordering = ['name', 'short_name']
-        unique_together = [['school', 'short_name']]
 
 
-class Lesson(SchoolRelated):
+class Lesson(models.Model):
     subject = models.ForeignKey(
         'Subject', on_delete=models.CASCADE, related_name='lessons')
     teachers = models.ManyToManyField('core.Person', related_name='lessons_as_teacher')
@@ -256,7 +254,7 @@ class Lesson(SchoolRelated):
         indexes = [models.Index(fields=['date_start', 'date_end'])]
 
 
-class LessonSubstitution(SchoolRelated):
+class LessonSubstitution(models.Model):
     week = models.IntegerField(verbose_name=_('Week'),
                                default=CalendarWeek.current_week)
 
@@ -277,7 +275,7 @@ class LessonSubstitution(SchoolRelated):
             raise ValidationError(_('Lessons can only be either substituted or cancelled.'))
 
     class Meta:
-        unique_together = [['school', 'lesson_period', 'week']]
+        unique_together = [['lesson_period', 'week']]
         ordering = ['lesson_period__lesson__date_start', 'week',
                     'lesson_period__period__weekday', 'lesson_period__period__period']
         constraints = [
@@ -288,7 +286,7 @@ class LessonSubstitution(SchoolRelated):
         ]
 
 
-class LessonPeriod(SchoolRelated, ExtensibleModel):
+class LessonPeriod(models.Model, ExtensibleModel):
     objects = LessonPeriodManager.from_queryset(LessonPeriodQuerySet)()
 
     lesson = models.ForeignKey('Lesson', models.CASCADE, related_name='lesson_periods')
