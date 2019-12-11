@@ -43,6 +43,28 @@
             <h3>
                 Stundenplan <i>{{ el }}</i>
             </h3>
+
+            {# Show class teacher and deputy class teacher #}
+            {% if type == 2 and el.teachers %}
+                <h6>Klassenlehrkraft:
+                    <span data-position="bottom" class="tooltipped"
+                          data-tooltip="{{ el.teachers.0 }}">
+                        <a href="{% url "timetable_smart_plan" "teacher" el.teachers.0.id %}">
+                            {{ el.teachers.0.shortcode }}
+                        </a>
+                    </span>
+                    {#                    {{ el.teachers.0.shortcode }}#}
+                    {% if el.teachers.1 %}
+                        · Vertretung:
+                        <span data-position="bottom" class="tooltipped"
+                              data-tooltip="{{ el.teachers.1 }}">
+                            <a href="{% url "timetable_smart_plan" "teacher" el.teachers.1.id %}">
+                                {{ el.teachers.1.shortcode }}
+                            </a>
+                        </span>
+                    {% endif %}
+                </h6>
+            {% endif %}
         </div>
         {# Show print button only if not on mobile #}
         <div class="col s4 m6 l4 xl3 right align-right no-print">
