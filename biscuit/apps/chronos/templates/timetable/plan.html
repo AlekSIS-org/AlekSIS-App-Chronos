@@ -47,20 +47,13 @@
             {# Show class teacher and deputy class teacher #}
             {% if type == 2 and el.teachers %}
                 <h5>Klassenlehrkräfte:
-                    <span data-position="bottom" class="tooltipped"
-                          data-tooltip="{{ el.teachers.0 }}">
-                        <a href="{% url "timetable_smart_plan" "teacher" el.teachers.0.id %}">
-                            {{ el.teachers.0.shortcode }}
-                        </a>,
-                    </span>
-                    {% if el.teachers.1 %}
+                    {% for teacher in el.teachers %}
+
                         <span data-position="bottom" class="tooltipped"
-                              data-tooltip="{{ el.teachers.1 }}">
-                            <a href="{% url "timetable_smart_plan" "teacher" el.teachers.1.id %}">
-                                {{ el.teachers.1.shortcode }}
-                            </a>
-                        </span>
-                    {% endif %}
+                              data-tooltip="{{ teacher }}">
+                             <a href="{% url "timetable_smart_plan" "teacher" teacher.id %}">
+                                {{ teacher.shortcode }}</a></span>{% if not forloop.last %},{% endif %}
+                    {% endfor %}
                 </h5>
             {% endif %}
         </div>
