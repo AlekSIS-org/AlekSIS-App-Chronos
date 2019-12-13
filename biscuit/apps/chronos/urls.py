@@ -23,9 +23,9 @@ try:
         path('substitutions/', views.substitutions, name='timetable_substitutions'),
         path('substitutions/<int:year>/<int:month>/<int:day>/', views.substitutions,
              name='timetable_substitutions_date'),
-        path('substitutions/<int:year>/<int:month>/<int:day>/<str:print_view>/', views.substitutions,
+        path('substitutions/<int:year>/<int:month>/<int:day>/print/', views.substitutions_print,
              name='timetable_substitutions_date_print'),
-        path('substitutions/<str:print_view>/', views.substitutions,
+        path('substitutions/print/', views.substitutions_print,
              name='timetable_substitutions_print'),
         path('aktuell.pdf', views.sub_pdf, name="timetable_substitutions_pdf"),
         path('<str:plan_date>-aktuell.pdf', views.sub_pdf, name="timetable_substitutions_pdf_date")
