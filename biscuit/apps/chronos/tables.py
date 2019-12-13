@@ -24,18 +24,12 @@ def _css_class_from_lesson_state(
 
 class LessonsTable(tables.Table):
     class Meta:
-        attrs = {
-            "class": "table table-striped table-bordered table-hover table-responsive-xl"
-        }
+        attrs = {"class": "table table-striped table-bordered table-hover table-responsive-xl"}
         row_attrs = {"class": _css_class_from_lesson_state}
 
     period__period = tables.Column(accessor="period.period")
-    lesson__groups = tables.Column(
-        accessor="lesson.group_names", verbose_name=_("Groups")
-    )
-    lesson__teachers = tables.Column(
-        accessor="lesson.teacher_names", verbose_name=_("Teachers")
-    )
+    lesson__groups = tables.Column(accessor="lesson.group_names", verbose_name=_("Groups"))
+    lesson__teachers = tables.Column(accessor="lesson.teacher_names", verbose_name=_("Teachers"))
     lesson__subject = tables.Column(accessor="lesson.subject")
     room = tables.Column(accessor="room")
     edit_substitution = tables.LinkColumn(
@@ -45,9 +39,7 @@ class LessonsTable(tables.Table):
 
 class SubstitutionsTable(tables.Table):
     class Meta:
-        attrs = {
-            "class": "table table-striped table-bordered table-hover table-responsive-xl"
-        }
+        attrs = {"class": "table table-striped table-bordered table-hover table-responsive-xl"}
 
     lesson_period = tables.Column(verbose_name=_("Lesson"))
     lesson__groups = tables.Column(

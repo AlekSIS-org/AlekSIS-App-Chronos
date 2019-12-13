@@ -51,11 +51,7 @@ class LessonPeriodQuerySet(models.QuerySet):
 
         week, weekday = week_weekday_from_date(day)
 
-        return (
-            self.within_dates(day, day)
-            .filter(period__weekday=weekday)
-            .annotate_week(week)
-        )
+        return self.within_dates(day, day).filter(period__weekday=weekday).annotate_week(week)
 
     def at_time(self, when: Optional[datetime] = None):
         """ Filter for the lessons taking place at a certain point in time. """
@@ -75,16 +71,13 @@ class LessonPeriodQuerySet(models.QuerySet):
         """ Filter for all lessons a participant (student) attends. """
 
         return self.filter(
-            Q(lesson__groups__members=person)
-            | Q(lesson__groups__parent_groups__members=person)
+            Q(lesson__groups__members=person) | Q(lesson__groups__parent_groups__members=person)
         )
 
     def filter_group(self, group: Union[Group, int]):
         """ Filter for all lessons a group (class) regularly attends. """
 
-        return self.filter(
-            Q(lesson__groups=group) | Q(lesson__groups__parent_groups=group)
-        )
+        return self.filter(Q(lesson__groups=group) | Q(lesson__groups__parent_groups=group))
 
     def filter_teacher(self, teacher: Union[Person, int]):
         """ Filter for all lessons given by a certain teacher. """
@@ -98,8 +91,7 @@ class LessonPeriodQuerySet(models.QuerySet):
         """ Filter for all lessons taking part in a certain room. """
 
         return self.filter(
-            Q(substitutions__room=room, substitutions__week=models.F("_week"))
-            | Q(room=room)
+            Q(substitutions__room=room, substitutions__week=models.F("_week")) | Q(room=room)
         )
 
     def annotate_week(self, week: Union[CalendarWeek, int]):
@@ -159,9 +151,7 @@ class TimePeriod(models.Model):
         (6, _("Saturday")),
     ]
 
-    weekday = models.PositiveSmallIntegerField(
-        verbose_name=_("Week day"), choices=WEEKDAY_CHOICES
-    )
+    weekday = models.PositiveSmallIntegerField(verbose_name=_("Week day"), choices=WEEKDAY_CHOICES)
     period = models.PositiveSmallIntegerField(verbose_name=_("Number of period"))
 
     time_start = models.TimeField(verbose_name=_("Time the period starts"))
@@ -205,13 +195,9 @@ class TimePeriod(models.Model):
 
 class Subject(models.Model):
     abbrev = models.CharField(
-        verbose_name=_("Abbreviation of subject in timetable"),
-        max_length=10,
-        unique=True,
+        verbose_name=_("Abbreviation of subject in timetable"), max_length=10, unique=True,
     )
-    name = models.CharField(
-        verbose_name=_("Long name of subject"), max_length=30, unique=True
-    )
+    name = models.CharField(verbose_name=_("Long name of subject"), max_length=30, unique=True)
 
     colour_fg = models.CharField(
         verbose_name=_("Foreground colour in timetable"),
@@ -247,21 +233,13 @@ class Room(models.Model):
 
 
 class Lesson(models.Model):
-    subject = models.ForeignKey(
-        "Subject", on_delete=models.CASCADE, related_name="lessons"
-    )
+    subject = models.ForeignKey("Subject", on_delete=models.CASCADE, related_name="lessons")
     teachers = models.ManyToManyField("core.Person", related_name="lessons_as_teacher")
-    periods = models.ManyToManyField(
-        "TimePeriod", related_name="lessons", through="LessonPeriod"
-    )
+    periods = models.ManyToManyField("TimePeriod", related_name="lessons", through="LessonPeriod")
     groups = models.ManyToManyField("core.Group", related_name="lessons")
 
-    date_start = models.DateField(
-        verbose_name=_("Effective start date of lesson"), null=True
-    )
-    date_end = models.DateField(
-        verbose_name=_("Effective end date of lesson"), null=True
-    )
+    date_start = models.DateField(verbose_name=_("Effective start date of lesson"), null=True)
+    date_end = models.DateField(verbose_name=_("Effective end date of lesson"), null=True)
 
     @property
     def teacher_names(self, sep: Optional[str] = ", ") -> str:
@@ -284,9 +262,7 @@ class Lesson(models.Model):
 
 
 class LessonSubstitution(models.Model):
-    week = models.IntegerField(
-        verbose_name=_("Week"), default=CalendarWeek.current_week
-    )
+    week = models.IntegerField(verbose_name=_("Week"), default=CalendarWeek.current_week)
 
     lesson_period = models.ForeignKey("LessonPeriod", models.CASCADE, "substitutions")
 
@@ -301,17 +277,13 @@ class LessonSubstitution(models.Model):
     teachers = models.ManyToManyField(
         "core.Person", related_name="lesson_substitutions", blank=True
     )
-    room = models.ForeignKey(
-        "Room", models.CASCADE, null=True, blank=True, verbose_name=_("Room")
-    )
+    room = models.ForeignKey("Room", models.CASCADE, null=True, blank=True, verbose_name=_("Room"))
 
     cancelled = models.BooleanField(default=False)
 
     def clean(self) -> None:
         if self.subject and self.cancelled:
-            raise ValidationError(
-                _("Lessons can only be either substituted or cancelled.")
-            )
+            raise ValidationError(_("Lessons can only be either substituted or cancelled."))
 
     class Meta:
         unique_together = [["lesson_period", "week"]]
@@ -333,13 +305,9 @@ class LessonPeriod(models.Model, ExtensibleModel):
     objects = LessonPeriodManager.from_queryset(LessonPeriodQuerySet)()
 
     lesson = models.ForeignKey("Lesson", models.CASCADE, related_name="lesson_periods")
-    period = models.ForeignKey(
-        "TimePeriod", models.CASCADE, related_name="lesson_periods"
-    )
+    period = models.ForeignKey("TimePeriod", models.CASCADE, related_name="lesson_periods")
 
-    room = models.ForeignKey(
-        "Room", models.CASCADE, null=True, related_name="lesson_periods"
-    )
+    room = models.ForeignKey("Room", models.CASCADE, null=True, related_name="lesson_periods")
 
     def get_substitution(self, week: Optional[int] = None) -> LessonSubstitution:
         wanted_week = week or getattr(self, "_week", None) or CalendarWeek().week

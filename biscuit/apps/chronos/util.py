@@ -52,13 +52,7 @@ class CalendarWeek:
             self.week = int(today.strftime("%V"))
 
     def __str__(self) -> str:
-        return "%s %d (%s %s %s)" % (
-            _("Calendar Week"),
-            self.week,
-            self[0],
-            _("to"),
-            self[-1],
-        )
+        return "%s %d (%s %s %s)" % (_("Calendar Week"), self.week, self[0], _("to"), self[-1],)
 
     def __len__(self) -> int:
         return 7
@@ -70,9 +64,7 @@ class CalendarWeek:
         if n < 0:
             n += 7
 
-        return datetime.strptime(
-            "%d-%d-%d" % (self.year, self.week, n + 1), "%G-%V-%u"
-        ).date()
+        return datetime.strptime("%d-%d-%d" % (self.year, self.week, n + 1), "%G-%V-%u").date()
 
     def __contains__(self, day: date) -> bool:
         return self.__class__.form_date(day) == self

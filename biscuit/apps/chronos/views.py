@@ -45,13 +45,10 @@ def timetable(
         if request.user.person:
             if request.user.person.primary_group:
                 return redirect(
-                    reverse("timetable")
-                    + "?group=%d" % request.user.person.primary_group.pk
+                    reverse("timetable") + "?group=%d" % request.user.person.primary_group.pk
                 )
             elif lesson_periods.filter(lesson__teachers=request.user.person).exists():
-                return redirect(
-                    reverse("timetable") + "?teacher=%d" % request.user.person.pk
-                )
+                return redirect(reverse("timetable") + "?teacher=%d" % request.user.person.pk)
 
     # Regroup lesson periods per weekday
     per_day = {}
@@ -66,17 +63,13 @@ def timetable(
     )
 
     # Fill in empty lessons
-    for weekday_num in range(
-        min_max.get("weekday__min", 0), min_max.get("weekday__max", 6) + 1
-    ):
+    for weekday_num in range(min_max.get("weekday__min", 0), min_max.get("weekday__max", 6) + 1):
         # Fill in empty weekdays
         if weekday_num not in per_day.keys():
             per_day[weekday_num] = {}
 
         # Fill in empty lessons on this workday
-        for period_num in range(
-            min_max.get("period__min", 1), min_max.get("period__max", 7) + 1
-        ):
+        for period_num in range(min_max.get("period__min", 1), min_max.get("period__max", 7) + 1):
             if period_num not in per_day[weekday_num].keys():
                 per_day[weekday_num][period_num] = None
 
@@ -130,12 +123,8 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
 
     day_prev = day - timedelta(days=1)
     day_next = day + timedelta(days=1)
-    context["url_prev"] = reverse(
-        "lessons_day_by_date", args=[day_prev.strftime("%Y-%m-%d")]
-    )
-    context["url_next"] = reverse(
-        "lessons_day_by_date", args=[day_next.strftime("%Y-%m-%d")]
-    )
+    context["url_prev"] = reverse("lessons_day_by_date", args=[day_prev.strftime("%Y-%m-%d")])
+    context["url_next"] = reverse("lessons_day_by_date", args=[day_next.strftime("%Y-%m-%d")])
 
     return render(request, "chronos/lessons_day.html", context)
 
@@ -184,9 +173,7 @@ def delete_substitution(request: HttpRequest, id_: int, week: int) -> HttpRespon
     lesson_period = get_object_or_404(LessonPeriod, pk=id_)
     wanted_week = lesson_period.lesson.get_calendar_week(week)
 
-    LessonSubstitution.objects.filter(
-        week=wanted_week.week, lesson_period=lesson_period
-    ).delete()
+    LessonSubstitution.objects.filter(week=wanted_week.week, lesson_period=lesson_period).delete()
 
     messages.success(request, _("The substitution has been deleted."))
     return redirect(
