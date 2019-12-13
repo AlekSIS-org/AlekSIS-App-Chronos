@@ -27,8 +27,9 @@ try:
         path('<str:plan_date>-aktuell.pdf', views.sub_pdf, name="timetable_substitutions_pdf_date")
     ]
 
-except (Terms.DoesNotExist, Schoolyear.DoesNotExist, ProgrammingError, OperationalError):
+except (Terms.DoesNotExist, Schoolyear.DoesNotExist, ProgrammingError, OperationalError) as e:
     from . import fallback_view
+    print(e)
 
     urlpatterns = [
         path('hints', fallback_view.fallback, name="timetable_hints"),

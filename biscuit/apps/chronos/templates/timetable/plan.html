@@ -46,16 +46,14 @@
 
             {# Show class teacher and deputy class teacher #}
             {% if type == 2 and el.teachers %}
-                <h6>Klassenlehrkraft:
+                <h5>Klassenlehrkräfte:
                     <span data-position="bottom" class="tooltipped"
                           data-tooltip="{{ el.teachers.0 }}">
                         <a href="{% url "timetable_smart_plan" "teacher" el.teachers.0.id %}">
                             {{ el.teachers.0.shortcode }}
-                        </a>
+                        </a>,
                     </span>
-                    {#                    {{ el.teachers.0.shortcode }}#}
                     {% if el.teachers.1 %}
-                        · Vertretung:
                         <span data-position="bottom" class="tooltipped"
                               data-tooltip="{{ el.teachers.1 }}">
                             <a href="{% url "timetable_smart_plan" "teacher" el.teachers.1.id %}">
@@ -63,7 +61,7 @@
                             </a>
                         </span>
                     {% endif %}
-                </h6>
+                </h5>
             {% endif %}
         </div>
         {# Show print button only if not on mobile #}
