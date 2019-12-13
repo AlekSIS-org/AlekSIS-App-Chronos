@@ -4,8 +4,7 @@ from typing import Optional, Union
 from django import template
 from django.db.models.query import QuerySet
 
-from ..util import CalendarWeek, week_weekday_to_date, week_period_to_date
-
+from ..util import CalendarWeek, week_period_to_date, week_weekday_to_date
 
 register = template.Library()
 

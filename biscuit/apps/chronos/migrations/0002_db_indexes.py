@@ -6,25 +6,31 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0001_initial'),
-        ('chronos', '0001_initial'),
+        ("core", "0001_initial"),
+        ("chronos", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='lessonsubstitution',
-            unique_together={('school', 'lesson_period', 'week')},
+            name="lessonsubstitution",
+            unique_together={("school", "lesson_period", "week")},
         ),
         migrations.AddIndex(
-            model_name='lesson',
-            index=models.Index(fields=['date_start', 'date_end'], name='chronos_les_date_st_5ecc62_idx'),
+            model_name="lesson",
+            index=models.Index(
+                fields=["date_start", "date_end"], name="chronos_les_date_st_5ecc62_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='lessonperiod',
-            index=models.Index(fields=['lesson', 'period'], name='chronos_les_lesson__05250e_idx'),
+            model_name="lessonperiod",
+            index=models.Index(
+                fields=["lesson", "period"], name="chronos_les_lesson__05250e_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='timeperiod',
-            index=models.Index(fields=['time_start', 'time_end'], name='chronos_tim_time_st_491e4c_idx'),
+            model_name="timeperiod",
+            index=models.Index(
+                fields=["time_start", "time_end"], name="chronos_tim_time_st_491e4c_idx"
+            ),
         ),
     ]

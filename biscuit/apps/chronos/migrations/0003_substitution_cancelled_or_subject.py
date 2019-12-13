@@ -6,17 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chronos', '0002_db_indexes'),
+        ("chronos", "0002_db_indexes"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='lessonsubstitution',
-            name='cancelled',
+            model_name="lessonsubstitution",
+            name="cancelled",
             field=models.BooleanField(default=False),
         ),
         migrations.AddConstraint(
-            model_name='lessonsubstitution',
-            constraint=models.CheckConstraint(check=models.Q(('cancelled', True), ('subject__isnull', False), _negated=True), name='either_substituted_or_cancelled'),
+            model_name="lessonsubstitution",
+            constraint=models.CheckConstraint(
+                check=models.Q(
+                    ("cancelled", True), ("subject__isnull", False), _negated=True
+                ),
+                name="either_substituted_or_cancelled",
+            ),
         ),
     ]

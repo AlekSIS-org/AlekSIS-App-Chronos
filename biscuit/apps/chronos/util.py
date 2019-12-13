@@ -20,7 +20,7 @@ class CalendarWeek:
     def from_date(cls, when: date):
         """ Get the calendar week by a date object (the week this date is in). """
 
-        return cls(year=when.year, week=int(when.strftime('%V')))
+        return cls(year=when.year, week=int(when.strftime("%V")))
 
     @classmethod
     def current_week(cls) -> int:
@@ -33,7 +33,7 @@ class CalendarWeek:
         """ Get all calendar weeks within a date range. """
 
         if start > end:
-            raise ValueError('End date must be after start date.')
+            raise ValueError("End date must be after start date.")
 
         current = start
         weeks = []
@@ -49,22 +49,30 @@ class CalendarWeek:
         if not self.year:
             self.year = today.year
         if not self.week:
-            self.week = int(today.strftime('%V'))
+            self.week = int(today.strftime("%V"))
 
     def __str__(self) -> str:
-        return '%s %d (%s %s %s)' % (_('Calendar Week'), self.week, self[0], _('to'), self[-1])
+        return "%s %d (%s %s %s)" % (
+            _("Calendar Week"),
+            self.week,
+            self[0],
+            _("to"),
+            self[-1],
+        )
 
     def __len__(self) -> int:
         return 7
 
     def __getitem__(self, n: int) -> date:
         if n < -7 or n > 6:
-            raise IndexError('Week day %d is out of range.' % n)
+            raise IndexError("Week day %d is out of range." % n)
 
         if n < 0:
             n += 7
 
-        return datetime.strptime('%d-%d-%d' % (self.year, self.week, n + 1), '%G-%V-%u').date()
+        return datetime.strptime(
+            "%d-%d-%d" % (self.year, self.week, n + 1), "%G-%V-%u"
+        ).date()
 
     def __contains__(self, day: date) -> bool:
         return self.__class__.form_date(day) == self

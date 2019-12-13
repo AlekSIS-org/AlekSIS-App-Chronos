@@ -6,12 +6,11 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chronos', '0003_substitution_cancelled_or_subject'),
+        ("chronos", "0003_substitution_cancelled_or_subject"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='room',
-            unique_together={('school', 'short_name')},
+            name="room", unique_together={("school", "short_name")},
         ),
     ]
