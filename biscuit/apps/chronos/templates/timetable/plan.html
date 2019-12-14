@@ -3,22 +3,27 @@
 <script type="text/javascript">
     {% if smart %}
         var week = {{ selected_week }};
-        function goToCalendarWeek(cw) {
-            window.location.href = "{% url "timetable_smart_plan" raw_type id %}/{{ selected_year }}/" + cw;
+        var year = {{ selected_year }};
+        function goToCalendarWeek(cw, year) {
+            window.location.href = "{% url "timetable_smart_plan" raw_type id %}/" + year + "/" + cw;
         }
         function onCalendarWeekChanged(where) {
-            goToCalendarWeek($(where).val());
+            goToCalendarWeek($(where).val(), year);
         }
 
         function weekBefore() {
             if (week > 1) {
-                goToCalendarWeek(week - 1)
+                goToCalendarWeek(week - 1, year)
+            } else {
+                goToCalendarWeek(52, year - 1)
             }
         }
 
         function weekNext() {
             if (week < 52) {
-                goToCalendarWeek(week + 1);
+                goToCalendarWeek(week + 1, year);
+            } else {
+                goToCalendarWeek(1, year + 1);
             }
         }
 
@@ -51,8 +56,9 @@
 
                         <span data-position="bottom" class="tooltipped"
                               data-tooltip="{{ teacher }}">
-                             <a href="{% url "timetable_smart_plan" "teacher" teacher.id %}">
-                                {{ teacher.shortcode }}</a></span>{% if not forloop.last %},{% endif %}
+                            <a href="{% url "timetable_smart_plan" "teacher" teacher.id %}">
+                                {{ teacher.shortcode }}</a>
+                        </span>{% if not forloop.last %},{% endif %}
                     {% endfor %}
                 </h5>
             {% endif %}
