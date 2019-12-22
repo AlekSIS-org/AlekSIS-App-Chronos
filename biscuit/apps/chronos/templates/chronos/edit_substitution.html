@@ -1,7 +1,7 @@
 {# -*- engine:django -*- #}
 
 {% extends "core/base.html" %}
-{% load bootstrap4 font_awesome i18n %}
+{% load bootstrap4 i18n %}
 
 {% block bootstrap4_extra_head %}
   {{ block.super }}
@@ -24,7 +24,7 @@
       {% if substitution %}
         {# FIXME Respect year as well #}
         <a href="{% url 'delete_substitution' substitution.lesson_period.id substitution.week %}" class="btn btn-danger">
-          {% fa 'trash-o' %}
+          <span class="mdi mdi-delete"></span>
         </a>
       {% endif %}
     </div>
