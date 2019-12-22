@@ -27,10 +27,10 @@ class LessonsTable(tables.Table):
         attrs = {"class": "table table-striped table-bordered table-hover table-responsive-xl"}
         row_attrs = {"class": _css_class_from_lesson_state}
 
-    period__period = tables.Column(accessor="period.period")
-    lesson__groups = tables.Column(accessor="lesson.group_names", verbose_name=_("Groups"))
-    lesson__teachers = tables.Column(accessor="lesson.teacher_names", verbose_name=_("Teachers"))
-    lesson__subject = tables.Column(accessor="lesson.subject")
+    period__period = tables.Column(accessor="period__period")
+    lesson__groups = tables.Column(accessor="lesson__group_names", verbose_name=_("Groups"))
+    lesson__teachers = tables.Column(accessor="lesson__teacher_names", verbose_name=_("Teachers"))
+    lesson__subject = tables.Column(accessor="lesson__subject")
     room = tables.Column(accessor="room")
     edit_substitution = tables.LinkColumn(
         "edit_substitution", args=[A("id"), A("_week")], text=_("Substitution")
@@ -43,10 +43,10 @@ class SubstitutionsTable(tables.Table):
 
     lesson_period = tables.Column(verbose_name=_("Lesson"))
     lesson__groups = tables.Column(
-        accessor="lesson_period.lesson.group_names", verbose_name=_("Groups")
+        accessor="lesson_period__lesson__group_names", verbose_name=_("Groups")
     )
     lesson__teachers = tables.Column(
-        accessor="lesson_period.get_teacher_names", verbose_name=_("Teachers")
+        accessor="lesson_period__get_teacher_names", verbose_name=_("Teachers")
     )
     lesson__subject = tables.Column(accessor="subject")
     room = tables.Column(accessor="room")
