@@ -33,8 +33,7 @@
         {% for teacher in lesson_period.get_teachers.all %}
           <a href="{% url 'person_by_id' teacher.id %}"
             title="{{ teacher.first_name }} {{ teacher.last_name }}"
-            class="card-text"
-            data-poload="{% url 'person_by_id_card' teacher.id %}">
+            class="card-text">
             {{ teacher.short_name }}
           </a>
         {% endfor %}
