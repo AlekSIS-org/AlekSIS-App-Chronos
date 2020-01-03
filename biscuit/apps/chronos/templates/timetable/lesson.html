@@ -4,7 +4,7 @@
         {# Every element of the lesson #}
         {% for element_container in col.elements %}
             <div style="
-            
+
                     {# Display background color only if no badge exists and it is not the old room and there are no holidays #}
                     {% if not element_container.substitution.table.badge %}
                         {% if not element_container.is_old or type != 1 %}
