@@ -328,19 +328,7 @@ def sub_pdf(request, plan_date=None):
     return FileResponse(file, content_type="application/pdf")
 
 
-@login_required
-@permission_required("timetable.show_plan")
-@cache_page(SUBS_VIEW_CACHE.expiration_time)
-def substitutions(request, year=None, month=None, day=None):
-    """Show substitutions in a classic view"""
-
-    date, time = find_out_what_is_today(year, month, day)
-
-    # Get next weekday if it is a weekend
-    next_weekday = get_next_weekday_with_time(date, time)
-    if next_weekday != date:
-        return redirect("timetable_substitutions_date", next_weekday.year, next_weekday.month, next_weekday.day)
-
+def get_subs_context(request, date):
     # Get subs and generate table
     events = get_all_events_by_date(date)
     subs = get_substitutions_by_date(date)
@@ -354,7 +342,7 @@ def substitutions(request, year=None, month=None, day=None):
     header_info = get_header_information(subs, date, events)
     hints = list(get_all_hints_by_time_period(date, date))
 
-    context = {
+    return {
         "subs": subs,
         "sub_table": sub_table,
         "date": date,
@@ -363,7 +351,51 @@ def substitutions(request, year=None, month=None, day=None):
         "hints": hints,
     }
 
-    return render(request, 'timetable/substitution.html', context)
+
+@login_required
+@permission_required("timetable.show_plan")
+@cache_page(SUBS_VIEW_CACHE.expiration_time)
+def substitutions(request, year=None, month=None, day=None):
+    """Show substitutions in a classic view"""
+
+    date, time = find_out_what_is_today(year, month, day)
+
+    # Get next weekday if it is a weekend
+    next_weekday = get_next_weekday_with_time(date, time)
+    if next_weekday != date:
+        return redirect("timetable_substitutions_date", next_weekday.year, next_weekday.month, next_weekday.day)
+
+    context = get_subs_context(request, date)
+
+    template_name = 'timetable/substitution.html'
+
+    return render(request, template_name, context)
+
+
+@login_required
+@permission_required("timetable.show_plan")
+@cache_page(SUBS_VIEW_CACHE.expiration_time)
+def substitutions_print(request, year=None, month=None, day=None):
+    """Show substitutions in a classic view"""
+
+    date, time = find_out_what_is_today(year, month, day)
+
+    # Get next weekday if it is a weekend
+    next_weekday = get_next_weekday_with_time(date, time)
+    if next_weekday != date:
+        return redirect("timetable_substitutions_date_print", next_weekday.year, next_weekday.month, next_weekday.day)
+
+    second_date = get_next_weekday(date + datetime.timedelta(days=1))
+    context1 = get_subs_context(request, date)
+    context2 = get_subs_context(request, second_date)
+
+    context = {
+        "days": [context1, context2]
+    }
+
+    template_name = 'timetable/substitutionprint.html'
+
+    return render(request, template_name, context)
 
 
 ###################
