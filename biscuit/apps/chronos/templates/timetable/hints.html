@@ -1,0 +1,85 @@
+{% include 'partials/header.html' %}
+{% load material_form %}
+{% load martortags %}
+
+<main>
+    <h4>Hinweismanagement</h4>
+
+    {% if msg %}
+        <div class="alert success">
+            <p>
+                <i class="material-icons left">check_circle</i>
+                Der Hinweis wurde erfolgreich {% if msg == "success_edit" %}gespeichert. {% else %}
+                gelöscht. {% endif %}
+            </p>
+        </div>
+    {% endif %}
+
+    <div class="card">
+        <form method="GET" class="card-content">
+            <div class="row no-margin">
+                <div class="col s12 m4">
+                    <a href="{% url 'timetable_add_hint' %}" class="waves-effect waves-light btn green">
+                        <i class="material-icons left">add</i>
+                        Neuen Hinweis erstellen
+                    </a>
+                </div>
+                <div class="col s12 m8 right-align">
+                    <button type="submit" class="waves-effect waves-green btn-flat">
+                        <i class="material-icons left">refresh</i> Filter aktualisieren
+                    </button>
+                    <a class="waves-effect waves-red btn-flat " href="{% url "timetable_hints" %}">
+                        <i class="material-icons left">clear</i> Filter entfernen
+                    </a>
+                </div>
+            </div>
+            {% form form=f.form %}
+            {% endform %}
+        </form>
+    </div>
+
+    <ul class="collapsible">
+        {% for hint in f.qs %}
+            <li>
+                <div class="collapsible-header row no-margin">
+
+                    <div class="col s10">
+                        <strong>{{ hint.from_date }} &mdash; {{ hint.to_date }}</strong> für
+                        <strong>
+                            {{ hint.classes_formatted }}
+                        </strong>
+                        {% if hint.teachers %}
+                            <span class="badge new green no-float no-margin">Lehrkräfte</span>
+                        {% endif %}
+                    </div>
+                    <div class="col s2">
+                        <i class="material-icons right collapsible-trigger v2"></i>
+
+                    </div>
+
+                </div>
+                <div class="collapsible-body row">
+                    <div class="right">
+                        <a class="btn-flat waves-effect waves-green green-text"
+                           href="{% url "timetable_edit_hint" hint.id %}">
+                            <i class="material-icons left">edit</i>
+                            <span class="hide-on-small-only">Bearbeiten</span>
+                        </a>
+                        <a class="btn-flat waves-effect waves-red red-text delete-button"
+                           href="{% url "timetable_delete_hint" hint.id %}">
+                            <i class="material-icons left">delete</i>
+                            <span class="hide-on-small-only">Löschen</span>
+                        </a>
+
+                    </div>
+                    <div>
+                        <p>
+                            {{ hint.text|safe_markdown }}</p>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</main>
+
+{% include 'partials/footer.html' %}

@@ -1,0 +1,47 @@
+{% if not sub.is_event %}
+    {% if sub.sub.type == 3 %}
+        {# Supervisement #}
+        {{ sub.sub.corridor.name }}
+    {% elif sub.sub.type == 1 or sub.sub.type == 2 %}
+        {# Canceled lesson: no room #}
+    {% elif sub.sub.room_new and sub.sub.room_old %}
+        {# New and old room available #}
+        <span class="tooltipped" data-position="bottom"
+              data-tooltip="{{ sub.sub.room_old.name }} → {{ sub.sub.room_new.name }}">
+            <a href="{% url "timetable_smart_plan" "room" sub.sub.room_old.id %}">
+                <s>{{ sub.sub.room_old.shortcode }}</s>
+            </a>
+            →
+            <a href="{% url "timetable_smart_plan" "room" sub.sub.room_new.id %}">
+                <strong>{{ sub.sub.room_new.shortcode }}</strong>
+            </a>
+        </span>
+    {% elif sub.sub.room_new and not sub.sub.room_old %}
+        {# Only new room available #}
+        <span class="tooltipped" data-position="bottom"
+              data-tooltip="{{ sub.sub.room_new.name }}">
+            <a href="{% url "timetable_smart_plan" "room" sub.sub.room_new.id %}">
+                {{ sub.sub.room_new.shortcode }}
+            </a>
+        </span>
+    {% elif not sub.sub.room_new and not sub.sub.room_old %}
+        {# Nothing to view #}
+    {% else %}
+        {# Only old room available #}
+        <span class="tooltipped" data-position="bottom"
+              data-tooltip="{{ sub.sub.room_old.name }}">
+            <a href="{% url "timetable_smart_plan" "room" sub.sub.room_old.id %}">
+                {{ sub.sub.room_old.shortcode }}
+            </a>
+        </span>
+    {% endif %}
+{% else %}
+    {% for room in sub.rooms %}
+        <span class="tooltipped" data-position="bottom"
+              data-tooltip="{{ room.name }}">
+            <a href="{% url "timetable_smart_plan" "room" room.id %}">
+                <strong>{{ room.shortcode }}{% if not forloop.last %},{% endif %}</strong>
+            </a>
+        </span>
+    {% endfor %}
+{% endif %}

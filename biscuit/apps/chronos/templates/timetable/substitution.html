@@ -1,0 +1,112 @@
+{% include 'partials/header.html' %}
+
+
+<script type="text/javascript">
+    var dest = "/timetable/substitutions/";
+</script>
+
+<main>
+    <div class="row no-margin">
+        <div class="col s10 m6">
+            <h4>Vertretungen</h4>
+        </div>
+        <div class="col s2 m6 right align-right print-icon">
+            <a class="waves-effect waves-teal btn-flat btn-flat-medium right"
+               href="
+                    {% if debug %}
+                        {% url "timetable_substitutions_pdf_date" date|date:"Y-m-d" %}
+                    {% else %}
+                       {% url "timetable_substitutions_pdf" %}
+                    {% endif %}
+                    ">
+                <i class="material-icons center">print</i>
+            </a>
+        </div>
+    </div>
+
+    <div class="row no-print">
+        <div class="col s12 m6 l8 xl9">
+            {% if header_info.is_box_needed %}
+                <div class="card">
+                    <div class="card-content">
+                        {% for row in header_info.rows %}
+                            <div class="row no-margin">
+                                <div class="col s3">
+                                    <strong class="truncate">{{ row.0 }}</strong>
+                                </div>
+                                <div class="col s9">
+                                    {{ row.1 }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% include "timetable/hintsinsub.html" %}
+        </div>
+        <div class="col s12 m6 l4 xl3">
+            {% include "timetable/datepicker.html" %}
+        </div>
+    </div>
+
+    <h5 class="hide-on-small-and-down">{{ date|date:"l, j. F Y" }}</h5>
+
+    <table class="substitutions striped responsive-table">
+        <thead>
+        <tr>
+            <th><i class="material-icons">people</i></th>
+            <th><i class="material-icons">access_time</i></th>
+            <th>Lehrer</th>
+            <th>Fach</th>
+            <th>Raum</th>
+            <th>Hinweis</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if not sub_table %}
+            <td colspan="7">
+                <p class="flow-text center">
+                    Keine Vertretungen vorhanden
+                </p>
+            </td>
+        {% endif %}
+        {% for sub in sub_table %}
+            <tr class="{{ sub.color }}-text">
+                <td>
+                    {{ sub.classes }}
+                </td>
+                <td>
+                    <strong>
+                        {{ sub.lesson }}
+                    </strong>
+                </td>
+                <td>
+                    {% include "timetable/subs/teacher.html" %}
+                </td>
+                <td>
+                    {% include "timetable/subs/subject.html" %}
+                </td>
+                <td>
+                    {% include "timetable/subs/room.html" %}
+                </td>
+                <td>
+                    {% if sub.badge %}
+                        <span class="badge new green hide-on-med-and-up">{{ sub.badge }}</span>
+                    {% endif %}
+                    <em>{{ sub.text|default:"" }}</em>
+                </td>
+                <td class="hide-on-small-and-down">
+                    {% if sub.badge %}
+                        <span class="badge new green darken-2">{{ sub.badge }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</main>
+
+{% include 'partials/footer.html' %}

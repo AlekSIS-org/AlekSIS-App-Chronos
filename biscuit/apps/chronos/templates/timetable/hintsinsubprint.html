@@ -1,0 +1,16 @@
+{% load martortags %}
+{% if c.hints %}
+    {% for hint in c.hints %}
+        <div class="alert primary">
+            <div>
+                <strong>
+                    {{ hint.classes_formatted }}{% if hint.teachers and hint.classes.all %}, Lehrkräfte{% endif %}:
+                </strong>
+
+                <i class="material-icons left">announcement</i>
+
+                {{ hint.text|safe_markdown }}
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}

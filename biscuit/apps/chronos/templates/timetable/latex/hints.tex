@@ -1,0 +1,15 @@
+{% load martortags %}
+{% if hints %}
+\subsection*{\hspace{0.7em}Hinweise}
+\vspace{-0.7em}
+\begin{itemize}
+    \setlength\itemsep{0.1em}
+    {% for hint in hints %}
+    \normalsize
+    \item \small
+    {{ hint.classes_formatted }}{% if hint.teachers and hint.classes.all %}, {% endif %}{% if hint.teachers %}Lehrkräfte{% endif %}:
+    \normalsize
+{{ hint.text_as_latex|safe }}
+{% endfor %}
+\end{itemize}
+{% endif %}

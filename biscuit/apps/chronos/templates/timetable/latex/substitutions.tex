@@ -1,0 +1,50 @@
+{% load common %}
+{% load tex %}
+
+\large
+\subsubsection*{}
+
+\section*{\Huge Vertretungen {{ date|date:"l, j. F Y"}}}
+
+{%  include "timetable/latex/hints.tex" %}
+
+{% if header_info.is_box_needed %}
+\begin{tabular}{@{\hspace{-1em}}p{0.22\linewidth}p{0.73\linewidth}}
+{% for row in header_info.rows %}
+    \textbf{ {{ row.0 }} } & {{ row.1 }} \\
+{% endfor %}
+\end{tabular}
+{% endif %}
+
+% Init table
+{% set color_background = 1 %}
+{% set last_classes = "" %}
+
+\def\arraystretch{1.1}
+\begin{longtable}{p{20mm}p{10mm}p{30mm}p{25mm}p{30mm}p{45mm}}
+    \textbf{Klassen} & \textbf{Std.} & \textbf{Lehrer} & \textbf{Fach} & \textbf{Raum} & \textbf{Hinweis}\\\hline
+    \endhead
+    {% for sub in subs %}
+        {#  Color groups of classes in grey/white #}
+        {% if last_classes != sub.classes %}
+            {% if color_background %}{% set color_background = 0 %}
+            {% else %}{% set color_background = 1 %}
+            {% endif %}
+        {% endif %}
+        {% set last_classes = sub.classes %}
+        {# Background color #}
+        {% if color_background %}\rowcolor{ grey }{% endif %}
+        {% with c=sub.color %}
+            {#  Display classes #}
+            \color{ {{c}} }\textbf{ {{ sub.classes }} } &
+            {# Display lesson number #}
+            \color{ {{c}} } {{ sub.lesson }} &
+            \color{ {{c}} } {% include "timetable/latex/teacher.tex" %} &
+            \color{ {{c}} } {% include "timetable/latex/subject.tex" %} &
+            \color{ {{c}} } {% include "timetable/latex/room.tex" %} &
+            {# Display badge (for cancellations) #}     {# Display notice and new line #}
+            {% if sub.badge %} \footnotesize\badge{ {{ sub.badge }} } {% endif %}
+            \color{ {{c}} } \large\textit{ {{sub.text|default:""|safe|texify|safe}} } \\
+        {% endwith %}
+    {% endfor %}
+\end{longtable}
