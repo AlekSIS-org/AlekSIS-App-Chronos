@@ -1,16 +1,16 @@
 [tool.poetry]
-name = "BiscuIT-App-Chronos"
+name = "AlekSIS-App-Chronos"
 version = "1.0a4dev0"
 packages = [
     { include = "aleksis" }
 ]
 readme = "README.rst"
 
-description = "AlekSIS School Information System (SIS) - App Chronos (Time tables)"
+description = "AlekSIS (School Information System) - App Chronos (Time tables)"
 authors = ["Dominik George <dominik.george@teckids.org>", "Julian Leucker <leuckeju@katharineum.de>", "Frank Poetzsch-Heffter <p-h@katharineum.de>", "Tom Teichler <tom.teichler@teckids.org>", "Jonathan Weth <wethjo@katharineum.de>", "Hangzhi Yu <yuha@katharineum.de>"]
 license = "EUPL-1.2"
 homepage = "https://aleksis.edugit.io/"
-repository = "https://edugit.org/BiscuIT/BiscuIT-App-Chronos"
+repository = "https://edugit.org/AlekSIS/AlekSIS-App-Chronos"
 documentation = "https://aleksis.edugit.io/AlekSIS/docs/html/"
 classifiers = [
     "Environment :: Web Environment",

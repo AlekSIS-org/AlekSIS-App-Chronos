@@ -1,4 +1,4 @@
 include LICENCE
-recursive-include biscuit/apps/chronos/static *
-recursive-include biscuit/apps/chronos/templates *
-recursive-include biscuit/apps/chronos/migrations *
+recursive-include aleksis/apps/chronos/static *
+recursive-include aleksis/apps/chronos/templates *
+recursive-include aleksis/apps/chronos/migrations *

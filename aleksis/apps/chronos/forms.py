@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_select2.forms import ModelSelect2MultipleWidget, Select2Widget
 
-from biscuit.core.models import Group, Person
+from aleksis.core.models import Group, Person
 
 from .models import LessonPeriod, LessonSubstitution, Room, Subject
 

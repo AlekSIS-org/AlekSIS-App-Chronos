@@ -4,8 +4,8 @@ import django.core.validators
 import django.db.models.deletion
 from django.db import migrations, models
 
-import biscuit.apps.chronos.util
-import biscuit.core.util.core_helpers
+import aleksis.apps.chronos.util
+import aleksis.core.util.core_helpers
 
 
 class Migration(migrations.Migration):
@@ -229,7 +229,7 @@ class Migration(migrations.Migration):
                 (
                     "week",
                     models.IntegerField(
-                        default=biscuit.apps.chronos.util.CalendarWeek.current_week,
+                        default=aleksis.apps.chronos.util.CalendarWeek.current_week,
                         verbose_name="Week",
                     ),
                 ),

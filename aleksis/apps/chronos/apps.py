@@ -1,6 +1,6 @@
-from biscuit.core.util.apps import AppConfig
+from aleksis.core.util.apps import AppConfig
 
 
 class ChronosConfig(AppConfig):
-    name = "biscuit.apps.chronos"
-    verbose_name = "BiscuIT - Chronos (Timetables)"
+    name = "aleksis.apps.chronos"
+    verbose_name = "AlekSIS - Chronos (Timetables)"

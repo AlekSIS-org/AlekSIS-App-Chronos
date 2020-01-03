@@ -11,8 +11,8 @@ from django.utils.translation import ugettext as _
 
 from django_tables2 import RequestConfig
 
-from biscuit.core.decorators import admin_required
-from biscuit.core.util import messages
+from aleksis.core.decorators import admin_required
+from aleksis.core.util import messages
 
 from .forms import LessonSubstitutionForm, SelectForm
 from .models import LessonPeriod, LessonSubstitution, TimePeriod
