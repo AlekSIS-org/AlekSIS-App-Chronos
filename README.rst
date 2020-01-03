@@ -1,5 +1,5 @@
-AlekSIS (School Information System) - App Chronos (digital timetables)
-======================================================================
+AlekSIS (School Information System) — App Χρόνος (digital timetables)
+=====================================================================
 
 AlekSIS
 -------
