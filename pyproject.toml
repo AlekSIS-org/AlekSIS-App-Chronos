@@ -2,16 +2,16 @@
 name = "BiscuIT-App-Chronos"
 version = "1.0a4dev0"
 packages = [
-    { include = "biscuit" }
+    { include = "aleksis" }
 ]
 readme = "README.rst"
 
-description = "BiscuIT School Information System (SIS) - App Chronos (Time tables)"
+description = "AlekSIS School Information System (SIS) - App Chronos (Time tables)"
 authors = ["Dominik George <dominik.george@teckids.org>", "Julian Leucker <leuckeju@katharineum.de>", "Frank Poetzsch-Heffter <p-h@katharineum.de>", "Tom Teichler <tom.teichler@teckids.org>", "Jonathan Weth <wethjo@katharineum.de>", "Hangzhi Yu <yuha@katharineum.de>"]
 license = "EUPL-1.2"
-homepage = "https://biscuit.edugit.io/"
+homepage = "https://aleksis.edugit.io/"
 repository = "https://edugit.org/BiscuIT/BiscuIT-App-Chronos"
-documentation = "https://biscuit.edugit.io/BiscuIT-ng/docs/html/"
+documentation = "https://aleksis.edugit.io/AlekSIS/docs/html/"
 classifiers = [
     "Environment :: Web Environment",
     "Intended Audience :: Education",
@@ -20,7 +20,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.7"
-BiscuIT-ng = { path = "../../.." }
+AlekSIS = { path = "../../.." }
 
 [build-system]
 requires = ["poetry>=0.12"]
