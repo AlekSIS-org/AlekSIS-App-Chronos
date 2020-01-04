@@ -13,9 +13,15 @@ MENUS = {
             ],
             "submenu": [
                 {
-                    "name": _("Timetable"),
+                    "name": _("My timetable"),
                     "url": "timetable",
                     "icon": "grid_on",
+                    "validators": ["menu_generator.validators.is_authenticated"],
+                },
+                {
+                    "name": _("All timetables"),
+                    "url": "all_timetables",
+                    "icon": "format_indent_increase",
                     "validators": ["menu_generator.validators.is_authenticated"],
                 },
                 {
