@@ -5,6 +5,7 @@ MENUS = {
         {
             "name": _("Timetables"),
             "url": "#",
+            "icon": "school",
             "root": True,
             "validators": [
                 "menu_generator.validators.is_authenticated",
@@ -14,6 +15,7 @@ MENUS = {
                 {
                     "name": _("Timetable"),
                     "url": "timetable",
+                    "icon": "grid_on",
                     "validators": ["menu_generator.validators.is_authenticated"],
                 },
                 {
@@ -24,6 +26,7 @@ MENUS = {
                 {
                     "name": _("Substitutions"),
                     "url": "substitutions",
+                    "icon": "update",
                     "validators": ["menu_generator.validators.is_authenticated"],
                 },
             ],
