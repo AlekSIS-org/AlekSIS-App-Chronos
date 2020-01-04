@@ -21,6 +21,7 @@ MENUS = {
                 {
                     "name": _("Daily lessons"),
                     "url": "lessons_day",
+                    "icon": "calendar_today",
                     "validators": ["menu_generator.validators.is_authenticated"],
                 },
                 {
