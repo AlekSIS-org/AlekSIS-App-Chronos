@@ -1,9 +1,9 @@
-{% include 'partials/header.html' %}
+{% extends 'core/base.html' %}
 {% load material_form %}
 {% load martortags %}
 
-<main>
-    <h4>Hinweismanagement</h4>
+{% block content %}
+    <h4>{% blocktrans %}Hinweismanagement{% endblocktrans %}</h4>
 
     {% if msg %}
         <div class="alert success">
@@ -80,6 +80,6 @@
             </li>
         {% endfor %}
     </ul>
-</main>
+{% endblock %}
 
-{% include 'partials/footer.html' %}
+

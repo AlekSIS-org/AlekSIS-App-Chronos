@@ -1,11 +1,11 @@
-{% include 'partials/header.html' %}
+{% extends 'core/base.html' %}
 
 
 <script type="text/javascript">
     var dest = "/timetable/substitutions/";
 </script>
 
-<main>
+{% block content %}
     <div class="row no-margin">
         <div class="col s10 m6">
             <h4>Vertretungen</h4>
@@ -107,6 +107,6 @@
         </tbody>
     </table>
 
-</main>
+{% endblock %}
 
-{% include 'partials/footer.html' %}
+

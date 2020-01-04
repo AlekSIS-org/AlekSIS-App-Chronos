@@ -1,8 +1,6 @@
-{% include 'partials/header.html' %}
+{% extends 'core/base.html' %}
 
-<main>
-    <h3>Die Stundenpläne sind aktuell noch nicht einsehbar.</h3>
+{% block content %}
+    <h3>{% blocktrans %}The timetables are currently unavailable.{% endblocktrans %}</h3>
 
-</main>
-
-{% include 'partials/footer.html' %}
+{% endblock %}

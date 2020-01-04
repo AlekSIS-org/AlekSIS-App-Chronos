@@ -1,4 +1,4 @@
-{% include 'partials/header.html' %}
+{% extends 'core/base.html' %}
 {% load copy_filter %}
 <script type="text/javascript">
     {% if smart %}
@@ -42,7 +42,7 @@
         });
     {% endif %}
 </script>
-<main>
+{% block content %}
     <div class="row no-margin">
         <div class="col s8 m6 l8 xl9">
             <h3>
@@ -257,6 +257,6 @@
             {% endfor %}
         {% endfor %}
     </div>
-</main>
+{% endblock %}
 
-{% include 'partials/footer.html' %}
+
