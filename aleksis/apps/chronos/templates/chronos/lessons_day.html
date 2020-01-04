@@ -1,10 +1,9 @@
 {# -*- engine:django -*- #}
 
 {% extends "core/turnable.html" %}
-{% load bootstrap4 i18n %}
+{% load i18n %}
 {% load render_table from django_tables2 %}
 
-{% block bootstrap4_title %}{% blocktrans %}Lessons{% endblocktrans %} - {{ block.super }}{% endblock %}
 
 {% block current_content %}
   {% render_table lessons_table %}
