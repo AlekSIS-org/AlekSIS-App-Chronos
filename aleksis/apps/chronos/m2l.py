@@ -2,7 +2,7 @@ import os
 import subprocess
 
 from debug.models import register_log_with_filename
-from schoolapps.settings import BASE_DIR
+from aleksis.settings import BASE_DIR
 
 
 # from .models import register_log_with_filename
