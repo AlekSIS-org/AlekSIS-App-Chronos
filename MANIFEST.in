@@ -1,4 +1,4 @@
-include LICENCE
+include LICENCE.rst
 recursive-include aleksis/apps/chronos/static *
 recursive-include aleksis/apps/chronos/templates *
 recursive-include aleksis/apps/chronos/migrations *
