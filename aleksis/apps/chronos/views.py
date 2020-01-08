@@ -3,7 +3,7 @@ from datetime import date, datetime, timedelta
 from typing import Optional
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Max, Min
+from django.db.models import Count, Max, Min
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -12,12 +12,29 @@ from django.utils.translation import ugettext as _
 from django_tables2 import RequestConfig
 
 from aleksis.core.decorators import admin_required
+from aleksis.core.models import Person, Group
 from aleksis.core.util import messages
 
 from .forms import LessonSubstitutionForm, SelectForm
-from .models import LessonPeriod, LessonSubstitution, TimePeriod
+from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
 from .tables import LessonsTable, SubstitutionsTable
 from .util import CalendarWeek
+
+
+@login_required
+def all(request: HttpRequest) -> HttpResponse:
+
+    context = {}
+
+    teachers = Person.objects.annotate(lessons_count=Count("lessons_as_teacher")).filter(lessons_count__gt=0)
+    groups = Group.objects.annotate(lessons_count=Count("lessons")).filter(lessons_count__gt=0)
+    rooms = Room.objects.annotate(lessons_count=Count("lesson_periods")).filter(lessons_count__gt=0)
+
+    context['teachers'] = teachers
+    context['groups'] = groups
+    context['rooms'] = rooms
+
+    return render(request, 'chronos/all.html', context)
 
 
 @login_required
