@@ -139,6 +139,13 @@ class LessonPeriodQuerySet(models.QuerySet):
         if query_data.get("room", None):
             return self.filter_room(int(query_data["room"]))
 
+    def filter_from_type(self, type_: str, pk: int):
+        if type_ == "group":
+            return self.filter_group(pk)
+        elif type == "teacher":
+            return self.filter_teacher(pk)
+        else:
+            return self.filter_room(pk)
 
 class TimePeriod(models.Model):
     WEEKDAY_CHOICES = [

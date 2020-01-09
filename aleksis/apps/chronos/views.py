@@ -39,7 +39,7 @@ def all(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def timetable(
-    request: HttpRequest, year: Optional[int] = None, week: Optional[int] = None
+    request: HttpRequest, _type: str, pk: int, year: Optional[int] = None, week: Optional[int] = None
 ) -> HttpResponse:
     context = {}
 
@@ -51,21 +51,22 @@ def timetable(
     lesson_periods = LessonPeriod.objects.in_week(wanted_week)
 
     # Incrementally filter lesson periods by GET parameters
-    if (
-        request.GET.get("group", None)
-        or request.GET.get("teacher", None)
-        or request.GET.get("room", None)
-    ):
-        lesson_periods = lesson_periods.filter_from_query(request.GET)
-    else:
-        # Redirect to a selected view if no filter provided
-        if request.user.person:
-            if request.user.person.primary_group:
-                return redirect(
-                    reverse("timetable") + "?group=%d" % request.user.person.primary_group.pk
-                )
-            elif lesson_periods.filter(lesson__teachers=request.user.person).exists():
-                return redirect(reverse("timetable") + "?teacher=%d" % request.user.person.pk)
+    # if (
+    #     request.GET.get("group", None)
+    #     or request.GET.get("teacher", None)
+    #     or request.GET.get("room", None)
+    # ):
+
+    lesson_periods = lesson_periods.filter_from_type(_type, pk)
+    # else:
+    #     # Redirect to a selected view if no filter provided
+    #     if request.user.person:
+    #         if request.user.person.primary_group:
+    #             return redirect(
+    #                 reverse("timetable") + "?group=%d" % request.user.person.primary_group.pk
+    #             )
+    #         elif lesson_periods.filter(lesson__teachers=request.user.person).exists():
+    #             return redirect(reverse("timetable") + "?teacher=%d" % request.user.person.pk)
 
     # Regroup lesson periods per weekday
     per_day = {}

@@ -1,42 +1,51 @@
 {% extends 'core/base.html' %}
 
+{% load i18n %}
+
+<style type="text/css"> {# TODO: Have to be moved to head if there is a block header in core #}
+.btn-timetable-quicklaunch {
+  margin: 1%;
+  width: 30%;
+}
+</style>
+
+{% block page_title %}{% trans "All timetables" %}{% endblock %}
+
 {% block content %}
-    <h4>Alle Pläne</h4>
-    <div class="row">
-        <div class="col s12 m4">
-            <h5>Lehrkräfte</h5>
-            {% for teacher in teachers %}
-{#                <a class="waves-effect waves-light btn btn-timetable-quicklaunch"#}
-{#                   href="{% url 'timetable_smart_plan' 'teacher' teacher.id %}">#}
-                    {{ teacher.short_name }}
-{#                </a><!-- Shortcode -->#}
-            {% endfor %}
-        </div>
+  <div class="row">
+    <div class="col s12 m4">
+      <h5>{% trans "Teachers" %}</h5>
 
-        <div class="col s12 m4">
-            <h5>Klassen</h5>
-
-            {% for class in classes %}
-{#                <a class="waves-effect waves-light btn btn-timetable-quicklaunch"#}
-{#                   href="{% url 'timetable_smart_plan' 'class' class.id %}">#}
-                    {{ class.short_name }}
-{#                </a>#}
-            {% endfor %}
-
-        </div>
-
-        <div class="col s12 m4">
-            <h5>Räume</h5>
-            {% for room in rooms %}
-{#                <a class="waves-effect waves-light btn btn-timetable-quicklaunch"#}
-{#                   href="{% url 'timetable_smart_plan' 'room' room.id %}">#}
-                    {{ room.short_name }}
-{#                </a>#}
-            {% endfor %}
-        </div>
-
-
+      {% for teacher in teachers %}
+        <a class="waves-effect waves-light btn btn-timetable-quicklaunch"
+           href="{% url 'timetable' 'teacher' teacher.pk %}">
+          {{ teacher.short_name }}
+        </a>
+      {% endfor %}
     </div>
+
+    <div class="col s12 m4">
+      <h5>{% trans "Classes" %}</h5>
+
+      {% for class in classes %}
+        <a class="waves-effect waves-light btn btn-timetable-quicklaunch"
+           href="{% url 'timetable' 'group' class.id %}">
+          {{ class.short_name }}
+        </a>
+      {% endfor %}
+    </div>
+
+    <div class="col s12 m4">
+      <h5>{% trans "Rooms" %}</h5>
+
+      {% for room in rooms %}
+        <a class="waves-effect waves-light btn btn-timetable-quicklaunch"
+           href="{% url 'timetable' 'room' room.id %}">
+          {{ room.short_name }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
 
 {% endblock %}
 
