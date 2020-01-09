@@ -6,10 +6,10 @@
         <div class="col s12 m4">
             <h5>Lehrkräfte</h5>
             {% for teacher in teachers %}
-                <a class="waves-effect waves-light btn btn-timetable-quicklaunch"
-                   href="{% url 'timetable_smart_plan' 'teacher' teacher.id %}">
-                    {{ teacher.shortcode }}
-                </a><!-- Shortcode -->
+{#                <a class="waves-effect waves-light btn btn-timetable-quicklaunch"#}
+{#                   href="{% url 'timetable_smart_plan' 'teacher' teacher.id %}">#}
+                    {{ teacher.short_name }}
+{#                </a><!-- Shortcode -->#}
             {% endfor %}
         </div>
 
@@ -17,10 +17,10 @@
             <h5>Klassen</h5>
 
             {% for class in classes %}
-                <a class="waves-effect waves-light btn btn-timetable-quicklaunch"
-                   href="{% url 'timetable_smart_plan' 'class' class.id %}">
-                    {{ class.name }}
-                </a>
+{#                <a class="waves-effect waves-light btn btn-timetable-quicklaunch"#}
+{#                   href="{% url 'timetable_smart_plan' 'class' class.id %}">#}
+                    {{ class.short_name }}
+{#                </a>#}
             {% endfor %}
 
         </div>
@@ -28,10 +28,10 @@
         <div class="col s12 m4">
             <h5>Räume</h5>
             {% for room in rooms %}
-                <a class="waves-effect waves-light btn btn-timetable-quicklaunch"
-                   href="{% url 'timetable_smart_plan' 'room' room.id %}">
-                    {{ room.shortcode }}
-                </a>
+{#                <a class="waves-effect waves-light btn btn-timetable-quicklaunch"#}
+{#                   href="{% url 'timetable_smart_plan' 'room' room.id %}">#}
+                    {{ room.short_name }}
+{#                </a>#}
             {% endfor %}
         </div>
 

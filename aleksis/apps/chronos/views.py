@@ -27,14 +27,14 @@ def all(request: HttpRequest) -> HttpResponse:
     context = {}
 
     teachers = Person.objects.annotate(lessons_count=Count("lessons_as_teacher")).filter(lessons_count__gt=0)
-    groups = Group.objects.annotate(lessons_count=Count("lessons")).filter(lessons_count__gt=0)
+    classes = Group.objects.annotate(lessons_count=Count("lessons")).filter(lessons_count__gt=0, parent_groups=None)
     rooms = Room.objects.annotate(lessons_count=Count("lesson_periods")).filter(lessons_count__gt=0)
 
     context['teachers'] = teachers
-    context['groups'] = groups
+    context['classes'] = classes
     context['rooms'] = rooms
 
-    return render(request, 'chronos/all.html', context)
+    return render(request, 'chronos/quicklaunch.html', context)
 
 
 @login_required
