@@ -15,13 +15,13 @@ MENUS = {
                 {
                     "name": _("My timetable"),
                     "url": "timetable",
-                    "icon": "grid_on",
+                    "icon": "person",
                     "validators": ["menu_generator.validators.is_authenticated"],
                 },
                 {
                     "name": _("All timetables"),
                     "url": "all_timetables",
-                    "icon": "format_indent_increase",
+                    "icon": "grid_on",
                     "validators": ["menu_generator.validators.is_authenticated"],
                 },
                 {
