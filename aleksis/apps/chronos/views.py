@@ -23,7 +23,6 @@ from .util import CalendarWeek
 
 @login_required
 def all(request: HttpRequest) -> HttpResponse:
-
     context = {}
 
     teachers = Person.objects.annotate(lessons_count=Count("lessons_as_teacher")).filter(lessons_count__gt=0)
@@ -69,53 +68,61 @@ def timetable(
     #             return redirect(reverse("timetable") + "?teacher=%d" % request.user.person.pk)
 
     # Regroup lesson periods per weekday
-    per_day = {}
+    per_period = {}
     for lesson_period in lesson_periods:
-        per_day.setdefault(lesson_period.period.weekday, {})[
-            lesson_period.period.period
+        print(lesson_period.period)
+        per_period.setdefault(lesson_period.period.period, {})[
+            lesson_period.period.weekday
         ] = lesson_period
 
+    print(per_period)
     # Determine overall first and last day and period
     min_max = TimePeriod.objects.aggregate(
         Min("period"), Max("period"), Min("weekday"), Max("weekday")
     )
 
+    period_min = min_max.get("period__min", 1)
+    period_max = min_max.get("period__max", 7)
+
+    weekday_min = min_max.get("weekday__min", 0)
+    weekday_max = min_max.get("weekday__max", 6)
+
     # Fill in empty lessons
-    for weekday_num in range(min_max.get("weekday__min", 0), min_max.get("weekday__max", 6) + 1):
+    for period_num in range(period_min, period_max + 1):
+        print(period_num)
         # Fill in empty weekdays
-        if weekday_num not in per_day.keys():
-            per_day[weekday_num] = {}
+        if period_num not in per_period.keys():
+            per_period[period_num] = {}
 
         # Fill in empty lessons on this workday
-        for period_num in range(min_max.get("period__min", 1), min_max.get("period__max", 7) + 1):
-            if period_num not in per_day[weekday_num].keys():
-                per_day[weekday_num][period_num] = None
+        for weekday_num in range(weekday_min, weekday_max + 1):
+            if weekday_num not in per_period[period_num].keys():
+                per_period[period_num][weekday_num] = None
 
         # Order this weekday by periods
-        per_day[weekday_num] = OrderedDict(sorted(per_day[weekday_num].items()))
+        per_period[period_num] = OrderedDict(sorted(per_period[period_num].items()))
 
-    # Add a form to filter the view
-    select_form = SelectForm(request.GET or None)
-
-    context["current_head"] = _("Timetable")
-    context["lesson_periods"] = OrderedDict(sorted(per_day.items()))
+    print(lesson_periods)
+    context["lesson_periods"] = OrderedDict(sorted(per_period.items()))
     context["periods"] = TimePeriod.get_times_dict()
-    context["weekdays"] = dict(TimePeriod.WEEKDAY_CHOICES)
+    context["weekdays"] = dict(TimePeriod.WEEKDAY_CHOICES[weekday_min:weekday_max + 1])
+    context["weekdays_short"] = dict(TimePeriod.WEEKDAY_CHOICES_SHORT[weekday_min:weekday_max + 1])
     context["week"] = wanted_week
-    context["select_form"] = select_form
+    context["type"] = _type
+    context["pk"] = pk
 
     week_prev = wanted_week - 1
     week_next = wanted_week + 1
     context["url_prev"] = "%s?%s" % (
-        reverse("timetable_by_week", args=[week_prev.year, week_prev.week]),
+        reverse("timetable_by_week", args=[_type, pk, week_prev.year, week_prev.week]),
         request.GET.urlencode(),
     )
     context["url_next"] = "%s?%s" % (
-        reverse("timetable_by_week", args=[week_next.year, week_next.week]),
+        reverse("timetable_by_week", args=[_type, pk, week_next.year, week_next.week]),
         request.GET.urlencode(),
     )
 
-    return render(request, "chronos/tt_week.html", context)
+    return render(request, "chronos/plan.html", context)
 
 
 @login_required

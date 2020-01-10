@@ -158,6 +158,16 @@ class TimePeriod(models.Model):
         (6, _("Saturday")),
     ]
 
+    WEEKDAY_CHOICES_SHORT = [
+        (0, _("Sun")),
+        (1, _("Mon")),
+        (2, _("Tue")),
+        (3, _("Wed")),
+        (4, _("Thu")),
+        (5, _("Fri")),
+        (6, _("Sat")),
+    ]
+
     weekday = models.PositiveSmallIntegerField(verbose_name=_("Week day"), choices=WEEKDAY_CHOICES)
     period = models.PositiveSmallIntegerField(verbose_name=_("Number of period"))
 
