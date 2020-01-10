@@ -211,10 +211,10 @@
           </div>
 
         </div>
-        {% for weekday, lesson in lesson_periods_period.items %}
+        {% for weekday, lessons in lesson_periods_period.items %}
           {# A lesson #}
           <div class="col s2">
-            {% include "chronos/lesson.html" %}
+            {% include "chronos/lesson.html" with lessons=lessons %}
           </div>
         {% endfor %}
       </div>
