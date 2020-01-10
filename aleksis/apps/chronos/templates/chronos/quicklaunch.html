@@ -2,12 +2,14 @@
 
 {% load i18n %}
 
-<style type="text/css"> {# TODO: Have to be moved to head if there is a block header in core #}
-.btn-timetable-quicklaunch {
-  margin: 1%;
-  width: 30%;
-}
-</style>
+{% block extra_head %}
+  <style type="text/css">
+    .btn-timetable-quicklaunch {
+      margin: 1%;
+      width: 30%;
+    }
+  </style>
+{% endblock %}
 
 {% block page_title %}{% trans "All timetables" %}{% endblock %}
 
@@ -17,7 +19,7 @@
       <h5>{% trans "Teachers" %}</h5>
 
       {% for teacher in teachers %}
-        <a class="waves-effect waves-light btn btn-timetable-quicklaunch"
+        <a class="waves-effect waves-light btn btn-timetable-quicklaunch primary"
            href="{% url 'timetable' 'teacher' teacher.pk %}">
           {{ teacher.short_name }}
         </a>
@@ -28,7 +30,7 @@
       <h5>{% trans "Classes" %}</h5>
 
       {% for class in classes %}
-        <a class="waves-effect waves-light btn btn-timetable-quicklaunch"
+        <a class="waves-effect waves-light btn btn-timetable-quicklaunch primary"
            href="{% url 'timetable' 'group' class.id %}">
           {{ class.short_name }}
         </a>
@@ -39,7 +41,7 @@
       <h5>{% trans "Rooms" %}</h5>
 
       {% for room in rooms %}
-        <a class="waves-effect waves-light btn btn-timetable-quicklaunch"
+        <a class="waves-effect waves-light btn btn-timetable-quicklaunch primary"
            href="{% url 'timetable' 'room' room.id %}">
           {{ room.short_name }}
         </a>
