@@ -1,10 +1,14 @@
 {# -*- engine:django -*- #}
 
-{% extends "core/turnable.html" %}
+{% extends "core/base.html" %}
 {% load i18n %}
+
+
 {% load render_table from django_tables2 %}
 
+{% block page_title %}{% blocktrans %}Lessons {{ day }}{% endblocktrans %}{% endblock %}
 
-{% block current_content %}
+{% block content %}
+  {% include "core/turnable.html" %}
   {% render_table lessons_table %}
 {% endblock %}

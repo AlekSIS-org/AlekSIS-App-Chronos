@@ -24,7 +24,7 @@ def _css_class_from_lesson_state(
 
 class LessonsTable(tables.Table):
     class Meta:
-        attrs = {"class": "table table-striped table-bordered table-hover table-responsive-xl"}
+        attrs = {"class": "highlight"}
         row_attrs = {"class": _css_class_from_lesson_state}
 
     period__period = tables.Column(accessor="period__period")
@@ -39,7 +39,7 @@ class LessonsTable(tables.Table):
 
 class SubstitutionsTable(tables.Table):
     class Meta:
-        attrs = {"class": "table table-striped table-bordered table-hover table-responsive-xl"}
+        attrs = {"class": "highlight"}
 
     lesson_period = tables.Column(verbose_name=_("Lesson"))
     lesson__groups = tables.Column(
