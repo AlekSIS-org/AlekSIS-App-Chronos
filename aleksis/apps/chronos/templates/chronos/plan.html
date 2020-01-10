@@ -161,9 +161,9 @@
                             <span class="card-title">
                                 {{ day.1 }}
                             </span>
-{#              {% if day.1 %}#}
-{#                <span class="badge new blue center-align holiday-badge">{{ day.1.0 }}</span>#}
-{#              {% endif %}#}
+              {#              {% if day.1 %}#}
+              {#                <span class="badge new blue center-align holiday-badge">{{ day.1.0 }}</span>#}
+              {#              {% endif %}#}
             </div>
           </div>
         </div>
@@ -177,9 +177,9 @@
                             <span class="card-title">
                                 {{ day.1 }}
                             </span>
-{#              {% if day.1 %}#}
-{#                <span class="badge new blue center-align holiday-badge">{{ day.1.0 }}</span>#}
-{#              {% endif %}#}
+              {#              {% if day.1 %}#}
+              {#                <span class="badge new blue center-align holiday-badge">{{ day.1.0 }}</span>#}
+              {#              {% endif %}#}
             </div>
           </div>
         </div>
@@ -211,10 +211,10 @@
           </div>
 
         </div>
-        {% for col in row %}
+        {% for weekday, lesson in lesson_periods_period.items %}
           {# A lesson #}
           <div class="col s2">
-            {% include "timetable/lesson.html" %}
+            {% include "chronos/lesson.html" %}
           </div>
         {% endfor %}
       </div>
@@ -256,7 +256,7 @@
             </div>
 
           </div>
-          {% for col in row %}
+          {% for weekday, col in row %}
             {% if forloop.counter0 == day.0.1 %}
               <div class="col s8">
                 {# A lesson #}
