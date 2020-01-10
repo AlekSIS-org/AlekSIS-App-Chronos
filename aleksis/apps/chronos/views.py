@@ -71,9 +71,18 @@ def timetable(
     per_period = {}
     for lesson_period in lesson_periods:
         print(lesson_period.period)
-        per_period.setdefault(lesson_period.period.period, {})[
-            lesson_period.period.weekday
-        ] = lesson_period
+        added = False
+        if lesson_period.period.period in per_period :
+            if lesson_period.period.weekday in per_period[lesson_period.period.period]:
+                print("HEY HEY")
+                print(per_period[lesson_period.period.period][lesson_period.period.weekday])
+                per_period[lesson_period.period.period][lesson_period.period.weekday].append(lesson_period)
+                added =True
+
+        if not added:
+            per_period.setdefault(lesson_period.period.period, {})[
+                lesson_period.period.weekday
+            ] = [lesson_period]
 
     print(per_period)
     # Determine overall first and last day and period
@@ -97,7 +106,7 @@ def timetable(
         # Fill in empty lessons on this workday
         for weekday_num in range(weekday_min, weekday_max + 1):
             if weekday_num not in per_period[period_num].keys():
-                per_period[period_num][weekday_num] = None
+                per_period[period_num][weekday_num] = []
 
         # Order this weekday by periods
         per_period[period_num] = OrderedDict(sorted(per_period[period_num].items()))
