@@ -31,7 +31,7 @@
 
       {% for class in classes %}
         <a class="waves-effect waves-light btn btn-timetable-quicklaunch primary"
-           href="{% url 'timetable' 'group' class.id %}">
+           href="{% url 'timetable' 'group' class.pk %}">
           {{ class.short_name }}
         </a>
       {% endfor %}
@@ -42,7 +42,7 @@
 
       {% for room in rooms %}
         <a class="waves-effect waves-light btn btn-timetable-quicklaunch primary"
-           href="{% url 'timetable' 'room' room.id %}">
+           href="{% url 'timetable' 'room' room.pk %}">
           {{ room.short_name }}
         </a>
       {% endfor %}
