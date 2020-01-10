@@ -11,16 +11,16 @@
             <h4>Vertretungen</h4>
         </div>
         <div class="col s2 m6 right align-right print-icon">
-            <a class="waves-effect waves-teal btn-flat btn-flat-medium right"
-               href="
-                    {% if debug %}
-                        {% url "timetable_substitutions_pdf_date" date|date:"Y-m-d" %}
-                    {% else %}
-                       {% url "timetable_substitutions_pdf" %}
-                    {% endif %}
-                    ">
-                <i class="material-icons center">print</i>
-            </a>
+{#            <a class="waves-effect waves-teal btn-flat btn-flat-medium right"#}
+{#               href="#}
+{#                    {% if debug %}#}
+{#                        {% url "timetable_substitutions_pdf_date" date|date:"Y-m-d" %}#}
+{#                    {% else %}#}
+{#                       {% url "timetable_substitutions_pdf" %}#}
+{#                    {% endif %}#}
+{#                    ">#}
+{#                <i class="material-icons center">print</i>#}
+{#            </a>#}
         </div>
     </div>
 
@@ -43,14 +43,14 @@
                 </div>
             {% endif %}
 
-            {% include "timetable/hintsinsub.html" %}
+{#            {% include "chronos/hintsinsub.html" %}#}
         </div>
         <div class="col s12 m6 l4 xl3">
-            {% include "timetable/datepicker.html" %}
+            {% include "chronos/datepicker.html" %}
         </div>
     </div>
 
-    <h5 class="hide-on-small-and-down">{{ date|date:"l, j. F Y" }}</h5>
+    <h5 class="hide-on-small-and-down">{{ day|date:"l, j. F Y" }}</h5>
 
     <table class="substitutions striped responsive-table">
         <thead>
@@ -65,14 +65,14 @@
         </tr>
         </thead>
         <tbody>
-        {% if not sub_table %}
+        {% if not substitutions %}
             <td colspan="7">
                 <p class="flow-text center">
                     Keine Vertretungen vorhanden
                 </p>
             </td>
         {% endif %}
-        {% for sub in sub_table %}
+        {% for sub in substitutions %}
             <tr class="{{ sub.color }}-text">
                 <td>
                     {{ sub.classes }}
@@ -83,13 +83,13 @@
                     </strong>
                 </td>
                 <td>
-                    {% include "timetable/subs/teacher.html" %}
+                    {% include "chronos/subs/teacher.html" %}
                 </td>
                 <td>
-                    {% include "timetable/subs/subject.html" %}
+                    {% include "chronos/subs/subject.html" %}
                 </td>
                 <td>
-                    {% include "timetable/subs/room.html" %}
+                    {% include "chronos/subs/room.html" %}
                 </td>
                 <td>
                     {% if sub.badge %}

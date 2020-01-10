@@ -147,6 +147,33 @@ class LessonPeriodQuerySet(models.QuerySet):
         else:
             return self.filter_room(pk)
 
+
+class LessonSubstitutionQuerySet(models.QuerySet):
+    """ Overrides default QuerySet to add specific methods for lesson data. """
+
+    def within_dates(self, start: date, end: date):
+        """ Filter for all lessons within a date range. """
+
+        return self.filter(lesson_period__lesson__date_start__lte=start, lesson_period__lesson__date_end__gte=end)
+
+    def annotate_week(self, week: Union[CalendarWeek, int]):
+        """ Annotate all lessons in the QuerySet with the number of the provided calendar week. """
+
+        if isinstance(week, CalendarWeek):
+            week_num = week.week
+        else:
+            week_num = week
+
+        return self.annotate(_week=models.Value(week_num, models.IntegerField()))
+
+    def on_day(self, day: date):
+        """ Filter for all lessons on a certain day. """
+
+        week, weekday = week_weekday_from_date(day)
+
+        return self.within_dates(day, day).filter(lesson_period__period__weekday=weekday).annotate_week(week)
+
+
 class TimePeriod(models.Model):
     WEEKDAY_CHOICES = [
         (0, _("Sunday")),
@@ -279,6 +306,8 @@ class Lesson(models.Model):
 
 
 class LessonSubstitution(models.Model):
+    objects = models.Manager.from_queryset(LessonSubstitutionQuerySet)()
+
     week = models.IntegerField(verbose_name=_("Week"), default=CalendarWeek.current_week)
 
     lesson_period = models.ForeignKey("LessonPeriod", models.CASCADE, "substitutions")

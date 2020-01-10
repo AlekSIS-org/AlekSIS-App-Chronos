@@ -7,6 +7,7 @@ from django.db.models import Count, Max, Min
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 
 from django_tables2 import RequestConfig
@@ -150,7 +151,6 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
     lessons_table = LessonsTable(lesson_periods.all())
     RequestConfig(request).configure(lessons_table)
 
-    context["current_head"] = _("Lessons %s") % (day)
     context["lessons_table"] = lessons_table
     context["day"] = day
     context["lesson_periods"] = lesson_periods
@@ -217,30 +217,33 @@ def delete_substitution(request: HttpRequest, id_: int, week: int) -> HttpRespon
 
 
 def substitutions(
-    request: HttpRequest, year: Optional[int] = None, week: Optional[int] = None
+    request: HttpRequest, year: Optional[int] = None, month: Optional[int] = None, day: Optional[int] = None
 ) -> HttpResponse:
     context = {}
 
-    if week:
-        wanted_week = CalendarWeek(year=year, week=week)
+    if day:
+        wanted_day = timezone.datetime(year=year, month=month, day=day).date()
     else:
-        wanted_week = CalendarWeek()
+        wanted_day = timezone.now().date()
 
-    substitutions = LessonSubstitution.objects.filter(week=wanted_week.week)
+    substitutions = LessonSubstitution.objects.on_day(wanted_day)
 
     # Prepare table
     substitutions_table = SubstitutionsTable(substitutions)
     RequestConfig(request).configure(substitutions_table)
 
-    context["current_head"] = str(wanted_week)
+    context["current_head"] = str(wanted_day)
     context["substitutions_table"] = substitutions_table
-    week_prev = wanted_week - 1
-    week_next = wanted_week + 1
+    context["substitutions"] = substitutions
+    context["day"] = wanted_day
+
+    day_prev = wanted_day - timedelta(days=1)
+    day_next = wanted_day + timedelta(days=1)
     context["url_prev"] = "%s" % (
-        reverse("substitutions_by_week", args=[week_prev.year, week_prev.week])
+        reverse("substitutions_by_day", args=[day_prev.year, day_prev.month, day_prev.day])
     )
     context["url_next"] = "%s" % (
-        reverse("substitutions_by_week", args=[week_next.year, week_next.week])
+        reverse("substitutions_by_day", args=[day_next.year, day_next.month, day_next.day])
     )
 
-    return render(request, "chronos/substitutions.html", context)
+    return render(request, "chronos/substitution.html", context)

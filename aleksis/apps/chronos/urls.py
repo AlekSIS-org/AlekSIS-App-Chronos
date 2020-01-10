@@ -19,5 +19,5 @@ urlpatterns = [
         name="delete_substitution",
     ),
     path("substitutions", views.substitutions, name="substitutions"),
-    path("substitutions/<int:year>/<int:week>", views.substitutions, name="substitutions_by_week",),
+    path("substitutions/<int:year>/<int:month>/<int:day>/", views.substitutions, name="substitutions_by_day"),
 ]
