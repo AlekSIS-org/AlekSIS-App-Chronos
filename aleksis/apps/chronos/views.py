@@ -15,7 +15,7 @@ from aleksis.core.decorators import admin_required
 from aleksis.core.models import Person, Group
 from aleksis.core.util import messages
 
-from .forms import LessonSubstitutionForm, SelectForm
+from .forms import LessonSubstitutionForm
 from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
 from .tables import LessonsTable, SubstitutionsTable
 from .util import CalendarWeek
