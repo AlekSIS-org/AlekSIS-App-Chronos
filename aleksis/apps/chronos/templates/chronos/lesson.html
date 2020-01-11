@@ -21,14 +21,19 @@
 
               {# Add CSS class for sub when it's a sub #}
            class="
+
+
+
+
+
                    {% if lesson_period.get_substitution %}{% if lesson_period.substitution.table.is_event %}lesson-with-event{% else %}lesson-with-sub{% endif %}{% endif %}"
       >
         <p>
           {% if lesson_period.is_hol %}
             {# Do nothing #}
-          {% elif lesson_period.substitution %}
+          {% elif lesson_period.get_substitution %}
             {# SUBSTITUTION #}
-            {% if type == 1 and lesson_period.is_old %}
+            {% if type == "room" and lesson_period.is_old %}
               {# When it's the old room, let it empty #}
 
             {% elif lesson_period.substitution.table.badge %}
@@ -54,21 +59,21 @@
             {% else %}
               {# Display sub #}
 
-              {% with sub=lesson_period.substitution.table %}
+              {% with sub=lesson_period.get_substitution %}
                 {# Teacher or room > display classes #}
-                {% if type == 0 or type == 1 %}
-                  {{ lesson_period.substitution.table.classes }}
+                {% if type == "teacher" or type == "room" %}
+                  {% include "chronos/groups.html" with groups=lesson_period.lesson.groups.all %}
                 {% endif %}
 
                 {# Display teacher with tooltip #}
-                {% include "timetable/subs/teacher.html" %}
+                {% include "chronos/subs/teacher.html" %}
 
                 {# Display subject #}
-                {% include "timetable/subs/subject.html" %}
+                {% include "chronos/subs/subject.html" %}
 
                 {# Teacher or class > display room #}
-                {% if type == 0 or type == 2 %}
-                  {% include "timetable/subs/room.html" %}
+                {% if type == "teacher" or type == "group" %}
+                  {% include "chronos/subs/room.html" %}
                 {% endif %}
               {% endwith %}
             {% endif %}
@@ -102,40 +107,41 @@
             {# Normal plan #}
 
             {# Teacher or room > Display classes #}
-            {% if type == 0 or type == 1 %}
+            {% if type == "teacher" or type == "room" %}
               {#                            {{ element_container.element.classes }}#}
-              {% if lesson_period.element.classes %}
-                <a href="{% url "timetable_smart_plan" "class" lesson_period.element.classes.0.id %}">
-                  {{ lesson_period.classes_formatted }}
-                </a>
+              {% if lesson_period.lesson.groups %}
+                {% include "chronos/groups.html" with groups=lesson_period.lesson.groups.all %}
               {% endif %}
             {% endif %}
 
             {# Class or room > Display teacher #}
-            {% if type == 2 or type == 1 %}
-              {% if lesson_period.element.teacher %}
+            {% if type == "room" or type == "group" %}
+              {% for teacher in lesson_period.lesson.teachers.all %}
                 <span data-position="bottom" class="tooltipped"
-                      data-tooltip="{{ lesson_period.element.teacher }}">
-                                    <a href="{% url "timetable_smart_plan" "teacher" lesson_period.element.teacher.id %}">
-                                        {{ lesson_period.element.teacher.shortcode }}
+                      data-tooltip="{{ teacher }}">
+                                    <a href="{% url "timetable" "teacher" teacher.pk %}">
+                                        {{ teacher.short_name }}
                                     </a>
                                 </span>
-              {% endif %}
+              {% endfor %}
             {% endif %}
 
             {# Display subject #}
-            <strong>{{ lesson_period.element.subject.shortcode }}</strong>
+            <strong>
+              <span data-position="bottom" class="tooltipped"
+                    data-tooltip="{{ lesson_period.lesson.subject.name }}">{{ lesson_period.lesson.subject.abbrev }}</span>
+            </strong>
 
             {# Teacher or class > Display room #}
-            {% if type == 0 or type == 2 %}
-              <span class="tooltipped" data-position="bottom"
-                    data-tooltip="{{ lesson_period.room.name }}">
-                                {% if lesson_period.room %}
-                                  <a href="{% url "timetable_smart_plan" "room" lesson_period.room.id %}">
-                                        {{ lesson_period.room.shortcode }}
+            {% if type == "teacher" or type == "group" %}
+              {% if lesson_period.room %}
+                <span class="tooltipped" data-position="bottom"
+                      data-tooltip="{{ lesson_period.room.name }}">
+                                  <a href="{% url "timetable" "room" lesson_period.room.pk %}">
+                                        {{ lesson_period.room.short_name }}
                                     </a>
-                                {% endif %}
                             </span>
+              {% endif %}
             {% endif %}
           {% endif %}
         </p>

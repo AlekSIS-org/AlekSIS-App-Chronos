@@ -1,0 +1,5 @@
+{% for group in groups %}
+  <a href="{% url "timetable" "group" group.pk %}">
+    {{ group.short_name }}
+  </a>
+{% endfor %}

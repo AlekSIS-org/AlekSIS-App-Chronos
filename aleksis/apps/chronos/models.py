@@ -333,6 +333,14 @@ class LessonSubstitution(models.Model):
         if self.subject and self.cancelled:
             raise ValidationError(_("Lessons can only be either substituted or cancelled."))
 
+    @property
+    def color(self):
+        if self.cancelled:
+            return "green"
+        # Add cases for purple and blue (events and supervisements)
+        else:
+            return "black"
+
     class Meta:
         unique_together = [["lesson_period", "week"]]
         ordering = [
