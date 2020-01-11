@@ -142,10 +142,12 @@ class LessonPeriodQuerySet(models.QuerySet):
     def filter_from_type(self, type_: str, pk: int):
         if type_ == "group":
             return self.filter_group(pk)
-        elif type == "teacher":
+        elif type_ == "teacher":
             return self.filter_teacher(pk)
-        else:
+        elif type_ == "room":
             return self.filter_room(pk)
+        else:
+            return None
 
 
 class LessonSubstitutionQuerySet(models.QuerySet):
