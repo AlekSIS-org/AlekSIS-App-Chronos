@@ -4,7 +4,7 @@ from typing import Optional
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Max, Min
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -43,6 +43,15 @@ def timetable(
 ) -> HttpResponse:
     context = {}
 
+    if _type == "group":
+        el = get_object_or_404(Group, pk=pk)
+    elif _type == "teacher":
+        el = get_object_or_404(Person, pk=pk)
+    elif _type == "room":
+        el = get_object_or_404(Room, pk=pk)
+    else:
+        return HttpResponseNotFound()
+
     if year and week:
         wanted_week = CalendarWeek(year=year, week=week)
     else:
@@ -50,12 +59,6 @@ def timetable(
 
     lesson_periods = LessonPeriod.objects.in_week(wanted_week)
 
-    # Incrementally filter lesson periods by GET parameters
-    # if (
-    #     request.GET.get("group", None)
-    #     or request.GET.get("teacher", None)
-    #     or request.GET.get("room", None)
-    # ):
 
     lesson_periods = lesson_periods.filter_from_type(_type, pk)
     # else:
@@ -120,6 +123,7 @@ def timetable(
     context["week"] = wanted_week
     context["type"] = _type
     context["pk"] = pk
+    context["el"] = el
 
     week_prev = wanted_week - 1
     week_next = wanted_week + 1
