@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
-from typing import Optional, Sequence, Tuple, Union
+from typing import Optional, Sequence, Tuple, Union, List
 
 from django.apps import apps
 from django.db import models
@@ -104,3 +104,17 @@ def week_weekday_to_date(week: CalendarWeek, weekday: int) -> date:
 
 def week_period_to_date(week: Union[CalendarWeek, int], period) -> date:
     return period.get_date(week)
+
+
+def get_weeks_for_year(year: int) -> List[CalendarWeek]:
+    """ Generates all weeks for one year """
+    weeks = []
+
+    # Go for all weeks in year and create week list
+    current_week = CalendarWeek(year=year, week=1)
+
+    while current_week.year == year:
+        weeks.append(current_week)
+        current_week += 1
+
+    return weeks

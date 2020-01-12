@@ -19,7 +19,7 @@ from aleksis.core.util import messages
 from .forms import LessonSubstitutionForm
 from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
 from .tables import LessonsTable, SubstitutionsTable
-from .util import CalendarWeek
+from .util import CalendarWeek, get_weeks_for_year
 
 
 @login_required
@@ -120,21 +120,18 @@ def timetable(
     context["periods"] = TimePeriod.get_times_dict()
     context["weekdays"] = dict(TimePeriod.WEEKDAY_CHOICES[weekday_min:weekday_max + 1])
     context["weekdays_short"] = dict(TimePeriod.WEEKDAY_CHOICES_SHORT[weekday_min:weekday_max + 1])
+    context["weeks"] = get_weeks_for_year(year=wanted_week.year)
     context["week"] = wanted_week
     context["type"] = _type
     context["pk"] = pk
     context["el"] = el
+    context["smart"] = True
 
     week_prev = wanted_week - 1
     week_next = wanted_week + 1
-    context["url_prev"] = "%s?%s" % (
-        reverse("timetable_by_week", args=[_type, pk, week_prev.year, week_prev.week]),
-        request.GET.urlencode(),
-    )
-    context["url_next"] = "%s?%s" % (
-        reverse("timetable_by_week", args=[_type, pk, week_next.year, week_next.week]),
-        request.GET.urlencode(),
-    )
+
+    context["url_prev"] = reverse("timetable_by_week", args=[_type, pk, week_prev.year, week_prev.week])
+    context["url_next"] = reverse("timetable_by_week", args=[_type, pk, week_next.year, week_next.week])
 
     return render(request, "chronos/plan.html", context)
 

@@ -9,29 +9,15 @@
 {% block content %}
   <script type="text/javascript">
     {% if smart %}
-      var week = {{ selected_week }};
-      var year = {{ selected_year }};
+      var week = {{ week.week }};
+      var year = {{ week.year }};
+
       function goToCalendarWeek(cw, year) {
-        window.location.href = "{% url "timetable_smart_plan" type pk %}/" + year + "/" + cw;
+        window.location.href = "{% url "timetable" type pk %}/" + year + "/" + cw;
       }
+
       function onCalendarWeekChanged(where) {
         goToCalendarWeek($(where).val(), year);
-      }
-
-      function weekBefore() {
-        if (week > 1) {
-          goToCalendarWeek(week - 1, year)
-        } else {
-          goToCalendarWeek(52, year - 1)
-        }
-      }
-
-      function weekNext() {
-        if (week < 52) {
-          goToCalendarWeek(week + 1, year);
-        } else {
-          goToCalendarWeek(1, year + 1);
-        }
       }
 
       $(document).ready(function () {
@@ -44,8 +30,6 @@
         $("#calendar-week-3").change(function () {
           onCalendarWeekChanged("#calendar-week-3");
         });
-        $("#week-before").click(weekBefore);
-        $("#week-next").click(weekNext);
       });
     {% endif %}
   </script>
@@ -92,42 +76,45 @@
       {# Week select #}
       <div class="col s12 m6 right">
         <div class="col s2 no-print">
-          <a class="waves-effect waves-teal btn-flat btn-flat-medium right" id="week-before">
+          <a class="waves-effect waves-teal btn-flat btn-flat-medium right" href="{{ url_prev }}">
             <i class="material-icons center">navigate_before</i>
           </a>
         </div>
-        <div class="input-field col s8 no-margin hide-on-med-and-up">
-          <select id="calendar-week-1">
-            {% for week in weeks %}
-              <option value="{{ week.calendar_week }}" {% if week.calendar_week == selected_week %}
-                      selected {% endif %}> KW {{ week.calendar_week }}
-                ({{ week.first_day|date:"j.n" }}–{{ week.last_day|date:"j.n" }})
-              </option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="input-field col s8 no-margin hide-on-med-and-down">
-          <select id="calendar-week-2">
-            {% for week in weeks %}
-              <option value="{{ week.calendar_week }}" {% if week.calendar_week == selected_week %}
-                      selected {% endif %}> KW {{ week.calendar_week }}
-                ({{ week.first_day|date:"j.n.Y" }}–{{ week.last_day|date:"j.n.Y" }})
-              </option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="input-field col s8 no-margin hide-on-small-and-down hide-on-large-only">
-          <select id="calendar-week-3">
-            {% for week in weeks %}
-              <option value="{{ week.calendar_week }}" {% if week.calendar_week == selected_week %}
-                      selected {% endif %}> KW {{ week.calendar_week }}
-                ({{ week.first_day|date:"j.n" }}–{{ week.last_day|date:"j.n.Y" }})
-              </option>
-            {% endfor %}
-          </select>
-        </div>
+
+        {% with wanted_week=week %}
+          <div class="input-field col s8 no-margin hide-on-med-and-up">
+            <select id="calendar-week-1">
+              {% for week in weeks %}
+                <option value="{{ week.week }}" {% if week == wanted_week %}
+                        selected {% endif %}>KW {{ week.week }} ({{ week.0|date:"j.n" }}–{{ week.6|date:"j.n" }})
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="input-field col s8 no-margin hide-on-med-and-down">
+            <select id="calendar-week-2">
+              {% for week in weeks %}
+                <option value="{{ week.week }}" {% if week == wanted_week %}
+                        selected {% endif %}>KW {{ week.week }} ({{ week.0|date:"j.n.Y" }}–{{ week.6|date:"j.n.Y" }})
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="input-field col s8 no-margin hide-on-small-and-down hide-on-large-only">
+            <select id="calendar-week-3">
+              {% for week in weeks %}
+                <option value="{{ week.week }}" {% if week == wanted_week %}
+                        selected {% endif %}>KW {{ week.week }} ({{ week.0|date:"j.n" }}–{{ week.6|date:"j.n.Y" }})
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        {% endwith %}
+
         <div class="col s2 no-print">
-          <a class="waves-effect waves-teal btn-flat btn-flat-medium left" id="week-next">
+          <a class="waves-effect waves-teal btn-flat btn-flat-medium left" href="{{ url_next }}">
             <i class="material-icons center">navigate_next</i>
           </a>
         </div>
