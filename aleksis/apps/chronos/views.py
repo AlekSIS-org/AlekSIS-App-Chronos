@@ -1,6 +1,6 @@
 from collections import OrderedDict
-from datetime import date, datetime, timedelta
-from typing import Optional
+from datetime import date, datetime, timedelta, time
+from typing import Optional, Union
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Max, Min
@@ -20,6 +20,46 @@ from .forms import LessonSubstitutionForm
 from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
 from .tables import LessonsTable, SubstitutionsTable
 from .util import CalendarWeek, get_weeks_for_year
+
+# Determine overall first and last day and period
+min_max = TimePeriod.objects.aggregate(
+    Min("period"), Max("period"), Min("weekday"), Max("weekday"), Min("time_start"), Max("time_end")
+)
+
+period_min = min_max.get("period__min", 1)
+period_max = min_max.get("period__max", 7)
+
+time_min = min_max.get("time_start__min", None)
+time_max = min_max.get("time_end__max", None)
+
+weekday_min_ = min_max.get("weekday__min", 0)
+weekday_max = min_max.get("weekday__max", 6)
+
+
+def get_next_relevant_day(day: Union[date, None] = None, time: Union[time, None] = None):
+    if day is None:
+        day = timezone.now().date()
+
+    if time is not None:
+        if time > time_max:
+            day += timedelta(days=1)
+
+    cw = CalendarWeek.from_date(day)
+
+    # Remap to Sunday first
+    weekday = 0 if day.weekday() == 6 else day.weekday() + 1
+
+
+    if weekday > weekday_max or (weekday < weekday_min_):
+        if weekday > weekday_max or weekday == 0:
+            cw += 1
+        # Remap to Monday first
+        weekday_min = weekday_min_ - 1
+
+        # TODO: Probably causes problems
+        day = cw[weekday_min]
+
+    return day
 
 
 @login_required
@@ -55,11 +95,10 @@ def timetable(
     if year and week:
         wanted_week = CalendarWeek(year=year, week=week)
     else:
+        # TODO: On not used days show next week
         wanted_week = CalendarWeek()
 
     lesson_periods = LessonPeriod.objects.in_week(wanted_week)
-
-
     lesson_periods = lesson_periods.filter_from_type(_type, pk)
     # else:
     #     # Redirect to a selected view if no filter provided
@@ -89,16 +128,6 @@ def timetable(
             ] = [lesson_period]
 
     print(per_period)
-    # Determine overall first and last day and period
-    min_max = TimePeriod.objects.aggregate(
-        Min("period"), Max("period"), Min("weekday"), Max("weekday")
-    )
-
-    period_min = min_max.get("period__min", 1)
-    period_max = min_max.get("period__max", 7)
-
-    weekday_min = min_max.get("weekday__min", 0)
-    weekday_max = min_max.get("weekday__max", 6)
 
     # Fill in empty lessons
     for period_num in range(period_min, period_max + 1):
@@ -108,7 +137,7 @@ def timetable(
             per_period[period_num] = {}
 
         # Fill in empty lessons on this workday
-        for weekday_num in range(weekday_min, weekday_max + 1):
+        for weekday_num in range(weekday_min_, weekday_max + 1):
             if weekday_num not in per_period[period_num].keys():
                 per_period[period_num][weekday_num] = []
 
@@ -118,8 +147,8 @@ def timetable(
     print(lesson_periods)
     context["lesson_periods"] = OrderedDict(sorted(per_period.items()))
     context["periods"] = TimePeriod.get_times_dict()
-    context["weekdays"] = dict(TimePeriod.WEEKDAY_CHOICES[weekday_min:weekday_max + 1])
-    context["weekdays_short"] = dict(TimePeriod.WEEKDAY_CHOICES_SHORT[weekday_min:weekday_max + 1])
+    context["weekdays"] = dict(TimePeriod.WEEKDAY_CHOICES[weekday_min_:weekday_max + 1])
+    context["weekdays_short"] = dict(TimePeriod.WEEKDAY_CHOICES_SHORT[weekday_min_:weekday_max + 1])
     context["weeks"] = get_weeks_for_year(year=wanted_week.year)
     context["week"] = wanted_week
     context["type"] = _type
@@ -224,8 +253,9 @@ def substitutions(
 
     if day:
         wanted_day = timezone.datetime(year=year, month=month, day=day).date()
+        wanted_day = get_next_relevant_day(wanted_day)
     else:
-        wanted_day = timezone.now().date()
+        wanted_day = get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
     substitutions = LessonSubstitution.objects.on_day(wanted_day)
 
