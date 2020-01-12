@@ -35,7 +35,7 @@
 
                 {# Class or room > Display teacher #}
                 {% if type == "group" or type == "room" %}
-                  {% include "chronos/teachers.html" with teachers=lesson_period.lesson.teachers.all %}
+                  {% include "chronos/partials/teachers.html" with teachers=lesson_period.lesson.teachers.all %}
                 {% endif %}
 
                 {# Badge #}
@@ -46,18 +46,18 @@
 
                 {# Teacher or room > display classes #}
                 {% if type == "teacher" or type == "room" %}
-                  {% include "chronos/groups.html" with groups=lesson_period.lesson.groups.all %}
+                  {% include "chronos/partials/groups.html" with groups=lesson_period.lesson.groups.all %}
                 {% endif %}
 
                 {# Display teacher with tooltip #}
-                {% include "chronos/subs/teachers.html" %}
+                {% include "chronos/partials/subs/teachers.html" %}
 
                 {# Display subject #}
-                {% include "chronos/subs/subject.html" %}
+                {% include "chronos/partials/subs/subject.html" %}
 
                 {# Teacher or class > display room #}
                 {% if type == "teacher" or type == "group" %}
-                  {% include "chronos/subs/room.html" %}
+                  {% include "chronos/partials/subs/room.html" %}
                 {% endif %}
               {% endif %}
 
@@ -96,13 +96,13 @@
             {% if type == "teacher" or type == "room" %}
               {#                            {{ element_container.element.classes }}#}
               {% if lesson_period.lesson.groups %}
-                {% include "chronos/groups.html" with groups=lesson_period.lesson.groups.all %}
+                {% include "chronos/partials/groups.html" with groups=lesson_period.lesson.groups.all %}
               {% endif %}
             {% endif %}
 
             {# Class or room > Display teacher #}
             {% if type == "room" or type == "group" %}
-              {% include "chronos/teachers.html" with teachers=lesson_period.lesson.teachers.all %}
+              {% include "chronos/partials/teachers.html" with teachers=lesson_period.lesson.teachers.all %}
             {% endif %}
 
             {# Display subject #}

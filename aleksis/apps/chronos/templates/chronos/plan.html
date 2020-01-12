@@ -178,13 +178,13 @@
 
       <div class="row">
         <div class="col s2">
-          {% include "chronos/period_time.html" with period=period periods=periods %}
+          {% include "chronos/partials/period_time.html" with period=period periods=periods %}
         </div>
 
         {% for weekday, lessons in lesson_periods_period.items %}
           {# A lesson #}
           <div class="col s2">
-            {% include "chronos/lesson.html" with lessons=lessons %}
+            {% include "chronos/partials/lesson.html" with lessons=lessons %}
           </div>
         {% endfor %}
       </div>
@@ -208,14 +208,14 @@
       {% for period, lesson_periods_period in lesson_periods.items %}
         <div class="row">
           <div class="col s4">
-            {% include "chronos/period_time.html" with period=period periods=periods %}
+            {% include "chronos/partials/period_time.html" with period=period periods=periods %}
           </div>
 
           {% for weekday, lessons in lesson_periods_period.items %}
             {% if forloop.counter0|add:"1" == day.0 %}
               <div class="col s8">
                 {# A lesson #}
-                {% include "chronos/lesson.html" with lessons=lessons %}
+                {% include "chronos/partials/lesson.html" with lessons=lessons %}
               </div>
             {% endif %}
           {% endfor %}

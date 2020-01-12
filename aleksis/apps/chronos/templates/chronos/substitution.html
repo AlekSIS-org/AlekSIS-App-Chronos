@@ -51,7 +51,7 @@
       {#            {% include "chronos/hintsinsub.html" %}#}
     </div>
     <div class="col s12 m6 l4 xl3">
-      {% include "chronos/datepicker.html" %}
+      {% include "chronos/partials/datepicker.html" %}
     </div>
   </div>
 
@@ -80,7 +80,7 @@
     {% for sub in substitutions %}
       <tr class="{{ sub.color }}-text">
         <td>
-          {% include "chronos/groups.html" with groups=sub.lesson_period.lesson.groups.all %}
+          {% include "chronos/partials/groups.html" with groups=sub.lesson_period.lesson.groups.all %}
         </td>
         <td>
           <strong>
@@ -88,13 +88,13 @@
           </strong>
         </td>
         <td>
-          {% include "chronos/subs/teachers.html" %}
+          {% include "chronos/partials/subs/teachers.html" %}
         </td>
         <td>
-          {% include "chronos/subs/subject.html" %}
+          {% include "chronos/partials/subs/subject.html" %}
         </td>
         <td>
-          {% include "chronos/subs/room.html" %}
+          {% include "chronos/partials/subs/room.html" %}
         </td>
         <td>
           {% if sub.badge %}
