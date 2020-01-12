@@ -2,11 +2,11 @@
 
 {% load i18n %}
 
-<script type="text/javascript">
-  var dest = "/timetable/substitutions/";
-</script>
-
 {% block content %}
+  <script type="text/javascript">
+    var dest = "{% url "substitutions" %}";
+  </script>
+
   <div class="row no-margin">
     <div class="col s10 m6">
       <h4>{% trans "Substitutions" %}</h4>

@@ -18,6 +18,6 @@ urlpatterns = [
         views.delete_substitution,
         name="delete_substitution",
     ),
-    path("substitutions", views.substitutions, name="substitutions"),
+    path("substitutions/", views.substitutions, name="substitutions"),
     path("substitutions/<int:year>/<int:month>/<int:day>/", views.substitutions, name="substitutions_by_day"),
 ]
