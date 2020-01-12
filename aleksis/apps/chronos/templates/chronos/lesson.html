@@ -18,14 +18,13 @@
                 {% endif %}
               {% endif %}
               "
-
               {# Add CSS class for sub when it's a sub #}
-           class="{% if lesson_period.get_substitution %}{% if lesson_period.substitution.table.is_event %}lesson-with-event{% else %}lesson-with-sub{% endif %}{% endif %}"
+           class="{% if lesson_period.get_substitution and smart %}{% if lesson_period.substitution.table.is_event %}lesson-with-event{% else %}lesson-with-sub{% endif %}{% endif %}"
       >
         <p>
-          {% if lesson_period.is_hol %}
+          {% if lesson_period.is_hol and smart %}
             {# Do nothing #}
-          {% elif lesson_period.get_substitution %}
+          {% elif lesson_period.get_substitution and smart %}
             {% with sub=lesson_period.get_substitution %}
               {# SUBSTITUTION #}
               {% if type == "room" and lesson_period.room != lesson_period.get_room %}

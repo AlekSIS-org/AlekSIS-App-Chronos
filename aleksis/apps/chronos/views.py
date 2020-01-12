@@ -79,9 +79,11 @@ def all(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def timetable(
-    request: HttpRequest, _type: str, pk: int, year: Optional[int] = None, week: Optional[int] = None
+    request: HttpRequest, _type: str, pk: int, year: Optional[int] = None, week: Optional[int] = None, regular: Optional[str] = None
 ) -> HttpResponse:
     context = {}
+
+    is_smart = regular != "regular"
 
     if _type == "group":
         el = get_object_or_404(Group, pk=pk)
@@ -154,7 +156,7 @@ def timetable(
     context["type"] = _type
     context["pk"] = pk
     context["el"] = el
-    context["smart"] = True
+    context["smart"] = is_smart
 
     week_prev = wanted_week - 1
     week_next = wanted_week + 1
