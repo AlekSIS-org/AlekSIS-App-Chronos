@@ -80,18 +80,15 @@
     {% for sub in substitutions %}
       <tr class="{{ sub.color }}-text">
         <td>
-          {% for group in sub.lesson_period.get_groups.all %}
-            {#                    {{ sub.lesson_period.get_groups|join:"," }}#}
-            {{ group.short_name }}
-          {% endfor %}
+          {% include "chronos/groups.html" with groups=sub.lesson_period.lesson.groups.all %}
         </td>
         <td>
           <strong>
-            {{ sub.lesson }}
+            {{ sub.lesson_period.period.period }}.
           </strong>
         </td>
         <td>
-          {% include "chronos/subs/teacher.html" %}
+          {% include "chronos/subs/teachers.html" %}
         </td>
         <td>
           {% include "chronos/subs/subject.html" %}

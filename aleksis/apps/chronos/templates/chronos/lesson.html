@@ -20,53 +20,38 @@
               "
 
               {# Add CSS class for sub when it's a sub #}
-           class="
-
-
-
-
-
-                   {% if lesson_period.get_substitution %}{% if lesson_period.substitution.table.is_event %}lesson-with-event{% else %}lesson-with-sub{% endif %}{% endif %}"
+           class="{% if lesson_period.get_substitution %}{% if lesson_period.substitution.table.is_event %}lesson-with-event{% else %}lesson-with-sub{% endif %}{% endif %}"
       >
         <p>
           {% if lesson_period.is_hol %}
             {# Do nothing #}
           {% elif lesson_period.get_substitution %}
-            {# SUBSTITUTION #}
-            {% if type == "room" and lesson_period.is_old %}
-              {# When it's the old room, let it empty #}
+            {% with sub=lesson_period.get_substitution %}
+              {# SUBSTITUTION #}
+              {% if type == "room" and lesson_period.room != lesson_period.get_room %}
+                {# When it's the old room, let it empty #}
 
-            {% elif lesson_period.substitution.table.badge %}
-              {# When a badge (cancellation, etc.) exists, then display it with the teacher#}
+              {% elif lesson_period.substitution.table.badge %}
+                {# When a badge (cancellation, etc.) exists, then display it with the teacher#}
 
-              {# Class or room > Display teacher #}
-              {% if type == "group" or type == "room" %}
-                {% if lesson_period.element.teacher %}
-                  <span data-position="bottom" class="tooltipped"
-                        data-tooltip="{{ lesson_period.element.teacher }}">
-                                        <a
-                                                href="{% url "timetable_smart_plan" "teacher" lesson_period.element.teacher.id %}">{{ lesson_period.element.teacher.shortcode }}</a>
-                                    </span>
-                  <br>
+                {# Class or room > Display teacher #}
+                {% if type == "group" or type == "room" %}
+                  {% include "chronos/teachers.html" with teachers=lesson_period.lesson.teachers.all %}
                 {% endif %}
-              {% endif %}
 
-              {# Badge #}
-              <span class="badge new green darken-2">{{ lesson_period.substitution.table.badge }}</span>
+                {# Badge #}
+                <span class="badge new green darken-2">{{ lesson_period.substitution.table.badge }}</span>
 
+              {% else %}
+                {# Display sub #}
 
-
-            {% else %}
-              {# Display sub #}
-
-              {% with sub=lesson_period.get_substitution %}
                 {# Teacher or room > display classes #}
                 {% if type == "teacher" or type == "room" %}
                   {% include "chronos/groups.html" with groups=lesson_period.lesson.groups.all %}
                 {% endif %}
 
                 {# Display teacher with tooltip #}
-                {% include "chronos/subs/teacher.html" %}
+                {% include "chronos/subs/teachers.html" %}
 
                 {# Display subject #}
                 {% include "chronos/subs/subject.html" %}
@@ -75,33 +60,35 @@
                 {% if type == "teacher" or type == "group" %}
                   {% include "chronos/subs/room.html" %}
                 {% endif %}
-              {% endwith %}
-            {% endif %}
+              {% endif %}
 
-            {# When it isn't a room or the old plan, then display the extra text (e. g. work orders) AND NOT A EVENT#}
-            {% if not   lesson_period.substitution.table.is_event %}
-              {% if not type == 1  or not lesson_period.is_old %}
-                <br>
-                <small>
-                  <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
-                </small>
+
+              {# When it isn't a room or the old plan, then display the extra text (e. g. work orders) AND NOT A EVENT#}
+              {% if not lesson_period.substitution.table.is_event %}
+                {% if not type == "room"  or not lesson_period.is_old %}
+                  <br>
+                  <small>
+                    <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
+                  </small>
+                {% endif %}
               {% endif %}
-            {% endif %}
-            {# Display the extra text for events #}
-            {% if lesson_period.substitution.table.is_event %}
-              {% if type == 0 and lesson_period.substitution.table.classes == "" and lesson_period.substitution.table.rooms|length == 0 and lesson_period.substitutions.table.teachers|length == 0 %}
-                <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
-              {% elif type == 2 and  lesson_period.substitution.table.teachers|length == 0  and  lesson_period.substitution.table.rooms|length == 0 %}
-                <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
-              {% elif type == 1  and  lesson_period.substitution.table.teachers|length == 0 and lesson_period.substitution.table.classes == "" %}
-                <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
-              {% else %}
-                <br>
-                <small>
+              {# Display the extra text for events #}
+              {% if lesson_period.substitution.table.is_event %}
+                {% if type == 0 and lesson_period.substitution.table.classes == "" and lesson_period.substitution.table.rooms|length == 0 and lesson_period.substitutions.table.teachers|length == 0 %}
                   <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
-                </small>
+                {% elif type == 2 and  lesson_period.substitution.table.teachers|length == 0  and  lesson_period.substitution.table.rooms|length == 0 %}
+                  <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
+                {% elif type == 1  and  lesson_period.substitution.table.teachers|length == 0 and lesson_period.substitution.table.classes == "" %}
+                  <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
+                {% else %}
+                  <br>
+                  <small>
+                    <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
+                  </small>
+                {% endif %}
               {% endif %}
-            {% endif %}
+            {% endwith %}
+
 
           {% else %}
             {# Normal plan #}
@@ -116,14 +103,7 @@
 
             {# Class or room > Display teacher #}
             {% if type == "room" or type == "group" %}
-              {% for teacher in lesson_period.lesson.teachers.all %}
-                <span data-position="bottom" class="tooltipped"
-                      data-tooltip="{{ teacher }}">
-                                    <a href="{% url "timetable" "teacher" teacher.pk %}">
-                                        {{ teacher.short_name }}
-                                    </a>
-                                </span>
-              {% endfor %}
+              {% include "chronos/teachers.html" with teachers=lesson_period.lesson.teachers.all %}
             {% endif %}
 
             {# Display subject #}

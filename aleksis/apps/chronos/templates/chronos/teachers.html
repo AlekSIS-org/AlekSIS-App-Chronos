@@ -1,0 +1,8 @@
+{% for teacher in teachers %}
+  <span data-position="bottom" class="tooltipped"
+        data-tooltip="{{ teacher }}">
+      <a href="{% url "timetable" "teacher" teacher.pk %}">
+          {{ teacher.short_name }}{% if not forloop.last %},{% endif %}
+      </a>
+  </span>
+{% endfor %}
