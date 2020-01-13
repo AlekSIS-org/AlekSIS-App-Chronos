@@ -6,7 +6,7 @@ from typing import Dict, Optional, Tuple, Union
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Q
+from django.db.models import F, Q
 from django.http.request import QueryDict
 from django.utils.translation import ugettext_lazy as _
 
@@ -30,20 +30,51 @@ class LessonPeriodManager(models.Manager):
         )
 
 
-class LessonPeriodQuerySet(models.QuerySet):
+class LessonSubstitutionManager(models.Manager):
+    """ Manager adding specific methods to lesson substitutions. """
+
+    def get_queryset(self):
+        """ Ensures all related lesson data is loaded as well. """
+
+        return (
+            super()
+            .get_queryset()
+            .select_related(
+                "lesson_period",
+                "lesson_period__lesson",
+                "subject",
+                "lesson_period__period",
+                "room",
+            )
+            .prefetch_related("lesson_period__lesson__groups", "teachers")
+        )
+
+
+class LessonDataQuerySet(models.QuerySet):
     """ Overrides default QuerySet to add specific methods for lesson data. """
+
+    # Overridden in the subclasses. Swaps the paths to the base lesson period
+    # and to any substitutions depending on whether the query is run on a
+    # lesson period or a substitution
+    _period_path = None
+    _subst_path = None
 
     def within_dates(self, start: date, end: date):
         """ Filter for all lessons within a date range. """
 
-        return self.filter(lesson__date_start__lte=start, lesson__date_end__gte=end)
+        return self.filter(
+            **{
+                self._period_path + "lesson__date_start__lte": start,
+                self._period_path + "lesson__date_end__gte": end,
+            }
+        )
 
     def in_week(self, wanted_week: CalendarWeek):
         """ Filter for all lessons within a calendar week. """
 
         return self.within_dates(
-            wanted_week[0] + timedelta(days=1) * (models.F("period__weekday") - 1),
-            wanted_week[0] + timedelta(days=1) * (models.F("period__weekday") - 1),
+            wanted_week[0] + timedelta(days=1) * (F(self._period_path + "period__weekday") - 1),
+            wanted_week[0] + timedelta(days=1) * (F(self._period_path + "period__weekday") - 1),
         ).annotate_week(wanted_week)
 
     def on_day(self, day: date):
@@ -51,7 +82,11 @@ class LessonPeriodQuerySet(models.QuerySet):
 
         week, weekday = week_weekday_from_date(day)
 
-        return self.within_dates(day, day).filter(period__weekday=weekday).annotate_week(week)
+        return (
+            self.within_dates(day, day)
+            .filter(**{self._perdiod_path + "period__weekday": weekday})
+            .annotate_week(week)
+        )
 
     def at_time(self, when: Optional[datetime] = None):
         """ Filter for the lessons taking place at a certain point in time. """
@@ -60,38 +95,45 @@ class LessonPeriodQuerySet(models.QuerySet):
         week, weekday = week_weekday_from_date(now.date())
 
         return self.filter(
-            lesson__date_start__lte=now.date(),
-            lesson__date_end__gte=now.date(),
-            period__weekday=now.isoweekday(),
-            period__time_start__lte=now.time(),
-            period__time_end__gte=now.time(),
+            **{
+                self._perdiod_path + "lesson__date_start__lte": now.date(),
+                self._perdiod_path + "lesson__date_end__gte": now.date(),
+                self._perdiod_path + "period__weekday": now.isoweekday(),
+                self._perdiod_path + "period__time_start__lte": now.time(),
+                self._perdiod_path + "period__time_end__gte": now.time(),
+            }
         ).annotate_week(week)
 
     def filter_participant(self, person: Union[Person, int]):
         """ Filter for all lessons a participant (student) attends. """
 
         return self.filter(
-            Q(lesson__groups__members=person) | Q(lesson__groups__parent_groups__members=person)
+            Q(**{self._perdiod_path + "lesson__groups__members": person})
+            | Q(**{self._perdiod_path + "lesson__groups__parent_groups__members": person})
         )
 
     def filter_group(self, group: Union[Group, int]):
         """ Filter for all lessons a group (class) regularly attends. """
 
-        return self.filter(Q(lesson__groups=group) | Q(lesson__groups__parent_groups=group))
+        return self.filter(
+            Q(**{self._perdiod_path + "lesson__groups": group})
+            | Q(**{self._perdiod_path + "lesson__groups__parent_groups": group})
+        )
 
     def filter_teacher(self, teacher: Union[Person, int]):
         """ Filter for all lessons given by a certain teacher. """
 
         return self.filter(
-            Q(substitutions__teachers=teacher, substitutions__week=models.F("_week"))
-            | Q(lesson__teachers=teacher)
+            Q(**{self._subst_path + "teachers": teacher, self._subst_path + "week": F("_week"),})
+            | Q(**{self._perdiod_path + "lesson__teachers": teacher})
         )
 
     def filter_room(self, room: Union[Room, int]):
         """ Filter for all lessons taking part in a certain room. """
 
         return self.filter(
-            Q(substitutions__room=room, substitutions__week=models.F("_week")) | Q(room=room)
+            Q(**{self._subst_path + "room": room, self._subst_path + "week": F("_week"),})
+            | Q(**{self._perdiod_path + "room": room})
         )
 
     def annotate_week(self, week: Union[CalendarWeek, int]):
@@ -103,6 +145,11 @@ class LessonPeriodQuerySet(models.QuerySet):
             week_num = week
 
         return self.annotate(_week=models.Value(week_num, models.IntegerField()))
+
+
+class LessonPeriodQuerySet(LessonDataQuerySet):
+    _period_path = ""
+    _subst_path = "substitutions__"
 
     def next(self, reference: LessonPeriod, offset: Optional[int] = 1) -> LessonPeriod:
         """ Get another lesson in an ordered set of lessons.
@@ -123,7 +170,7 @@ class LessonPeriodQuerySet(models.QuerySet):
 
         return self.annotate_week(week).all()[next_index]
 
-    def filter_from_query(self, query_data: QueryDict):
+    def filter_from_query(self, query_data: QueryDict) -> models.QuerySet:
         """ Apply all filters from a GET or POST query.
 
         This method expects a QueryDict, like the GET or POST attribute of a Request
@@ -139,7 +186,7 @@ class LessonPeriodQuerySet(models.QuerySet):
         if query_data.get("room", None):
             return self.filter_room(int(query_data["room"]))
 
-    def filter_from_type(self, type_: str, pk: int):
+    def filter_from_type(self, type_: str, pk: int) -> Optional[models.QuerySet]:
         if type_ == "group":
             return self.filter_group(pk)
         elif type_ == "teacher":
@@ -150,30 +197,9 @@ class LessonPeriodQuerySet(models.QuerySet):
             return None
 
 
-class LessonSubstitutionQuerySet(models.QuerySet):
-    """ Overrides default QuerySet to add specific methods for lesson data. """
-
-    def within_dates(self, start: date, end: date):
-        """ Filter for all lessons within a date range. """
-
-        return self.filter(lesson_period__lesson__date_start__lte=start, lesson_period__lesson__date_end__gte=end)
-
-    def annotate_week(self, week: Union[CalendarWeek, int]):
-        """ Annotate all lessons in the QuerySet with the number of the provided calendar week. """
-
-        if isinstance(week, CalendarWeek):
-            week_num = week.week
-        else:
-            week_num = week
-
-        return self.annotate(_week=models.Value(week_num, models.IntegerField()))
-
-    def on_day(self, day: date):
-        """ Filter for all lessons on a certain day. """
-
-        week, weekday = week_weekday_from_date(day)
-
-        return self.within_dates(day, day).filter(lesson_period__period__weekday=weekday).annotate_week(week)
+class LessonSubstitutionQuerySet(LessonDataQuerySet):
+    _period_path = "lesson_period__"
+    _subst_path = ""
 
 
 class TimePeriod(models.Model):
@@ -308,7 +334,7 @@ class Lesson(models.Model):
 
 
 class LessonSubstitution(models.Model):
-    objects = models.Manager.from_queryset(LessonSubstitutionQuerySet)()
+    objects = LessonSubstitutionManager.from_queryset(LessonSubstitutionQuerySet)()
 
     week = models.IntegerField(verbose_name=_("Week"), default=CalendarWeek.current_week)
 
