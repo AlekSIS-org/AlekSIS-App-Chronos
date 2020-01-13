@@ -7,32 +7,15 @@
 {% endblock %}
 
 {% block content %}
-  <script type="text/javascript">
-    {% if smart %}
+  {% if smart %}
+    <script type="text/javascript">
       var week = {{ week.week }};
       var year = {{ week.year }};
+      var dest = "{% url "timetable" type pk %}";
+    </script>
+    <script type="text/javascript" src="{% static "js/chronos/week_select.js" %}"></script>
+  {% endif %}
 
-      function goToCalendarWeek(cw, year) {
-        window.location.href = "{% url "timetable" type pk %}/" + year + "/" + cw;
-      }
-
-      function onCalendarWeekChanged(where) {
-        goToCalendarWeek($(where).val(), year);
-      }
-
-      $(document).ready(function () {
-        $("#calendar-week-1").change(function () {
-          onCalendarWeekChanged("#calendar-week-1");
-        });
-        $("#calendar-week-2").change(function () {
-          onCalendarWeekChanged("#calendar-week-2");
-        });
-        $("#calendar-week-3").change(function () {
-          onCalendarWeekChanged("#calendar-week-3");
-        });
-      });
-    {% endif %}
-  </script>
   <div class="row no-margin">
     <div class="col s8 m6 l8 xl9">
       <h4>

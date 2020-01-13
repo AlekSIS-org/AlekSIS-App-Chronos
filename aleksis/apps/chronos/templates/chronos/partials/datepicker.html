@@ -1,63 +1,11 @@
 {% load date_js static %}
 
-<script src="{% static "js/helper.js" %}"></script>
+<script type="text/javascript" src="{% static "js/helper.js" %}"></script>
 <script type="text/javascript">
-    function updateDatepicker() {
-        {% if not display_date_only %}
-            $("#date").val(formatDate(activeDate));
-        {% endif %}
-    }
-
-    function update() {
-        console.log("Render new.");
-
-        updateDatepicker();
-    }
-
-    function loadNew() {
-        window.location.href = dest + formatDateForDjango(activeDate);
-    }
-
-    function onDateBeforeClick() {
-        if (activeDate.getDay() === 1) {
-            var minus = 3;
-        } else {
-            var minus = 1;
-        }
-        activeDate.setDate(activeDate.getDate() - minus);
-        update();
-        loadNew();
-    }
-
-    function onDateNextClick() {
-        if (activeDate.getDay() === 5) {
-            var plus = 3;
-        } else {
-            var plus = 1;
-        }
-        activeDate.setDate(activeDate.getDate() + plus);
-        update();
-        loadNew();
-    }
-
-    function onDateChanged() {
-        var str = $("#date").val();
-        var split = str.split(".")
-        activeDate = new Date(split[2], split[1] - 1, split[0]);
-        update();
-        loadNew();
-    }
-
-    var activeDate = new Date({{ day|date_unix }});
-
-    $(document).ready(function () {
-        $("#date-before").click(onDateBeforeClick);
-        $("#date-next").click(onDateNextClick);
-        $("#date").change(onDateChanged);
-
-        update();
-    })
+  var activeDate = new Date({{ day|date_unix }});
+  var displayDateOnly = {% if display_date_only %}true{% else %}false{% endif %};
 </script>
+<script type="text/javascript" src="{% static "js/chronos/date_select.js" %}"></script>
 
 
 <div class="col s2" style="display: initial;">
