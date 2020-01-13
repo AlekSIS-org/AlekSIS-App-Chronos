@@ -40,14 +40,13 @@
       </h4>
 
       {# Show class teacher and deputy class teacher #}
-      {% if type == 2 and el.teachers %}
+      {% if type == "group" and el.owners.all %}
         <h5>Klassenlehrkräfte:
-          {% for teacher in el.teachers %}
-
+          {% for teacher in el.owners.all %}
             <span data-position="bottom" class="tooltipped"
                   data-tooltip="{{ teacher }}">
-                            <a href="{% url "timetable" "teacher" teacher.id %}">
-                                {{ teacher.shortcode }}</a></span>{% if not forloop.last %},{% endif %}
+                            <a href="{% url "timetable" "teacher" teacher.pk %}">
+                                {{ teacher.short_name }}</a></span>{% if not forloop.last %},{% endif %}
           {% endfor %}
         </h5>
       {% endif %}
