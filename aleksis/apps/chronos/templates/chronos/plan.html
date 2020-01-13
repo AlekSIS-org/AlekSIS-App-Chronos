@@ -40,7 +40,7 @@
       </h4>
 
       {# Show class teacher and deputy class teacher #}
-      {% if type == 2 and el.teachers %}
+      {% if type == "group" and el.teachers %}
         <h5>Klassenlehrkräfte:
           {% for teacher in el.teachers %}
 
