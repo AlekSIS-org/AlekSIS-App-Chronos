@@ -79,17 +79,17 @@ def all(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def timetable(
-    request: HttpRequest, _type: str, pk: int, year: Optional[int] = None, week: Optional[int] = None, regular: Optional[str] = None
+    request: HttpRequest, type_: str, pk: int, year: Optional[int] = None, week: Optional[int] = None, regular: Optional[str] = None
 ) -> HttpResponse:
     context = {}
 
     is_smart = regular != "regular"
 
-    if _type == "group":
+    if type_ == "group":
         el = get_object_or_404(Group, pk=pk)
-    elif _type == "teacher":
+    elif type_ == "teacher":
         el = get_object_or_404(Person, pk=pk)
-    elif _type == "room":
+    elif type_ == "room":
         el = get_object_or_404(Room, pk=pk)
     else:
         return HttpResponseNotFound()
@@ -101,7 +101,7 @@ def timetable(
         wanted_week = CalendarWeek()
 
     lesson_periods = LessonPeriod.objects.in_week(wanted_week)
-    lesson_periods = lesson_periods.filter_from_type(_type, pk)
+    lesson_periods = lesson_periods.filter_from_type(type_, pk)
     # else:
     #     # Redirect to a selected view if no filter provided
     #     if request.user.person:
@@ -153,7 +153,7 @@ def timetable(
     context["weekdays_short"] = dict(TimePeriod.WEEKDAY_CHOICES_SHORT[weekday_min_:weekday_max + 1])
     context["weeks"] = get_weeks_for_year(year=wanted_week.year)
     context["week"] = wanted_week
-    context["type"] = _type
+    context["type"] = type_
     context["pk"] = pk
     context["el"] = el
     context["smart"] = is_smart
@@ -161,8 +161,8 @@ def timetable(
     week_prev = wanted_week - 1
     week_next = wanted_week + 1
 
-    context["url_prev"] = reverse("timetable_by_week", args=[_type, pk, week_prev.year, week_prev.week])
-    context["url_next"] = reverse("timetable_by_week", args=[_type, pk, week_next.year, week_next.week])
+    context["url_prev"] = reverse("timetable_by_week", args=[type_, pk, week_prev.year, week_prev.week])
+    context["url_next"] = reverse("timetable_by_week", args=[type_, pk, week_next.year, week_next.week])
 
     return render(request, "chronos/plan.html", context)
 
