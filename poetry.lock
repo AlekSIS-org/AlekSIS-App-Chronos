@@ -1,6 +1,7 @@
 [[package]]
 category = "main"
 description = ""
+develop = true
 name = "aleksis"
 optional = false
 python-versions = "^3.7"
@@ -12,6 +13,7 @@ Pillow = "^7.0"
 colour = "^0.1.5"
 django-any-js = "^1.0"
 django-bootstrap4 = "^1.0"
+django-ckeditor = "^5.8.0"
 django-debug-toolbar = "^2.0"
 django-easy-audit = "^1.2rc1"
 django-filter = "^2.2.0"
@@ -27,10 +29,12 @@ django-pwa = "^1.0.6"
 django-sass-processor = "^0.8"
 django-settings-context-processor = "^0.2"
 django-tables2 = "^2.1"
+django-templated-email = "^2.3.0"
 django-yarnpkg = "^6.0"
 django_select2 = "^7.1"
 django_widget_tweaks = "^1.4.5"
 easy-thumbnails = "^2.6"
+html2text = "^2019.9.26"
 libsass = "^0.19.2"
 psycopg2 = "^2.8"
 python-memcached = "^1.59"
@@ -99,6 +103,17 @@ lxml = ["lxml"]
 
 [[package]]
 category = "main"
+description = "Utilities for working with calendar weeks in Python and Django"
+name = "calendarweek"
+optional = false
+python-versions = ">=3.7,<4.0"
+version = "0.1.1"
+
+[package.extras]
+django = ["Django (>=2.2,<4.0)"]
+
+[[package]]
+category = "main"
 description = "Python package for providing Mozilla's CA Bundle."
 name = "certifi"
 optional = false
@@ -148,9 +163,6 @@ name = "configobj"
 optional = false
 python-versions = "*"
 version = "5.0.6"
-
-[package.dependencies]
-six = "*"
 
 [[package]]
 category = "main"
@@ -213,6 +225,17 @@ version = "2.2.0"
 
 [package.dependencies]
 Django = ">=1.8"
+
+[[package]]
+category = "main"
+description = "Django admin CKEditor integration."
+name = "django-ckeditor"
+optional = false
+python-versions = "*"
+version = "5.8.0"
+
+[package.dependencies]
+django-js-asset = ">=1.2.2"
 
 [[package]]
 category = "main"
@@ -321,6 +344,14 @@ name = "django-ipware"
 optional = false
 python-versions = "*"
 version = "2.1.0"
+
+[[package]]
+category = "main"
+description = "script tag with additional attributes for django.forms.Media"
+name = "django-js-asset"
+optional = false
+python-versions = "*"
+version = "1.2.2"
 
 [[package]]
 category = "main"
@@ -435,6 +466,17 @@ django = ">=1.8"
 
 [[package]]
 category = "main"
+description = "Render a particular block from a template to a string."
+name = "django-render-block"
+optional = false
+python-versions = "*"
+version = "0.6"
+
+[package.dependencies]
+django = ">=1.11"
+
+[[package]]
+category = "main"
 description = "SASS processor to compile SCSS files into *.css, while rendering, or offline."
 name = "django-sass-processor"
 optional = false
@@ -478,6 +520,18 @@ Django = ">=1.11"
 
 [package.extras]
 tablib = ["tablib"]
+
+[[package]]
+category = "main"
+description = "A Django oriented templated / transaction email abstraction"
+name = "django-templated-email"
+optional = false
+python-versions = "*"
+version = "2.3.0"
+
+[package.dependencies]
+django-render-block = ">=0.5"
+six = ">=1"
 
 [[package]]
 category = "main"
@@ -588,12 +642,20 @@ description = "Faker is a Python package that generates fake data for you."
 name = "faker"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "3.0.0"
+version = "3.0.1"
 
 [package.dependencies]
 python-dateutil = ">=2.4"
 six = ">=1.10"
 text-unidecode = "1.3"
+
+[[package]]
+category = "main"
+description = "Turn HTML into equivalent Markdown-structured text."
+name = "html2text"
+optional = false
+python-versions = ">=3.5"
+version = "2019.9.26"
 
 [[package]]
 category = "main"
@@ -716,7 +778,7 @@ category = "main"
 description = "YAML parser and emitter for Python"
 name = "pyyaml"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+python-versions = "*"
 version = "5.3"
 
 [[package]]
@@ -812,7 +874,7 @@ description = "Twilio API client and TwiML generator"
 name = "twilio"
 optional = false
 python-versions = "*"
-version = "6.35.1"
+version = "6.35.2"
 
 [package.dependencies]
 PyJWT = ">=1.4.2"
@@ -849,7 +911,7 @@ pycryptodome = "*"
 six = "*"
 
 [metadata]
-content-hash = "61923d9b1cbc5b40a1fc873e212a307b49d4ec4a47d37c9d56d9e76017afe3ce"
+content-hash = "08072d43d142e3bd04b977e89aa498a10aa000ed0cbe421ac97a74285c324dec"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -866,6 +928,10 @@ beautifulsoup4 = [
     {file = "beautifulsoup4-4.8.2-py2-none-any.whl", hash = "sha256:e1505eeed31b0f4ce2dbb3bc8eb256c04cc2b3b72af7d551a4ab6efd5cbe5dae"},
     {file = "beautifulsoup4-4.8.2-py3-none-any.whl", hash = "sha256:9fbb4d6e48ecd30bcacc5b63b94088192dcda178513b2ae3c394229f8911b887"},
     {file = "beautifulsoup4-4.8.2.tar.gz", hash = "sha256:05fd825eb01c290877657a56df4c6e4c311b3965bda790c613a3d6fb01a5462a"},
+]
+calendarweek = [
+    {file = "calendarweek-0.1.1-py3-none-any.whl", hash = "sha256:cd5f0d3e89dc6378d271c870a4fa03c569327406f232f0a04fcc45dc45e289e7"},
+    {file = "calendarweek-0.1.1.tar.gz", hash = "sha256:569e0649c651f148dbdec1cdbe432cfaeb7c00a1915fc22492d40ce9481fef61"},
 ]
 certifi = [
     {file = "certifi-2019.11.28-py2.py3-none-any.whl", hash = "sha256:017c25db2a153ce562900032d5bc68e9f191e44e9a0f762f373977de9df1fbb3"},
@@ -909,6 +975,10 @@ django-bulk-update = [
     {file = "django-bulk-update-2.2.0.tar.gz", hash = "sha256:5ab7ce8a65eac26d19143cc189c0f041d5c03b9d1b290ca240dc4f3d6aaeb337"},
     {file = "django_bulk_update-2.2.0-py2.py3-none-any.whl", hash = "sha256:49a403392ae05ea872494d74fb3dfa3515f8df5c07cc277c3dc94724c0ee6985"},
 ]
+django-ckeditor = [
+    {file = "django-ckeditor-5.8.0.tar.gz", hash = "sha256:46fc9c7346ea36183dc0cea350f98704f8b04c4722b7fe4fb18baf8ae20423fb"},
+    {file = "django_ckeditor-5.8.0-py2.py3-none-any.whl", hash = "sha256:a59bab13f4481318f8a048b1b0aef5c7da768a6352dcfb9ba0e77d91fbb9462a"},
+]
 django-constance = []
 django-debug-toolbar = [
     {file = "django-debug-toolbar-2.1.tar.gz", hash = "sha256:24c157bc6c0e1648e0a6587511ecb1b007a00a354ce716950bff2de12693e7a8"},
@@ -938,6 +1008,10 @@ django-impersonate = [
 ]
 django-ipware = [
     {file = "django-ipware-2.1.0.tar.gz", hash = "sha256:a7c7a8fd019dbdc9c357e6e582f65034e897572fc79a7e467674efa8aef9d00b"},
+]
+django-js-asset = [
+    {file = "django-js-asset-1.2.2.tar.gz", hash = "sha256:c163ae80d2e0b22d8fb598047cd0dcef31f81830e127cfecae278ad574167260"},
+    {file = "django_js_asset-1.2.2-py2.py3-none-any.whl", hash = "sha256:8ec12017f26eec524cab436c64ae73033368a372970af4cf42d9354fcb166bdd"},
 ]
 django-maintenance-mode = [
     {file = "django-maintenance-mode-0.14.0.tar.gz", hash = "sha256:f3fef1760fdcda5e0bf6c2966aadc77eea6f328580a9c751920daba927281a68"},
@@ -973,6 +1047,9 @@ django-pwa = [
     {file = "django-pwa-1.0.6.tar.gz", hash = "sha256:b3f1ad0c5241fae4c7505423540de4db93077d7c88416ff6d2af545ffe209f34"},
     {file = "django_pwa-1.0.6-py3-none-any.whl", hash = "sha256:9306105fcb637ae16fea6527be4b147d45fd53db85efb1d4f61dfea6bf793e56"},
 ]
+django-render-block = [
+    {file = "django_render_block-0.6-py2.py3-none-any.whl", hash = "sha256:95c7dc9610378a10e0c4a10d8364ec7307210889afccd6a67a6aaa0fd599bd4d"},
+]
 django-sass-processor = [
     {file = "django-sass-processor-0.8.tar.gz", hash = "sha256:e039551994feaaba6fcf880412b25a772dd313162a34cbb4289814988cfae340"},
 ]
@@ -986,6 +1063,9 @@ django-settings-context-processor = [
 django-tables2 = [
     {file = "django-tables2-2.2.1.tar.gz", hash = "sha256:0d9b17f5c030ba1b5fcaeb206d8397bf58f1fdfc6beaf56e7874841b8647aa94"},
     {file = "django_tables2-2.2.1-py2.py3-none-any.whl", hash = "sha256:6afa0496695e15b332e98537265d09fe01a55b28c75a85323d8e6b0dc2350280"},
+]
+django-templated-email = [
+    {file = "django-templated-email-2.3.0.tar.gz", hash = "sha256:536c4e5ae099eabfb9aab36087d4d7799948c654e73da55a744213d086d5bb33"},
 ]
 django-two-factor-auth = [
     {file = "django-two-factor-auth-1.10.0.tar.gz", hash = "sha256:3c3af3cd747462be18e7494c4068a2bdc606d7a2d2b2914f8d4590fc80995a71"},
@@ -1006,8 +1086,12 @@ easy-thumbnails = [
     {file = "easy-thumbnails-2.7.tar.gz", hash = "sha256:e4e7a0dd4001f56bfd4058428f2c91eafe27d33ef3b8b33ac4e013b159b9ff91"},
 ]
 faker = [
-    {file = "Faker-3.0.0-py2.py3-none-any.whl", hash = "sha256:202ad3b2ec16ae7c51c02904fb838831f8d2899e61bf18db1e91a5a582feab11"},
-    {file = "Faker-3.0.0.tar.gz", hash = "sha256:92c84a10bec81217d9cb554ee12b3838c8986ce0b5d45f72f769da22e4bb5432"},
+    {file = "Faker-3.0.1-py2.py3-none-any.whl", hash = "sha256:6eb3581e990e36ef6f1cf37f70f9a799e119e1a7b94a6062a14f1b8d781c67e4"},
+    {file = "Faker-3.0.1.tar.gz", hash = "sha256:c7f7466cb9ba58d582f713494acdb5ebcc462336c5e38c5230b0cdab37069985"},
+]
+html2text = [
+    {file = "html2text-2019.9.26-py3-none-any.whl", hash = "sha256:55ce85704f244fc18890c5ded89fa22ff7333e41e9f3cad04d51f48d62ad8834"},
+    {file = "html2text-2019.9.26.tar.gz", hash = "sha256:6f56057c5c2993b5cc5b347cb099bdf6d095828fef1b53ef4e2a2bf2a1be9b4f"},
 ]
 idna = [
     {file = "idna-2.8-py2.py3-none-any.whl", hash = "sha256:ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"},
@@ -1179,7 +1263,7 @@ tqdm = [
     {file = "tqdm-4.41.1.tar.gz", hash = "sha256:4789ccbb6fc122b5a6a85d512e4e41fc5acad77216533a6f2b8ce51e0f265c23"},
 ]
 twilio = [
-    {file = "twilio-6.35.1.tar.gz", hash = "sha256:c784e55d150ebeb2ba837afbab7168edfb91db57e77a9da49f2a1892688a1930"},
+    {file = "twilio-6.35.2.tar.gz", hash = "sha256:a086443642c0e1f13c8f8f087b426ca81ec883efbe496d8279180a49bb9287bc"},
 ]
 urllib3 = [
     {file = "urllib3-1.25.7-py2.py3-none-any.whl", hash = "sha256:a8a318824cc77d1fd4b2bec2ded92646630d7fe8619497b142c84a9e6f5a7293"},
