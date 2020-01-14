@@ -205,8 +205,8 @@ class LessonSubstitutionQuerySet(LessonDataQuerySet):
 
 
 class TimePeriod(models.Model):
-    WEEKDAY_CHOICES = i18n_day_names_lazy()
-    WEEKDAY_CHOICES_SHORT = i18n_day_abbrs_lazy()
+    WEEKDAY_CHOICES = list(enumerate(i18n_day_names_lazy()))
+    WEEKDAY_CHOICES_SHORT = list(enumerate(i18n_day_abbrs_lazy()))
 
     weekday = models.PositiveSmallIntegerField(verbose_name=_("Week day"), choices=WEEKDAY_CHOICES)
     period = models.PositiveSmallIntegerField(verbose_name=_("Number of period"))
