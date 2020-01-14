@@ -1,6 +1,8 @@
+{% load i18n %}
+
 {% if not sub.sub.is_event %}
   {% if sub.sub.type == 3 %}
-    <strong>Aufsicht</strong>
+    <strong>{% trans "Supervision" %}</strong>
   {% elif not sub.lesson_period.lesson.subject and not sub.subject %}
   {% elif sub.sub.type == 1 or sub.sub.type == 2 %}
     <span data-position="bottom" class="tooltipped" data-tooltip="{{ sub.lesson_period.lesson.subject.name }}">

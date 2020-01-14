@@ -1,6 +1,6 @@
 {% extends 'core/base.html' %}
 
-{% load data_helpers static %}
+{% load data_helpers static i18n %}
 
 {% block extra_head %}
   <link rel="stylesheet" href="{% static 'css/chronos/timetable.css' %}">
@@ -21,12 +21,12 @@
   <div class="row no-margin">
     <div class="col s8 m6 l8 xl9">
       <h4>
-        Stundenplan <i>{{ el }}</i>
+        {% trans "Timetable" %} <i>{{ el }}</i>
       </h4>
 
       {# Show class teacher and deputy class teacher #}
       {% if type == "group" and el.owners.all %}
-        <h5>Klassenlehrkräfte:
+        <h5>{% trans "Class teachers:" %}
           {% for teacher in el.owners.all %}
             <span data-position="bottom" class="tooltipped"
                   data-tooltip="{{ teacher }}">
@@ -48,12 +48,12 @@
       {# Show if smart #}
       {# Toggle button to regular and smart plan badge #}
       <div class="row s12 m6 left">
-        <span class="badge new primary-color left smart-plan-badge">SMART PLAN</span>
+        <span class="badge new primary-color left smart-plan-badge">{% trans "SMART PLAN" %}</span>
 
         <a class="waves-effect waves-light btn-flat no-print" style="padding-left: 3px; padding-right: 3px;"
            href="{% url "timetable_regular" type pk "regular" %}">
           <i class="material-icons left">slideshow</i>
-          REGELPLAN ANZEIGEN
+          {% trans "Show regular timetable" %}
         </a>
       </div>
 
@@ -70,7 +70,7 @@
             <select id="calendar-week-1">
               {% for week in weeks %}
                 <option value="{{ week.week }}" {% if week == wanted_week %}
-                        selected {% endif %}>KW {{ week.week }} ({{ week.0|date:"j.n" }}–{{ week.6|date:"j.n" }})
+                        selected {% endif %}>{% trans "CW" %} {{ week.week }} ({{ week.0|date:"j.n" }}–{{ week.6|date:"j.n" }})
                 </option>
               {% endfor %}
             </select>
@@ -80,7 +80,7 @@
             <select id="calendar-week-2">
               {% for week in weeks %}
                 <option value="{{ week.week }}" {% if week == wanted_week %}
-                        selected {% endif %}>KW {{ week.week }} ({{ week.0|date:"j.n.Y" }}–{{ week.6|date:"j.n.Y" }})
+                        selected {% endif %}>{% trans "CW" %} {{ week.week }} ({{ week.0|date:"j.n.Y" }}–{{ week.6|date:"j.n.Y" }})
                 </option>
               {% endfor %}
             </select>
@@ -90,7 +90,7 @@
             <select id="calendar-week-3">
               {% for week in weeks %}
                 <option value="{{ week.week }}" {% if week == wanted_week %}
-                        selected {% endif %}>KW {{ week.week }} ({{ week.0|date:"j.n" }}–{{ week.6|date:"j.n.Y" }})
+                        selected {% endif %}>{% trans "CW" %} {{ week.week }} ({{ week.0|date:"j.n" }}–{{ week.6|date:"j.n.Y" }})
                 </option>
               {% endfor %}
             </select>
@@ -109,7 +109,7 @@
       <a class="waves-effect waves-light btn-flat no-print"
          href="{% url "timetable" type pk %}">
         <i class="material-icons left">slideshow</i>
-        SMART PLAN ANZEIGEN
+        {% trans "Show SMART PLAN" %}
       </a>
     {% endif %}
   </div>
