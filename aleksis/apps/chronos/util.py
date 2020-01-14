@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Tuple, List
+from typing import Tuple, List, Union
 
 from calendarweek import CalendarWeek
 

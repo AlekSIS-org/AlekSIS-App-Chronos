@@ -98,11 +98,11 @@ class LessonDataQuerySet(models.QuerySet):
 
         return self.filter(
             **{
-                self._perdiod_path + "lesson__date_start__lte": now.date(),
-                self._perdiod_path + "lesson__date_end__gte": now.date(),
-                self._perdiod_path + "period__weekday": now.isoweekday(),
-                self._perdiod_path + "period__time_start__lte": now.time(),
-                self._perdiod_path + "period__time_end__gte": now.time(),
+                self._period_path + "lesson__date_start__lte": now.date(),
+                self._period_path + "lesson__date_end__gte": now.date(),
+                self._period_path + "period__weekday": now.isoweekday(),
+                self._period_path + "period__time_start__lte": now.time(),
+                self._period_path + "period__time_end__gte": now.time(),
             }
         ).annotate_week(week)
 
@@ -110,16 +110,16 @@ class LessonDataQuerySet(models.QuerySet):
         """ Filter for all lessons a participant (student) attends. """
 
         return self.filter(
-            Q(**{self._perdiod_path + "lesson__groups__members": person})
-            | Q(**{self._perdiod_path + "lesson__groups__parent_groups__members": person})
+            Q(**{self._period_path + "lesson__groups__members": person})
+            | Q(**{self._period_path + "lesson__groups__parent_groups__members": person})
         )
 
     def filter_group(self, group: Union[Group, int]):
         """ Filter for all lessons a group (class) regularly attends. """
 
         return self.filter(
-            Q(**{self._perdiod_path + "lesson__groups": group})
-            | Q(**{self._perdiod_path + "lesson__groups__parent_groups": group})
+            Q(**{self._period_path + "lesson__groups": group})
+            | Q(**{self._period_path + "lesson__groups__parent_groups": group})
         )
 
     def filter_teacher(self, teacher: Union[Person, int]):
@@ -127,7 +127,7 @@ class LessonDataQuerySet(models.QuerySet):
 
         return self.filter(
             Q(**{self._subst_path + "teachers": teacher, self._subst_path + "week": F("_week"),})
-            | Q(**{self._perdiod_path + "lesson__teachers": teacher})
+            | Q(**{self._period_path + "lesson__teachers": teacher})
         )
 
     def filter_room(self, room: Union[Room, int]):
@@ -135,7 +135,7 @@ class LessonDataQuerySet(models.QuerySet):
 
         return self.filter(
             Q(**{self._subst_path + "room": room, self._subst_path + "week": F("_week"),})
-            | Q(**{self._perdiod_path + "room": room})
+            | Q(**{self._period_path + "room": room})
         )
 
     def annotate_week(self, week: Union[CalendarWeek, int]):
