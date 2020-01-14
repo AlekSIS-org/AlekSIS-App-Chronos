@@ -100,7 +100,7 @@ class LessonDataQuerySet(models.QuerySet):
             **{
                 self._period_path + "lesson__date_start__lte": now.date(),
                 self._period_path + "lesson__date_end__gte": now.date(),
-                self._period_path + "period__weekday": now.isoweekday(),
+                self._period_path + "period__weekday": now.weekday(),
                 self._period_path + "period__time_start__lte": now.time(),
                 self._period_path + "period__time_end__gte": now.time(),
             }
@@ -242,7 +242,7 @@ class TimePeriod(models.Model):
 
             wanted_week = CalendarWeek(year=year, week=week_number)
 
-        return wanted_week[self.weekday - 1]
+        return wanted_week[self.weekday]
 
     class Meta:
         unique_together = [["weekday", "period"]]

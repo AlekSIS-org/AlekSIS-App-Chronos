@@ -5,7 +5,7 @@ from calendarweek import CalendarWeek
 
 
 def week_weekday_from_date(when: date) -> Tuple[CalendarWeek, int]:
-    return (CalendarWeek.from_date(when), when.isoweekday())
+    return (CalendarWeek.from_date(when), when.weekday())
 
 
 def week_weekday_to_date(week: CalendarWeek, weekday: int) -> date:
