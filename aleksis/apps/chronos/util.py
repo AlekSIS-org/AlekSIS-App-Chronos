@@ -20,7 +20,10 @@ class CalendarWeek:
     def from_date(cls, when: date):
         """ Get the calendar week by a date object (the week this date is in). """
 
-        return cls(year=when.year, week=int(when.strftime("%V")))
+        week = int(when.strftime("%V"))
+        year = when.year + 1 if when.month == 12 and week == 1 else when.year
+
+        return cls(year=year, week=week)
 
     @classmethod
     def current_week(cls) -> int:
