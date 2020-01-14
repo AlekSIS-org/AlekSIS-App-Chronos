@@ -10,10 +10,12 @@ from django.db.models import F, Q
 from django.http.request import QueryDict
 from django.utils.translation import ugettext_lazy as _
 
+from calendarweek.django import CalendarWeek, i18n_day_names_lazy, i18n_day_abbrs_lazy
+
 from aleksis.core.mixins import ExtensibleModel
 from aleksis.core.models import Group, Person
 
-from .util import CalendarWeek, week_weekday_from_date
+from .util import week_weekday_from_date
 
 
 class LessonPeriodManager(models.Manager):
@@ -203,25 +205,8 @@ class LessonSubstitutionQuerySet(LessonDataQuerySet):
 
 
 class TimePeriod(models.Model):
-    WEEKDAY_CHOICES = [
-        (0, _("Sunday")),
-        (1, _("Monday")),
-        (2, _("Tuesday")),
-        (3, _("Wednesday")),
-        (4, _("Thursday")),
-        (5, _("Friday")),
-        (6, _("Saturday")),
-    ]
-
-    WEEKDAY_CHOICES_SHORT = [
-        (0, _("Sun")),
-        (1, _("Mon")),
-        (2, _("Tue")),
-        (3, _("Wed")),
-        (4, _("Thu")),
-        (5, _("Fri")),
-        (6, _("Sat")),
-    ]
+    WEEKDAY_CHOICES = i18n_day_names_lazy()
+    WEEKDAY_CHOICES_SHORT = i18n_day_abbrs_lazy()
 
     weekday = models.PositiveSmallIntegerField(verbose_name=_("Week day"), choices=WEEKDAY_CHOICES)
     period = models.PositiveSmallIntegerField(verbose_name=_("Number of period"))
