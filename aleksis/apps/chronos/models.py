@@ -84,7 +84,7 @@ class LessonDataQuerySet(models.QuerySet):
 
         return (
             self.within_dates(day, day)
-            .filter(**{self._perdiod_path + "period__weekday": weekday})
+            .filter(**{self._period_path + "period__weekday": weekday})
             .annotate_week(week)
         )
 
