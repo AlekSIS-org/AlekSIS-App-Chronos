@@ -20,7 +20,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.7"
-calendarweek = "^0.1"
+calendarweek = "^0.4.4"
 AlekSIS = { path = "../../.." }
 
 [build-system]
