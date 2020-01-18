@@ -1,9 +1,9 @@
 from collections import OrderedDict
-from datetime import date, datetime, timedelta, time
-from typing import Optional, Union
+from datetime import date, datetime, timedelta
+from typing import Optional
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Max, Min
+from django.db.models import Count
 from django.http import HttpRequest, HttpResponse, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -17,49 +17,10 @@ from aleksis.core.models import Person, Group
 from aleksis.core.util import messages
 
 from .forms import LessonSubstitutionForm
+from .min_max import period_min, period_max, weekday_min_, weekday_max, get_next_relevant_day
 from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
 from .tables import LessonsTable, SubstitutionsTable
 from .util import CalendarWeek, get_weeks_for_year
-
-# Determine overall first and last day and period
-min_max = TimePeriod.objects.aggregate(
-    Min("period"), Max("period"), Min("weekday"), Max("weekday"), Min("time_start"), Max("time_end")
-)
-
-period_min = min_max.get("period__min", 1)
-period_max = min_max.get("period__max", 7)
-
-time_min = min_max.get("time_start__min", None)
-time_max = min_max.get("time_end__max", None)
-
-weekday_min_ = min_max.get("weekday__min", 0)
-weekday_max = min_max.get("weekday__max", 6)
-
-
-def get_next_relevant_day(day: Union[date, None] = None, time: Union[time, None] = None):
-    if day is None:
-        day = timezone.now().date()
-
-    if time is not None:
-        if time > time_max:
-            day += timedelta(days=1)
-
-    cw = CalendarWeek.from_date(day)
-
-    # Remap to Sunday first
-    weekday = 0 if day.weekday() == 6 else day.weekday() + 1
-
-
-    if weekday > weekday_max or (weekday < weekday_min_):
-        if weekday > weekday_max or weekday == 0:
-            cw += 1
-        # Remap to Monday first
-        weekday_min = weekday_min_ - 1
-
-        # TODO: Probably causes problems
-        day = cw[weekday_min]
-
-    return day
 
 
 @login_required
