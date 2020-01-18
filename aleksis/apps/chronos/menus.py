@@ -14,7 +14,7 @@ MENUS = {
             "submenu": [
                 {
                     "name": _("My timetable"),
-                    "url": "timetable",
+                    "url": "my_timetable",
                     "icon": "person",
                     "validators": ["menu_generator.validators.is_authenticated"],
                 },

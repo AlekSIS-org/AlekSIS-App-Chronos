@@ -78,6 +78,21 @@ def all(request: HttpRequest) -> HttpResponse:
 
 
 @login_required
+def my_timetable(
+    request: HttpRequest, year: Optional[int] = None, month: Optional[int] = None, day: Optional[int] = None
+) -> HttpResponse:
+    context = {}
+
+    if day:
+        wanted_day = timezone.datetime(year=year, month=month, day=day).date()
+        wanted_day = get_next_relevant_day(wanted_day)
+    else:
+        wanted_day = get_next_relevant_day(timezone.now().date(), datetime.now().time())
+
+    return render(request, "chronos/myplan.html", context)
+
+
+@login_required
 def timetable(
     request: HttpRequest, type_: str, pk: int, year: Optional[int] = None, week: Optional[int] = None, regular: Optional[str] = None
 ) -> HttpResponse:

@@ -4,6 +4,8 @@ from . import views
 
 urlpatterns = [
     path("", views.all, name="all_timetables"),
+    path("timetable/my/", views.my_timetable, name="my_timetable"),
+    path("timetable/my/<int:year>/<int:week>/", views.my_timetable, name="my_timetable"),
     path("timetable/<str:type_>/<int:pk>/", views.timetable, name="timetable"),
     path("timetable/<str:type_>/<int:pk>/<int:year>/<int:week>/", views.timetable, name="timetable_by_week"),
     path("timetable/<str:type_>/<int:pk>/<str:regular>/", views.timetable, name="timetable_regular"),
