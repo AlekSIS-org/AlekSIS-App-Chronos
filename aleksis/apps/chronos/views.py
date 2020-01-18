@@ -50,6 +50,42 @@ def my_timetable(
     else:
         wanted_day = get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
+    if request.user.person:
+        person = request.user.person
+
+        if person.primary_group:
+            # Student
+
+            type_ = "group"
+            super_el = person.primary_group
+            lesson_periods_person = person.lesson_periods_as_participant
+
+        elif person.is_teacher():
+            # Teacher
+
+            type_ = "teacher"
+            super_el = person
+            lesson_periods_person = person.lesson_periods_as_teacher
+        else:
+            # If no student or teacher, redirect to all timetables
+            return redirect("all_timetables")
+
+    lesson_periods = lesson_periods_person.on_day(wanted_day)
+
+    # Build dictionary with lessons
+    per_period = {}
+    for lesson_period in lesson_periods:
+        if lesson_period.period.period in per_period:
+            per_period[lesson_period.period.period].append(lesson_period)
+        else:
+            per_period[lesson_period.period.period] = [lesson_period]
+
+    context["lesson_periods"] = OrderedDict(sorted(per_period.items()))
+    context["super"] = {"type": type_, "el": super_el}
+    context["type"] = type_
+    context["day"] = wanted_day
+    context["periods"] = TimePeriod.get_times_dict()
+
     return render(request, "chronos/my_timetable.html", context)
 
 
