@@ -74,7 +74,7 @@ def all(request: HttpRequest) -> HttpResponse:
     context['classes'] = classes
     context['rooms'] = rooms
 
-    return render(request, 'chronos/quicklaunch.html', context)
+    return render(request, 'chronos/all.html', context)
 
 
 @login_required
@@ -89,7 +89,7 @@ def my_timetable(
     else:
         wanted_day = get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
-    return render(request, "chronos/myplan.html", context)
+    return render(request, "chronos/my_timetable.html", context)
 
 
 @login_required
@@ -179,7 +179,7 @@ def timetable(
     context["url_prev"] = reverse("timetable_by_week", args=[type_, pk, week_prev.year, week_prev.week])
     context["url_next"] = reverse("timetable_by_week", args=[type_, pk, week_next.year, week_next.week])
 
-    return render(request, "chronos/plan.html", context)
+    return render(request, "chronos/timetable.html", context)
 
 
 @login_required
@@ -294,4 +294,4 @@ def substitutions(
         reverse("substitutions_by_day", args=[day_next.year, day_next.month, day_next.day])
     )
 
-    return render(request, "chronos/substitution.html", context)
+    return render(request, "chronos/substitutions.html", context)
