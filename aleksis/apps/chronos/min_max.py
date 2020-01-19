@@ -41,3 +41,20 @@ def get_next_relevant_day(day: Optional[date] = None, time: Optional[time] = Non
         day = cw[weekday_min_]
 
     return day
+
+
+def get_prev_relevant_day(day: Optional[date] = None) -> date:
+    """ Returns previous day with lessons depending on date """
+
+    if day is None:
+        day = timezone.now().date()
+
+    cw = CalendarWeek.from_date(day)
+
+    if day.weekday() > weekday_max:
+        day = cw[weekday_max]
+    elif day.weekday() < weekday_min_:
+        cw -= 1
+        day = cw[weekday_max]
+
+    return day
