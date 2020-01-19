@@ -10,7 +10,7 @@ urlpatterns = [
     path("timetable/<str:type_>/<int:pk>/<int:year>/<int:week>/", views.timetable, name="timetable_by_week"),
     path("timetable/<str:type_>/<int:pk>/<str:regular>/", views.timetable, name="timetable_regular"),
     path("lessons/", views.lessons_day, name="lessons_day"),
-    path("lessons/<when>/", views.lessons_day, name="lessons_day_by_date"),
+    path("lessons/<int:year>/<int:month>/<int:day>/", views.lessons_day, name="lessons_day_by_date"),
     path(
         "lessons/<int:id_>/<int:week>/substition/",
         views.edit_substitution,

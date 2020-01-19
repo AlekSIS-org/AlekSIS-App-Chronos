@@ -211,33 +211,33 @@ def timetable(
 
 
 @login_required
-def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpResponse:
+def lessons_day(
+    request: HttpRequest,
+    year: Optional[int] = None,
+    month: Optional[int] = None,
+    day: Optional[int] = None,
+) -> HttpResponse:
     context = {}
 
-    if when:
-        day = datetime.strptime(when, "%Y-%m-%d").date()
+    if day:
+        wanted_day = timezone.datetime(year=year, month=month, day=day).date()
+        wanted_day = get_next_relevant_day(wanted_day)
     else:
-        day = date.today()
+        wanted_day = get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
     # Get lessons
-    lesson_periods = LessonPeriod.objects.on_day(day)
+    lesson_periods = LessonPeriod.objects.on_day(wanted_day)
 
     # Build table
     lessons_table = LessonsTable(lesson_periods.all())
     RequestConfig(request).configure(lessons_table)
 
     context["lessons_table"] = lessons_table
-    context["day"] = day
+    context["day"] = wanted_day
     context["lesson_periods"] = lesson_periods
 
-    day_prev = day - timedelta(days=1)
-    day_next = day + timedelta(days=1)
-
-    context["url_prev"] = reverse(
-        "lessons_day_by_date", args=[day_prev.strftime("%Y-%m-%d")]
-    )
-    context["url_next"] = reverse(
-        "lessons_day_by_date", args=[day_next.strftime("%Y-%m-%d")]
+    context["url_prev"], context["url_next"] = get_prev_next_by_day(
+        wanted_day, "lessons_day_by_date"
     )
 
     return render(request, "chronos/lessons_day.html", context)
