@@ -270,9 +270,11 @@ def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse
             edit_substitution_form.save(commit=True)
 
             messages.success(request, _("The substitution has been saved."))
+
+            date = wanted_week[lesson_period.period.weekday]
             return redirect(
                 "lessons_day_by_date",
-                when=wanted_week[lesson_period.period.weekday - 1].strftime("%Y-%m-%d"),
+                year=date.year, month=date.month, day=date.day
             )
 
     context["edit_substitution_form"] = edit_substitution_form
@@ -290,9 +292,11 @@ def delete_substitution(request: HttpRequest, id_: int, week: int) -> HttpRespon
     ).delete()
 
     messages.success(request, _("The substitution has been deleted."))
+
+    date = wanted_week[lesson_period.period.weekday]
     return redirect(
         "lessons_day_by_date",
-        when=wanted_week[lesson_period.period.weekday - 1].strftime("%Y-%m-%d"),
+        year=date.year, month=date.month, day=date.day
     )
 
 
