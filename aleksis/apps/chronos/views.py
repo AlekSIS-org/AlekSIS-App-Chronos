@@ -26,7 +26,7 @@ from .min_max import (
     get_prev_relevant_day,
 )
 from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
-from .tables import LessonsTable, SubstitutionsTable
+from .tables import LessonsTable
 from .util import CalendarWeek, get_weeks_for_year
 
 
