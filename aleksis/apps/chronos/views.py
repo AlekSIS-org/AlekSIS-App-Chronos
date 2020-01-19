@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from datetime import date, datetime, timedelta
-from typing import Optional
+from typing import Optional, Tuple
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
@@ -17,30 +17,57 @@ from aleksis.core.models import Person, Group
 from aleksis.core.util import messages
 
 from .forms import LessonSubstitutionForm
-from .min_max import period_min, period_max, weekday_min_, weekday_max, get_next_relevant_day
+from .min_max import (
+    period_min,
+    period_max,
+    weekday_min_,
+    weekday_max,
+    get_next_relevant_day,
+)
 from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
 from .tables import LessonsTable, SubstitutionsTable
 from .util import CalendarWeek, get_weeks_for_year
+
+
+def get_prev_next_by_day(day: date, url: str) -> Tuple[str, str]:
+    """ Build URLs for previous/next day """
+
+    day_prev = day - timedelta(days=1)
+    day_next = day + timedelta(days=1)
+
+    url_prev = reverse(url, args=[day_prev.year, day_prev.month, day_prev.day])
+    url_next = reverse(url, args=[day_next.year, day_next.month, day_next.day])
+
+    return url_prev, url_next
 
 
 @login_required
 def all(request: HttpRequest) -> HttpResponse:
     context = {}
 
-    teachers = Person.objects.annotate(lessons_count=Count("lessons_as_teacher")).filter(lessons_count__gt=0)
-    classes = Group.objects.annotate(lessons_count=Count("lessons")).filter(lessons_count__gt=0, parent_groups=None)
-    rooms = Room.objects.annotate(lessons_count=Count("lesson_periods")).filter(lessons_count__gt=0)
+    teachers = Person.objects.annotate(
+        lessons_count=Count("lessons_as_teacher")
+    ).filter(lessons_count__gt=0)
+    classes = Group.objects.annotate(lessons_count=Count("lessons")).filter(
+        lessons_count__gt=0, parent_groups=None
+    )
+    rooms = Room.objects.annotate(lessons_count=Count("lesson_periods")).filter(
+        lessons_count__gt=0
+    )
 
-    context['teachers'] = teachers
-    context['classes'] = classes
-    context['rooms'] = rooms
+    context["teachers"] = teachers
+    context["classes"] = classes
+    context["rooms"] = rooms
 
-    return render(request, 'chronos/all.html', context)
+    return render(request, "chronos/all.html", context)
 
 
 @login_required
 def my_timetable(
-    request: HttpRequest, year: Optional[int] = None, month: Optional[int] = None, day: Optional[int] = None
+    request: HttpRequest,
+    year: Optional[int] = None,
+    month: Optional[int] = None,
+    day: Optional[int] = None,
 ) -> HttpResponse:
     context = {}
 
@@ -86,12 +113,21 @@ def my_timetable(
     context["day"] = wanted_day
     context["periods"] = TimePeriod.get_times_dict()
 
+    context["url_prev"], context["url_next"] = get_prev_next_by_day(
+        wanted_day, "substitutions_by_day"
+    )
+
     return render(request, "chronos/my_timetable.html", context)
 
 
 @login_required
 def timetable(
-    request: HttpRequest, type_: str, pk: int, year: Optional[int] = None, week: Optional[int] = None, regular: Optional[str] = None
+    request: HttpRequest,
+    type_: str,
+    pk: int,
+    year: Optional[int] = None,
+    week: Optional[int] = None,
+    regular: Optional[str] = None,
 ) -> HttpResponse:
     context = {}
 
@@ -114,38 +150,25 @@ def timetable(
 
     lesson_periods = LessonPeriod.objects.in_week(wanted_week)
     lesson_periods = lesson_periods.filter_from_type(type_, pk)
-    # else:
-    #     # Redirect to a selected view if no filter provided
-    #     if request.user.person:
-    #         if request.user.person.primary_group:
-    #             return redirect(
-    #                 reverse("timetable") + "?group=%d" % request.user.person.primary_group.pk
-    #             )
-    #         elif lesson_periods.filter(lesson__teachers=request.user.person).exists():
-    #             return redirect(reverse("timetable") + "?teacher=%d" % request.user.person.pk)
 
     # Regroup lesson periods per weekday
     per_period = {}
     for lesson_period in lesson_periods:
-        print(lesson_period.period)
         added = False
-        if lesson_period.period.period in per_period :
+        if lesson_period.period.period in per_period:
             if lesson_period.period.weekday in per_period[lesson_period.period.period]:
-                print("HEY HEY")
-                print(per_period[lesson_period.period.period][lesson_period.period.weekday])
-                per_period[lesson_period.period.period][lesson_period.period.weekday].append(lesson_period)
-                added =True
+                per_period[lesson_period.period.period][
+                    lesson_period.period.weekday
+                ].append(lesson_period)
+                added = True
 
         if not added:
             per_period.setdefault(lesson_period.period.period, {})[
                 lesson_period.period.weekday
             ] = [lesson_period]
 
-    print(per_period)
-
     # Fill in empty lessons
     for period_num in range(period_min, period_max + 1):
-        print(period_num)
         # Fill in empty weekdays
         if period_num not in per_period.keys():
             per_period[period_num] = {}
@@ -158,11 +181,14 @@ def timetable(
         # Order this weekday by periods
         per_period[period_num] = OrderedDict(sorted(per_period[period_num].items()))
 
-    print(lesson_periods)
     context["lesson_periods"] = OrderedDict(sorted(per_period.items()))
     context["periods"] = TimePeriod.get_times_dict()
-    context["weekdays"] = dict(TimePeriod.WEEKDAY_CHOICES[weekday_min_:weekday_max + 1])
-    context["weekdays_short"] = dict(TimePeriod.WEEKDAY_CHOICES_SHORT[weekday_min_:weekday_max + 1])
+    context["weekdays"] = dict(
+        TimePeriod.WEEKDAY_CHOICES[weekday_min_ : weekday_max + 1]
+    )
+    context["weekdays_short"] = dict(
+        TimePeriod.WEEKDAY_CHOICES_SHORT[weekday_min_ : weekday_max + 1]
+    )
     context["weeks"] = get_weeks_for_year(year=wanted_week.year)
     context["week"] = wanted_week
     context["type"] = type_
@@ -173,8 +199,12 @@ def timetable(
     week_prev = wanted_week - 1
     week_next = wanted_week + 1
 
-    context["url_prev"] = reverse("timetable_by_week", args=[type_, pk, week_prev.year, week_prev.week])
-    context["url_next"] = reverse("timetable_by_week", args=[type_, pk, week_next.year, week_next.week])
+    context["url_prev"] = reverse(
+        "timetable_by_week", args=[type_, pk, week_prev.year, week_prev.week]
+    )
+    context["url_next"] = reverse(
+        "timetable_by_week", args=[type_, pk, week_next.year, week_next.week]
+    )
 
     return render(request, "chronos/timetable.html", context)
 
@@ -201,8 +231,13 @@ def lessons_day(request: HttpRequest, when: Optional[str] = None) -> HttpRespons
 
     day_prev = day - timedelta(days=1)
     day_next = day + timedelta(days=1)
-    context["url_prev"] = reverse("lessons_day_by_date", args=[day_prev.strftime("%Y-%m-%d")])
-    context["url_next"] = reverse("lessons_day_by_date", args=[day_next.strftime("%Y-%m-%d")])
+
+    context["url_prev"] = reverse(
+        "lessons_day_by_date", args=[day_prev.strftime("%Y-%m-%d")]
+    )
+    context["url_next"] = reverse(
+        "lessons_day_by_date", args=[day_next.strftime("%Y-%m-%d")]
+    )
 
     return render(request, "chronos/lessons_day.html", context)
 
@@ -246,12 +281,12 @@ def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse
 
 @admin_required
 def delete_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse:
-    context = {}
-
     lesson_period = get_object_or_404(LessonPeriod, pk=id_)
     wanted_week = lesson_period.lesson.get_calendar_week(week)
 
-    LessonSubstitution.objects.filter(week=wanted_week.week, lesson_period=lesson_period).delete()
+    LessonSubstitution.objects.filter(
+        week=wanted_week.week, lesson_period=lesson_period
+    ).delete()
 
     messages.success(request, _("The substitution has been deleted."))
     return redirect(
@@ -261,7 +296,10 @@ def delete_substitution(request: HttpRequest, id_: int, week: int) -> HttpRespon
 
 
 def substitutions(
-    request: HttpRequest, year: Optional[int] = None, month: Optional[int] = None, day: Optional[int] = None
+    request: HttpRequest,
+    year: Optional[int] = None,
+    month: Optional[int] = None,
+    day: Optional[int] = None,
 ) -> HttpResponse:
     context = {}
 
@@ -273,22 +311,11 @@ def substitutions(
 
     substitutions = LessonSubstitution.objects.on_day(wanted_day)
 
-    # Prepare table
-    substitutions_table = SubstitutionsTable(substitutions)
-    RequestConfig(request).configure(substitutions_table)
-
-    context["current_head"] = str(wanted_day)
-    context["substitutions_table"] = substitutions_table
     context["substitutions"] = substitutions
     context["day"] = wanted_day
 
-    day_prev = wanted_day - timedelta(days=1)
-    day_next = wanted_day + timedelta(days=1)
-    context["url_prev"] = "%s" % (
-        reverse("substitutions_by_day", args=[day_prev.year, day_prev.month, day_prev.day])
-    )
-    context["url_next"] = "%s" % (
-        reverse("substitutions_by_day", args=[day_next.year, day_next.month, day_next.day])
+    context["url_prev"], context["url_next"] = get_prev_next_by_day(
+        wanted_day, "substitutions_by_day"
     )
 
     return render(request, "chronos/substitutions.html", context)
