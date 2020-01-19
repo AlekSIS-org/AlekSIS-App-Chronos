@@ -6,9 +6,21 @@
 
 {% load render_table from django_tables2 %}
 
-{% block page_title %}{% blocktrans %}Lessons {{ day }}{% endblocktrans %}{% endblock %}
+{% block no_page_title %}{% endblock %}
 
 {% block content %}
-  {% include "core/turnable.html" %}
+  <script type="text/javascript">
+    var dest = Urls.lessonsDay();
+  </script>
+
+  <div class="row no-margin">
+    <div class="col s12 m6 l8 no-padding">
+      <h4>{% blocktrans %}Lessons{% endblocktrans %} {{ day|date:"l, j. F Y" }}</h4>
+    </div>
+    <div class="col s12 m6 l4 no-padding" style="margin-top: 10px;">
+      {% include "chronos/partials/datepicker.html" %}
+    </div>
+  </div>
+
   {% render_table lessons_table %}
 {% endblock %}

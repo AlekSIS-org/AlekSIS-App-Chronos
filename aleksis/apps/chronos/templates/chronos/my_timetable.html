@@ -6,9 +6,11 @@
   <link rel="stylesheet" href="{% static 'css/chronos/timetable.css' %}">
 {% endblock %}
 
+{% block no_page_title %}{% endblock %}
+
 {% block content %}
-  <div class="row nomargin">
-    <div class="col m12 s12 l6">
+  <div class="row no-margin">
+    <div class="col m12 s12 l6 xl4">
       <h4>
         {% trans "My timetable" %} <i>{{ el }}</i>
         <span class="badge new primary-color ">{% trans "SMART PLAN" %}</span>
@@ -20,7 +22,7 @@
   </div>
 
   <div class="row nomargin">
-    <div class="col m12 s12 l6">
+    <div class="col m12 s12 l6 xl4">
       {#            {% include "timetable/hintsinplan.html" %}#}
     </div>
   </div>
@@ -30,7 +32,7 @@
   </script>
 
   <div class="row">
-    <div class="timetable-plan col s12 m12 l6">
+    <div class="timetable-plan col s12 m12 xl4">
 
       {#  Date #}
 
