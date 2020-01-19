@@ -23,6 +23,7 @@ from .min_max import (
     weekday_min_,
     weekday_max,
     get_next_relevant_day,
+    get_prev_relevant_day,
 )
 from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
 from .tables import LessonsTable, SubstitutionsTable
@@ -32,8 +33,8 @@ from .util import CalendarWeek, get_weeks_for_year
 def get_prev_next_by_day(day: date, url: str) -> Tuple[str, str]:
     """ Build URLs for previous/next day """
 
-    day_prev = day - timedelta(days=1)
-    day_next = day + timedelta(days=1)
+    day_prev = get_prev_relevant_day(day - timedelta(days=1))
+    day_next = get_next_relevant_day(day + timedelta(days=1))
 
     url_prev = reverse(url, args=[day_prev.year, day_prev.month, day_prev.day])
     url_next = reverse(url, args=[day_next.year, day_next.month, day_next.day])
