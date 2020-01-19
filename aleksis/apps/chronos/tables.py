@@ -15,9 +15,9 @@ def _css_class_from_lesson_state(
 ) -> str:
     if record.get_substitution(record._week):
         if record.get_substitution(record._week).cancelled:
-            return "table-danger"
+            return "green-text"
         else:
-            return "table-warning"
+            return "orange-text"
     else:
         return ""
 
@@ -33,5 +33,6 @@ class LessonsTable(tables.Table):
     lesson__subject = tables.Column(accessor="lesson__subject")
     room = tables.Column(accessor="room")
     edit_substitution = tables.LinkColumn(
-        "edit_substitution", args=[A("id"), A("_week")], text=_("Substitution")
+        "edit_substitution", args=[A("id"), A("_week")], text=_("Substitution"),
+        attrs={"a": {"class": "btn-flat waves-effect waves-orange"}}, verbose_name=_("Manage substitution")
     )
