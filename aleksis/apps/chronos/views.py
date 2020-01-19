@@ -316,7 +316,7 @@ def substitutions(
     context["day"] = wanted_day
 
     context["url_prev"], context["url_next"] = get_prev_next_by_day(
-        wanted_day, "substitutions_by_day"
+        wanted_day, "substitutions_by_date"
     )
 
     return render(request, "chronos/substitutions.html", context)
