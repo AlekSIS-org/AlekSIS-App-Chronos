@@ -22,7 +22,7 @@ weekday_min_ = min_max.get("weekday__min", 0)
 weekday_max = min_max.get("weekday__max", 6)
 
 
-def get_next_relevant_day(day: Optional[date] = None, time: Optional[time] = None):
+def get_next_relevant_day(day: Optional[date] = None, time: Optional[time] = None) -> date:
     """ Returns next day with lessons depending on date and time """
 
     if day is None:
@@ -38,7 +38,6 @@ def get_next_relevant_day(day: Optional[date] = None, time: Optional[time] = Non
         cw += 1
         day = cw[weekday_min_]
     elif day.weekday() < weekday_min_:
-        cw -= 1
-        day = cw[weekday_max]
+        day = cw[weekday_min_]
 
     return day
