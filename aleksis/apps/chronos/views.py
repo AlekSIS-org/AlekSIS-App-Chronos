@@ -115,7 +115,7 @@ def my_timetable(
     context["periods"] = TimePeriod.get_times_dict()
 
     context["url_prev"], context["url_next"] = get_prev_next_by_day(
-        wanted_day, "substitutions_by_day"
+        wanted_day, "my_timetable_by_date"
     )
 
     return render(request, "chronos/my_timetable.html", context)
