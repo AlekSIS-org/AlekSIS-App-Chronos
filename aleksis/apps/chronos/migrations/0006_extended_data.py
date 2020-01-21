@@ -16,9 +16,4 @@ class Migration(migrations.Migration):
             name='extended_data',
             field=django.contrib.postgres.fields.jsonb.JSONField(default=dict, editable=False),
         ),
-        migrations.AlterField(
-            model_name='timeperiod',
-            name='weekday',
-            field=models.PositiveSmallIntegerField(choices=[(0, 'Montag'), (1, 'Dienstag'), (2, 'Mittwoch'), (3, 'Donnerstag'), (4, 'Freitag'), (5, 'Samstag'), (6, 'Sonntag')], verbose_name='Week day'),
-        ),
     ]
