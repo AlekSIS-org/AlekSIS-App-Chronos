@@ -80,7 +80,7 @@
       </td>
     {% endif %}
     {% for sub in substitutions %}
-      <tr class="{% if sub.type == "cancellation" %}green-text{% else %}black-text{% endif %}"> {# TODO: Extend support for blue and purple (supervisions and events) #}
+      <tr class="{% if sub.type_ == "cancellation" %}green-text{% else %}black-text{% endif %}"> {# TODO: Extend support for blue and purple (supervisions and events) #}
         <td>
           {% include "chronos/partials/groups.html" with groups=sub.lesson_period.lesson.groups.all %}
         </td>

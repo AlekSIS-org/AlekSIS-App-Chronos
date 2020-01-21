@@ -3,7 +3,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.all, name="all_timetables"),
+    path("", views.all_timetables, name="all_timetables"),
     path("timetable/my/", views.my_timetable, name="my_timetable"),
     path("timetable/my/<int:year>/<int:month>/<int:day>/", views.my_timetable, name="my_timetable_by_date"),
     path("timetable/<str:type_>/<int:pk>/", views.timetable, name="timetable"),

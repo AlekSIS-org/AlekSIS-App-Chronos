@@ -28,7 +28,7 @@ from .util.weeks import CalendarWeek, get_weeks_for_year
 
 
 @login_required
-def all(request: HttpRequest) -> HttpResponse:
+def all_timetables(request: HttpRequest) -> HttpResponse:
     context = {}
 
     teachers = Person.objects.annotate(

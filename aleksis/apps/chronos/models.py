@@ -345,7 +345,7 @@ class LessonSubstitution(models.Model):
             raise ValidationError(_("Lessons can only be either substituted or cancelled."))
 
     @property
-    def type(self):
+    def type_(self):
         # TODO: Add cases events and supervisions
         if self.cancelled:
             return "cancellation"
