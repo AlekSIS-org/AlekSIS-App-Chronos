@@ -15,7 +15,7 @@ from calendarweek.django import CalendarWeek, i18n_day_names_lazy, i18n_day_abbr
 from aleksis.core.mixins import ExtensibleModel
 from aleksis.core.models import Group, Person
 
-from .util import week_weekday_from_date
+from aleksis.apps.chronos.util.weeks import week_weekday_from_date
 
 
 class LessonPeriodManager(models.Manager):

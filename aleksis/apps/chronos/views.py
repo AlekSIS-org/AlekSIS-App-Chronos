@@ -9,25 +9,22 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext as _
-
 from django_tables2 import RequestConfig
 
 from aleksis.core.decorators import admin_required
 from aleksis.core.models import Person, Group
 from aleksis.core.util import messages
-
 from .forms import LessonSubstitutionForm
-from .min_max import (
+from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
+from .tables import LessonsTable
+from .util.min_max import (
     period_min,
     period_max,
     weekday_min_,
-    weekday_max,
-    get_next_relevant_day,
-    get_prev_relevant_day,
+    weekday_max
 )
-from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
-from .tables import LessonsTable
-from .util import CalendarWeek, get_weeks_for_year
+from .util.prev_next import get_prev_relevant_day, get_next_relevant_day
+from .util.weeks import CalendarWeek, get_weeks_for_year
 
 
 def get_prev_next_by_day(day: date, url: str) -> Tuple[str, str]:
