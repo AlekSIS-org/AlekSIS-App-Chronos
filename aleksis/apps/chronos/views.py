@@ -23,14 +23,14 @@ from .util.min_max import (
     weekday_min_,
     weekday_max
 )
-from .util.prev_next import get_prev_relevant_day, get_next_relevant_day
+from .util.prev_next import get_next_relevant_day
 from .util.weeks import CalendarWeek, get_weeks_for_year
 
 
 def get_prev_next_by_day(day: date, url: str) -> Tuple[str, str]:
     """ Build URLs for previous/next day """
 
-    day_prev = get_prev_relevant_day(day - timedelta(days=1))
+    day_prev = get_next_relevant_day(day - timedelta(days=1), prev=True)
     day_next = get_next_relevant_day(day + timedelta(days=1))
 
     url_prev = reverse(url, args=[day_prev.year, day_prev.month, day_prev.day])
