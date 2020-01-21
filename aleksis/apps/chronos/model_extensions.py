@@ -7,7 +7,7 @@ from .models import Lesson, LessonPeriod
 def is_teacher(self):
     """ Check if the user has lessons as a teacher """
 
-    return Lesson.objects.filter(teachers=self).exists()
+    return self.lesson_periods_as_teacher.exists()
 
 
 @Person.property
