@@ -1,7 +1,8 @@
 from datetime import timedelta, date, time
-from typing import Optional
+from typing import Optional, Tuple
 
 from calendarweek import CalendarWeek
+from django.urls import reverse
 from django.utils import timezone
 
 from aleksis.apps.chronos.util.min_max import weekday_min_, weekday_max, time_max
@@ -34,3 +35,14 @@ def get_next_relevant_day(day: Optional[date] = None, time: Optional[time] = Non
 
     return day
 
+
+def get_prev_next_by_day(day: date, url: str) -> Tuple[str, str]:
+    """ Build URLs for previous/next day """
+
+    day_prev = get_next_relevant_day(day - timedelta(days=1), prev=True)
+    day_next = get_next_relevant_day(day + timedelta(days=1))
+
+    url_prev = reverse(url, args=[day_prev.year, day_prev.month, day_prev.day])
+    url_next = reverse(url, args=[day_next.year, day_next.month, day_next.day])
+
+    return url_prev, url_next
