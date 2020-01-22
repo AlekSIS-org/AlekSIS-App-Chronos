@@ -26,7 +26,7 @@
 
       {# Show class teacher and deputy class teacher #}
       {% if type == "group" and el.owners.all %}
-        <h5>{% trans "Class teachers:" %}
+        <h5>{% trans "Group teachers:" %}
           {% for teacher in el.owners.all %}
             <span data-position="bottom" class="tooltipped"
                   data-tooltip="{{ teacher }}">
