@@ -25,6 +25,7 @@ from .util.min_max import (
 )
 from .util.prev_next import get_next_relevant_day, get_prev_next_by_day
 from .util.weeks import CalendarWeek, get_weeks_for_year
+from aleksis.core.util.core_helpers import has_person
 
 
 @login_required
@@ -63,7 +64,7 @@ def my_timetable(
     else:
         wanted_day = get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
-    if request.user.person:
+    if has_person(request.user):
         person = request.user.person
 
         if person.is_teacher:
