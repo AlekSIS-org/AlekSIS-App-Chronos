@@ -66,7 +66,14 @@ def my_timetable(
     if request.user.person:
         person = request.user.person
 
-        if person.primary_group:
+        if person.is_teacher:
+            # Teacher
+
+            type_ = "teacher"
+            super_el = person
+            lesson_periods_person = person.lesson_periods_as_teacher
+
+        elif person.primary_group:
             # Student
 
             type_ = "group"
