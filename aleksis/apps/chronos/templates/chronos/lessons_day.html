@@ -15,7 +15,7 @@
 
   <div class="row no-margin">
     <div class="col s12 m6 l8 no-padding">
-      <h4>{% blocktrans %}Lessons{% endblocktrans %} {{ day|date:"l, j. F Y" }}</h4>
+      <h4>{% blocktrans %}Lessons{% endblocktrans %} {{ day|date:"l" }}, {{ day }}</h4>
     </div>
     <div class="col s12 m6 l4 no-padding" style="margin-top: 10px;">
       {% include "chronos/partials/datepicker.html" %}
