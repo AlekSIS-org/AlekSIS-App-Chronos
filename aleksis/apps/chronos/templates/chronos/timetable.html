@@ -7,14 +7,10 @@
 {% endblock %}
 
 {% block content %}
+
   {% if smart %}
-    <script type="text/javascript">
-      var week = {{ week.week }};
-      var year = {{ week.year }};
-      var type = "{{ type }}";
-      var pk = {{ pk }};
-      var dest = Urls.timetable(type, pk);
-    </script>
+    <script type="text/javascript" src="{% static "js/helper.js" %}"></script>
+    {{ week_select|json_script:"week_select" }}
     <script type="text/javascript" src="{% static "js/chronos/week_select.js" %}"></script>
   {% endif %}
 

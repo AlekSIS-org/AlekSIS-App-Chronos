@@ -1,9 +1,11 @@
+var data = getJSONScript("week_select");
+
 function goToCalendarWeek(cw, year) {
-    window.location.href = dest + year + "/" + cw;
+    window.location.href = data.dest + year + "/" + cw;
 }
 
 function onCalendarWeekChanged(where) {
-    goToCalendarWeek($(where).val(), year);
+    goToCalendarWeek($(where).val(), data.year);
 }
 
 $(document).ready(function () {

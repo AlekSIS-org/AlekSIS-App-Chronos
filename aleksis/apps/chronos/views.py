@@ -17,6 +17,7 @@ from aleksis.core.util import messages
 from .forms import LessonSubstitutionForm
 from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
 from .tables import LessonsTable
+from .util.js import date_unix
 from .util.min_max import (
     period_min,
     period_max,
@@ -183,6 +184,10 @@ def timetable(
     context["pk"] = pk
     context["el"] = el
     context["smart"] = is_smart
+    context["week_select"] = {
+        "year": wanted_week.year,
+        "dest": reverse("timetable", args=[type_, pk])
+    }
 
     week_prev = wanted_week - 1
     week_next = wanted_week + 1
@@ -306,6 +311,10 @@ def substitutions(
 
     context["substitutions"] = substitutions
     context["day"] = wanted_day
+    context["datepicker"] = {
+        "date": date_unix(wanted_day),
+        "dest": reverse("substitutions")
+    }
 
     context["url_prev"], context["url_next"] = get_prev_next_by_day(
         wanted_day, "substitutions_by_date"
