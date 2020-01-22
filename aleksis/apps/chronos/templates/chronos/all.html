@@ -3,12 +3,7 @@
 {% load i18n %}
 
 {% block extra_head %}
-  <style type="text/css">
-    .btn-timetable-quicklaunch {
-      margin: 1%;
-      width: 30%;
-    }
-  </style>
+  <link rel="stylesheet" href="{% static 'css/chronos/timetable.css' %}">
 {% endblock %}
 
 {% block page_title %}{% trans "All timetables" %}{% endblock %}

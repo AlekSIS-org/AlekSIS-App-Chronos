@@ -92,6 +92,7 @@ table.substitutions td, table.substitutions th {
     color: inherit;
 }
 
-/*.timetable-time {*/
-/*margin-right: 20px;*/
-/*}*/
+.btn-timetable-quicklaunch {
+    margin: 1%;
+    width: 30%;
+}
