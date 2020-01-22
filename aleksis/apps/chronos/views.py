@@ -73,12 +73,6 @@ def my_timetable(
             super_el = person.primary_group
             lesson_periods_person = person.lesson_periods_as_participant
 
-        elif person.is_teacher():
-            # Teacher
-
-            type_ = "teacher"
-            super_el = person
-            lesson_periods_person = person.lesson_periods_as_teacher
         else:
             # If no student or teacher, redirect to all timetables
             return redirect("all_timetables")
@@ -285,6 +279,7 @@ def delete_substitution(request: HttpRequest, id_: int, week: int) -> HttpRespon
     )
 
 
+@login_required
 def substitutions(
     request: HttpRequest,
     year: Optional[int] = None,
