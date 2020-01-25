@@ -96,14 +96,15 @@
           {% include "chronos/partials/subs/room.html" %}
         </td>
         <td>
-          {% if sub.badge %}
-            <span class="badge new green hide-on-med-and-up">{{ sub.badge }}</span>
+          {% if sub.cancelled %}
+            {# TODO: Support other cases#}
+            <span class="badge new green hide-on-med-and-up">{% trans "Cancelled" %}</span>
           {% endif %}
           <em>{{ sub.text|default:"" }}</em>
         </td>
         <td class="hide-on-small-and-down">
-          {% if sub.badge %}
-            <span class="badge new green darken-2">{{ sub.badge }}</span>
+          {% if sub.cancelled %}
+            <span class="badge new green darken-2">{% trans "Cancelled" %}</span>
           {% endif %}
         </td>
       </tr>

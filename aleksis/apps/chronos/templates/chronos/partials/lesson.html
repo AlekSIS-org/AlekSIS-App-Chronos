@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <div class="card lesson-card">
   <div class="card-content">
 
@@ -30,16 +32,16 @@
               {% if type == "room" and lesson_period.room != lesson_period.get_room %}
                 {# When it's the old room, let it empty #}
 
-              {% elif lesson_period.substitution.table.badge %}
+              {% elif lesson_period.get_substitution.cancelled %}
                 {# When a badge (cancellation, etc.) exists, then display it with the teacher#}
 
                 {# Class or room > Display teacher #}
-                {% if type == "group" or type == "room" %}
-                  {% include "chronos/partials/teachers.html" with teachers=lesson_period.lesson.teachers.all %}
+                {% if type == "group" or type == "room" and lesson_period.lesson.teachers.all %}
+                  {% include "chronos/partials/teachers.html" with teachers=lesson_period.lesson.teachers.all %}<br/>
                 {% endif %}
 
                 {# Badge #}
-                <span class="badge new green darken-2">{{ lesson_period.substitution.table.badge }}</span>
+                <span class="badge new green darken-2">{% trans "Cancelled" %}</span>
 
               {% else %}
                 {# Display sub #}
