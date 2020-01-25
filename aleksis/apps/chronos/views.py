@@ -101,6 +101,7 @@ def my_timetable(
     context["type"] = type_
     context["day"] = wanted_day
     context["periods"] = TimePeriod.get_times_dict()
+    context["smart"] = True
 
     context["url_prev"], context["url_next"] = get_prev_next_by_day(
         wanted_day, "my_timetable_by_date"

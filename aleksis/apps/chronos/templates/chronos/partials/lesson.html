@@ -7,15 +7,13 @@
     {% for lesson_period in lessons %}
       <div style="
               {# Display background color only if no badge exists and it is not the old room and there are no holidays #}
-              {% if not lesson_period.substitution.table.badge %}
-                {% if not lesson_period.is_old or type != 1 %}
-                  {% if not lesson_period.is_hol %}
-                    {% if lesson_period.lesson.subject.colour_fg %}
-                      color: {{ lesson_period.lesson.subject.colour_fg }};
-                    {% endif %}
-                    {% if lesson_period.lesson.subject.colour_bg %}
-                      background-color: {{ lesson_period.lesson.subject.colour_bg }};
-                    {% endif %}
+              {% if not lesson_period.get_substitution.cancelled and not lesson_period.is_hol %}
+                {% if not lesson_period.room != lesson_period.get_room or type != 1 %}
+                  {% if lesson_period.lesson.subject.colour_fg %}
+                    color: {{ lesson_period.lesson.subject.colour_fg }};
+                  {% endif %}
+                  {% if lesson_period.lesson.subject.colour_bg %}
+                    background-color: {{ lesson_period.lesson.subject.colour_bg }};
                   {% endif %}
                 {% endif %}
               {% endif %}
