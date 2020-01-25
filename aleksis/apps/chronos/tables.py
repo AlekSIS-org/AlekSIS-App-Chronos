@@ -15,9 +15,9 @@ def _css_class_from_lesson_state(
 ) -> str:
     if record.get_substitution(record._week):
         if record.get_substitution(record._week).cancelled:
-            return "green-text"
+            return "success"
         else:
-            return "orange-text"
+            return "warning"
     else:
         return ""
 
