@@ -228,6 +228,11 @@ def lessons_day(
     context["day"] = wanted_day
     context["lesson_periods"] = lesson_periods
 
+    context["datepicker"] = {
+        "date": date_unix(wanted_day),
+        "dest": reverse("lessons_day")
+    }
+
     context["url_prev"], context["url_next"] = get_prev_next_by_day(
         wanted_day, "lessons_day_by_date"
     )
