@@ -5,7 +5,7 @@ from calendarweek import CalendarWeek
 from django.urls import reverse
 from django.utils import timezone
 
-from aleksis.apps.chronos.util.min_max import weekday_min_, weekday_max, time_max
+from ..models import TimePeriod
 
 
 def get_next_relevant_day(day: Optional[date] = None, time: Optional[time] = None, prev: bool = False) -> date:
@@ -15,23 +15,23 @@ def get_next_relevant_day(day: Optional[date] = None, time: Optional[time] = Non
         day = timezone.now().date()
 
     if time is not None and not prev:
-        if time > time_max:
+        if time > TimePeriod.time_max:
             day += timedelta(days=1)
 
     cw = CalendarWeek.from_date(day)
 
-    if day.weekday() > weekday_max:
+    if day.weekday() > TimePeriod.weekday_max:
         if prev:
-            day = cw[weekday_max]
+            day = cw[TimePeriod.weekday_max]
         else:
             cw += 1
-            day = cw[weekday_min_]
-    elif day.weekday() < weekday_min_:
+            day = cw[TimePeriod.weekday_min]
+    elif day.weekday() < TimePeriod.weekday_min:
         if prev:
             cw -= 1
-            day = cw[weekday_max]
+            day = cw[TimePeriod.weekday_max]
         else:
-            day = cw[weekday_min_]
+            day = cw[TimePeriod.weekday_min]
 
     return day
 

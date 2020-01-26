@@ -1,13 +1,14 @@
 from __future__ import annotations
 
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, time
 from typing import Dict, Optional, Tuple, Union
 
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import F, Q
+from django.db.models import F, Max, Min, Q
 from django.http.request import QueryDict
+from django.utils.decorators import classproperty
 from django.utils.translation import ugettext_lazy as _
 
 from calendarweek.django import CalendarWeek, i18n_day_names_lazy, i18n_day_abbrs_lazy
@@ -243,6 +244,30 @@ class TimePeriod(models.Model):
             wanted_week = CalendarWeek(year=year, week=week_number)
 
         return wanted_week[self.weekday]
+
+    @classproperty
+    def period_min(cls) -> int:
+        return cls.objects.aggregate(Min("period")).get("period__min", 1)
+
+    @classproperty
+    def period_max(cls) -> int:
+        return cls.objects.aggregate(Max("period")).get("period__max", 7)
+
+    @classproperty
+    def time_min(cls) -> Optional[time]:
+        return cls.objects.aggregate(Min("time_start")).get("time_start__min", None)
+
+    @classproperty
+    def time_max(cls) -> Optional[time]:
+        return cls.objects.aggregate(Max("time_start")).get("time_start__max", None)
+
+    @classproperty
+    def weekday_min(cls) -> int:
+        return cls.objects.aggregate(Min("weekday")).get("weekday__min", 0)
+
+    @classproperty
+    def weekday_max(cls) -> int:
+        return cls.objects.aggregate(Max("weekday")).get("weekday__max", 6)
 
     class Meta:
         unique_together = [["weekday", "period"]]
