@@ -7,6 +7,7 @@ from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import F, Max, Min, Q
+from django.db.models.functions import Coalesce
 from django.http.request import QueryDict
 from django.utils.decorators import classproperty
 from django.utils.translation import ugettext_lazy as _
@@ -247,27 +248,27 @@ class TimePeriod(models.Model):
 
     @classproperty
     def period_min(cls) -> int:
-        return cls.objects.aggregate(Min("period")).get("period__min", 1)
+        return cls.objects.aggregate(period__min=Coalesce(Min("period"), 1)).get("period__min")
 
     @classproperty
     def period_max(cls) -> int:
-        return cls.objects.aggregate(Max("period")).get("period__max", 7)
+        return cls.objects.aggregate(period__max=Coalesce(Max("period"), 7)).get("period__max")
 
     @classproperty
     def time_min(cls) -> Optional[time]:
-        return cls.objects.aggregate(Min("time_start")).get("time_start__min", None)
+        return cls.objects.aggregate(Min("time_start")).get("time_start__min")
 
     @classproperty
     def time_max(cls) -> Optional[time]:
-        return cls.objects.aggregate(Max("time_start")).get("time_start__max", None)
+        return cls.objects.aggregate(Max("time_start")).get("time_start__max")
 
     @classproperty
     def weekday_min(cls) -> int:
-        return cls.objects.aggregate(Min("weekday")).get("weekday__min", 0)
+        return cls.objects.aggregate(weekday__min=Coalesce(Min("weekday"), 0)).get("weekday__min")
 
     @classproperty
     def weekday_max(cls) -> int:
-        return cls.objects.aggregate(Max("weekday")).get("weekday__max", 6)
+        return cls.objects.aggregate(weekday__max=Coalesce(Max("weekday"), 6)).get("weekday__max")
 
     class Meta:
         unique_together = [["weekday", "period"]]
