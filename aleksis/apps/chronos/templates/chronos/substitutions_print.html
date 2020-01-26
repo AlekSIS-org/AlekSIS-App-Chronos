@@ -21,7 +21,7 @@
 </style>
 
 {% for c in days %}
-    <h4>Vertretungen {{ c.date|date:"l, j. F Y" }}</h4>
+    <h4>Substitutions {{ c.date|date" }}</h4>
 
 
     {% include "timetable/hintsinsubprint.html" %}
@@ -46,10 +46,10 @@
         <tr>
             <th><i class="material-icons">people</i></th>
             <th><i class="material-icons">access_time</i></th>
-            <th>Lehrer</th>
-            <th>Fach</th>
-            <th>Raum</th>
-            <th>Hinweis</th>
+            <th>{% blocktrans %}Teachers{% endblocktrans %}</th>
+            <th>{% blocktrans %}Subject{% endblocktrans %}</th>
+            <th>{% blocktrans %}Room{% endblocktrans %}</th>
+            <th>{% blocktrans %}Hint{% endblocktrans %}</th>
             <th></th>
         </tr>
         </thead>
