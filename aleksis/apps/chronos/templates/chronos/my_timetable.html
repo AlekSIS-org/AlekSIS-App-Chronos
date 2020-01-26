@@ -1,0 +1,68 @@
+{# -*- engine:django -*- #}
+
+{% extends 'core/base.html' %}
+
+{% load i18n static %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/chronos/timetable.css' %}">
+{% endblock %}
+
+{% block browser_title %}{% blocktrans %}My timetable{% endblocktrans %}{% endblock %}
+{% block no_page_title %}{% endblock %}
+
+{% block content %}
+  <div class="row no-margin">
+    <div class="col m12 s12 l6 xl4">
+      <h4>
+        {% trans "My timetable" %} <i>{{ el }}</i>
+        <span class="badge new primary-color ">{% trans "SMART PLAN" %}</span>
+      </h4>
+      <a class="btn-flat waves-effect waves-light" href="{% url "timetable" super.type super.el.pk %}">
+        {% trans "Show week timetable for" %} {{ super.el.short_name }}
+      </a>
+    </div>
+  </div>
+
+  <div class="row nomargin">
+    <div class="col m12 s12 l6 xl4">
+      {#            {% include "timetable/hintsinplan.html" %}#}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="timetable-plan col s12 m12 xl4">
+
+      {#  Date #}
+
+      <div class="row">
+        <div class="col s12">
+          <div class="card timetable-title-card">
+            <div class="card-content">
+                    <span class="card-title">
+                        {% include "chronos/partials/datepicker.html" with display_date_only=1 %}
+{#                      {% if holiday %}#}
+{#                        <span class="badge new blue center-align holiday-badge">{{ holiday.0 }}</span>#}
+{#                      {% endif %}#}
+                    </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      {#  Lessons #}
+      {% for period, lessons in lesson_periods.items %}
+        <div class="row">
+          <div class="col s4">
+            {% include "chronos/partials/period_time.html" with period=period periods=periods %}
+          </div>
+          <div class="col s8">
+            {# A lesson #}
+            {% include "chronos/partials/lesson.html" with lessons=lessons %}
+          </div>
+        </div>
+      {% endfor %}
+
+    </div>
+  </div>
+{% endblock %}

@@ -1,40 +1,24 @@
 {# -*- engine:django -*- #}
 
 {% extends "core/base.html" %}
-{% load bootstrap4 i18n %}
+{% load material_form i18n %}
 
-{% block bootstrap4_extra_head %}
-  {{ block.super }}
-  {{ edit_substitution_form.media.css }}
-{% endblock %}
-
-{% block bootstrap4_extra_script %}
-  {{ block.super }}
-  {{ edit_substitution_form.media.js }}
-{% endblock %}
-
-
-{% block bootstrap4_title %}{% blocktrans %}Edit substitution{% endblocktrans %} - {{ block.super }}{% endblock %}
-
+{% block browser_title %}{% blocktrans %}Edit substitution.{% endblocktrans %}{% endblock %}
 {% block page_title %}{% blocktrans %}Edit substitution{% endblocktrans %}{% endblock %}
 
 {% block content %}
-  <div class="d-flex justify-content-between">
-    <div class="btn-group" role="group" aria-label="Day actions">
-      {% if substitution %}
-        {# FIXME Respect year as well #}
-        <a href="{% url 'delete_substitution' substitution.lesson_period.id substitution.week %}" class="btn btn-danger">
-          <span class="mdi mdi-delete"></span>
-        </a>
-      {% endif %}
-    </div>
-  </div>
-
   <form method="post">
     {% csrf_token %}
-    {% bootstrap_form edit_substitution_form %}
-    <button type="submit" class="btn btn-dark">
-      <span class="mdi mdi-content-save"></span>
-    </button>
+
+    {% form form=edit_substitution_form %}{% endform %}
+
+    {% include "core/save_button.html" %}
+    {% if substitution %}
+      {# FIXME Respect year as well #}
+      <a href="{% url 'delete_substitution' substitution.lesson_period.id substitution.week %}"
+         class="btn red waves-effect waves-light">
+        <i class="material-icons left">delete</i> {% trans "Delete" %}
+      </a>
+    {% endif %}
   </form>
 {% endblock %}

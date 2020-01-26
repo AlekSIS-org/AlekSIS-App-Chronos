@@ -5,6 +5,7 @@ MENUS = {
         {
             "name": _("Timetables"),
             "url": "#",
+            "icon": "school",
             "root": True,
             "validators": [
                 "menu_generator.validators.is_authenticated",
@@ -12,18 +13,27 @@ MENUS = {
             ],
             "submenu": [
                 {
-                    "name": _("Timetable"),
-                    "url": "timetable",
+                    "name": _("My timetable"),
+                    "url": "my_timetable",
+                    "icon": "person",
+                    "validators": ["menu_generator.validators.is_authenticated"],
+                },
+                {
+                    "name": _("All timetables"),
+                    "url": "all_timetables",
+                    "icon": "grid_on",
                     "validators": ["menu_generator.validators.is_authenticated"],
                 },
                 {
                     "name": _("Daily lessons"),
                     "url": "lessons_day",
+                    "icon": "calendar_today",
                     "validators": ["menu_generator.validators.is_authenticated"],
                 },
                 {
                     "name": _("Substitutions"),
                     "url": "substitutions",
+                    "icon": "update",
                     "validators": ["menu_generator.validators.is_authenticated"],
                 },
             ],

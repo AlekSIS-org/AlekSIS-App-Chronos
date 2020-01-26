@@ -1,0 +1,30 @@
+{% load static %}
+
+{% if not display_date_only %}
+  <script type="text/javascript" src="{% static "js/helper.js" %}"></script>
+  {{ datepicker|json_script:"datepicker_data" }}
+  <script type="text/javascript" src="{% static "js/chronos/date_select.js" %}"></script>
+{% endif %}
+
+<div class="col s2 no-padding">
+    <a class="waves-effect waves-teal btn-flat btn-flat-medium left" href="{{ url_prev }}">
+        <i class="material-icons center">navigate_before</i>
+    </a>
+</div>
+
+{% if display_date_only %}
+    <div class="col s8">
+    <span class="card-title center-block" id="date">
+        {{ day|date:"l" }}, {{ day }}
+    </span>
+    </div>
+{% else %}
+    <div class="col s8 no-padding">
+        <input type="text" class="datepicker center-align" id="date">
+    </div>
+{% endif %}
+<div class="col s2 no-padding">
+    <a class="waves-effect waves-teal btn-flat btn-flat-medium right" href="{{ url_next }}">
+        <i class="material-icons center">navigate_next</i>
+    </a>
+</div>

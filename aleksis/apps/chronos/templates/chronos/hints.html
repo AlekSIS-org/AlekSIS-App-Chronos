@@ -1,16 +1,18 @@
-{% include 'partials/header.html' %}
+{# -*- engine:django -*- #}
+
+{% extends 'core/base.html' %}
 {% load material_form %}
 {% load martortags %}
 
-<main>
-    <h4>Hinweismanagement</h4>
+{% block content %}
+    <h4>{% blocktrans %}Hint management{% endblocktrans %}</h4>
 
     {% if msg %}
         <div class="alert success">
             <p>
                 <i class="material-icons left">check_circle</i>
-                Der Hinweis wurde erfolgreich {% if msg == "success_edit" %}gespeichert. {% else %}
-                gelöscht. {% endif %}
+                The hint was successfully {% if msg == "success_edit" %}saved. {% else %}
+                deleted. {% endif %}
             </p>
         </div>
     {% endif %}
@@ -21,15 +23,15 @@
                 <div class="col s12 m4">
                     <a href="{% url 'timetable_add_hint' %}" class="waves-effect waves-light btn green">
                         <i class="material-icons left">add</i>
-                        Neuen Hinweis erstellen
+                        {% blocktrans %}Create hint{% endblocktrans %}
                     </a>
                 </div>
                 <div class="col s12 m8 right-align">
                     <button type="submit" class="waves-effect waves-green btn-flat">
-                        <i class="material-icons left">refresh</i> Filter aktualisieren
+                        <i class="material-icons left">refresh</i>{% blocktrans %}Refresh filter{% endblocktrans %}
                     </button>
                     <a class="waves-effect waves-red btn-flat " href="{% url "timetable_hints" %}">
-                        <i class="material-icons left">clear</i> Filter entfernen
+                        <i class="material-icons left">clear</i>{% blocktrans }Clear filter{% endblocktrans %}
                     </a>
                 </div>
             </div>
@@ -44,12 +46,12 @@
                 <div class="collapsible-header row no-margin">
 
                     <div class="col s10">
-                        <strong>{{ hint.from_date }} &mdash; {{ hint.to_date }}</strong> für
+                        <strong>{{ hint.from_date }} &mdash; {{ hint.to_date }}</strong>{% blocktrans %}Hint for{% endblocktrans %}
                         <strong>
                             {{ hint.classes_formatted }}
                         </strong>
                         {% if hint.teachers %}
-                            <span class="badge new green no-float no-margin">Lehrkräfte</span>
+                            <span class="badge new green no-float no-margin">{% blocktrans %}Teachers{% endblocktrans %}</span>
                         {% endif %}
                     </div>
                     <div class="col s2">
@@ -63,12 +65,12 @@
                         <a class="btn-flat waves-effect waves-green green-text"
                            href="{% url "timetable_edit_hint" hint.id %}">
                             <i class="material-icons left">edit</i>
-                            <span class="hide-on-small-only">Bearbeiten</span>
+                            <span class="hide-on-small-only">{% blocktrans %}Edit{% endblocktrans %}</span>
                         </a>
                         <a class="btn-flat waves-effect waves-red red-text delete-button"
                            href="{% url "timetable_delete_hint" hint.id %}">
                             <i class="material-icons left">delete</i>
-                            <span class="hide-on-small-only">Löschen</span>
+                            <span class="hide-on-small-only">{% blocktrans %}Delete{% endblocktrans %}</span>
                         </a>
 
                     </div>
@@ -80,6 +82,4 @@
             </li>
         {% endfor %}
     </ul>
-</main>
-
-{% include 'partials/footer.html' %}
+{% endblock %}

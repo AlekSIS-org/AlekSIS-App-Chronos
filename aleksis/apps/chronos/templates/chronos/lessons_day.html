@@ -1,11 +1,27 @@
 {# -*- engine:django -*- #}
 
-{% extends "core/turnable.html" %}
-{% load bootstrap4 i18n %}
+{% extends "core/base.html" %}
+{% load i18n %}
+
+
 {% load render_table from django_tables2 %}
 
-{% block bootstrap4_title %}{% blocktrans %}Lessons{% endblocktrans %} - {{ block.super }}{% endblock %}
+{% block browser_title %}{% blocktrans %}Lessons{% endblocktrans %}{% endblock %}
+{% block no_page_title %}{% endblock %}
 
-{% block current_content %}
+{% block content %}
+  <script type="text/javascript">
+    var dest = Urls.lessonsDay();
+  </script>
+
+  <div class="row no-margin">
+    <div class="col s12 m6 l8 no-padding">
+      <h4>{% blocktrans %}Lessons{% endblocktrans %} {{ day|date:"l" }}, {{ day }}</h4>
+    </div>
+    <div class="col s12 m6 l4 no-padding">
+      {% include "chronos/partials/datepicker.html" %}
+    </div>
+  </div>
+
   {% render_table lessons_table %}
 {% endblock %}

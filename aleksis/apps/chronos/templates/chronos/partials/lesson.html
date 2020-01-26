@@ -1,0 +1,131 @@
+{% load i18n %}
+
+<div class="card lesson-card">
+  <div class="card-content">
+
+    {# Every element of the lesson #}
+    {% for lesson_period in lessons %}
+      <div style="
+              {# Display background color only if no badge exists and it is not the old room and there are no holidays #}
+              {% if not lesson_period.get_substitution.cancelled and not lesson_period.is_hol %}
+                {% if not lesson_period.room != lesson_period.get_room or type != 1 %}
+                  {% if lesson_period.lesson.subject.colour_fg %}
+                    color: {{ lesson_period.lesson.subject.colour_fg }};
+                  {% endif %}
+                  {% if lesson_period.lesson.subject.colour_bg %}
+                    background-color: {{ lesson_period.lesson.subject.colour_bg }};
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+              "
+              {# Add CSS class for sub when it's a sub #}
+           class="{% if lesson_period.get_substitution and smart %}{% if lesson_period.substitution.table.is_event %}lesson-with-event{% else %}lesson-with-sub{% endif %}{% endif %}"
+      >
+        <p>
+          {% if lesson_period.is_hol and smart %}
+            {# Do nothing #}
+          {% elif lesson_period.get_substitution and smart %}
+            {% with sub=lesson_period.get_substitution %}
+              {# SUBSTITUTION #}
+              {% if type == "room" and lesson_period.room != lesson_period.get_room %}
+                {# When it's the old room, let it empty #}
+
+              {% elif lesson_period.get_substitution.cancelled %}
+                {# When a badge (cancellation, etc.) exists, then display it with the teacher#}
+
+                {# Class or room > Display teacher #}
+                {% if type == "group" or type == "room" and lesson_period.lesson.teachers.all %}
+                  {% include "chronos/partials/teachers.html" with teachers=lesson_period.lesson.teachers.all %}<br/>
+                {% endif %}
+
+                {# Badge #}
+                <span class="badge new green darken-2">{% trans "Cancelled" %}</span>
+
+              {% else %}
+                {# Display sub #}
+
+                {# Teacher or room > display classes #}
+                {% if type == "teacher" or type == "room" %}
+                  {% include "chronos/partials/groups.html" with groups=lesson_period.lesson.groups.all %}
+                {% endif %}
+
+                {# Display teacher with tooltip #}
+                {% include "chronos/partials/subs/teachers.html" %}
+
+                {# Display subject #}
+                {% include "chronos/partials/subs/subject.html" %}
+
+                {# Teacher or class > display room #}
+                {% if type == "teacher" or type == "group" %}
+                  {% include "chronos/partials/subs/room.html" %}
+                {% endif %}
+              {% endif %}
+
+
+              {# When it isn't a room or the old plan, then display the extra text (e. g. work orders) AND NOT A EVENT#}
+              {% if not lesson_period.substitution.table.is_event %}
+                {% if not type == "room"  or not lesson_period.is_old %}
+                  <br>
+                  <small>
+                    <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
+                  </small>
+                {% endif %}
+              {% endif %}
+              {# Display the extra text for events #}
+              {% if lesson_period.substitution.table.is_event %}
+                {% if type == 0 and lesson_period.substitution.table.classes == "" and lesson_period.substitution.table.rooms|length == 0 and lesson_period.substitutions.table.teachers|length == 0 %}
+                  <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
+                {% elif type == 2 and  lesson_period.substitution.table.teachers|length == 0  and  lesson_period.substitution.table.rooms|length == 0 %}
+                  <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
+                {% elif type == 1  and  lesson_period.substitution.table.teachers|length == 0 and lesson_period.substitution.table.classes == "" %}
+                  <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
+                {% else %}
+                  <br>
+                  <small>
+                    <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
+                  </small>
+                {% endif %}
+              {% endif %}
+            {% endwith %}
+
+
+          {% else %}
+            {# Normal plan #}
+
+            {# Teacher or room > Display classes #}
+            {% if type == "teacher" or type == "room" %}
+              {#                            {{ element_container.element.classes }}#}
+              {% if lesson_period.lesson.groups %}
+                {% include "chronos/partials/groups.html" with groups=lesson_period.lesson.groups.all %}
+              {% endif %}
+            {% endif %}
+
+            {# Class or room > Display teacher #}
+            {% if type == "room" or type == "group" %}
+              {% include "chronos/partials/teachers.html" with teachers=lesson_period.lesson.teachers.all %}
+            {% endif %}
+
+            {# Display subject #}
+            <strong>
+              <span data-position="bottom" class="tooltipped"
+                    data-tooltip="{{ lesson_period.lesson.subject.name }}">{{ lesson_period.lesson.subject.abbrev }}</span>
+            </strong>
+
+            {# Teacher or class > Display room #}
+            {% if type == "teacher" or type == "group" %}
+              {% if lesson_period.room %}
+                <span class="tooltipped" data-position="bottom"
+                      data-tooltip="{{ lesson_period.room.name }}">
+                                  <a href="{% url "timetable" "room" lesson_period.room.pk %}">
+                                        {{ lesson_period.room.short_name }}
+                                    </a>
+                            </span>
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        </p>
+      </div>
+
+    {% endfor %}
+  </div>
+</div>

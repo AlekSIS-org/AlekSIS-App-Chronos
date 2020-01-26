@@ -1,15 +1,19 @@
-{% include 'partials/header.html' %}
-{% load material_form %}
-{% load martortags %}
-{% load static %}
-{% load widget_tweaks %}
+{# -*- engine:django -*- #}
 
-<main>
+{% extends 'core/base.html' %}
+{% load material_form martortags static widget_tweaks %}
+
+
+{% block content %}
     <h4>
         {% if mode == "new" %}
-            Neuen Hinweis erstellen
+            {% blocktrans %}
+                Create hint
+            {% endblocktrans %}
         {% else %}
-            Hinweis bearbeiten
+            {% blocktrans %}
+                Edit hint
+            {% endblocktrans %}
         {% endif %}
     </h4>
 
@@ -17,13 +21,12 @@
         <div class="alert success">
             <p>
                 <i class="material-icons left">check_circle</i>
-                Der Hinweis wurde erfolgreich erstellt und veröffentlicht. Weiteren Hinweis anlegen oder zur Übersicht
-                zurück?<br>
+                {% blocktrans %}The hint was successfully created and published. Do you want to create another hint or go back to overview?{% endblocktrans %}<br>
                 <a class="btn waves-effect waves-light" href="{% url "timetable_hints" %}"><i
-                        class="material-icons left">arrow_back</i> Zurück zur Übersicht
+                        class="material-icons left">arrow_back</i>{% blocktrans %}Back to overview{% endblocktrans %}
                 </a>
                 <a class="btn waves-effect waves-light green" href="#add-hint"><i class="material-icons left">add</i>
-                    Weiteren Hinweis hinzufügen
+                    {% blocktrans %}Create antoher hint{% endblocktrans %}
                 </a>
             </p>
         </div>
@@ -39,7 +42,7 @@
                 </div>
             </div>
         {% endif %}
-        <h5>Über welchen Zeitraum soll der Hinweis angezeigt werden?
+        <h5>{% blocktrans %}When should the hint be displayed?{% blocktrans %}
             <span class="red-text">*</span>
         </h5>
 
@@ -69,7 +72,7 @@
                 {{ form.to_date|add_class:"datepicker required" }}
             </div>
         </div>
-        <h5>Für wen soll der Hinweis angezeigt werden?
+        <h5>{% blocktrans %}For whom should the hint be displayed?{% endblocktrans %}
             <span class="red-text">*</span>
         </h5>
 
@@ -83,9 +86,9 @@
         {% endif %}
         {{ form.classes.label_tag }}
         {{ form.classes }}
-        <a href="#" id="select-all-classes">Alle auswählen</a>
+        <a href="#" id="select-all-classes">{% blocktrans %}Select all{% endblocktrans %}</a>
         ·
-        <a href="#" id="deselect-all-classes">Alle abwählen</a>
+        <a href="#" id="deselect-all-classes">{% blocktrans %}Unselect all{% endblocktrans %}</a>
         <script type="text/javascript">
             $("#select-all-classes").click(function () {
                 $(".select-wrapper ul li:not(.selected)").click();
@@ -106,11 +109,11 @@
         <p>
             <label>
                 {{ form.teachers }}
-                <span>Für Lehrer anzeigen?</span>
+                <span>{% blocktrans %}Show for teachers?{% endblocktrans %}</span>
             </label>
         </p>
 
-        <h5>Hinweistext
+        <h5>{% blocktrans %}Hint text{% endblocktrans %}
             <span class="red-text">*</span>
         </h5>
         {% if form.text.errors %}
@@ -125,8 +128,7 @@
 
 
         <button type="submit" class="waves-effect waves-light btn green">
-            <i class="material-icons left">save</i> Hinweis {% if mode == "new" %} erstellen und
-            veröffentlichen {% else %} aktualisieren {% endif %}
+            <i class="material-icons left">save</i>{% blocktrans %} {% if mode == "new" %} Create and publish {% else %} Update {% endif %}hint{% endblocktrans %}
         </button>
     </form>
 
@@ -137,6 +139,4 @@
     <script type="text/javascript" src="{% static 'plugins/js/highlight.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'plugins/js/resizable.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'martor/js/martor.min.js' %}"></script>
-</main>
-
-{% include 'partials/footer.html' %}
+{% endblock %}

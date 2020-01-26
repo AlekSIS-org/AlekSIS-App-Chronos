@@ -1,0 +1,20 @@
+{% load data_helpers %}
+
+<div class="card timetable-title-card">
+  <div class="card-content">
+
+    {# Lesson number #}
+    <span class="card-title left">
+                                {{ period }}.
+                            </span>
+
+    {# Time dimension of lesson #}
+    <div class="right timetable-time grey-text text-darken-2">
+      {% with period_obj=periods|get_dict:period %}
+        <span>{{ period_obj.0|time }}</span>
+        <br/>
+        <span>{{ period_obj.1|time }}</span>
+      {% endwith %}
+    </div>
+  </div>
+</div>

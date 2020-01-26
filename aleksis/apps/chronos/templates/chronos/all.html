@@ -1,0 +1,50 @@
+{# -*- engine:django -*- #}
+
+{% extends 'core/base.html' %}
+
+{% load i18n static %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/chronos/timetable.css' %}">
+{% endblock %}
+
+{% block browser_title %}{% blocktrans %}All timetables{% endblocktrans %}{% endblock %}
+{% block page_title %}{% trans "All timetables" %}{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col s12 m4">
+      <h5>{% trans "Teachers" %}</h5>
+
+      {% for teacher in teachers %}
+        <a class="waves-effect waves-light btn btn-timetable-quicklaunch primary"
+           href="{% url 'timetable' 'teacher' teacher.pk %}">
+          {{ teacher.short_name }}
+        </a>
+      {% endfor %}
+    </div>
+
+    <div class="col s12 m4">
+      <h5>{% trans "Groups" %}</h5>
+
+      {% for class in classes %}
+        <a class="waves-effect waves-light btn btn-timetable-quicklaunch primary"
+           href="{% url 'timetable' 'group' class.pk %}">
+          {{ class.short_name }}
+        </a>
+      {% endfor %}
+    </div>
+
+    <div class="col s12 m4">
+      <h5>{% trans "Rooms" %}</h5>
+
+      {% for room in rooms %}
+        <a class="waves-effect waves-light btn btn-timetable-quicklaunch primary"
+           href="{% url 'timetable' 'room' room.pk %}">
+          {{ room.short_name }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+
+{% endblock %}

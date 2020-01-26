@@ -4,6 +4,13 @@ from .models import Lesson, LessonPeriod
 
 
 @Person.property
+def is_teacher(self):
+    """ Check if the user has lessons as a teacher """
+
+    return self.lesson_periods_as_teacher.exists()
+
+
+@Person.property
 def lessons_as_participant(self):
     """ Return a `QuerySet` containing all `Lesson`s this person
     participates in (as student).

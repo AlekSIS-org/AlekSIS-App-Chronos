@@ -1,0 +1,28 @@
+{% load i18n %}
+
+{% if not sub.sub.is_event %}
+  {% if sub.sub.type == 3 %}
+    <strong>{% trans "Supervision" %}</strong>
+  {% elif not sub.lesson_period.lesson.subject and not sub.subject %}
+  {% elif sub.sub.type == 1 or sub.sub.type == 2 %}
+    <span data-position="bottom" class="tooltipped" data-tooltip="{{ sub.lesson_period.lesson.subject.name }}">
+      <s>{{ sub.lesson_period.lesson.subject.abbrev }}</s>
+    </span>
+  {% elif sub.subject and sub.lesson_period.lesson.subject %}
+    <span data-position="bottom" class="tooltipped" data-tooltip="{{ sub.lesson_period.lesson.subject.name }}">
+      <s>{{ sub.lesson_period.lesson.subject.abbrev }}</s>
+    </span>
+    →
+    <span data-position="bottom" class="tooltipped" data-tooltip="{{ sub.subject.name }}">
+      <strong>{{ sub.subject.abbrev }}</strong>
+    </span>
+  {% elif sub.subject and not sub.lesson_period.lesson.subject %}
+    <span data-position="bottom" class="tooltipped" data-tooltip="{{ sub.subject.name }}">
+      <strong>{{ sub.subject.abbrev }}</strong>
+    </span>
+  {% else %}
+    <span data-position="bottom" class="tooltipped" data-tooltip="{{ sub.lesson_period.lesson.subject.name }}">
+      <strong>{{ sub.lesson_period.lesson.subject.abbrev }}</strong>
+    </span>
+  {% endif %}
+{% endif %}

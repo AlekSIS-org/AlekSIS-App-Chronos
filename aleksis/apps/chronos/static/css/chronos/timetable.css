@@ -1,13 +1,98 @@
-.chronos-lesson {
-    height: 6em;
+/*+++++++++++*/
+/* Timetable */
+/*+++++++++++*/
+.smart-plan-badge {
+    margin: 5px 20px 5px 0;
 }
 
-ul#timetable_select_form li {
-    dispaly: inline;
-
+li.active > a > .sidenav-badge {
+    background-color: whitesmoke !important;
+    color: #DA3D56 !important;
 }
 
-.chronos-lesson-cancelled {
-    background-color: inherit !important;
-    text-decoration: line-through;
+.timetable-plan .row, .timetable-plan .col {
+    display: flex;
+    padding: 0 .25rem;
+}
+
+.timetable-plan .row {
+    margin-bottom: .25rem;
+}
+
+.lesson-card, .timetable-title-card {
+    margin: 0;
+    display: flex;
+    flex-grow: 1;
+    min-height: 65px;
+}
+
+.lesson-card .card-content {
+    padding: 0;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.lesson-card .card-content div {
+    padding: 3px;
+    flex: auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timetable-title-card .card-content {
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+}
+
+.timetable-mobile-title-card {
+    margin-top: 50px;
+    margin-bottom: .60rem;
+}
+
+.timetable-mobile-title-card:first-child {
+    margin-top: -10px;
+    margin-bottom: .60rem;
+}
+
+.timetable-mobile-title-card .card-content {
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+}
+
+.timetable-mobile-title-card .card-content .card-title {
+    font-weight: bold;
+}
+
+table.substitutions td, table.substitutions th {
+    padding: 10px 5px;
+}
+
+.lesson-with-sub {
+    border: 3px solid red;
+    border-radius: 3px;
+}
+
+.lesson-with-sub .badge {
+    margin: 0;
+}
+
+.lesson-with-event {
+    border: 3px solid #9c27b0;
+    border-radius: 3px;
+}
+
+.lesson-card a, .substitutions a {
+    color: inherit;
+}
+
+.btn-timetable-quicklaunch {
+    margin: 1%;
+    width: 30%;
 }

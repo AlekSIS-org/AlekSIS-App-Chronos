@@ -1,6 +1,7 @@
 [[package]]
 category = "main"
 description = ""
+develop = true
 name = "aleksis"
 optional = false
 python-versions = "^3.7"
@@ -9,9 +10,11 @@ version = "1.0a4.dev0"
 [package.dependencies]
 Django = "^3.0"
 Pillow = "^7.0"
+calendarweek = "^0.4.3"
 colour = "^0.1.5"
 django-any-js = "^1.0"
 django-bootstrap4 = "^1.0"
+django-ckeditor = "^5.8.0"
 django-debug-toolbar = "^2.0"
 django-easy-audit = "^1.2rc1"
 django-filter = "^2.2.0"
@@ -19,6 +22,7 @@ django-hattori = "^0.2"
 django-image-cropping = "^1.2"
 django-impersonate = "^1.4"
 django-ipware = "^2.1"
+django-js-reverse = "^0.9.1"
 django-maintenance-mode = "^0.14.0"
 django-material = "^1.6.0"
 django-menu-generator = "^1.0.4"
@@ -27,10 +31,12 @@ django-pwa = "^1.0.6"
 django-sass-processor = "^0.8"
 django-settings-context-processor = "^0.2"
 django-tables2 = "^2.1"
+django-templated-email = "^2.3.0"
 django-yarnpkg = "^6.0"
 django_select2 = "^7.1"
 django_widget_tweaks = "^1.4.5"
 easy-thumbnails = "^2.6"
+html2text = "^2020.0.0"
 libsass = "^0.19.2"
 psycopg2 = "^2.8"
 python-memcached = "^1.59"
@@ -53,6 +59,7 @@ extras = ["yaml", "toml", "ini"]
 version = "^2.0"
 
 [package.extras]
+celery = ["Celery (^4.4.0)", "django-celery-results (^1.1.2)", "django-celery-beat (^1.5.0)", "django-celery-email (^3.0.0)"]
 ldap = ["django-auth-ldap (^2.0)"]
 
 [package.source]
@@ -96,6 +103,17 @@ soupsieve = ">=1.2"
 [package.extras]
 html5lib = ["html5lib"]
 lxml = ["lxml"]
+
+[[package]]
+category = "main"
+description = "Utilities for working with calendar weeks in Python and Django"
+name = "calendarweek"
+optional = false
+python-versions = ">=3.7,<4.0"
+version = "0.4.4"
+
+[package.extras]
+django = ["Django (>=2.2,<4.0)"]
 
 [[package]]
 category = "main"
@@ -148,9 +166,6 @@ name = "configobj"
 optional = false
 python-versions = "*"
 version = "5.0.6"
-
-[package.dependencies]
-six = "*"
 
 [[package]]
 category = "main"
@@ -213,6 +228,17 @@ version = "2.2.0"
 
 [package.dependencies]
 Django = ">=1.8"
+
+[[package]]
+category = "main"
+description = "Django admin CKEditor integration."
+name = "django-ckeditor"
+optional = false
+python-versions = "*"
+version = "5.8.0"
+
+[package.dependencies]
+django-js-asset = ">=1.2.2"
 
 [[package]]
 category = "main"
@@ -321,6 +347,25 @@ name = "django-ipware"
 optional = false
 python-versions = "*"
 version = "2.1.0"
+
+[[package]]
+category = "main"
+description = "script tag with additional attributes for django.forms.Media"
+name = "django-js-asset"
+optional = false
+python-versions = "*"
+version = "1.2.2"
+
+[[package]]
+category = "main"
+description = "Javascript url handling for Django that doesn't hurt."
+name = "django-js-reverse"
+optional = false
+python-versions = "*"
+version = "0.9.1"
+
+[package.dependencies]
+Django = ">=1.5"
 
 [[package]]
 category = "main"
@@ -435,6 +480,17 @@ django = ">=1.8"
 
 [[package]]
 category = "main"
+description = "Render a particular block from a template to a string."
+name = "django-render-block"
+optional = false
+python-versions = "*"
+version = "0.6"
+
+[package.dependencies]
+django = ">=1.11"
+
+[[package]]
+category = "main"
 description = "SASS processor to compile SCSS files into *.css, while rendering, or offline."
 name = "django-sass-processor"
 optional = false
@@ -478,6 +534,18 @@ Django = ">=1.11"
 
 [package.extras]
 tablib = ["tablib"]
+
+[[package]]
+category = "main"
+description = "A Django oriented templated / transaction email abstraction"
+name = "django-templated-email"
+optional = false
+python-versions = "*"
+version = "2.3.0"
+
+[package.dependencies]
+django-render-block = ">=0.5"
+six = ">=1"
 
 [[package]]
 category = "main"
@@ -587,13 +655,20 @@ category = "main"
 description = "Faker is a Python package that generates fake data for you."
 name = "faker"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "3.0.0"
+python-versions = ">=3.4"
+version = "4.0.0"
 
 [package.dependencies]
 python-dateutil = ">=2.4"
-six = ">=1.10"
 text-unidecode = "1.3"
+
+[[package]]
+category = "main"
+description = "Turn HTML into equivalent Markdown-structured text."
+name = "html2text"
+optional = false
+python-versions = ">=3.5"
+version = "2020.1.16"
 
 [[package]]
 category = "main"
@@ -620,7 +695,7 @@ description = "Python version of Google's common library for parsing, formatting
 name = "phonenumbers"
 optional = false
 python-versions = "*"
-version = "8.11.1"
+version = "8.11.2"
 
 [[package]]
 category = "main"
@@ -716,7 +791,7 @@ category = "main"
 description = "YAML parser and emitter for Python"
 name = "pyyaml"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+python-versions = "*"
 version = "5.3"
 
 [[package]]
@@ -760,8 +835,8 @@ category = "main"
 description = "Python 2 and 3 compatibility utilities"
 name = "six"
 optional = false
-python-versions = ">=2.6, !=3.0.*, !=3.1.*"
-version = "1.13.0"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
+version = "1.14.0"
 
 [[package]]
 category = "main"
@@ -812,7 +887,7 @@ description = "Twilio API client and TwiML generator"
 name = "twilio"
 optional = false
 python-versions = "*"
-version = "6.35.1"
+version = "6.35.2"
 
 [package.dependencies]
 PyJWT = ">=1.4.2"
@@ -849,7 +924,7 @@ pycryptodome = "*"
 six = "*"
 
 [metadata]
-content-hash = "61923d9b1cbc5b40a1fc873e212a307b49d4ec4a47d37c9d56d9e76017afe3ce"
+content-hash = "f2db0ef57bb256e1e7f9ae769792ce2b3288a37dccbae621f568844e2a656d0c"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -866,6 +941,10 @@ beautifulsoup4 = [
     {file = "beautifulsoup4-4.8.2-py2-none-any.whl", hash = "sha256:e1505eeed31b0f4ce2dbb3bc8eb256c04cc2b3b72af7d551a4ab6efd5cbe5dae"},
     {file = "beautifulsoup4-4.8.2-py3-none-any.whl", hash = "sha256:9fbb4d6e48ecd30bcacc5b63b94088192dcda178513b2ae3c394229f8911b887"},
     {file = "beautifulsoup4-4.8.2.tar.gz", hash = "sha256:05fd825eb01c290877657a56df4c6e4c311b3965bda790c613a3d6fb01a5462a"},
+]
+calendarweek = [
+    {file = "calendarweek-0.4.4-py3-none-any.whl", hash = "sha256:6510a42015558f140ed6677e79efbb45d8bf87ccded069db4026283eb639a256"},
+    {file = "calendarweek-0.4.4.tar.gz", hash = "sha256:02f092ec54ebe162dc9f3614de6efbf3d7fb35115e8ca5d62e99d65c342f5732"},
 ]
 certifi = [
     {file = "certifi-2019.11.28-py2.py3-none-any.whl", hash = "sha256:017c25db2a153ce562900032d5bc68e9f191e44e9a0f762f373977de9df1fbb3"},
@@ -909,6 +988,10 @@ django-bulk-update = [
     {file = "django-bulk-update-2.2.0.tar.gz", hash = "sha256:5ab7ce8a65eac26d19143cc189c0f041d5c03b9d1b290ca240dc4f3d6aaeb337"},
     {file = "django_bulk_update-2.2.0-py2.py3-none-any.whl", hash = "sha256:49a403392ae05ea872494d74fb3dfa3515f8df5c07cc277c3dc94724c0ee6985"},
 ]
+django-ckeditor = [
+    {file = "django-ckeditor-5.8.0.tar.gz", hash = "sha256:46fc9c7346ea36183dc0cea350f98704f8b04c4722b7fe4fb18baf8ae20423fb"},
+    {file = "django_ckeditor-5.8.0-py2.py3-none-any.whl", hash = "sha256:a59bab13f4481318f8a048b1b0aef5c7da768a6352dcfb9ba0e77d91fbb9462a"},
+]
 django-constance = []
 django-debug-toolbar = [
     {file = "django-debug-toolbar-2.1.tar.gz", hash = "sha256:24c157bc6c0e1648e0a6587511ecb1b007a00a354ce716950bff2de12693e7a8"},
@@ -938,6 +1021,14 @@ django-impersonate = [
 ]
 django-ipware = [
     {file = "django-ipware-2.1.0.tar.gz", hash = "sha256:a7c7a8fd019dbdc9c357e6e582f65034e897572fc79a7e467674efa8aef9d00b"},
+]
+django-js-asset = [
+    {file = "django-js-asset-1.2.2.tar.gz", hash = "sha256:c163ae80d2e0b22d8fb598047cd0dcef31f81830e127cfecae278ad574167260"},
+    {file = "django_js_asset-1.2.2-py2.py3-none-any.whl", hash = "sha256:8ec12017f26eec524cab436c64ae73033368a372970af4cf42d9354fcb166bdd"},
+]
+django-js-reverse = [
+    {file = "django-js-reverse-0.9.1.tar.gz", hash = "sha256:2a392d169f44e30b883c30dfcfd917a14167ce8fe196c99d2385b31c90d77aa0"},
+    {file = "django_js_reverse-0.9.1-py2.py3-none-any.whl", hash = "sha256:8134c2ab6307c945edfa90671ca65e85d6c1754d48566bdd6464be259cc80c30"},
 ]
 django-maintenance-mode = [
     {file = "django-maintenance-mode-0.14.0.tar.gz", hash = "sha256:f3fef1760fdcda5e0bf6c2966aadc77eea6f328580a9c751920daba927281a68"},
@@ -973,6 +1064,9 @@ django-pwa = [
     {file = "django-pwa-1.0.6.tar.gz", hash = "sha256:b3f1ad0c5241fae4c7505423540de4db93077d7c88416ff6d2af545ffe209f34"},
     {file = "django_pwa-1.0.6-py3-none-any.whl", hash = "sha256:9306105fcb637ae16fea6527be4b147d45fd53db85efb1d4f61dfea6bf793e56"},
 ]
+django-render-block = [
+    {file = "django_render_block-0.6-py2.py3-none-any.whl", hash = "sha256:95c7dc9610378a10e0c4a10d8364ec7307210889afccd6a67a6aaa0fd599bd4d"},
+]
 django-sass-processor = [
     {file = "django-sass-processor-0.8.tar.gz", hash = "sha256:e039551994feaaba6fcf880412b25a772dd313162a34cbb4289814988cfae340"},
 ]
@@ -986,6 +1080,9 @@ django-settings-context-processor = [
 django-tables2 = [
     {file = "django-tables2-2.2.1.tar.gz", hash = "sha256:0d9b17f5c030ba1b5fcaeb206d8397bf58f1fdfc6beaf56e7874841b8647aa94"},
     {file = "django_tables2-2.2.1-py2.py3-none-any.whl", hash = "sha256:6afa0496695e15b332e98537265d09fe01a55b28c75a85323d8e6b0dc2350280"},
+]
+django-templated-email = [
+    {file = "django-templated-email-2.3.0.tar.gz", hash = "sha256:536c4e5ae099eabfb9aab36087d4d7799948c654e73da55a744213d086d5bb33"},
 ]
 django-two-factor-auth = [
     {file = "django-two-factor-auth-1.10.0.tar.gz", hash = "sha256:3c3af3cd747462be18e7494c4068a2bdc606d7a2d2b2914f8d4590fc80995a71"},
@@ -1006,8 +1103,12 @@ easy-thumbnails = [
     {file = "easy-thumbnails-2.7.tar.gz", hash = "sha256:e4e7a0dd4001f56bfd4058428f2c91eafe27d33ef3b8b33ac4e013b159b9ff91"},
 ]
 faker = [
-    {file = "Faker-3.0.0-py2.py3-none-any.whl", hash = "sha256:202ad3b2ec16ae7c51c02904fb838831f8d2899e61bf18db1e91a5a582feab11"},
-    {file = "Faker-3.0.0.tar.gz", hash = "sha256:92c84a10bec81217d9cb554ee12b3838c8986ce0b5d45f72f769da22e4bb5432"},
+    {file = "Faker-4.0.0-py3-none-any.whl", hash = "sha256:047d4d1791bfb3756264da670d99df13d799bb36e7d88774b1585a82d05dbaec"},
+    {file = "Faker-4.0.0.tar.gz", hash = "sha256:1b1a58961683b30c574520d0c739c4443e0ef6a185c04382e8cc888273dbebed"},
+]
+html2text = [
+    {file = "html2text-2020.1.16-py3-none-any.whl", hash = "sha256:c7c629882da0cf377d66f073329ccf34a12ed2adf0169b9285ae4e63ef54c82b"},
+    {file = "html2text-2020.1.16.tar.gz", hash = "sha256:e296318e16b059ddb97f7a8a1d6a5c1d7af4544049a01e261731d2d5cc277bbb"},
 ]
 idna = [
     {file = "idna-2.8-py2.py3-none-any.whl", hash = "sha256:ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"},
@@ -1032,8 +1133,8 @@ libsass = [
     {file = "libsass-0.19.4.tar.gz", hash = "sha256:8b5b6d1a7c4ea1d954e0982b04474cc076286493f6af2d0a13c2e950fbe0be95"},
 ]
 phonenumbers = [
-    {file = "phonenumbers-8.11.1-py2.py3-none-any.whl", hash = "sha256:aaa19bc1f2c7efbf7a94be33558e0c5b71620377c9271692d3e314c558962460"},
-    {file = "phonenumbers-8.11.1.tar.gz", hash = "sha256:239507184ee5b1b83557005af1d5fcce70f83ae18f5dff45b94a67226db10d63"},
+    {file = "phonenumbers-8.11.2-py2.py3-none-any.whl", hash = "sha256:796ba25c3064727ca0b8edf7a8ef5ef247c6da37aee498562e6e0ed46970a57f"},
+    {file = "phonenumbers-8.11.2.tar.gz", hash = "sha256:a22d3b14c7f18af9be7c4ade92285035f621c6a17b75352dc9c2e5d146aee348"},
 ]
 pillow = [
     {file = "Pillow-7.0.0-cp35-cp35m-macosx_10_6_intel.whl", hash = "sha256:5f3546ceb08089cedb9e8ff7e3f6a7042bb5b37c2a95d392fb027c3e53a2da00"},
@@ -1154,8 +1255,8 @@ requests = [
     {file = "requests-2.22.0.tar.gz", hash = "sha256:11e007a8a2aa0323f5a921e9e6a2d7e4e67d9877e85773fba9ba6419025cbeb4"},
 ]
 six = [
-    {file = "six-1.13.0-py2.py3-none-any.whl", hash = "sha256:1f1b7d42e254082a9db6279deae68afb421ceba6158efa6131de7b3003ee93fd"},
-    {file = "six-1.13.0.tar.gz", hash = "sha256:30f610279e8b2578cab6db20741130331735c781b56053c59c4076da27f06b66"},
+    {file = "six-1.14.0-py2.py3-none-any.whl", hash = "sha256:8f3cd2e254d8f793e7f3d6d9df77b92252b52637291d0f0da013c76ea2724b6c"},
+    {file = "six-1.14.0.tar.gz", hash = "sha256:236bdbdce46e6e6a3d61a337c0f8b763ca1e8717c03b369e87a7ec7ce1319c0a"},
 ]
 soupsieve = [
     {file = "soupsieve-1.9.5-py2.py3-none-any.whl", hash = "sha256:bdb0d917b03a1369ce964056fc195cfdff8819c40de04695a80bc813c3cfa1f5"},
@@ -1179,7 +1280,7 @@ tqdm = [
     {file = "tqdm-4.41.1.tar.gz", hash = "sha256:4789ccbb6fc122b5a6a85d512e4e41fc5acad77216533a6f2b8ce51e0f265c23"},
 ]
 twilio = [
-    {file = "twilio-6.35.1.tar.gz", hash = "sha256:c784e55d150ebeb2ba837afbab7168edfb91db57e77a9da49f2a1892688a1930"},
+    {file = "twilio-6.35.2.tar.gz", hash = "sha256:a086443642c0e1f13c8f8f087b426ca81ec883efbe496d8279180a49bb9287bc"},
 ]
 urllib3 = [
     {file = "urllib3-1.25.7-py2.py3-none-any.whl", hash = "sha256:a8a318824cc77d1fd4b2bec2ded92646630d7fe8619497b142c84a9e6f5a7293"},

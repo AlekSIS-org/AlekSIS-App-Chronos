@@ -15,16 +15,16 @@ def _css_class_from_lesson_state(
 ) -> str:
     if record.get_substitution(record._week):
         if record.get_substitution(record._week).cancelled:
-            return "table-danger"
+            return "success"
         else:
-            return "table-warning"
+            return "warning"
     else:
         return ""
 
 
 class LessonsTable(tables.Table):
     class Meta:
-        attrs = {"class": "table table-striped table-bordered table-hover table-responsive-xl"}
+        attrs = {"class": "highlight"}
         row_attrs = {"class": _css_class_from_lesson_state}
 
     period__period = tables.Column(accessor="period__period")
@@ -33,21 +33,6 @@ class LessonsTable(tables.Table):
     lesson__subject = tables.Column(accessor="lesson__subject")
     room = tables.Column(accessor="room")
     edit_substitution = tables.LinkColumn(
-        "edit_substitution", args=[A("id"), A("_week")], text=_("Substitution")
+        "edit_substitution", args=[A("id"), A("_week")], text=_("Substitution"),
+        attrs={"a": {"class": "btn-flat waves-effect waves-orange"}}, verbose_name=_("Manage substitution")
     )
-
-
-class SubstitutionsTable(tables.Table):
-    class Meta:
-        attrs = {"class": "table table-striped table-bordered table-hover table-responsive-xl"}
-
-    lesson_period = tables.Column(verbose_name=_("Lesson"))
-    lesson__groups = tables.Column(
-        accessor="lesson_period__lesson__group_names", verbose_name=_("Groups")
-    )
-    lesson__teachers = tables.Column(
-        accessor="lesson_period__get_teacher_names", verbose_name=_("Teachers")
-    )
-    lesson__subject = tables.Column(accessor="subject")
-    room = tables.Column(accessor="room")
-    cancelled = tables.BooleanColumn(accessor="cancelled", verbose_name=_("Cancelled"))
