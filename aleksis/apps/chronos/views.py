@@ -18,12 +18,6 @@ from .forms import LessonSubstitutionForm
 from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
 from .tables import LessonsTable
 from .util.js import date_unix
-from .util.min_max import (
-    period_min,
-    period_max,
-    weekday_min_,
-    weekday_max
-)
 from .util.prev_next import get_next_relevant_day, get_prev_next_by_day
 from .util.weeks import CalendarWeek, get_weeks_for_year
 from aleksis.core.util.core_helpers import has_person
@@ -158,13 +152,13 @@ def timetable(
             ] = [lesson_period]
 
     # Fill in empty lessons
-    for period_num in range(period_min, period_max + 1):
+    for period_num in range(TimePeriod.period_min, TimePeriod.period_max + 1):
         # Fill in empty weekdays
         if period_num not in per_period.keys():
             per_period[period_num] = {}
 
         # Fill in empty lessons on this workday
-        for weekday_num in range(weekday_min_, weekday_max + 1):
+        for weekday_num in range(TimePeriod.weekday_min, TimePeriod.weekday_max + 1):
             if weekday_num not in per_period[period_num].keys():
                 per_period[period_num][weekday_num] = []
 
@@ -174,10 +168,10 @@ def timetable(
     context["lesson_periods"] = OrderedDict(sorted(per_period.items()))
     context["periods"] = TimePeriod.get_times_dict()
     context["weekdays"] = dict(
-        TimePeriod.WEEKDAY_CHOICES[weekday_min_ : weekday_max + 1]
+        TimePeriod.WEEKDAY_CHOICES[TimePeriod.weekday_min : TimePeriod.weekday_max + 1]
     )
     context["weekdays_short"] = dict(
-        TimePeriod.WEEKDAY_CHOICES_SHORT[weekday_min_ : weekday_max + 1]
+        TimePeriod.WEEKDAY_CHOICES_SHORT[TimePeriod.weekday_min : TimePeriod.weekday_max + 1]
     )
     context["weeks"] = get_weeks_for_year(year=wanted_week.year)
     context["week"] = wanted_week
