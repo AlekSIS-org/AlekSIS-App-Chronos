@@ -22,5 +22,7 @@ urlpatterns = [
         name="delete_substitution",
     ),
     path("substitutions/", views.substitutions, name="substitutions"),
+    path("substitutions/<str:is_print>/", views.substitutions, name="substitutions_print"),
     path("substitutions/<int:year>/<int:month>/<int:day>/", views.substitutions, name="substitutions_by_date"),
+    path("substitutions/<int:year>/<int:month>/<int:day>/<str:is_print>/", views.substitutions, name="substitutions_print_by_date"),
 ]

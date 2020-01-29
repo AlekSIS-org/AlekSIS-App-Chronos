@@ -1,111 +1,98 @@
 {# -*- engine:django -*- #}
 
-{% extends 'core/base.html' %}
-{% load common %}
+{% extends 'core/base_print.html' %}
+
+{% load i18n static %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/chronos/timetable.css' %}">
+{% endblock %}
+
+{% block browser_title %}{% blocktrans %}Print: Substitutions{% endblocktrans %}{% endblock %}
+{% block page_title %}{% blocktrans %}Substitutions{% endblocktrans %}{% endblock %}
+
 
 {% block content %}
-<script type="text/javascript">
-    var dest = Urls.substitutions();
-</script>
+  {% for day, c in days.items %}
+    <h4>{% trans "Substitutions" %} {{ c.day|date:"l" }} {{ c.day }}</h4>
 
-<style>
-    table.substitutions td, table.substitutions th {
-        padding: 0 2px;
-    }
+    {#    {% include "timetable/hintsinsubprint.html" %}#}
 
-    span.badge.new {
-        font-size: 0.9rem;
-        line-height: 20px;
-        height: 20px;
-        margin: 2px;
-        letter-spacing: 0.3pt;
-    }
-</style>
-
-{% for c in days %}
-    <h4>Substitutions {{ c.date|date" }}</h4>
-
-
-    {% include "timetable/hintsinsubprint.html" %}
-
-    <div style="margin-bottom: 20px">
-        {% if c.header_info.is_box_needed %}
-            {% for row in c.header_info.rows %}
-                <div class="row no-margin">
-                    <div class="col s3 no-padding">
-                        <strong>{{ row.0 }}</strong>
-                    </div>
-                    <div class="col s9 no-padding">
-                        {{ row.1 }}
-                    </div>
-                </div>
-            {% endfor %}
-        {% endif %}
-    </div>
+    {#    <div style="margin-bottom: 20px">#}
+    {#        {% if c.header_info.is_box_needed %}#}
+    {#            {% for row in c.header_info.rows %}#}
+    {#                <div class="row no-margin">#}
+    {#                    <div class="col s3 no-padding">#}
+    {#                        <strong>{{ row.0 }}</strong>#}
+    {#                    </div>#}
+    {#                    <div class="col s9 no-padding">#}
+    {#                        {{ row.1 }}#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#            {% endfor %}#}
+    {#        {% endif %}#}
+    {#    </div>#}
 
     <table class="substitutions">
-        <thead>
-        <tr>
-            <th><i class="material-icons">people</i></th>
-            <th><i class="material-icons">access_time</i></th>
-            <th>{% blocktrans %}Teachers{% endblocktrans %}</th>
-            <th>{% blocktrans %}Subject{% endblocktrans %}</th>
-            <th>{% blocktrans %}Room{% endblocktrans %}</th>
-            <th>{% blocktrans %}Hint{% endblocktrans %}</th>
-            <th></th>
-        </tr>
-        </thead>
+      <thead>
+      <tr>
+        <th><i class="material-icons">people</i></th>
+        <th><i class="material-icons">access_time</i></th>
+        <th>{% blocktrans %}Teachers{% endblocktrans %}</th>
+        <th>{% blocktrans %}Subject{% endblocktrans %}</th>
+        <th>{% blocktrans %}Room{% endblocktrans %}</th>
+        <th>{% blocktrans %}Notes{% endblocktrans %}</th>
+        <th></th>
+      </tr>
+      </thead>
+
+      {% if not c.substitutions %}
         <tbody>
-        {% if not c.sub_table %}
-            <td colspan="7">
-                <p class="flow-text center">
-                    {% blocktrans %}No existing substitutions{% endblocktrans %}
-                </p>
-            </td>
-        {% endif %}
-
-        {% set color_background = 1 %}
-        {% set last_classes = "" %}
-
-        {% for sub in c.sub_table %}
-
-            {#  Color groups of classes in grey/white #}
-            {% if last_classes != sub.classes %}
-                {% if color_background %}{% set color_background = 0 %}
-                    {% else %}{% set color_background = 1 %}
-                {% endif %}
-            {% endif %}
-            {% set last_classes = sub.classes %}
-
-
-            <tr class="{{ sub.color }}-text {% if color_background %}striped{% endif %}">
-                <td>
-                    {{ sub.classes }}
-                </td>
-                <td>
-                    <strong>
-                        {{ sub.lesson }}
-                    </strong>
-                </td>
-                <td>
-                    {% include "timetable/subs/teacher.html" %}
-                </td>
-                <td>
-                    {% include "timetable/subs/subject.html" %}
-                </td>
-                <td>
-                    {% include "timetable/subs/room.html" %}
-                </td>
-                <td>
-                    {% if sub.badge %}
-                        <span class="badge new green">{{ sub.badge }}</span>
-                    {% endif %}
-                    <em>{{ sub.text|default:"" }}</em>
-                </td>
-            </tr>
-        {% endfor %}
+        <tr class="striped">
+          <td colspan="7">
+            <p class="flow-text center">
+              {% blocktrans %}No substitutions available.{% endblocktrans %}
+            </p>
+          </td>
+        </tr>
         </tbody>
-    </table>
+      {% endif %}
 
-{% endfor %}
+      <tbody>
+      {% for sub in c.substitutions %}
+        <tr class="{% if sub.type_ == "cancellation" %}green-text{% else %}black-text{% endif %} ">
+          <td>
+            {% include "chronos/partials/groups.html" with groups=sub.lesson_period.lesson.groups.all %}
+          </td>
+          <td>
+            <strong>
+              {{ sub.lesson_period.period.period }}.
+            </strong>
+          </td>
+          <td>
+            {% include "chronos/partials/subs/teachers.html" %}
+          </td>
+          <td>
+            {% include "chronos/partials/subs/subject.html" %}
+          </td>
+          <td>
+            {% include "chronos/partials/subs/room.html" %}
+          </td>
+          <td>
+            {% if sub.cancelled %}
+              {# TODO: Support other cases#}
+              <span class="badge new green">{% trans "Cancelled" %}</span>
+            {% endif %}
+            {#          <em>{{ sub.text|default:"" }}</em>#}
+          </td>
+        </tr>
+
+        {% ifchanged sub.lesson_period.lesson.groups %}
+          </tbody>
+          <tbody class="{% cycle "" "striped" %}">
+        {% endifchanged %}
+      {% endfor %}
+      </tbody>
+    </table>
+  {% endfor %}
 {% endblock %}

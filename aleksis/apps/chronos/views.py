@@ -298,8 +298,11 @@ def substitutions(
     year: Optional[int] = None,
     month: Optional[int] = None,
     day: Optional[int] = None,
+    is_print: Optional[str] = None,
 ) -> HttpResponse:
     context = {}
+
+    is_print = is_print == "print"
 
     if day:
         wanted_day = timezone.datetime(year=year, month=month, day=day).date()
@@ -307,17 +310,36 @@ def substitutions(
     else:
         wanted_day = get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
-    substitutions = LessonSubstitution.objects.on_day(wanted_day)
+    DAY_COUNT = 2
+    day_contexts = {}
 
-    context["substitutions"] = substitutions
-    context["day"] = wanted_day
-    context["datepicker"] = {
-        "date": date_unix(wanted_day),
-        "dest": reverse("substitutions")
-    }
+    if is_print:
+        next_day = wanted_day
+        for i in range(DAY_COUNT):
+            day_contexts[next_day] = {"day": next_day}
+            next_day = get_next_relevant_day(next_day + timedelta(days=1))
+    else:
+        day_contexts = {wanted_day: {"day": wanted_day}}
 
-    context["url_prev"], context["url_next"] = get_prev_next_by_day(
-        wanted_day, "substitutions_by_date"
-    )
+    for day in day_contexts:
+        day_contexts[day]["substitutions"] = LessonSubstitution.objects.on_day(
+            day
+        ).order_by("lesson_period__lesson__groups", "lesson_period__period")
 
-    return render(request, "chronos/substitutions.html", context)
+    if not is_print:
+        context = day_contexts[wanted_day]
+        context["datepicker"] = {
+            "date": date_unix(wanted_day),
+            "dest": reverse("substitutions"),
+        }
+
+        context["url_prev"], context["url_next"] = get_prev_next_by_day(
+            wanted_day, "substitutions_by_date"
+        )
+
+        template_name = "chronos/substitutions.html"
+    else:
+        context["days"] = day_contexts
+        template_name = "chronos/substitutions_print.html"
+
+    return render(request, template_name, context)

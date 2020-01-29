@@ -96,3 +96,15 @@ table.substitutions td, table.substitutions th {
     margin: 1%;
     width: 30%;
 }
+
+.print-body table.substitutions td, .print-body table.substitutions th {
+    padding: 0 2px;
+}
+
+.print-body span.badge.new {
+    font-size: 0.9rem;
+    line-height: 20px;
+    height: 20px;
+    margin: 2px;
+    letter-spacing: 0.3pt;
+}
