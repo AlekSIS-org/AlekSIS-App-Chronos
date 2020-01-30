@@ -299,11 +299,9 @@ def substitutions(
     year: Optional[int] = None,
     month: Optional[int] = None,
     day: Optional[int] = None,
-    is_print: Optional[str] = None,
+    is_print: bool = False,
 ) -> HttpResponse:
     context = {}
-
-    is_print = is_print == "print"
 
     if day:
         wanted_day = timezone.datetime(year=year, month=month, day=day).date()
