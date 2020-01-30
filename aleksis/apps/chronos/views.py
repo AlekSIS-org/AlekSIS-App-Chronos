@@ -2,6 +2,7 @@ from collections import OrderedDict
 from datetime import date, datetime, timedelta
 from typing import Optional, Tuple
 
+from constance import config
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.http import HttpRequest, HttpResponse, HttpResponseNotFound
@@ -310,12 +311,12 @@ def substitutions(
     else:
         wanted_day = get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
-    DAY_COUNT = 2
+    day_number = config.CHRONOS_SUBSTITUTIONS_PRINT_DAY_NUMBER
     day_contexts = {}
 
     if is_print:
         next_day = wanted_day
-        for i in range(DAY_COUNT):
+        for i in range(day_number):
             day_contexts[next_day] = {"day": next_day}
             next_day = get_next_relevant_day(next_day + timedelta(days=1))
     else:
