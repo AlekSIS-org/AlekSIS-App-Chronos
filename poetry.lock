@@ -23,11 +23,13 @@ django-image-cropping = "^1.2"
 django-impersonate = "^1.4"
 django-ipware = "^2.1"
 django-js-reverse = "^0.9.1"
+django-jsonstore = "^0.4.1"
 django-maintenance-mode = "^0.14.0"
 django-material = "^1.6.0"
 django-menu-generator = "^1.0.4"
 django-middleware-global-request = "^0.1.2"
-django-pwa = "^1.0.6"
+django-polymorphic = "^2.1.2"
+django-pwa = "rev 67cf917a081df3116968f684ebb28e4c076b2b50"
 django-sass-processor = "^0.8"
 django-settings-context-processor = "^0.2"
 django-tables2 = "^2.1"
@@ -44,7 +46,7 @@ requests = "^2.22"
 
 [package.dependencies.django-constance]
 extras = ["database"]
-version = "rev 590fa02eb30e377da0eda5cc3a84254b839176a7"
+version = "^2.6.0"
 
 [package.dependencies.django-phonenumber-field]
 extras = ["phonenumbers"]
@@ -110,7 +112,7 @@ description = "Utilities for working with calendar weeks in Python and Django"
 name = "calendarweek"
 optional = false
 python-versions = ">=3.7,<4.0"
-version = "0.4.4"
+version = "0.4.5"
 
 [package.extras]
 django = ["Django (>=2.2,<4.0)"]
@@ -166,6 +168,9 @@ name = "configobj"
 optional = false
 python-versions = "*"
 version = "5.0.6"
+
+[package.dependencies]
+six = "*"
 
 [[package]]
 category = "main"
@@ -235,7 +240,7 @@ description = "Django admin CKEditor integration."
 name = "django-ckeditor"
 optional = false
 python-versions = "*"
-version = "5.8.0"
+version = "5.9.0"
 
 [package.dependencies]
 django-js-asset = ">=1.2.2"
@@ -246,7 +251,7 @@ description = "Django live settings with pluggable backends, including Redis."
 name = "django-constance"
 optional = false
 python-versions = "*"
-version = "2.5.0"
+version = "2.6.0"
 
 [package.dependencies]
 [package.dependencies.django-picklefield]
@@ -257,10 +262,6 @@ version = "*"
 database = ["django-picklefield"]
 redis = ["redis"]
 
-[package.source]
-reference = "590fa02eb30e377da0eda5cc3a84254b839176a7"
-type = "git"
-url = "https://github.com/jazzband/django-constance"
 [[package]]
 category = "main"
 description = "A configurable set of panels that display various debug information about the current request/response."
@@ -279,7 +280,7 @@ description = "Yet another Django audit log app, hopefully the simplest one."
 name = "django-easy-audit"
 optional = false
 python-versions = "*"
-version = "1.2rc1"
+version = "1.2.1rc1"
 
 [package.dependencies]
 beautifulsoup4 = "*"
@@ -366,6 +367,18 @@ version = "0.9.1"
 
 [package.dependencies]
 Django = ">=1.5"
+
+[[package]]
+category = "main"
+description = "Expose JSONField data as a virtual django model fields."
+name = "django-jsonstore"
+optional = false
+python-versions = "*"
+version = "0.4.1"
+
+[package.dependencies]
+Django = ">=1.11"
+six = "*"
 
 [[package]]
 category = "main"
@@ -459,13 +472,24 @@ description = "Pickled object field for Django"
 name = "django-picklefield"
 optional = false
 python-versions = "*"
-version = "2.0"
+version = "2.1.1"
 
 [package.dependencies]
 Django = ">=1.11"
 
 [package.extras]
 tests = ["tox"]
+
+[[package]]
+category = "main"
+description = "Seamless polymorphic inheritance for Django models"
+name = "django-polymorphic"
+optional = false
+python-versions = "*"
+version = "2.1.2"
+
+[package.dependencies]
+Django = ">=1.11"
 
 [[package]]
 category = "main"
@@ -478,6 +502,10 @@ version = "1.0.6"
 [package.dependencies]
 django = ">=1.8"
 
+[package.source]
+reference = "67cf917a081df3116968f684ebb28e4c076b2b50"
+type = "git"
+url = "https://github.com/Natureshadow/django-pwa"
 [[package]]
 category = "main"
 description = "Render a particular block from a template to a string."
@@ -791,7 +819,7 @@ category = "main"
 description = "YAML parser and emitter for Python"
 name = "pyyaml"
 optional = false
-python-versions = "*"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 version = "5.3"
 
 [[package]]
@@ -876,7 +904,7 @@ description = "Fast, Extensible Progress Meter"
 name = "tqdm"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*"
-version = "4.41.1"
+version = "4.42.0"
 
 [package.extras]
 dev = ["py-make (>=0.1.0)", "twine", "argopt", "pydoc-markdown"]
@@ -887,7 +915,7 @@ description = "Twilio API client and TwiML generator"
 name = "twilio"
 optional = false
 python-versions = "*"
-version = "6.35.2"
+version = "6.35.3"
 
 [package.dependencies]
 PyJWT = ">=1.4.2"
@@ -903,8 +931,8 @@ category = "main"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 name = "urllib3"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4"
-version = "1.25.7"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
+version = "1.25.8"
 
 [package.extras]
 brotli = ["brotlipy (>=0.6.0)"]
@@ -943,8 +971,8 @@ beautifulsoup4 = [
     {file = "beautifulsoup4-4.8.2.tar.gz", hash = "sha256:05fd825eb01c290877657a56df4c6e4c311b3965bda790c613a3d6fb01a5462a"},
 ]
 calendarweek = [
-    {file = "calendarweek-0.4.4-py3-none-any.whl", hash = "sha256:6510a42015558f140ed6677e79efbb45d8bf87ccded069db4026283eb639a256"},
-    {file = "calendarweek-0.4.4.tar.gz", hash = "sha256:02f092ec54ebe162dc9f3614de6efbf3d7fb35115e8ca5d62e99d65c342f5732"},
+    {file = "calendarweek-0.4.5-py3-none-any.whl", hash = "sha256:b35fcc087073969d017cede62a7295bcd714a1304bcb4c4e2b0f23acb0265fb1"},
+    {file = "calendarweek-0.4.5.tar.gz", hash = "sha256:5b1788ca435022f9348fc81a718974e51dd85d080f9aa3dad717df70a1bc6e1f"},
 ]
 certifi = [
     {file = "certifi-2019.11.28-py2.py3-none-any.whl", hash = "sha256:017c25db2a153ce562900032d5bc68e9f191e44e9a0f762f373977de9df1fbb3"},
@@ -989,17 +1017,19 @@ django-bulk-update = [
     {file = "django_bulk_update-2.2.0-py2.py3-none-any.whl", hash = "sha256:49a403392ae05ea872494d74fb3dfa3515f8df5c07cc277c3dc94724c0ee6985"},
 ]
 django-ckeditor = [
-    {file = "django-ckeditor-5.8.0.tar.gz", hash = "sha256:46fc9c7346ea36183dc0cea350f98704f8b04c4722b7fe4fb18baf8ae20423fb"},
-    {file = "django_ckeditor-5.8.0-py2.py3-none-any.whl", hash = "sha256:a59bab13f4481318f8a048b1b0aef5c7da768a6352dcfb9ba0e77d91fbb9462a"},
+    {file = "django-ckeditor-5.9.0.tar.gz", hash = "sha256:e4d112851a72c5bf8b586e1c674d34084cab16d28f2553ad15cc770d1e9639c7"},
+    {file = "django_ckeditor-5.9.0-py2.py3-none-any.whl", hash = "sha256:71c3c7bb46b0cbfb9712ef64af0d2a406eab233f44ecd7c42c24bdfa39ae3bde"},
 ]
-django-constance = []
+django-constance = [
+    {file = "django-constance-2.6.0.tar.gz", hash = "sha256:12d827f9d5552ee39884fb6fb356f231f32b1ab8958acc715e3d1a6ecf913653"},
+]
 django-debug-toolbar = [
     {file = "django-debug-toolbar-2.1.tar.gz", hash = "sha256:24c157bc6c0e1648e0a6587511ecb1b007a00a354ce716950bff2de12693e7a8"},
     {file = "django_debug_toolbar-2.1-py3-none-any.whl", hash = "sha256:77cfba1d6e91b9bc3d36dc7dc74a9bb80be351948db5f880f2562a0cbf20b6c5"},
 ]
 django-easy-audit = [
-    {file = "django-easy-audit-1.2rc1.tar.gz", hash = "sha256:80f82fa4006290dcd6589a345e75de1c780de49d38218050eedd9048c54b647d"},
-    {file = "django_easy_audit-1.2rc1-py3-none-any.whl", hash = "sha256:fb9c5ec3e90f0900302448d3648acc11da6d6b3d35d13d77eab917ab8c813d77"},
+    {file = "django-easy-audit-1.2.1rc1.tar.gz", hash = "sha256:a127264dbfef4aac17bfa74439487540ad41e47ff4c067d3d77bfad82fd23bc5"},
+    {file = "django_easy_audit-1.2.1rc1-py3-none-any.whl", hash = "sha256:00e9a9bc063ad73120fe399f2e7bc216af5fc32186dc5eccad09e2c4cd10abc1"},
 ]
 django-filter = [
     {file = "django-filter-2.2.0.tar.gz", hash = "sha256:c3deb57f0dd7ff94d7dce52a047516822013e2b441bed472b722a317658cfd14"},
@@ -1030,6 +1060,9 @@ django-js-reverse = [
     {file = "django-js-reverse-0.9.1.tar.gz", hash = "sha256:2a392d169f44e30b883c30dfcfd917a14167ce8fe196c99d2385b31c90d77aa0"},
     {file = "django_js_reverse-0.9.1-py2.py3-none-any.whl", hash = "sha256:8134c2ab6307c945edfa90671ca65e85d6c1754d48566bdd6464be259cc80c30"},
 ]
+django-jsonstore = [
+    {file = "django-jsonstore-0.4.1.tar.gz", hash = "sha256:d6e42152af3f924e4657c99e80144ba9a6410799256f6134b5a4e9fa4282ec10"},
+]
 django-maintenance-mode = [
     {file = "django-maintenance-mode-0.14.0.tar.gz", hash = "sha256:f3fef1760fdcda5e0bf6c2966aadc77eea6f328580a9c751920daba927281a68"},
     {file = "django_maintenance_mode-0.14.0-py2-none-any.whl", hash = "sha256:b4cc24a469ed10897826a28f05d64e6166a58d130e4940ac124ce198cd4cc778"},
@@ -1057,13 +1090,14 @@ django-phonenumber-field = [
     {file = "django_phonenumber_field-3.0.1-py3-none-any.whl", hash = "sha256:1ab19f723928582fed412bd9844221fa4ff466276d8526b8b4a9913ee1487c5e"},
 ]
 django-picklefield = [
-    {file = "django-picklefield-2.0.tar.gz", hash = "sha256:f1733a8db1b6046c0d7d738e785f9875aa3c198215de11993463a9339aa4ea24"},
-    {file = "django_picklefield-2.0-py2.py3-none-any.whl", hash = "sha256:9052f2dcf4882c683ce87b4356f29b4d014c0dad645b6906baf9f09571f52bc8"},
+    {file = "django-picklefield-2.1.1.tar.gz", hash = "sha256:67a5e156343e3b032cac2f65565f0faa81635a99c7da74b0f07a0f5db467b646"},
+    {file = "django_picklefield-2.1.1-py2.py3-none-any.whl", hash = "sha256:e03cb181b7161af38ad6b573af127e4fe9b7cc2c455b42c1ec43eaad525ade0a"},
 ]
-django-pwa = [
-    {file = "django-pwa-1.0.6.tar.gz", hash = "sha256:b3f1ad0c5241fae4c7505423540de4db93077d7c88416ff6d2af545ffe209f34"},
-    {file = "django_pwa-1.0.6-py3-none-any.whl", hash = "sha256:9306105fcb637ae16fea6527be4b147d45fd53db85efb1d4f61dfea6bf793e56"},
+django-polymorphic = [
+    {file = "django-polymorphic-2.1.2.tar.gz", hash = "sha256:6e08a76c91066635ccb7ef3ebbe9a0ad149febae6b30be2579716ec16d3c6461"},
+    {file = "django_polymorphic-2.1.2-py2.py3-none-any.whl", hash = "sha256:0a25058e95e5e99fe0beeabb8f4734effe242d7b5b77dca416fba9fd3062da6a"},
 ]
+django-pwa = []
 django-render-block = [
     {file = "django_render_block-0.6-py2.py3-none-any.whl", hash = "sha256:95c7dc9610378a10e0c4a10d8364ec7307210889afccd6a67a6aaa0fd599bd4d"},
 ]
@@ -1276,15 +1310,15 @@ toml = [
     {file = "toml-0.10.0.tar.gz", hash = "sha256:229f81c57791a41d65e399fc06bf0848bab550a9dfd5ed66df18ce5f05e73d5c"},
 ]
 tqdm = [
-    {file = "tqdm-4.41.1-py2.py3-none-any.whl", hash = "sha256:efab950cf7cc1e4d8ee50b2bb9c8e4a89f8307b49e0b2c9cfef3ec4ca26655eb"},
-    {file = "tqdm-4.41.1.tar.gz", hash = "sha256:4789ccbb6fc122b5a6a85d512e4e41fc5acad77216533a6f2b8ce51e0f265c23"},
+    {file = "tqdm-4.42.0-py2.py3-none-any.whl", hash = "sha256:01464d5950e9a07a8e463c2767883d9616c099c6502f6c7ef4e2e11d3065bd35"},
+    {file = "tqdm-4.42.0.tar.gz", hash = "sha256:5865f5fef9d739864ff341ddaa69894173ebacedb1aaafcf014de56343d01d5c"},
 ]
 twilio = [
-    {file = "twilio-6.35.2.tar.gz", hash = "sha256:a086443642c0e1f13c8f8f087b426ca81ec883efbe496d8279180a49bb9287bc"},
+    {file = "twilio-6.35.3.tar.gz", hash = "sha256:4474fa87fde5ea5526e296be782d1b06fc6722f9e4698a503c47b5c2f8b70ea9"},
 ]
 urllib3 = [
-    {file = "urllib3-1.25.7-py2.py3-none-any.whl", hash = "sha256:a8a318824cc77d1fd4b2bec2ded92646630d7fe8619497b142c84a9e6f5a7293"},
-    {file = "urllib3-1.25.7.tar.gz", hash = "sha256:f3c5fd51747d450d4dcf6f923c81f78f811aab8205fda64b0aba34a4e48b0745"},
+    {file = "urllib3-1.25.8-py2.py3-none-any.whl", hash = "sha256:2f3db8b19923a873b3e5256dc9c2dedfa883e33d87c690d9c7913e1f40673cdc"},
+    {file = "urllib3-1.25.8.tar.gz", hash = "sha256:87716c2d2a7121198ebcb7ce7cccf6ce5e9ba539041cfbaeecfb641dc0bf6acc"},
 ]
 yubiotp = [
     {file = "YubiOTP-0.2.2.post1-py2.py3-none-any.whl", hash = "sha256:7e281801b24678f4bda855ce8ab975a7688a912f5a6cb22b6c2b16263a93cbd2"},
