@@ -2,6 +2,7 @@ from collections import OrderedDict
 from datetime import date, datetime, timedelta
 from typing import Optional, Tuple
 
+from constance import config
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.http import HttpRequest, HttpResponse, HttpResponseNotFound
@@ -298,6 +299,7 @@ def substitutions(
     year: Optional[int] = None,
     month: Optional[int] = None,
     day: Optional[int] = None,
+    is_print: bool = False,
 ) -> HttpResponse:
     context = {}
 
@@ -307,17 +309,36 @@ def substitutions(
     else:
         wanted_day = get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
-    substitutions = LessonSubstitution.objects.on_day(wanted_day)
+    day_number = config.CHRONOS_SUBSTITUTIONS_PRINT_DAY_NUMBER
+    day_contexts = {}
 
-    context["substitutions"] = substitutions
-    context["day"] = wanted_day
-    context["datepicker"] = {
-        "date": date_unix(wanted_day),
-        "dest": reverse("substitutions")
-    }
+    if is_print:
+        next_day = wanted_day
+        for i in range(day_number):
+            day_contexts[next_day] = {"day": next_day}
+            next_day = get_next_relevant_day(next_day + timedelta(days=1))
+    else:
+        day_contexts = {wanted_day: {"day": wanted_day}}
 
-    context["url_prev"], context["url_next"] = get_prev_next_by_day(
-        wanted_day, "substitutions_by_date"
-    )
+    for day in day_contexts:
+        day_contexts[day]["substitutions"] = LessonSubstitution.objects.on_day(
+            day
+        ).order_by("lesson_period__lesson__groups", "lesson_period__period")
 
-    return render(request, "chronos/substitutions.html", context)
+    if not is_print:
+        context = day_contexts[wanted_day]
+        context["datepicker"] = {
+            "date": date_unix(wanted_day),
+            "dest": reverse("substitutions"),
+        }
+
+        context["url_prev"], context["url_next"] = get_prev_next_by_day(
+            wanted_day, "substitutions_by_date"
+        )
+
+        template_name = "chronos/substitutions.html"
+    else:
+        context["days"] = day_contexts
+        template_name = "chronos/substitutions_print.html"
+
+    return render(request, template_name, context)

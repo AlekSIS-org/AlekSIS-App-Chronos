@@ -17,16 +17,10 @@
       <h4>{% trans "Substitutions" %}</h4>
     </div>
     <div class="col s2 m6 right align-right print-icon">
-      {#            <a class="waves-effect waves-teal btn-flat btn-flat-medium right"#}
-      {#               href="#}
-      {#                    {% if debug %}#}
-      {#                        {% url "timetable_substitutions_pdf_date" date|date:"Y-m-d" %}#}
-      {#                    {% else %}#}
-      {#                       {% url "timetable_substitutions_pdf" %}#}
-      {#                    {% endif %}#}
-      {#                    ">#}
-      {#                <i class="material-icons center">print</i>#}
-      {#            </a>#}
+      <a class="waves-effect waves-teal btn-flat btn-flat-medium right"
+         href="{% url "substitutions_print_by_date" day.year day.month day.day %}" target="_blank">
+        <i class="material-icons center">print</i>
+      </a>
     </div>
   </div>
 
@@ -79,7 +73,8 @@
       </td>
     {% endif %}
     {% for sub in substitutions %}
-      <tr class="{% if sub.type_ == "cancellation" %}green-text{% else %}black-text{% endif %}"> {# TODO: Extend support for blue and purple (supervisions and events) #}
+      <tr class="{% if sub.type_ == "cancellation" %}green-text{% else %}black-text{% endif %}">
+        {# TODO: Extend support for blue and purple (supervisions and events) #}
         <td>
           {% include "chronos/partials/groups.html" with groups=sub.lesson_period.lesson.groups.all %}
         </td>
@@ -102,7 +97,7 @@
             {# TODO: Support other cases#}
             <span class="badge new green hide-on-med-and-up">{% trans "Cancelled" %}</span>
           {% endif %}
-{#          <em>{{ sub.text|default:"" }}</em>#}
+          {#          <em>{{ sub.text|default:"" }}</em>#}
         </td>
         <td class="hide-on-small-and-down">
           {% if sub.cancelled %}
