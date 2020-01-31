@@ -1,6 +1,26 @@
 Changelog
 =========
 
+`2.0a1`_
+--------
+
+New features
+~~~~~~~~~~~~
+
+* Migrate to materialize.css
+
+Minor changes
+~~~~~~~~~~~~~
+
+* Redesign filter ui for rooms, classes or teachers
+* Rename person timetabe for current day to „smart plan“
+
+Bug fixes
+~~~~~~~~~
+
+* Catch error if no timetable data is available
+
+
 `1.0a3`_
 --------
 
@@ -48,3 +68,4 @@ Minor changes
 _`1.0a1`: https://edugit.org/Teckids/AlekSIS/AlekSIS-App-Chronos/-/tags/1.0a1
 _`1.0a2`: https://edugit.org/Teckids/AlekSIS/AlekSIS-App-Chronos/-/tags/1.0a2
 _`1.0a3`: https://edugit.org/Teckids/AlekSIS/AlekSIS-App-Chronos/-/tags/1.0a3
+_`2.0a1`: https://edugit.org/Teckids/AlekSIS/AlekSIS-App-Chronos/-/tags/2.0a1
