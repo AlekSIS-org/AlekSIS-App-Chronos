@@ -20,7 +20,7 @@ from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
 from .tables import LessonsTable
 from .util.js import date_unix
 from .util.prev_next import get_next_relevant_day, get_prev_next_by_day
-from .util.weeks import CalendarWeek, get_weeks_for_year
+from .util.date import CalendarWeek, get_weeks_for_year
 from aleksis.core.util.core_helpers import has_person
 
 
