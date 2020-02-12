@@ -18,20 +18,7 @@
 
     {#    {% include "timetable/hintsinsubprint.html" %}#}
 
-    {#    <div style="margin-bottom: 20px">#}
-    {#        {% if c.header_info.is_box_needed %}#}
-    {#            {% for row in c.header_info.rows %}#}
-    {#                <div class="row no-margin">#}
-    {#                    <div class="col s3 no-padding">#}
-    {#                        <strong>{{ row.0 }}</strong>#}
-    {#                    </div>#}
-    {#                    <div class="col s9 no-padding">#}
-    {#                        {{ row.1 }}#}
-    {#                    </div>#}
-    {#                </div>#}
-    {#            {% endfor %}#}
-    {#        {% endif %}#}
-    {#    </div>#}
+    {% include "chronos/partials/headerbox.html" with affected_teachers=c.affected_teachers affected_groups=c.affected_groups print=1 %}
 
     <table class="substitutions">
       <thead>

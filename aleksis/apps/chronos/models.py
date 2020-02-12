@@ -205,6 +205,21 @@ class LessonSubstitutionQuerySet(LessonDataQuerySet):
     _period_path = "lesson_period__"
     _subst_path = ""
 
+    def affected_lessons(self):
+        """ Return all lessons which are affected by selected substitutions """
+
+        return Lesson.objects.filter(lesson_periods__substitutions__in=self)
+
+    def affected_teachers(self):
+        """ Return all teachers which are affected by selected substitutions (as substituted or substituting) """
+
+        return Person.objects.filter(Q(lessons_as_teacher__in=self.affected_lessons()) | Q(lesson_substitutions__in=self))
+
+    def affected_groups(self):
+        """ Return all groups which are affected by selected substitutions """
+
+        return Group.objects.filter(lessons__in=self.affected_lessons())
+
 
 class TimePeriod(models.Model):
     WEEKDAY_CHOICES = list(enumerate(i18n_day_names_lazy()))
