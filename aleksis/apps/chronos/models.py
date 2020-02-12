@@ -9,6 +9,8 @@ from django.db import models
 from django.db.models import F, Max, Min, Q
 from django.db.models.functions import Coalesce
 from django.http.request import QueryDict
+from django.urls import reverse
+from django.utils import timezone
 from django.utils.decorators import classproperty
 from django.utils.translation import ugettext_lazy as _
 
@@ -205,6 +207,21 @@ class LessonSubstitutionQuerySet(LessonDataQuerySet):
     _period_path = "lesson_period__"
     _subst_path = ""
 
+    def affected_lessons(self):
+        """ Return all lessons which are affected by selected substitutions """
+
+        return Lesson.objects.filter(lesson_periods__substitutions__in=self)
+
+    def affected_teachers(self):
+        """ Return all teachers which are affected by selected substitutions (as substituted or substituting) """
+
+        return Person.objects.filter(Q(lessons_as_teacher__in=self.affected_lessons()) | Q(lesson_substitutions__in=self))
+
+    def affected_groups(self):
+        """ Return all groups which are affected by selected substitutions """
+
+        return Group.objects.filter(lessons__in=self.affected_lessons())
+
 
 class TimePeriod(models.Model):
     WEEKDAY_CHOICES = list(enumerate(i18n_day_names_lazy()))
@@ -245,6 +262,46 @@ class TimePeriod(models.Model):
             wanted_week = CalendarWeek(year=year, week=week_number)
 
         return wanted_week[self.weekday]
+
+    @classmethod
+    def get_next_relevant_day(cls, day: Optional[date] = None, time: Optional[time] = None, prev: bool = False) -> date:
+        """ Returns next (previous) day with lessons depending on date and time """
+
+        if day is None:
+            day = timezone.now().date()
+
+        if time is not None and not prev:
+            if time > cls.time_max:
+                day += timedelta(days=1)
+
+        cw = CalendarWeek.from_date(day)
+
+        if day.weekday() > cls.weekday_max:
+            if prev:
+                day = cw[cls.weekday_max]
+            else:
+                cw += 1
+                day = cw[cls.weekday_min]
+        elif day.weekday() < TimePeriod.weekday_min:
+            if prev:
+                cw -= 1
+                day = cw[cls.weekday_max]
+            else:
+                day = cw[cls.weekday_min]
+
+        return day
+
+    @classmethod
+    def get_prev_next_by_day(cls, day: date, url: str) -> Tuple[str, str]:
+        """ Build URLs for previous/next day """
+
+        day_prev = cls.get_next_relevant_day(day - timedelta(days=1), prev=True)
+        day_next = cls.get_next_relevant_day(day + timedelta(days=1))
+
+        url_prev = reverse(url, args=[day_prev.year, day_prev.month, day_prev.day])
+        url_next = reverse(url, args=[day_next.year, day_next.month, day_next.day])
+
+        return url_prev, url_next
 
     @classproperty
     def period_min(cls) -> int:

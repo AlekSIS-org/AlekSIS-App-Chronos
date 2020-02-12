@@ -19,7 +19,6 @@ from .forms import LessonSubstitutionForm
 from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
 from .tables import LessonsTable
 from .util.js import date_unix
-from .util.prev_next import get_next_relevant_day, get_prev_next_by_day
 from .util.date import CalendarWeek, get_weeks_for_year
 from aleksis.core.util.core_helpers import has_person
 
@@ -56,9 +55,9 @@ def my_timetable(
 
     if day:
         wanted_day = timezone.datetime(year=year, month=month, day=day).date()
-        wanted_day = get_next_relevant_day(wanted_day)
+        wanted_day = TimePeriod.get_next_relevant_day(wanted_day)
     else:
-        wanted_day = get_next_relevant_day(timezone.now().date(), datetime.now().time())
+        wanted_day = TimePeriod.get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
     if has_person(request.user):
         person = request.user.person
@@ -98,7 +97,7 @@ def my_timetable(
     context["periods"] = TimePeriod.get_times_dict()
     context["smart"] = True
 
-    context["url_prev"], context["url_next"] = get_prev_next_by_day(
+    context["url_prev"], context["url_next"] = TimePeriod.get_prev_next_by_day(
         wanted_day, "my_timetable_by_date"
     )
 
@@ -209,9 +208,9 @@ def lessons_day(
 
     if day:
         wanted_day = timezone.datetime(year=year, month=month, day=day).date()
-        wanted_day = get_next_relevant_day(wanted_day)
+        wanted_day = TimePeriod.get_next_relevant_day(wanted_day)
     else:
-        wanted_day = get_next_relevant_day(timezone.now().date(), datetime.now().time())
+        wanted_day = TimePeriod.get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
     # Get lessons
     lesson_periods = LessonPeriod.objects.on_day(wanted_day)
@@ -229,7 +228,7 @@ def lessons_day(
         "dest": reverse("lessons_day")
     }
 
-    context["url_prev"], context["url_next"] = get_prev_next_by_day(
+    context["url_prev"], context["url_next"] = TimePeriod.get_prev_next_by_day(
         wanted_day, "lessons_day_by_date"
     )
 
@@ -305,9 +304,9 @@ def substitutions(
 
     if day:
         wanted_day = timezone.datetime(year=year, month=month, day=day).date()
-        wanted_day = get_next_relevant_day(wanted_day)
+        wanted_day = TimePeriod.get_next_relevant_day(wanted_day)
     else:
-        wanted_day = get_next_relevant_day(timezone.now().date(), datetime.now().time())
+        wanted_day = TimePeriod.get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
     day_number = config.CHRONOS_SUBSTITUTIONS_PRINT_DAY_NUMBER
     day_contexts = {}
@@ -316,14 +315,17 @@ def substitutions(
         next_day = wanted_day
         for i in range(day_number):
             day_contexts[next_day] = {"day": next_day}
-            next_day = get_next_relevant_day(next_day + timedelta(days=1))
+            next_day = TimePeriod.get_next_relevant_day(next_day + timedelta(days=1))
     else:
         day_contexts = {wanted_day: {"day": wanted_day}}
 
     for day in day_contexts:
-        day_contexts[day]["substitutions"] = LessonSubstitution.objects.on_day(
-            day
-        ).order_by("lesson_period__lesson__groups", "lesson_period__period")
+        subs = LessonSubstitution.objects.on_day(day).order_by("lesson_period__lesson__groups", "lesson_period__period")
+        day_contexts[day]["substitutions"] = subs
+
+        if config.CHRONOS_SUBSTITUTIONS_SHOW_HEADER_BOX:
+            day_contexts[day]["affected_teachers"] = subs.affected_teachers()
+            day_contexts[day]["affected_groups"] = subs.affected_groups()
 
     if not is_print:
         context = day_contexts[wanted_day]
@@ -332,7 +334,7 @@ def substitutions(
             "dest": reverse("substitutions"),
         }
 
-        context["url_prev"], context["url_next"] = get_prev_next_by_day(
+        context["url_prev"], context["url_next"] = TimePeriod.get_prev_next_by_day(
             wanted_day, "substitutions_by_date"
         )
 

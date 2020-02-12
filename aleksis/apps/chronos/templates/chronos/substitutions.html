@@ -26,22 +26,7 @@
 
   <div class="row no-print">
     <div class="col s12 m6 l8">
-      {% if header_info.is_box_needed %}
-        <div class="card">
-          <div class="card-content">
-            {% for row in header_info.rows %}
-              <div class="row no-margin">
-                <div class="col s3">
-                  <strong class="truncate">{{ row.0 }}</strong>
-                </div>
-                <div class="col s9">
-                  {{ row.1 }}
-                </div>
-              </div>
-            {% endfor %}
-          </div>
-        </div>
-      {% endif %}
+      {% include "chronos/partials/headerbox.html" %}
 
       {#            {% include "chronos/hintsinsub.html" %}#}
     </div>
