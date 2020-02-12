@@ -320,9 +320,12 @@ def substitutions(
         day_contexts = {wanted_day: {"day": wanted_day}}
 
     for day in day_contexts:
-        day_contexts[day]["substitutions"] = LessonSubstitution.objects.on_day(
-            day
-        ).order_by("lesson_period__lesson__groups", "lesson_period__period")
+        subs = LessonSubstitution.objects.on_day(day).order_by("lesson_period__lesson__groups", "lesson_period__period")
+        day_contexts[day]["substitutions"] = subs
+
+        if config.CHRONOS_SUBSTITUTIONS_SHOW_HEADER_BOX:
+            day_contexts[day]["affected_teachers"] = subs.affected_teachers()
+            day_contexts[day]["affected_groups"] = subs.affected_groups()
 
     if not is_print:
         context = day_contexts[wanted_day]

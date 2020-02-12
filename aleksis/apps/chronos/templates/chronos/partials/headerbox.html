@@ -1,0 +1,33 @@
+{% load i18n %}
+
+{% if affected_teachers and affected_groups %}
+  <div class="{% if not print %}card{% endif %}">
+    <div class="{% if not print %}card-content{% endif %}">
+      {% if affected_teachers %}
+        <div class="row no-margin">
+          <div class="col s12 m3">
+            <strong class="truncate">
+              {% trans "Affected teachers" %}
+            </strong>
+          </div>
+          <div class="col s12 m9 black-text-a">
+            {% include "chronos/partials/teachers.html" with teachers=affected_teachers %}
+          </div>
+        </div>
+      {% endif %}
+      {% if affected_groups %}
+        <div class="row no-margin">
+          <div class="col s12 m3">
+            <strong class="truncate">
+              {% trans "Affected groups" %}
+            </strong>
+          </div>
+          <div class="col s12 m9 black-text-a">
+            {% include "chronos/partials/groups.html" with groups=affected_groups %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  {% if print %}<br/>{% endif %}
+{% endif %}
