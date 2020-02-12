@@ -8,7 +8,6 @@ from django_global_request.middleware import get_request
 
 from aleksis.apps.chronos.models import TimePeriod
 from aleksis.apps.chronos.util.date import get_name_for_day_from_today
-from aleksis.apps.chronos.util.prev_next import get_next_relevant_day
 from aleksis.core.models import DashboardWidget
 from aleksis.core.util.core_helpers import has_person
 
@@ -19,7 +18,7 @@ class TimetableWidget(DashboardWidget):
     def get_context(self):
         request = get_request()
         context = {"has_plan": True}
-        wanted_day = get_next_relevant_day(timezone.now().date(), datetime.now().time())
+        wanted_day = TimePeriod.get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
         if has_person(request.user):
             person = request.user.person
