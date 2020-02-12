@@ -1,12 +1,12 @@
 {# -*- engine:django -*- #}
 
-{% load i18n static %}
+{% load i18n static humanize %}
 
 <div class="card">
   <div class="card-content">
     <span class="card-title">
-      {% blocktrans with day_label=day_label %}
-        My timetable for {{ day_label }}
+      {% blocktrans with day=day|naturalday:"l" %}
+        My timetable for {{ day }}
       {% endblocktrans %}
     </span>
     <div class="timetable-plan">

@@ -22,7 +22,7 @@ from django_global_request.middleware import get_request
 from aleksis.core.mixins import ExtensibleModel
 from aleksis.core.models import Group, Person, DashboardWidget
 
-from aleksis.apps.chronos.util.date import week_weekday_from_date, get_name_for_day_from_today
+from aleksis.apps.chronos.util.date import week_weekday_from_date
 from aleksis.core.util.core_helpers import has_person
 
 
@@ -551,7 +551,6 @@ class TimetableWidget(DashboardWidget):
         context["lesson_periods"] = OrderedDict(sorted(per_period.items()))
         context["type"] = type_
         context["day"] = wanted_day
-        context["day_label"] = get_name_for_day_from_today(wanted_day)
         context["periods"] = TimePeriod.get_times_dict()
         context["smart"] = True
         return context
