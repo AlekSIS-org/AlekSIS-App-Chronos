@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from .dashboard import TimetableWidget
+from .models import TimetableWidget
 
 admin.site.register(TimetableWidget)

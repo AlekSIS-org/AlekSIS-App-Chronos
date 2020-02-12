@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import OrderedDict
 from datetime import date, datetime, timedelta, time
 from typing import Dict, Optional, Tuple, Union
 
@@ -8,6 +9,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import F, Max, Min, Q
 from django.db.models.functions import Coalesce
+from django.forms import Media
 from django.http.request import QueryDict
 from django.urls import reverse
 from django.utils import timezone
@@ -15,11 +17,13 @@ from django.utils.decorators import classproperty
 from django.utils.translation import ugettext_lazy as _
 
 from calendarweek.django import CalendarWeek, i18n_day_names_lazy, i18n_day_abbrs_lazy
+from django_global_request.middleware import get_request
 
 from aleksis.core.mixins import ExtensibleModel
-from aleksis.core.models import Group, Person
+from aleksis.core.models import Group, Person, DashboardWidget
 
-from aleksis.apps.chronos.util.date import week_weekday_from_date
+from aleksis.apps.chronos.util.date import week_weekday_from_date, get_name_for_day_from_today
+from aleksis.core.util.core_helpers import has_person
 
 
 class LessonPeriodManager(models.Manager):
@@ -505,3 +509,57 @@ class LessonPeriod(ExtensibleModel):
     class Meta:
         ordering = ["lesson__date_start", "period__weekday", "period__period"]
         indexes = [models.Index(fields=["lesson", "period"])]
+
+
+class TimetableWidget(DashboardWidget):
+    template = "chronos/widget.html"
+
+    def get_context(self):
+        request = get_request()
+        context = {"has_plan": True}
+        wanted_day = TimePeriod.get_next_relevant_day(timezone.now().date(), datetime.now().time())
+
+        if has_person(request.user):
+            person = request.user.person
+
+            if person.is_teacher:
+                # Teacher
+
+                type_ = "teacher"
+                lesson_periods_person = person.lesson_periods_as_teacher
+
+            elif person.primary_group:
+                # Student
+
+                type_ = "group"
+                lesson_periods_person = person.lesson_periods_as_participant
+
+            else:
+                # If no student or teacher, redirect to all timetables
+                context["has_plan"] = False
+
+        lesson_periods = lesson_periods_person.on_day(wanted_day)
+
+        # Build dictionary with lessons
+        per_period = {}
+        for lesson_period in lesson_periods:
+            if lesson_period.period.period in per_period:
+                per_period[lesson_period.period.period].append(lesson_period)
+            else:
+                per_period[lesson_period.period.period] = [lesson_period]
+
+        context["lesson_periods"] = OrderedDict(sorted(per_period.items()))
+        context["type"] = type_
+        context["day"] = wanted_day
+        context["day_label"] = get_name_for_day_from_today(wanted_day)
+        context["periods"] = TimePeriod.get_times_dict()
+        context["smart"] = True
+        return context
+
+    media = Media(css={
+        "all": ("css/chronos/timetable.css",)
+    })
+
+    class Meta:
+        proxy = True
+        verbose_name = _("Timetable widget")
