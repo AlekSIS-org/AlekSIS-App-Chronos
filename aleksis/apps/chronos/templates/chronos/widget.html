@@ -24,4 +24,9 @@
       {% endif %}
     </div>
   </div>
+  {% if has_plan %}
+    <div class="card-action">
+      <a href="{% url "my_timetable" %}">{% trans "Go to smart plan" %}</a>
+    </div>
+  {% endif %}
 </div>
