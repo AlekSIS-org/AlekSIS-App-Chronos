@@ -206,6 +206,41 @@ class LessonPeriodQuerySet(LessonDataQuerySet):
         else:
             return None
 
+    def filter_from_person(self, person: Person) -> Optional[models.QuerySet]:
+        type_ = person.timetable_type
+
+        if type_ == "teacher":
+            # Teacher
+
+            return person.lesson_periods_as_teacher
+
+        elif type_ == "group":
+            # Student
+
+            return person.lesson_periods_as_participant
+
+        else:
+            # If no student or teacher
+            return None
+
+    def daily_lessons_for_person(self, person: Person, wanted_day: date) -> Optional[models.QuerySet]:
+        lesson_periods = LessonPeriod.objects.filter_from_person(person)
+
+        if lesson_periods is None:
+            return None
+
+        return lesson_periods.on_day(wanted_day)
+
+    def per_period_one_day(self) -> OrderedDict:
+        """ Group selected lessons per period for one day """
+        per_period = {}
+        for lesson_period in self:
+            if lesson_period.period.period in per_period:
+                per_period[lesson_period.period.period].append(lesson_period)
+            else:
+                per_period[lesson_period.period.period] = [lesson_period]
+        return OrderedDict(sorted(per_period.items()))
+
 
 class LessonSubstitutionQuerySet(LessonDataQuerySet):
     _period_path = "lesson_period__"
@@ -522,37 +557,21 @@ class TimetableWidget(DashboardWidget):
         if has_person(request.user):
             person = request.user.person
 
-            if person.is_teacher:
-                # Teacher
+            lesson_periods = LessonPeriod.objects.daily_lessons_for_person(person, wanted_day)
+            type_ = person.timetable_type
 
-                type_ = "teacher"
-                lesson_periods_person = person.lesson_periods_as_teacher
-
-            elif person.primary_group:
-                # Student
-
-                type_ = "group"
-                lesson_periods_person = person.lesson_periods_as_participant
-
-            else:
+            if type_ is None:
                 # If no student or teacher, redirect to all timetables
                 context["has_plan"] = False
-
-        lesson_periods = lesson_periods_person.on_day(wanted_day)
-
-        # Build dictionary with lessons
-        per_period = {}
-        for lesson_period in lesson_periods:
-            if lesson_period.period.period in per_period:
-                per_period[lesson_period.period.period].append(lesson_period)
             else:
-                per_period[lesson_period.period.period] = [lesson_period]
+                context["lesson_periods"] = lesson_periods.per_period_one_day()
+                context["type"] = type_
+                context["day"] = wanted_day
+                context["periods"] = TimePeriod.get_times_dict()
+                context["smart"] = True
+        else:
+            context["has_plan"] = False
 
-        context["lesson_periods"] = OrderedDict(sorted(per_period.items()))
-        context["type"] = type_
-        context["day"] = wanted_day
-        context["periods"] = TimePeriod.get_times_dict()
-        context["smart"] = True
         return context
 
     media = Media(css={
