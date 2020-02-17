@@ -1,4 +1,6 @@
-from aleksis.core.models import Person
+from typing import Optional, Union
+
+from aleksis.core.models import Person, Group
 
 from .models import Lesson, LessonPeriod
 
@@ -8,6 +10,32 @@ def is_teacher(self):
     """ Check if the user has lessons as a teacher """
 
     return self.lesson_periods_as_teacher.exists()
+
+
+@Person.property
+def timetable_type(self) -> Optional[str]:
+    """ Return which type of timetable this user has """
+
+    if self.is_teacher:
+        return "teacher"
+    elif self.primary_group:
+        return "group"
+    else:
+        return None
+
+
+@Person.property
+def timetable_object(self) -> Optional[Union[Group, Person]]:
+    """ Return the object which has the user's timetable """
+
+    type_ = self.timetable_type
+
+    if type_ == "teacher":
+        return self
+    elif type_ == "group":
+        return self.primary_group
+    else:
+        return None
 
 
 @Person.property

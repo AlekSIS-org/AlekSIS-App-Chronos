@@ -50,18 +50,9 @@
 
         </div>
       </div>
+
       {#  Lessons #}
-      {% for period, lessons in lesson_periods.items %}
-        <div class="row">
-          <div class="col s4">
-            {% include "chronos/partials/period_time.html" with period=period periods=periods %}
-          </div>
-          <div class="col s8">
-            {# A lesson #}
-            {% include "chronos/partials/lesson.html" with lessons=lessons %}
-          </div>
-        </div>
-      {% endfor %}
+      {% include "chronos/partials/lessons_col.html" with lesson_periods=lesson_periods %}
 
     </div>
   </div>

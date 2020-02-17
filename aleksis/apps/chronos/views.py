@@ -19,7 +19,7 @@ from .forms import LessonSubstitutionForm
 from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
 from .tables import LessonsTable
 from .util.js import date_unix
-from .util.weeks import CalendarWeek, get_weeks_for_year
+from .util.date import CalendarWeek, get_weeks_for_year
 from aleksis.core.util.core_helpers import has_person
 
 
@@ -62,46 +62,29 @@ def my_timetable(
     if has_person(request.user):
         person = request.user.person
 
-        if person.is_teacher:
-            # Teacher
+        lesson_periods = LessonPeriod.objects.daily_lessons_for_person(person, wanted_day)
 
-            type_ = "teacher"
-            super_el = person
-            lesson_periods_person = person.lesson_periods_as_teacher
-
-        elif person.primary_group:
-            # Student
-
-            type_ = "group"
-            super_el = person.primary_group
-            lesson_periods_person = person.lesson_periods_as_participant
-
-        else:
+        if lesson_periods is None:
             # If no student or teacher, redirect to all timetables
             return redirect("all_timetables")
 
-    lesson_periods = lesson_periods_person.on_day(wanted_day)
+        type_ = person.timetable_type
+        super_el = person.timetable_object
 
-    # Build dictionary with lessons
-    per_period = {}
-    for lesson_period in lesson_periods:
-        if lesson_period.period.period in per_period:
-            per_period[lesson_period.period.period].append(lesson_period)
-        else:
-            per_period[lesson_period.period.period] = [lesson_period]
+        context["lesson_periods"] = lesson_periods.per_period_one_day()
+        context["super"] = {"type": type_, "el": super_el}
+        context["type"] = type_
+        context["day"] = wanted_day
+        context["periods"] = TimePeriod.get_times_dict()
+        context["smart"] = True
 
-    context["lesson_periods"] = OrderedDict(sorted(per_period.items()))
-    context["super"] = {"type": type_, "el": super_el}
-    context["type"] = type_
-    context["day"] = wanted_day
-    context["periods"] = TimePeriod.get_times_dict()
-    context["smart"] = True
+        context["url_prev"], context["url_next"] = TimePeriod.get_prev_next_by_day(
+            wanted_day, "my_timetable_by_date"
+        )
 
-    context["url_prev"], context["url_next"] = TimePeriod.get_prev_next_by_day(
-        wanted_day, "my_timetable_by_date"
-    )
-
-    return render(request, "chronos/my_timetable.html", context)
+        return render(request, "chronos/my_timetable.html", context)
+    else:
+        return redirect("all_timetables")
 
 
 @login_required

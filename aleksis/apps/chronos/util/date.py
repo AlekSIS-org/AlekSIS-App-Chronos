@@ -2,6 +2,9 @@ from datetime import date
 from typing import Tuple, List, Union
 
 from calendarweek import CalendarWeek
+from calendarweek.django import i18n_day_names
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 
 def week_weekday_from_date(when: date) -> Tuple[CalendarWeek, int]:

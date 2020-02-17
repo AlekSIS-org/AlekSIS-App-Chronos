@@ -1,0 +1,32 @@
+{# -*- engine:django -*- #}
+
+{% load i18n static humanize %}
+
+<div class="card">
+  <div class="card-content">
+    <span class="card-title">
+      {% blocktrans with day=day|naturalday:"l" %}
+        My timetable for {{ day }}
+      {% endblocktrans %}
+    </span>
+    <div class="timetable-plan">
+      {% if has_plan %}
+        {% include "chronos/partials/lessons_col.html" with lesson_periods=lesson_periods %}
+      {% else %}
+        <div class="alert warning">
+          <p>
+            <i class="material-icons left">info</i>
+            {% blocktrans %}
+              There is no timetable linked to your person.
+            {% endblocktrans %}
+          </p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  {% if has_plan %}
+    <div class="card-action">
+      <a href="{% url "my_timetable" %}">{% trans "Go to smart plan" %}</a>
+    </div>
+  {% endif %}
+</div>
