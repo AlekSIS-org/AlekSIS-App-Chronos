@@ -581,3 +581,52 @@ class TimetableWidget(DashboardWidget):
     class Meta:
         proxy = True
         verbose_name = _("Timetable widget")
+
+
+class AbsenceReason(ExtensibleModel):
+    title = models.CharField(verbose_name=_("Title"))
+    description = models.TextField(verbose_name=_("Description"))
+
+    class Meta:
+        verbose_name = _("Absence reason")
+
+class Absence(ExtensibleModel):
+    fk_reason = models.ForeignKey("AbsenceReason", on_delete=models.CASCADE, related_name="reason")
+    fk_person = models.ManyToManyField("core.Person", related_name="fk_person")
+
+    datefrom = models.DateField(verbose_name=_("Effective start date of absence"), null=True)
+    dateto = models.DateField(verbose_name=_("Effective end date of absence"), null=True)
+    periodfrom = models.IntegerField(verbose_name=_("Effective start period of absence"), null=True)
+    periodto = models.IntegerField(verbose_name=_("Effective end period of absence"), null=True)
+    comment = models.TextField(verbose_name=_("Comment"))
+
+    class Meta:
+        ordering = ["datefrom"]
+        indexes = [models.Index(fields=["datefrom", "dateto"])]
+        verbose_name = _("Absence")
+
+
+class Exam(ExtensibleModel):
+    fk_lesson = models.ForeignKey("Lesson", on_delete=models.CASCADE, related_name="lesson")
+
+    date = models.DateField(verbose_name=_("Date of exam"), null=True)
+    periodfrom = models.IntegerField(verbose_name=_("Effective start period of exam"), null=True)
+    periodto = models.IntegerField(verbose_name=_("Effective end period of exam"), null=True)  
+    title = models.CharField(verbose_name=_("Title"))
+    comment = models.TextField(verbose_name=_("Comment"))
+
+    class Meta:
+        ordering = ["date"]
+        indexes = [models.Index(fields=["periodfrom", "periodto"])]
+        verbose_name = _("Exam")
+
+
+class Holiday(ExtensibleModel):
+    datefrom = models.DateField(verbose_name=_("Effective start date of holidays"), null=True)
+    dateto = models.DateField(verbose_name=_("Effective end date of holidays"), null=True)
+    comments = models.TextField(verbose_name=_("Comments"))
+
+    class Meta:
+        ordering = ["datefrom"]
+        indexes = [models.Index(fields=["datefrom", "dateto"])]
+        verbose_name = _("Holiday")
