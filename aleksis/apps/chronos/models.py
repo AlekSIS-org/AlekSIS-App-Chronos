@@ -584,7 +584,7 @@ class TimetableWidget(DashboardWidget):
 
 
 class AbsenceReason(ExtensibleModel):
-    title = models.CharField(verbose_name=_("Title"))
+    title = models.CharField(verbose_name=_("Title"), max_length=50)
     description = models.TextField(verbose_name=_("Description"))
 
     class Meta:
@@ -612,7 +612,7 @@ class Exam(ExtensibleModel):
     date = models.DateField(verbose_name=_("Date of exam"), null=True)
     periodfrom = models.IntegerField(verbose_name=_("Effective start period of exam"), null=True)
     periodto = models.IntegerField(verbose_name=_("Effective end period of exam"), null=True)  
-    title = models.CharField(verbose_name=_("Title"))
+    title = models.CharField(verbose_name=_("Title"), max_length=50)
     comment = models.TextField(verbose_name=_("Comment"))
 
     class Meta:
