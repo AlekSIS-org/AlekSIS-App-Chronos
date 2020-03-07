@@ -8,7 +8,6 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0016_advanced_models_from_untis'),
         ('chronos', '0006_extended_data'),
     ]
 
