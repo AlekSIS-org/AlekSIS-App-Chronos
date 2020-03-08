@@ -76,17 +76,17 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='exam',
-            name='fk_lesson',
+            name='lesson',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='lesson', to='chronos.Lesson'),
         ),
         migrations.AddField(
             model_name='absence',
-            name='fk_person',
-            field=models.ManyToManyField(related_name='fk_person', to='core.Person'),
+            name='person',
+            field=models.ManyToManyField(related_name='person', to='core.Person'),
         ),
         migrations.AddField(
             model_name='absence',
-            name='fk_reason',
+            name='reason',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reason', to='chronos.AbsenceReason'),
         ),
         migrations.AddIndex(

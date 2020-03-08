@@ -591,8 +591,8 @@ class AbsenceReason(ExtensibleModel):
         verbose_name = _("Absence reason")
 
 class Absence(ExtensibleModel):
-    fk_reason = models.ForeignKey("AbsenceReason", on_delete=models.CASCADE, related_name="reason")
-    fk_person = models.ManyToManyField("core.Person", related_name="fk_person")
+    reason = models.ForeignKey("AbsenceReason", on_delete=models.CASCADE, related_name="reason")
+    person = models.ManyToManyField("core.Person", related_name="fk_person")
 
     datefrom = models.DateField(verbose_name=_("Effective start date of absence"), null=True)
     dateto = models.DateField(verbose_name=_("Effective end date of absence"), null=True)
@@ -607,7 +607,7 @@ class Absence(ExtensibleModel):
 
 
 class Exam(ExtensibleModel):
-    fk_lesson = models.ForeignKey("Lesson", on_delete=models.CASCADE, related_name="lesson")
+    lesson = models.ForeignKey("Lesson", on_delete=models.CASCADE, related_name="lesson")
 
     date = models.DateField(verbose_name=_("Date of exam"), null=True)
     periodfrom = models.IntegerField(verbose_name=_("Effective start period of exam"), null=True)
