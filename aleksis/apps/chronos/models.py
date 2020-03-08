@@ -592,11 +592,11 @@ class AbsenceReason(ExtensibleModel):
         verbose_name = _("Absence reason")
 
 class Absence(ExtensibleModel):
-    reason = models.ForeignKey("AbsenceReason", on_delete=models.CASCADE, related_name="reason")
-    person = models.ManyToManyField("core.Person", related_name="fk_person")
+    reason = models.ForeignKey("AbsenceReason", on_delete=models.CASCADE, related_name="absences")
+    person = models.ManyToManyField("core.Person", related_name="absences")
 
-    datefrom = models.DateField(verbose_name=_("Effective start date of absence"), null=True)
-    dateto = models.DateField(verbose_name=_("Effective end date of absence"), null=True)
+    date_start = models.DateField(verbose_name=_("Effective start date of absence"), null=True)
+    date_end = models.DateField(verbose_name=_("Effective end date of absence"), null=True)
     periodfrom = models.IntegerField(verbose_name=_("Effective start period of absence"), null=True)
     periodto = models.IntegerField(verbose_name=_("Effective end period of absence"), null=True)
     comment = models.TextField(verbose_name=_("Comment"))
@@ -608,21 +608,22 @@ class Absence(ExtensibleModel):
 
 
 class Exam(ExtensibleModel):
-    lesson = models.ForeignKey("Lesson", on_delete=models.CASCADE, related_name="lesson")
+    lesson = models.ForeignKey("Lesson", on_delete=models.CASCADE, related_name="exams")
 
     date = models.DateField(verbose_name=_("Date of exam"), null=True)
-    periodfrom = models.IntegerField(verbose_name=_("Effective start period of exam"), null=True)
-    periodto = models.IntegerField(verbose_name=_("Effective end period of exam"), null=True)
+    periodfrom = models.ForeignKey("LessonPeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of exam"), null=True)
+    periodto = models.ForeignKey("LessonPeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of exam"), null=True)
     title = models.CharField(verbose_name=_("Title"), max_length=50)
     comment = models.TextField(verbose_name=_("Comment"))
 
     class Meta:
         ordering = ["date"]
-        indexes = [models.Index(fields=["periodfrom", "periodto"])]
+        indexes = [models.Index(fields=["periodfrom", "periodto", "date"])]
         verbose_name = _("Exam")
 
 
 class Holiday(ExtensibleModel):
+    title = models.CharField(verbose_name=_("Title of the holidays"), max_length=50)
     datefrom = models.DateField(verbose_name=_("Effective start date of holidays"), null=True)
     dateto = models.DateField(verbose_name=_("Effective end date of holidays"), null=True)
     comments = models.TextField(verbose_name=_("Comments"))
@@ -659,6 +660,6 @@ class Event(ExtensibleModel):
 
     class Meta:
         ordering = ["datefrom"]
-        indexes = [models.Index(fields=["periodfrom", "periodto"])]
+        indexes = [models.Index(fields=["periodfrom", "periodto", "datefrom", "dateto"])]
         verbose_name = _("Event")
         verbose_name = _("Events")
