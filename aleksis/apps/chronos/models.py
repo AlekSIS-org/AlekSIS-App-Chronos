@@ -597,13 +597,13 @@ class Absence(ExtensibleModel):
 
     date_start = models.DateField(verbose_name=_("Effective start date of absence"), null=True)
     date_end = models.DateField(verbose_name=_("Effective end date of absence"), null=True)
-    periodfrom = models.IntegerField(verbose_name=_("Effective start period of absence"), null=True)
-    periodto = models.IntegerField(verbose_name=_("Effective end period of absence"), null=True)
+    periodfrom = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of absence"), null=True, related_name="+")
+    periodto = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of absence"), null=True, related_name="+")
     comment = models.TextField(verbose_name=_("Comment"))
 
     class Meta:
-        ordering = ["datefrom"]
-        indexes = [models.Index(fields=["datefrom", "dateto"])]
+        ordering = ["date_start"]
+        indexes = [models.Index(fields=["date_start", "date_end"])]
         verbose_name = _("Absence")
 
 
@@ -611,26 +611,26 @@ class Exam(ExtensibleModel):
     lesson = models.ForeignKey("Lesson", on_delete=models.CASCADE, related_name="exams")
 
     date = models.DateField(verbose_name=_("Date of exam"), null=True)
-    periodfrom = models.ForeignKey("LessonPeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of exam"), null=True)
-    periodto = models.ForeignKey("LessonPeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of exam"), null=True)
+    periodfrom = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of exam"), null=True, related_name="+")
+    periodto = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of exam"), null=True, related_name="+")
     title = models.CharField(verbose_name=_("Title"), max_length=50)
     comment = models.TextField(verbose_name=_("Comment"))
 
     class Meta:
         ordering = ["date"]
-        indexes = [models.Index(fields=["periodfrom", "periodto", "date"])]
+        indexes = [models.Index(fields=["date"])]
         verbose_name = _("Exam")
 
 
 class Holiday(ExtensibleModel):
     title = models.CharField(verbose_name=_("Title of the holidays"), max_length=50)
-    datefrom = models.DateField(verbose_name=_("Effective start date of holidays"), null=True)
-    dateto = models.DateField(verbose_name=_("Effective end date of holidays"), null=True)
+    date_start = models.DateField(verbose_name=_("Effective start date of holidays"), null=True)
+    date_end = models.DateField(verbose_name=_("Effective end date of holidays"), null=True)
     comments = models.TextField(verbose_name=_("Comments"))
 
     class Meta:
-        ordering = ["datefrom"]
-        indexes = [models.Index(fields=["datefrom", "dateto"])]
+        ordering = ["date_start"]
+        indexes = [models.Index(fields=["date_start", "date_end"])]
         verbose_name = _("Holiday")
 
 
@@ -648,18 +648,18 @@ class SupervisionArea(ExtensibleModel):
 
 class Event(ExtensibleModel):
     title = models.CharField(verbose_name=_("Title"), max_length=50)
-    datefrom = models.DateField(verbose_name=_("Effective start date of event"), null=True)
-    dateto = models.DateField(verbose_name=_("Effective end date of event"), null=True)
+    date_start = models.DateField(verbose_name=_("Effective start date of event"), null=True)
+    date_end = models.DateField(verbose_name=_("Effective end date of event"), null=True)
     absence_reason = models.ForeignKey("AbsenceReason", on_delete=models.CASCADE, related_name="absence_reason", verbose_name=_("Absence reason"))
-    periodfrom = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, related_name="periodfrom", verbose_name=_("Effective start period of event"))
-    periodto = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, related_name="periodto", verbose_name=_("Effective end period of event"))
+    periodfrom = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of event"), related_name="+")
+    periodto = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of event"), related_name="+")
     group = models.ForeignKey("core.Group", on_delete=models.CASCADE, related_name="group", verbose_name=_("Group"))
     subject = models.ForeignKey("Subject", on_delete=models.CASCADE, related_name="subject", verbose_name=_("Subject"))
     timefrom = models.DateTimeField(verbose_name=_("Effective start time of event"), null=True)
     timeto = models.DateTimeField(verbose_name=_("Effective end time of event"), null=True)
 
     class Meta:
-        ordering = ["datefrom"]
-        indexes = [models.Index(fields=["periodfrom", "periodto", "datefrom", "dateto"])]
+        ordering = ["date_start"]
+        indexes = [models.Index(fields=["periodfrom", "periodto", "date_start", "date_end"])]
         verbose_name = _("Event")
         verbose_name = _("Events")
