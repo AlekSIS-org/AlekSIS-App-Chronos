@@ -126,7 +126,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='teachers',
-            field=models.ManyToManyField(related_name='events', to='core.Person', verbose_name='Teachers')
+            field=models.ManyToManyField(related_name='events', to='core.Person', verbose_name='Teachers'),
+        )
         migrations.AddField(
             model_name='event',
             name='groups',
