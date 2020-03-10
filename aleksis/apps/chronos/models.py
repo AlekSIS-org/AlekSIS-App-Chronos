@@ -653,8 +653,9 @@ class Event(ExtensibleModel):
     absence_reason = models.ForeignKey("AbsenceReason", on_delete=models.CASCADE, related_name="absence_reason", verbose_name=_("Absence reason"))
     periodfrom = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of event"), related_name="+")
     periodto = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of event"), related_name="+")
-    group = models.ForeignKey("core.Group", on_delete=models.CASCADE, related_name="group", verbose_name=_("Group"))
-    subject = models.ForeignKey("Subject", on_delete=models.CASCADE, related_name="subject", verbose_name=_("Subject"))
+    group = models.ManyToMany("core.Group", related_name="events", verbose_name=_("Groups"))
+    subject = models.ManyToMany("Subject", related_name="events", verbose_name=_("Subjects"))
+    teacher = models.ManyToMany("core.Person", related_name="events", verbose_name=_("Teachers"))
     timefrom = models.DateTimeField(verbose_name=_("Effective start time of event"), null=True)
     timeto = models.DateTimeField(verbose_name=_("Effective end time of event"), null=True)
 
