@@ -597,8 +597,9 @@ class Absence(ExtensibleModel):
 
     date_start = models.DateField(verbose_name=_("Effective start date of absence"), null=True)
     date_end = models.DateField(verbose_name=_("Effective end date of absence"), null=True)
-    periodfrom = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of absence"), null=True, related_name="+")
-    periodto = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of absence"), null=True, related_name="+")
+    period_from = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of absence"), null=True, related_name="+")
+    period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of absence"), null=True, related_name="+")
+
     comment = models.TextField(verbose_name=_("Comment"))
 
     class Meta:
