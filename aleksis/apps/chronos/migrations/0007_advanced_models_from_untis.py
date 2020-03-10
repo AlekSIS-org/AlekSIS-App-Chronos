@@ -89,8 +89,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('extended_data', django.contrib.postgres.fields.jsonb.JSONField(default=dict, editable=False)),
-                ('name', models.CharField(max_length=10, verbose_name='Short name')),
-                ('longname', models.CharField(max_length=50, verbose_name='Long name')),
+                ('short_name', models.CharField(max_length=10, verbose_name='Short name')),
+                ('name', models.CharField(max_length=50, verbose_name='Long name')),
                 ('colour_fg', colorfield.fields.ColorField(default='#FFFFFF', max_length=18)),
                 ('colour_bg', colorfield.fields.ColorField(default='#FFFFFF', max_length=18)),
             ],
