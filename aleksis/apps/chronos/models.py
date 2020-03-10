@@ -613,7 +613,9 @@ class Exam(ExtensibleModel):
 
     date = models.DateField(verbose_name=_("Date of exam"), null=True)
     periodfrom = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of exam"), null=True, related_name="+")
-    periodto = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of exam"), null=True, related_name="+")
+    period_from = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of exam"), null=True, related_name="+")
+    period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of exam"), null=True, related_name="+")
+
     title = models.CharField(verbose_name=_("Title"), max_length=50)
     comment = models.TextField(verbose_name=_("Comment"))
 
