@@ -125,11 +125,11 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='event',
-            name='teacher',
+            name='teachers',
             field=models.ManyToManyField(related_name='events', to='core.Person', verbose_name='Teachers')
         migrations.AddField(
             model_name='event',
-            name='group',
+            name='groups',
             field=models.ManyToManyField(related_name='group', to='core.Group', verbose_name='Groups'),
         ),
         migrations.AddField(
@@ -144,8 +144,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='event',
-            name='subject',
-            field=models.ManyToManyField(related_name='events', to='chronos.Subject', verbose_name='Subjects'),
+            name='rooms',
+            field=models.ManyToManyField(related_name='events', to='chronos.Room', verbose_name='Rooms'),
         ),
         migrations.AddField(
             model_name='absence',
