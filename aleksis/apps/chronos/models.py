@@ -599,8 +599,7 @@ class Absence(ExtensibleModel):
     date_end = models.DateField(verbose_name=_("Effective end date of absence"), null=True)
     period_from = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of absence"), null=True, related_name="+")
     period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of absence"), null=True, related_name="+")
-
-    comment = models.TextField(verbose_name=_("Comment"))
+    comment = models.TextField(verbose_name=_("Comment"), blank=True, null=True)
 
     class Meta:
         ordering = ["date_start"]
@@ -617,7 +616,7 @@ class Exam(ExtensibleModel):
     period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of exam"), null=True, related_name="+")
 
     title = models.CharField(verbose_name=_("Title"), max_length=50)
-    comment = models.TextField(verbose_name=_("Comment"))
+    comment = models.TextField(verbose_name=_("Comment"), blank=True, null=True)
 
     class Meta:
         ordering = ["date"]
@@ -629,7 +628,7 @@ class Holiday(ExtensibleModel):
     title = models.CharField(verbose_name=_("Title of the holidays"), max_length=50)
     date_start = models.DateField(verbose_name=_("Effective start date of holidays"), null=True)
     date_end = models.DateField(verbose_name=_("Effective end date of holidays"), null=True)
-    comments = models.TextField(verbose_name=_("Comments"))
+    comments = models.TextField(verbose_name=_("Comments"), null=True, blank=True)
 
     class Meta:
         ordering = ["date_start"]
