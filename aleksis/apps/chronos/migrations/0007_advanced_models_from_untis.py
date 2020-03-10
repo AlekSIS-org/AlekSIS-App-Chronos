@@ -125,8 +125,12 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='event',
+            name='teacher',
+            field=models.ManyToManyField(related_name='events', to='core.Person', verbose_name='Teachers')
+        migrations.AddField(
+            model_name='event',
             name='group',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='group', to='core.Group', verbose_name='Group'),
+            field=models.ManyToManyField(related_name='group', to='core.Group', verbose_name='Groups'),
         ),
         migrations.AddField(
             model_name='event',
@@ -141,7 +145,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='subject',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='subject', to='chronos.Subject', verbose_name='Subject'),
+            field=models.ManyToManyField(related_name='events', to='chronos.Subject', verbose_name='Subjects'),
         ),
         migrations.AddField(
             model_name='absence',
