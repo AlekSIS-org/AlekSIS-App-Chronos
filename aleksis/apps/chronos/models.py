@@ -19,9 +19,10 @@ from django.utils.translation import ugettext_lazy as _
 
 from calendarweek.django import CalendarWeek, i18n_day_names_lazy, i18n_day_abbrs_lazy
 from django_global_request.middleware import get_request
+from jsonstore import BooleanField
 
 from aleksis.core.mixins import ExtensibleModel
-from aleksis.core.models import Group, Person, DashboardWidget
+from aleksis.core.models import Group, Person, DashboardWidget, Announcement
 
 from aleksis.apps.chronos.util.date import week_weekday_from_date
 from aleksis.core.util.core_helpers import has_person
@@ -550,6 +551,15 @@ class LessonPeriod(ExtensibleModel):
     class Meta:
         ordering = ["lesson__date_start", "period__weekday", "period__period"]
         indexes = [models.Index(fields=["lesson", "period"])]
+
+
+@classmethod
+def for_timetables(cls):
+    return cls.objects.filter(show_in_timetables=True)
+
+
+Announcement.for_timetables = for_timetables
+Announcement.field(show_in_timetables=BooleanField(verbose_name=_("Show announcement in timetable views?")))
 
 
 class TimetableWidget(DashboardWidget):
