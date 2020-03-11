@@ -13,7 +13,7 @@ from django.utils.translation import ugettext as _
 from django_tables2 import RequestConfig
 
 from aleksis.core.decorators import admin_required
-from aleksis.core.models import Person, Group
+from aleksis.core.models import Person, Group, Announcement
 from aleksis.core.util import messages
 from .forms import LessonSubstitutionForm
 from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
@@ -305,6 +305,8 @@ def substitutions(
     for day in day_contexts:
         subs = LessonSubstitution.objects.on_day(day).order_by("lesson_period__lesson__groups", "lesson_period__period")
         day_contexts[day]["substitutions"] = subs
+
+        day_contexts[day]["announcements"] = Announcement.for_timetables().at_date(day).filter(show_in_timetables=True)
 
         if config.CHRONOS_SUBSTITUTIONS_SHOW_HEADER_BOX:
             day_contexts[day]["affected_teachers"] = subs.affected_teachers()

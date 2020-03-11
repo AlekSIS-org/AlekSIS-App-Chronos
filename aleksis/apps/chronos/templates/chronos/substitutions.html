@@ -28,7 +28,7 @@
     <div class="col s12 m6 l8">
       {% include "chronos/partials/headerbox.html" %}
 
-      {#            {% include "chronos/hintsinsub.html" %}#}
+      {% include "core/announcements.html" with announcements=announcements show_recipients=1 %}
     </div>
     <div class="col s12 m6 l4 no-padding">
       {% include "chronos/partials/datepicker.html" %}
