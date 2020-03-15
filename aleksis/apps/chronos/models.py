@@ -591,7 +591,7 @@ class TimetableWidget(DashboardWidget):
 
 class AbsenceReason(ExtensibleModel):
     title = models.CharField(verbose_name=_("Title"), max_length=50)
-    description = models.TextField(verbose_name=_("Description"))
+    description = models.TextField(verbose_name=_("Description"), blank=True, null=True)
 
     class Meta:
         verbose_name = _("Absence reason")
