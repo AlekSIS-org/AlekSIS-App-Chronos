@@ -77,6 +77,7 @@ def my_timetable(
         context["day"] = wanted_day
         context["periods"] = TimePeriod.get_times_dict()
         context["smart"] = True
+        context["announcements"] = Announcement.for_timetables().at_date(wanted_day).for_person(person)
 
         context["url_prev"], context["url_next"] = TimePeriod.get_prev_next_by_day(
             wanted_day, "my_timetable_by_date"
