@@ -113,7 +113,7 @@
     {% endif %}
   </div>
 
-  {#  {% include "chronos/hintsinplan.html" %}#}
+  {% include "core/announcements.html" with announcements=announcements show_interval=1 %}
 
   {# show full timetable on tablets, laptops and pcs #}
   <div class="timetable-plan hide-on-small-and-down">

@@ -168,6 +168,11 @@ def timetable(
         "dest": reverse("timetable", args=[type_, pk])
     }
 
+    if is_smart:
+        start = wanted_week[TimePeriod.weekday_min]
+        stop = wanted_week[TimePeriod.weekday_max]
+        context["announcements"] = Announcement.for_timetables().relevant_for(el).in_days(start, stop)
+
     week_prev = wanted_week - 1
     week_next = wanted_week + 1
 
