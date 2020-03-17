@@ -91,7 +91,7 @@ class Migration(migrations.Migration):
                 ('extended_data', django.contrib.postgres.fields.jsonb.JSONField(default=dict, editable=False)),
                 ('short_name', models.CharField(max_length=10, verbose_name='Short name')),
                 ('name', models.CharField(max_length=50, verbose_name='Long name')),
-                ('colour_fg', colorfield.fields.ColorField(default='#FFFFFF', max_length=18)),
+                ('colour_fg', colorfield.fields.ColorField(default='#000000', max_length=18)),
                 ('colour_bg', colorfield.fields.ColorField(default='#FFFFFF', max_length=18)),
             ],
             options={

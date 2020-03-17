@@ -644,7 +644,7 @@ class Holiday(ExtensibleModel):
 class SupervisionArea(ExtensibleModel):
     short_name = models.CharField(verbose_name=_("Short name"), max_length=10)
     name = models.CharField(verbose_name=_("Long name"), max_length=50)
-    colour_fg = ColorField()
+    colour_fg = ColorField(default="#000000")
     colour_bg = ColorField()
 
     class Meta:
