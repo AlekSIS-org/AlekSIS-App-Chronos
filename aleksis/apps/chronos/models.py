@@ -553,12 +553,11 @@ class LessonPeriod(ExtensibleModel):
         indexes = [models.Index(fields=["lesson", "period"])]
 
 
-@classmethod
 def for_timetables(cls):
     return cls.objects.filter(show_in_timetables=True)
 
 
-Announcement.for_timetables = for_timetables
+Announcement.class_method(for_timetables)
 Announcement.field(show_in_timetables=BooleanField(verbose_name=_("Show announcement in timetable views?")))
 
 
