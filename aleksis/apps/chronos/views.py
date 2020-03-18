@@ -77,7 +77,7 @@ def my_timetable(
         context["day"] = wanted_day
         context["periods"] = TimePeriod.get_times_dict()
         context["smart"] = True
-        context["announcements"] = Announcement.for_timetables().at_date(wanted_day).for_person(person)
+        context["announcements"] = Announcement.for_timetables().on_date(wanted_day).for_person(person)
 
         context["url_prev"], context["url_next"] = TimePeriod.get_prev_next_by_day(
             wanted_day, "my_timetable_by_date"
@@ -171,7 +171,7 @@ def timetable(
     if is_smart:
         start = wanted_week[TimePeriod.weekday_min]
         stop = wanted_week[TimePeriod.weekday_max]
-        context["announcements"] = Announcement.for_timetables().relevant_for(el).in_days(start, stop)
+        context["announcements"] = Announcement.for_timetables().relevant_for(el).within_days(start, stop)
 
     week_prev = wanted_week - 1
     week_next = wanted_week + 1
@@ -312,7 +312,7 @@ def substitutions(
         subs = LessonSubstitution.objects.on_day(day).order_by("lesson_period__lesson__groups", "lesson_period__period")
         day_contexts[day]["substitutions"] = subs
 
-        day_contexts[day]["announcements"] = Announcement.for_timetables().at_date(day).filter(show_in_timetables=True)
+        day_contexts[day]["announcements"] = Announcement.for_timetables().on_date(day).filter(show_in_timetables=True)
 
         if config.CHRONOS_SUBSTITUTIONS_SHOW_HEADER_BOX:
             day_contexts[day]["affected_teachers"] = subs.affected_teachers()
