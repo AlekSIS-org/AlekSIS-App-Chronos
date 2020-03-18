@@ -124,13 +124,14 @@
 
       </div>
       {# Show short weekdays on tablets #}
-      {% for day in weekdays_short.items %}
+      {% for i, day in weekdays_short.items %}
         <div class="col s2 hide-on-large-only">
           <div class="card timetable-title-card">
             <div class="card-content">
                             <span class="card-title">
-                                {{ day.1 }}
+                                {{ day.0 }}
                             </span>
+              {{ day.1 }}
               {#              {% if day.1 %}#}
               {#                <span class="badge new blue center-align holiday-badge">{{ day.1.0 }}</span>#}
               {#              {% endif %}#}
@@ -140,13 +141,14 @@
       {% endfor %}
 
       {# Show long weekdays elsewere #}
-      {% for day in weekdays.items %}
+      {% for i, day in weekdays.items %}
         <div class="col s2 hide-on-med-only">
           <div class="card timetable-title-card">
             <div class="card-content">
                             <span class="card-title">
-                                {{ day.1 }}
+                                {{ day.0 }}
                             </span>
+              {{ day.1 }}
               {#              {% if day.1 %}#}
               {#                <span class="badge new blue center-align holiday-badge">{{ day.1.0 }}</span>#}
               {#              {% endif %}#}
@@ -176,12 +178,13 @@
 
   {# show 5 seperate ones on mobiles #}
   <div class="timetable-plan hide-on-med-and-up">
-    {% for day in weekdays.items %}
+    {% for i, day in weekdays.items %}
       <div class="card timetable-mobile-title-card">
         <div class="card-content">
                     <span class="card-title">
-                        {{ day.1 }}
+                        {{ day.0 }}
                     </span>
+          {{ day.1 }}
           {#          {% if day.1 %}#}
           {#            <span class="badge new blue center-align holiday-badge">{{ day.1.0 }}</span>#}
           {#          {% endif %}#}
@@ -195,7 +198,7 @@
           </div>
 
           {% for weekday, lessons in lesson_periods_period.items %}
-            {% if forloop.counter0|add:"1" == day.0 %}
+            {% if forloop.counter0 == i %}
               <div class="col s8">
                 {# A lesson #}
                 {% include "chronos/partials/lesson.html" with lessons=lessons %}
