@@ -16,7 +16,7 @@
   {% for day, c in days.items %}
     <h4>{% trans "Substitutions" %} {{ c.day|date:"l" }} {{ c.day }}</h4>
 
-    {#    {% include "timetable/hintsinsubprint.html" %}#}
+    {% include "core/announcements.html" with announcements=announcements show_recipients=1 %}
 
     {% include "chronos/partials/headerbox.html" with affected_teachers=c.affected_teachers affected_groups=c.affected_groups print=1 %}
 

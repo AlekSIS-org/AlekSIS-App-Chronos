@@ -1,6 +1,9 @@
 from typing import Optional, Union
 
-from aleksis.core.models import Person, Group
+from django.utils.translation import gettext_lazy as _
+from jsonstore import BooleanField
+
+from aleksis.core.models import Person, Group, Announcement
 
 from .models import Lesson, LessonPeriod
 
@@ -81,3 +84,11 @@ def lesson_periods_as_teacher(self):
     """
 
     return LessonPeriod.objects.filter(lesson__teachers=self)
+
+
+def for_timetables(cls):
+    return cls.objects.filter(show_in_timetables=True)
+
+
+Announcement.class_method(for_timetables)
+Announcement.field(show_in_timetables=BooleanField(verbose_name=_("Show announcement in timetable views?")))
