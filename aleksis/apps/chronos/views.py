@@ -150,22 +150,21 @@ def timetable(
 
     context["lesson_periods"] = OrderedDict(sorted(per_period.items()))
     context["periods"] = TimePeriod.get_times_dict()
-    context["weekdays"] = dict(
-        [
-            (key, (item, wanted_week[key]))
-            for key, item in TimePeriod.WEEKDAY_CHOICES[
-                TimePeriod.weekday_min : TimePeriod.weekday_max + 1
-            ]
+
+    # Build lists with weekdays and corresponding dates (long and short variant)
+    context["weekdays"] = [
+        (key, weekday, wanted_week[key])
+        for key, weekday in TimePeriod.WEEKDAY_CHOICES[
+            TimePeriod.weekday_min : TimePeriod.weekday_max + 1
         ]
-    )
-    context["weekdays_short"] = dict(
-        [
-            (key, (item, wanted_week[key]))
-            for key, item in TimePeriod.WEEKDAY_CHOICES_SHORT[
-                TimePeriod.weekday_min : TimePeriod.weekday_max + 1
-            ]
+    ]
+    context["weekdays_short"] = [
+        (key, weekday, wanted_week[key])
+        for key, weekday in TimePeriod.WEEKDAY_CHOICES_SHORT[
+            TimePeriod.weekday_min : TimePeriod.weekday_max + 1
         ]
-    )
+    ]
+
     context["weeks"] = get_weeks_for_year(year=wanted_week.year)
     context["week"] = wanted_week
     context["type"] = type_
