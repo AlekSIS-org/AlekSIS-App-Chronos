@@ -362,7 +362,7 @@ class TimePeriod(models.Model):
 
     @classproperty
     def time_max(cls) -> Optional[time]:
-        return cls.objects.aggregate(Max("time_start")).get("time_start__max")
+        return cls.objects.aggregate(Max("time_end")).get("time_end__max")
 
     @classproperty
     def weekday_min(cls) -> int:
