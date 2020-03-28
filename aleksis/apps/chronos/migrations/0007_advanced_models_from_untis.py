@@ -97,6 +97,50 @@ class Migration(migrations.Migration):
                 'ordering': ['name'],
             },
         ),
+        migrations.CreateModel(
+            name='Break',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('extended_data', django.contrib.postgres.fields.jsonb.JSONField(default=dict, editable=False)),
+                ('short_name', models.CharField(max_length=10, verbose_name='Short name')),
+                ('name', models.CharField(max_length=50, verbose_name='Long name')),
+                ('weekday', models.PositiveSmallIntegerField(
+                    choices=[(0, 'Montag'), (1, 'Dienstag'), (2, 'Mittwoch'), (3, 'Donnerstag'), (4, 'Freitag'),
+                             (5, 'Samstag'), (6, 'Sonntag')], verbose_name='Week day')),
+                ('time_start', models.TimeField(verbose_name='Start time')),
+                ('time_end', models.TimeField(verbose_name='End time')),
+            ],
+            options={
+                'verbose_name': 'Break',
+                'verbose_name_plural': 'Breaks',
+                'ordering': ['weekday', 'time_start'],
+            },
+        ),
+        migrations.CreateModel(
+            name='Supervision',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('extended_data', django.contrib.postgres.fields.jsonb.JSONField(default=dict, editable=False)),
+            ],
+            options={
+                'verbose_name': 'Supervision',
+                'verbose_name_plural': 'Supervisions',
+                'ordering': ['area', 'break_item'],
+            },
+        ),
+        migrations.CreateModel(
+            name='SupervisionSubstitution',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('extended_data', django.contrib.postgres.fields.jsonb.JSONField(default=dict, editable=False)),
+                ('date', models.DateField(verbose_name='Date')),
+            ],
+            options={
+                'verbose_name': 'Supervision substitution',
+                'verbose_name_plural': 'Supervision substitutions',
+                'ordering': ['date', 'supervision'],
+            },
+        ),
         migrations.AddIndex(
             model_name='holiday',
             index=models.Index(fields=['date_start', 'date_end'], name='chronos_hol_date_st_a47004_idx'),
@@ -192,5 +236,44 @@ class Migration(migrations.Migration):
             model_name='lessonsubstitution',
             name='cancelled',
             field=models.BooleanField(default=False, verbose_name='Cancelled?'),
+        ),
+        migrations.AddField(
+            model_name='event',
+            name='groups',
+            field=models.ManyToManyField(related_name='events', to='core.Group', verbose_name='Groups'),
+        ),
+        migrations.AddField(
+            model_name='supervisionsubstitution',
+            name='supervision',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='substitutions',
+                                    to='chronos.Supervision', verbose_name='Supervision'),
+        ),
+        migrations.AddField(
+            model_name='supervisionsubstitution',
+            name='teacher',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                    related_name='substituted_supervisions', to='core.Person', verbose_name='Teacher'),
+        ),
+        migrations.AddField(
+            model_name='supervision',
+            name='area',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='supervisions',
+                                    to='chronos.SupervisionArea', verbose_name='Supervision area'),
+        ),
+        migrations.AddField(
+            model_name='supervision',
+            name='break_item',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='supervisions',
+                                    to='chronos.Break', verbose_name='Break'),
+        ),
+        migrations.AddField(
+            model_name='supervision',
+            name='teacher',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='supervisions',
+                                    to='core.Person', verbose_name='Teacher'),
+        ),
+        migrations.AddIndex(
+            model_name='break',
+            index=models.Index(fields=['weekday', 'time_start', 'time_end'], name='chronos_bre_weekday_165338_idx'),
         ),
     ]

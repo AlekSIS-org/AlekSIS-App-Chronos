@@ -653,7 +653,43 @@ class SupervisionArea(ExtensibleModel):
     class Meta:
         ordering = ["name"]
         verbose_name = _("Supervision area")
-        verbose_name = _("Supervision areas")
+        verbose_name_plural = _("Supervision areas")
+
+
+class Break(ExtensibleModel):
+    short_name = models.CharField(verbose_name=_("Short name"), max_length=10)
+    name = models.CharField(verbose_name=_("Long name"), max_length=50)
+    weekday = models.PositiveSmallIntegerField(verbose_name=_("Week day"), choices=TimePeriod.WEEKDAY_CHOICES)
+    time_start = models.TimeField(verbose_name=_("Start time"))
+    time_end = models.TimeField(verbose_name=_("End time"))
+
+    class Meta:
+        ordering = ["weekday", "time_start"]
+        indexes = [models.Index(fields=["weekday", "time_start", "time_end"])]
+        verbose_name = _("Break")
+        verbose_name_plural = _("Breaks")
+
+
+class Supervision(ExtensibleModel):
+    area = models.ForeignKey(SupervisionArea, models.CASCADE, verbose_name=_("Supervision area"), related_name="supervisions")
+    break_item = models.ForeignKey(Break, models.CASCADE, verbose_name=_("Break"), related_name="supervisions")
+    teacher = models.ForeignKey("core.Person", models.CASCADE, related_name="supervisions", verbose_name=_("Teacher"))
+
+    class Meta:
+        ordering = ["area", "break_item"]
+        verbose_name= _("Supervision")
+        verbose_name_plural = _("Supervisions")
+
+
+class SupervisionSubstitution(ExtensibleModel):
+    date = models.DateField(verbose_name=_("Date"))
+    supervision = models.ForeignKey(Supervision, models.CASCADE, verbose_name=_("Supervision"), related_name="substitutions")
+    teacher = models.ForeignKey("core.Person", models.CASCADE, related_name="substituted_supervisions", verbose_name=_("Teacher"))
+
+    class Meta:
+        ordering = ["date", "supervision"]
+        verbose_name = _("Supervision substitution")
+        verbose_name_plural = _("Supervision substitutions")
 
 
 class Event(ExtensibleModel):
