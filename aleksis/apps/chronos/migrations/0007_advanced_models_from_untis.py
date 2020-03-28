@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('extended_data', django.contrib.postgres.fields.jsonb.JSONField(default=dict, editable=False)),
                 ('date_start', models.DateField(null=True, verbose_name='Effective start date of absence')),
                 ('date_end', models.DateField(null=True, verbose_name='Effective end date of absence')),
-                ('comment', models.TextField(verbose_name='Comment'), null=True, blank=True),
+                ('comment', models.TextField(verbose_name='Comment', null=True, blank=True)),
             ],
             options={
                 'verbose_name': 'Absence',
@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('extended_data', django.contrib.postgres.fields.jsonb.JSONField(default=dict, editable=False)),
                 ('title', models.CharField(max_length=50, verbose_name='Title')),
-                ('description', models.TextField(verbose_name='Description'), null=True, blank=True),
+                ('description', models.TextField(verbose_name='Description', null=True, blank=True)),
             ],
             options={
                 'verbose_name': 'Absence reason',
@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
                 ('extended_data', django.contrib.postgres.fields.jsonb.JSONField(default=dict, editable=False)),
                 ('date', models.DateField(null=True, verbose_name='Date of exam')),
                 ('title', models.CharField(max_length=50, verbose_name='Title')),
-                ('comment', models.TextField(verbose_name='Comment'), null=True, blank=True),
+                ('comment', models.TextField(verbose_name='Comment', null=True, blank=True)),
             ],
             options={
                 'verbose_name': 'Exam',
@@ -77,7 +77,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=50, verbose_name='Title of the holidays')),
                 ('date_start', models.DateField(null=True, verbose_name='Effective start date of holidays')),
                 ('date_end', models.DateField(null=True, verbose_name='Effective end date of holidays')),
-                ('comments', models.TextField(verbose_name='Comments'), null=True, blank=True),
+                ('comments', models.TextField(verbose_name='Comments', null=True, blank=True)),
             ],
             options={
                 'verbose_name': 'Holiday',
