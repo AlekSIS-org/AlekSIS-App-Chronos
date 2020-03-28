@@ -617,7 +617,6 @@ class Exam(ExtensibleModel):
     lesson = models.ForeignKey("Lesson", on_delete=models.CASCADE, related_name="exams")
 
     date = models.DateField(verbose_name=_("Date of exam"), null=True)
-    periodfrom = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of exam"), null=True, related_name="+")
     period_from = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of exam"), null=True, related_name="+")
     period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of exam"), null=True, related_name="+")
 
@@ -665,8 +664,6 @@ class Event(ExtensibleModel):
     groups = models.ManyToManyField("core.Group", related_name="events", verbose_name=_("Groups"))
     rooms = models.ManyToManyField("Room", related_name="events", verbose_name=_("Rooms"))
     teachers = models.ManyToManyField("core.Person", related_name="events", verbose_name=_("Teachers"))
-    timefrom = models.DateTimeField(verbose_name=_("Effective start time of event"), null=True)
-    timeto = models.DateTimeField(verbose_name=_("Effective end time of event"), null=True)
 
     class Meta:
         ordering = ["date_start"]

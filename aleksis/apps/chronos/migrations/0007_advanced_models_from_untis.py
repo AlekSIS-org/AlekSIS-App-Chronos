@@ -47,8 +47,6 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=50, verbose_name='Title')),
                 ('date_start', models.DateField(null=True, verbose_name='Effective start date of event')),
                 ('date_end', models.DateField(null=True, verbose_name='Effective end date of event')),
-                ('timefrom', models.DateTimeField(null=True, verbose_name='Effective start time of event')),
-                ('timeto', models.DateTimeField(null=True, verbose_name='Effective end time of event')),
             ],
             options={
                 'verbose_name': 'Events',
