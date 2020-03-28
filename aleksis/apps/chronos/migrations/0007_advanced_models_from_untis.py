@@ -178,4 +178,19 @@ class Migration(migrations.Migration):
             model_name='absence',
             index=models.Index(fields=['date_start', 'date_end'], name='chronos_abs_date_st_337ff5_idx'),
         ),
+        migrations.AddField(
+            model_name='lessonsubstitution',
+            name='cancelled_for_teachers',
+            field=models.BooleanField(default=False, verbose_name='Cancelled for teachers?'),
+        ),
+        migrations.AddField(
+            model_name='lessonsubstitution',
+            name='comment',
+            field=models.TextField(blank=True, null=True, verbose_name='Comment'),
+        ),
+        migrations.AlterField(
+            model_name='lessonsubstitution',
+            name='cancelled',
+            field=models.BooleanField(default=False, verbose_name='Cancelled?'),
+        ),
     ]

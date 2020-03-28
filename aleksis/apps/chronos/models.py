@@ -467,7 +467,10 @@ class LessonSubstitution(models.Model):
     )
     room = models.ForeignKey("Room", models.CASCADE, null=True, blank=True, verbose_name=_("Room"))
 
-    cancelled = models.BooleanField(default=False)
+    cancelled = models.BooleanField(default=False, verbose_name=_("Cancelled?"))
+    cancelled_for_teachers = models.BooleanField(default=False, verbose_name=_("Cancelled for teachers?"))
+
+    comment = models.TextField(verbose_name=_("Comment"), blank=True, null=True)
 
     def clean(self) -> None:
         if self.subject and self.cancelled:
@@ -667,6 +670,6 @@ class Event(ExtensibleModel):
 
     class Meta:
         ordering = ["date_start"]
-        indexes = [models.Index(fields=["periodfrom", "periodto", "date_start", "date_end"])]
+        indexes = [models.Index(fields=["period_from", "period_to", "date_start", "date_end"])]
         verbose_name = _("Event")
         verbose_name = _("Events")
