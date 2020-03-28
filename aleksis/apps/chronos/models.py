@@ -18,6 +18,7 @@ from django.utils.decorators import classproperty
 from django.utils.translation import ugettext_lazy as _
 
 from calendarweek.django import CalendarWeek, i18n_day_names_lazy, i18n_day_abbrs_lazy
+from colorfield.fields import ColorField
 from django_global_request.middleware import get_request
 
 from aleksis.core.mixins import ExtensibleModel
@@ -466,7 +467,10 @@ class LessonSubstitution(models.Model):
     )
     room = models.ForeignKey("Room", models.CASCADE, null=True, blank=True, verbose_name=_("Room"))
 
-    cancelled = models.BooleanField(default=False)
+    cancelled = models.BooleanField(default=False, verbose_name=_("Cancelled?"))
+    cancelled_for_teachers = models.BooleanField(default=False, verbose_name=_("Cancelled for teachers?"))
+
+    comment = models.TextField(verbose_name=_("Comment"), blank=True, null=True)
 
     def clean(self) -> None:
         if self.subject and self.cancelled:
@@ -587,3 +591,125 @@ class TimetableWidget(DashboardWidget):
     class Meta:
         proxy = True
         verbose_name = _("Timetable widget")
+
+
+class AbsenceReason(ExtensibleModel):
+    title = models.CharField(verbose_name=_("Title"), max_length=50)
+    description = models.TextField(verbose_name=_("Description"), blank=True, null=True)
+
+    class Meta:
+        verbose_name = _("Absence reason")
+        verbose_name_plural = _("Absence reasons")
+
+class Absence(ExtensibleModel):
+    reason = models.ForeignKey("AbsenceReason", on_delete=models.CASCADE, related_name="absences")
+    person = models.ManyToManyField("core.Person", related_name="absences")
+
+    date_start = models.DateField(verbose_name=_("Effective start date of absence"), null=True)
+    date_end = models.DateField(verbose_name=_("Effective end date of absence"), null=True)
+    period_from = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of absence"), null=True, related_name="+")
+    period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of absence"), null=True, related_name="+")
+    comment = models.TextField(verbose_name=_("Comment"), blank=True, null=True)
+
+    class Meta:
+        ordering = ["date_start"]
+        indexes = [models.Index(fields=["date_start", "date_end"])]
+        verbose_name = _("Absence")
+        verbose_name_plural = _("Absences")
+
+
+class Exam(ExtensibleModel):
+    lesson = models.ForeignKey("Lesson", on_delete=models.CASCADE, related_name="exams")
+
+    date = models.DateField(verbose_name=_("Date of exam"), null=True)
+    period_from = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of exam"), null=True, related_name="+")
+    period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of exam"), null=True, related_name="+")
+
+    title = models.CharField(verbose_name=_("Title"), max_length=50)
+    comment = models.TextField(verbose_name=_("Comment"), blank=True, null=True)
+
+    class Meta:
+        ordering = ["date"]
+        indexes = [models.Index(fields=["date"])]
+        verbose_name = _("Exam")
+        verbose_name_plural = _("Exams")
+
+
+class Holiday(ExtensibleModel):
+    title = models.CharField(verbose_name=_("Title of the holidays"), max_length=50)
+    date_start = models.DateField(verbose_name=_("Effective start date of holidays"), null=True)
+    date_end = models.DateField(verbose_name=_("Effective end date of holidays"), null=True)
+    comments = models.TextField(verbose_name=_("Comments"), null=True, blank=True)
+
+    class Meta:
+        ordering = ["date_start"]
+        indexes = [models.Index(fields=["date_start", "date_end"])]
+        verbose_name = _("Holiday")
+        verbose_name_plural = _("Holidays")
+
+
+class SupervisionArea(ExtensibleModel):
+    short_name = models.CharField(verbose_name=_("Short name"), max_length=10)
+    name = models.CharField(verbose_name=_("Long name"), max_length=50)
+    colour_fg = ColorField(default="#000000")
+    colour_bg = ColorField()
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = _("Supervision area")
+        verbose_name_plural = _("Supervision areas")
+
+
+class Break(ExtensibleModel):
+    short_name = models.CharField(verbose_name=_("Short name"), max_length=10)
+    name = models.CharField(verbose_name=_("Long name"), max_length=50)
+    weekday = models.PositiveSmallIntegerField(verbose_name=_("Week day"), choices=TimePeriod.WEEKDAY_CHOICES)
+    time_start = models.TimeField(verbose_name=_("Start time"))
+    time_end = models.TimeField(verbose_name=_("End time"))
+
+    class Meta:
+        ordering = ["weekday", "time_start"]
+        indexes = [models.Index(fields=["weekday", "time_start", "time_end"])]
+        verbose_name = _("Break")
+        verbose_name_plural = _("Breaks")
+
+
+class Supervision(ExtensibleModel):
+    area = models.ForeignKey(SupervisionArea, models.CASCADE, verbose_name=_("Supervision area"), related_name="supervisions")
+    break_item = models.ForeignKey(Break, models.CASCADE, verbose_name=_("Break"), related_name="supervisions")
+    teacher = models.ForeignKey("core.Person", models.CASCADE, related_name="supervisions", verbose_name=_("Teacher"))
+
+    class Meta:
+        ordering = ["area", "break_item"]
+        verbose_name= _("Supervision")
+        verbose_name_plural = _("Supervisions")
+
+
+class SupervisionSubstitution(ExtensibleModel):
+    date = models.DateField(verbose_name=_("Date"))
+    supervision = models.ForeignKey(Supervision, models.CASCADE, verbose_name=_("Supervision"), related_name="substitutions")
+    teacher = models.ForeignKey("core.Person", models.CASCADE, related_name="substituted_supervisions", verbose_name=_("Teacher"))
+
+    class Meta:
+        ordering = ["date", "supervision"]
+        verbose_name = _("Supervision substitution")
+        verbose_name_plural = _("Supervision substitutions")
+
+
+class Event(ExtensibleModel):
+    title = models.CharField(verbose_name=_("Title"), max_length=50)
+    date_start = models.DateField(verbose_name=_("Effective start date of event"), null=True)
+    date_end = models.DateField(verbose_name=_("Effective end date of event"), null=True)
+    absence_reason = models.ForeignKey("AbsenceReason", on_delete=models.CASCADE, related_name="absence_reason", verbose_name=_("Absence reason"))
+    period_from = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of event"), related_name="+")
+    period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of event"), related_name="+")
+
+    groups = models.ManyToManyField("core.Group", related_name="events", verbose_name=_("Groups"))
+    rooms = models.ManyToManyField("Room", related_name="events", verbose_name=_("Rooms"))
+    teachers = models.ManyToManyField("core.Person", related_name="events", verbose_name=_("Teachers"))
+
+    class Meta:
+        ordering = ["date_start"]
+        indexes = [models.Index(fields=["period_from", "period_to", "date_start", "date_end"])]
+        verbose_name = _("Event")
+        verbose_name_plural = _("Events")
