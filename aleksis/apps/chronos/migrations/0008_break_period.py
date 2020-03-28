@@ -39,6 +39,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name='break',
-            index=models.Index(fields=['after_period', 'before_period'], name='chronos_bre_period__925ac6_idx'),
+            index=models.Index(fields=['after_period', 'before_period'], name='chronos_bre_after_p_0f28d3_idx'),
         ),
     ]
