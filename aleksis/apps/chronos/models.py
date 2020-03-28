@@ -663,13 +663,17 @@ class SupervisionArea(ExtensibleModel):
 class Break(ExtensibleModel):
     short_name = models.CharField(verbose_name=_("Short name"), max_length=10)
     name = models.CharField(verbose_name=_("Long name"), max_length=50)
-    weekday = models.PositiveSmallIntegerField(verbose_name=_("Week day"), choices=TimePeriod.WEEKDAY_CHOICES)
-    time_start = models.TimeField(verbose_name=_("Start time"))
-    time_end = models.TimeField(verbose_name=_("End time"))
+
+    after_period = models.ForeignKey("TimePeriod", on_delete=models.CASCADE,
+                                    verbose_name=_("Effective start of break"),
+                                    related_name="break_after", blank=True, null=True)
+    before_period = models.ForeignKey("TimePeriod", on_delete=models.CASCADE,
+                                  verbose_name=_("Effective end of break"),
+                                  related_name="break_before", blank=True, null=True)
 
     class Meta:
-        ordering = ["weekday", "time_start"]
-        indexes = [models.Index(fields=["weekday", "time_start", "time_end"])]
+        ordering = ["after_period"]
+        indexes = [models.Index(fields=["after_period", "before_period"])]
         verbose_name = _("Break")
         verbose_name_plural = _("Breaks")
 
