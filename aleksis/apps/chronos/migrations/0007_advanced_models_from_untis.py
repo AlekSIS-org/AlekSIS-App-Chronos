@@ -176,11 +176,6 @@ class Migration(migrations.Migration):
             name='teachers',
             field=models.ManyToManyField(related_name='events', to='core.Person', verbose_name='Teachers'),
         ),
-        migrations.AlterField(
-            model_name='event',
-            name='groups',
-            field=models.ManyToManyField(related_name='events', to='core.Group', verbose_name='Groups'),
-        ),
         migrations.AddField(
             model_name='event',
             name='period_from',
