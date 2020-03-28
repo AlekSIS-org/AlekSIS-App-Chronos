@@ -108,12 +108,12 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='exam',
-            name='periodfrom',
+            name='period_from',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='chronos.TimePeriod', verbose_name='Effective start period of exam'),
         ),
         migrations.AddField(
             model_name='exam',
-            name='periodto',
+            name='period_to',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='chronos.TimePeriod', verbose_name='Effective end period of exam'),
         ),
         migrations.AddField(
@@ -125,20 +125,20 @@ class Migration(migrations.Migration):
             model_name='event',
             name='teachers',
             field=models.ManyToManyField(related_name='events', to='core.Person', verbose_name='Teachers'),
-        )
-        migrations.AddField(
+        ),
+        migrations.AlterField(
             model_name='event',
             name='groups',
-            field=models.ManyToManyField(related_name='group', to='core.Group', verbose_name='Groups'),
+            field=models.ManyToManyField(related_name='events', to='core.Group', verbose_name='Groups'),
         ),
         migrations.AddField(
             model_name='event',
-            name='periodfrom',
+            name='period_from',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='chronos.TimePeriod', verbose_name='Effective start period of event'),
         ),
         migrations.AddField(
             model_name='event',
-            name='periodto',
+            name='period_to',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='chronos.TimePeriod', verbose_name='Effective end period of event'),
         ),
         migrations.AddField(
@@ -148,12 +148,12 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='absence',
-            name='periodfrom',
+            name='period_from',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='chronos.TimePeriod', verbose_name='Effective start period of absence'),
         ),
         migrations.AddField(
             model_name='absence',
-            name='periodto',
+            name='period_to',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='chronos.TimePeriod', verbose_name='Effective end period of absence'),
         ),
         migrations.AddField(
@@ -172,7 +172,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name='event',
-            index=models.Index(fields=['periodfrom', 'periodto', 'date_start', 'date_end'], name='chronos_eve_periodf_56eb18_idx'),
+            index=models.Index(fields=['period_from', 'period_to', 'date_start', 'date_end'], name='chronos_eve_periodf_56eb18_idx'),
         ),
         migrations.AddIndex(
             model_name='absence',
