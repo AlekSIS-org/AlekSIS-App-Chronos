@@ -24,6 +24,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'verbose_name': 'Absence',
+                'verbose_name_plural': 'Absences',
                 'ordering': ['date_start'],
             },
         ),
@@ -37,6 +38,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'verbose_name': 'Absence reason',
+                'verbose_name_plural': 'Absence reasons',
             },
         ),
         migrations.CreateModel(
@@ -50,6 +52,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'verbose_name': 'Events',
+                'verbose_name_plural': 'Events',
                 'ordering': ['date_start'],
             },
         ),
@@ -64,6 +67,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'verbose_name': 'Exam',
+                'verbose_name_plural': 'Exams',
                 'ordering': ['date'],
             },
         ),
@@ -79,6 +83,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'verbose_name': 'Holiday',
+                'verbose_name_plural': 'Holidays',
                 'ordering': ['date_start'],
             },
         ),
@@ -94,6 +99,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'verbose_name': 'Supervision areas',
+                'verbose_name_plural': 'Supervision areas',
                 'ordering': ['name'],
             },
         ),

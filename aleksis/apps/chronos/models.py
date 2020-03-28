@@ -599,6 +599,7 @@ class AbsenceReason(ExtensibleModel):
 
     class Meta:
         verbose_name = _("Absence reason")
+        verbose_name_plural = _("Absence reasons")
 
 class Absence(ExtensibleModel):
     reason = models.ForeignKey("AbsenceReason", on_delete=models.CASCADE, related_name="absences")
@@ -614,6 +615,7 @@ class Absence(ExtensibleModel):
         ordering = ["date_start"]
         indexes = [models.Index(fields=["date_start", "date_end"])]
         verbose_name = _("Absence")
+        verbose_name_plural = _("Absences")
 
 
 class Exam(ExtensibleModel):
@@ -630,6 +632,7 @@ class Exam(ExtensibleModel):
         ordering = ["date"]
         indexes = [models.Index(fields=["date"])]
         verbose_name = _("Exam")
+        verbose_name_plural = _("Exams")
 
 
 class Holiday(ExtensibleModel):
@@ -642,6 +645,7 @@ class Holiday(ExtensibleModel):
         ordering = ["date_start"]
         indexes = [models.Index(fields=["date_start", "date_end"])]
         verbose_name = _("Holiday")
+        verbose_name_plural = _("Holidays")
 
 
 class SupervisionArea(ExtensibleModel):
@@ -708,4 +712,4 @@ class Event(ExtensibleModel):
         ordering = ["date_start"]
         indexes = [models.Index(fields=["period_from", "period_to", "date_start", "date_end"])]
         verbose_name = _("Event")
-        verbose_name = _("Events")
+        verbose_name_plural = _("Events")
