@@ -269,7 +269,7 @@ class LessonSubstitutionQuerySet(LessonDataQuerySet):
         )
 
 
-class TimePeriod(models.Model):
+class TimePeriod(ExtensibleModel):
     WEEKDAY_CHOICES = list(enumerate(i18n_day_names_lazy()))
     WEEKDAY_CHOICES_SHORT = list(enumerate(i18n_day_abbrs_lazy()))
 
@@ -379,7 +379,7 @@ class TimePeriod(models.Model):
         indexes = [models.Index(fields=["time_start", "time_end"])]
 
 
-class Subject(models.Model):
+class Subject(ExtensibleModel):
     abbrev = models.CharField(
         verbose_name=_("Abbreviation of subject in timetable"), max_length=10, unique=True,
     )
@@ -405,7 +405,7 @@ class Subject(models.Model):
         ordering = ["name", "abbrev"]
 
 
-class Room(models.Model):
+class Room(ExtensibleModel):
     short_name = models.CharField(
         verbose_name=_("Short name, e.g. room number"), max_length=10, unique=True
     )
@@ -418,7 +418,7 @@ class Room(models.Model):
         ordering = ["name", "short_name"]
 
 
-class Lesson(models.Model):
+class Lesson(ExtensibleModel):
     subject = models.ForeignKey("Subject", on_delete=models.CASCADE, related_name="lessons")
     teachers = models.ManyToManyField("core.Person", related_name="lessons_as_teacher")
     periods = models.ManyToManyField("TimePeriod", related_name="lessons", through="LessonPeriod")
@@ -447,7 +447,7 @@ class Lesson(models.Model):
         indexes = [models.Index(fields=["date_start", "date_end"])]
 
 
-class LessonSubstitution(models.Model):
+class LessonSubstitution(ExtensibleModel):
     objects = LessonSubstitutionManager.from_queryset(LessonSubstitutionQuerySet)()
 
     week = models.IntegerField(verbose_name=_("Week"), default=CalendarWeek.current_week)
