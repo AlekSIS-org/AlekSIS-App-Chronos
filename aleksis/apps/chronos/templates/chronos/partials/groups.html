@@ -1,5 +1,5 @@
-{% for group in groups %}
-  <a href="{% url "timetable" "group" group.pk %}">
-    {{ group.short_name }}{% if not forloop.last %},{% endif %}
-  </a>
-{% endfor %}
+{% if groups.count == 1 and groups.0.parent_groups.all and config.CHRONOS_USE_PARENT_GROUPS %}
+  {% include "chronos/partials/groups_part.html" with groups=groups.0.parent_groups.all %}
+{% else %}
+  {% include "chronos/partials/groups_part.html" with groups=groups %}
+{% endif %}
