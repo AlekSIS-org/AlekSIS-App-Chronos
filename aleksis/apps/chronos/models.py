@@ -450,7 +450,7 @@ class Lesson(ExtensibleModel):
         return CalendarWeek(year=year, week=week)
 
     class Meta:
-        ordering = ["date_start"]
+        ordering = ["date_start", "subject"]
         indexes = [models.Index(fields=["date_start", "date_end"])]
 
 
@@ -559,7 +559,7 @@ class LessonPeriod(ExtensibleModel):
         )
 
     class Meta:
-        ordering = ["lesson__date_start", "period__weekday", "period__period"]
+        ordering = ["lesson__date_start", "period__weekday", "period__period", "lesson__subject"]
         indexes = [models.Index(fields=["lesson", "period"])]
 
 
