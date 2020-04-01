@@ -30,8 +30,12 @@ def all_timetables(request: HttpRequest) -> HttpResponse:
     teachers = Person.objects.annotate(
         lessons_count=Count("lessons_as_teacher")
     ).filter(lessons_count__gt=0)
-    classes = Group.objects.annotate(lessons_count=Count("lessons")).filter(
-        lessons_count__gt=0, parent_groups=None
+    groups = Group.objects.annotate(
+        lessons_count=Count("lessons"),
+        child_lessons_count=Count("child_groups__lessons"),
+    )
+    classes = groups.filter(lessons_count__gt=0, parent_groups=None) | groups.filter(
+        child_lessons_count__gt=0, parent_groups=None
     )
     rooms = Room.objects.annotate(lessons_count=Count("lesson_periods")).filter(
         lessons_count__gt=0

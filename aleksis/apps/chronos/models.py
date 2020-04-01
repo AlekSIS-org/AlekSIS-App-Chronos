@@ -127,10 +127,17 @@ class LessonDataQuerySet(models.QuerySet):
     def filter_group(self, group: Union[Group, int]):
         """ Filter for all lessons a group (class) regularly attends. """
 
-        return self.filter(
-            Q(**{self._period_path + "lesson__groups": group})
-            | Q(**{self._period_path + "lesson__groups__parent_groups": group})
-        )
+        if isinstance(group, int):
+            group = Group.objects.get(pk=group)
+
+        if group.parent_groups.all():
+            # Prevent to show lessons multiple times
+            return self.filter(Q(**{self._period_path + "lesson__groups": group}))
+        else:
+            return self.filter(
+                Q(**{self._period_path + "lesson__groups": group})
+                | Q(**{self._period_path + "lesson__groups__parent_groups": group})
+            )
 
     def filter_teacher(self, teacher: Union[Person, int]):
         """ Filter for all lessons given by a certain teacher. """
@@ -443,7 +450,7 @@ class Lesson(ExtensibleModel):
         return CalendarWeek(year=year, week=week)
 
     class Meta:
-        ordering = ["date_start"]
+        ordering = ["date_start", "subject"]
         indexes = [models.Index(fields=["date_start", "date_end"])]
 
 
@@ -552,7 +559,7 @@ class LessonPeriod(ExtensibleModel):
         )
 
     class Meta:
-        ordering = ["lesson__date_start", "period__weekday", "period__period"]
+        ordering = ["lesson__date_start", "period__weekday", "period__period", "lesson__subject"]
         indexes = [models.Index(fields=["lesson", "period"])]
 
 
