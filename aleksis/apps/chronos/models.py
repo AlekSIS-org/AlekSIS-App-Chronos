@@ -127,10 +127,17 @@ class LessonDataQuerySet(models.QuerySet):
     def filter_group(self, group: Union[Group, int]):
         """ Filter for all lessons a group (class) regularly attends. """
 
-        return self.filter(
-            Q(**{self._period_path + "lesson__groups": group})
-            | Q(**{self._period_path + "lesson__groups__parent_groups": group})
-        )
+        if isinstance(group, int):
+            group = Group.objects.get(pk=group)
+
+        if group.parent_groups:
+            # Prevent to show lessons multiple times
+            return self.filter(Q(**{self._period_path + "lesson__groups": group}))
+        else:
+            return self.filter(
+                Q(**{self._period_path + "lesson__groups": group})
+                | Q(**{self._period_path + "lesson__groups__parent_groups": group})
+            )
 
     def filter_teacher(self, teacher: Union[Person, int]):
         """ Filter for all lessons given by a certain teacher. """
