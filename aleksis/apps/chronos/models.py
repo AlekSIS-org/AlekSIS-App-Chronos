@@ -130,7 +130,7 @@ class LessonDataQuerySet(models.QuerySet):
         if isinstance(group, int):
             group = Group.objects.get(pk=group)
 
-        if group.parent_groups:
+        if group.parent_groups.all():
             # Prevent to show lessons multiple times
             return self.filter(Q(**{self._period_path + "lesson__groups": group}))
         else:
