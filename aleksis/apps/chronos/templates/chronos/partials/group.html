@@ -1,0 +1,3 @@
+<a href="{% url "timetable" "group" item.pk %}">
+  {{ item.short_name }}{% if not forloop.last %},{% endif %}
+</a>
