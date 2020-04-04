@@ -35,7 +35,7 @@ li.active > a > .sidenav-badge {
     flex-direction: column;
 }
 
-.lesson-card .card-content div {
+.lesson-card .card-content > div {
     padding: 3px;
     flex: auto;
     width: 100%;
