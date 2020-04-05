@@ -687,12 +687,36 @@ class Break(ExtensibleModel):
         )
 
     @property
+    def after_period_number(self):
+        return (
+            self.after_period.period
+            if self.after_period
+            else self.before_period.period - 1
+        )
+
+    @property
     def before_period_number(self):
         return (
             self.before_period.period
             if self.before_period
             else self.after_period.period + 1
         )
+
+    @property
+    def time_start(self):
+        return self.after_period.time_end if self.after_period else None
+
+    @property
+    def time_end(self):
+        return self.before_period.time_start if self.before_period else None
+
+    @classmethod
+    def get_breaks_dict(cls) -> Dict[int, Tuple[datetime, datetime]]:
+        breaks = {}
+        for break_ in cls.objects.all():
+            breaks[break_.before_period_number] = break_
+
+        return breaks
 
     class Meta:
         ordering = ["after_period"]

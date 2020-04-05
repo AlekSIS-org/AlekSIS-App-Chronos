@@ -69,7 +69,8 @@
             <select id="calendar-week-1">
               {% for week in weeks %}
                 <option value="{{ week.week }}" {% if week == wanted_week %}
-                        selected {% endif %}>{% trans "CW" %} {{ week.week }} ({{ week.0|date:"SHORT_DATE_FORMAT" }}–{{ week.6|date:"SHORT_DATE_FORMAT" }})
+                        selected {% endif %}>{% trans "CW" %} {{ week.week }}
+                  ({{ week.0|date:"SHORT_DATE_FORMAT" }}–{{ week.6|date:"SHORT_DATE_FORMAT" }})
                 </option>
               {% endfor %}
             </select>
@@ -79,7 +80,8 @@
             <select id="calendar-week-2">
               {% for week in weeks %}
                 <option value="{{ week.week }}" {% if week == wanted_week %}
-                        selected {% endif %}>{% trans "CW" %} {{ week.week }} ({{ week.0|date:"j.n" }}–{{ week.6|date:"SHORT_DATE_FORMAT" }})
+                        selected {% endif %}>{% trans "CW" %} {{ week.week }}
+                  ({{ week.0|date:"j.n" }}–{{ week.6|date:"SHORT_DATE_FORMAT" }})
                 </option>
               {% endfor %}
             </select>
@@ -89,7 +91,8 @@
             <select id="calendar-week-3">
               {% for week in weeks %}
                 <option value="{{ week.week }}" {% if week == wanted_week %}
-                        selected {% endif %}>{% trans "CW" %} {{ week.week }} ({{ week.0|date:"j.n" }}–{{ week.6|date:"j.n" }})
+                        selected {% endif %}>{% trans "CW" %} {{ week.week }}
+                  ({{ week.0|date:"j.n" }}–{{ week.6|date:"j.n" }})
                 </option>
               {% endfor %}
             </select>
@@ -159,17 +162,20 @@
     </div>
 
     {#  Lessons #}
-    {% for period, lesson_periods_period in lesson_periods.items %}
-
+    {% for row in timetable %}
       <div class="row">
         <div class="col s2">
-          {% include "chronos/partials/period_time.html" with period=period periods=periods %}
+          {% if row.type == "period" %}
+            {% include "chronos/partials/period_time.html" with period=row.period periods=periods %}
+          {% else %}
+            {% trans "Break" %}
+          {% endif %}
         </div>
 
-        {% for weekday, lessons in lesson_periods_period.items %}
+        {% for col in row.cols %}
           {# A lesson #}
           <div class="col s2">
-            {% include "chronos/partials/lesson.html" with lessons=lessons %}
+            {% include "chronos/partials/lesson.html" with lessons=col %}
           </div>
         {% endfor %}
       </div>

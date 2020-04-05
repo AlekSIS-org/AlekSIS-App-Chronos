@@ -18,6 +18,7 @@ from aleksis.core.util import messages
 from .forms import LessonSubstitutionForm
 from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
 from .tables import LessonsTable
+from .util.build import build_timetable
 from .util.js import date_unix
 from .util.date import CalendarWeek, get_weeks_for_year
 from aleksis.core.util.core_helpers import has_person
@@ -120,40 +121,11 @@ def timetable(
         # TODO: On not used days show next week
         wanted_week = CalendarWeek()
 
-    lesson_periods = LessonPeriod.objects.in_week(wanted_week)
-    lesson_periods = lesson_periods.filter_from_type(type_, pk)
+    # Build timetable
+    timetable = build_timetable(type_, pk, wanted_week)
+    context["timetable"] = timetable
 
-    # Regroup lesson periods per weekday
-    per_period = {}
-    for lesson_period in lesson_periods:
-        added = False
-        if lesson_period.period.period in per_period:
-            if lesson_period.period.weekday in per_period[lesson_period.period.period]:
-                per_period[lesson_period.period.period][
-                    lesson_period.period.weekday
-                ].append(lesson_period)
-                added = True
-
-        if not added:
-            per_period.setdefault(lesson_period.period.period, {})[
-                lesson_period.period.weekday
-            ] = [lesson_period]
-
-    # Fill in empty lessons
-    for period_num in range(TimePeriod.period_min, TimePeriod.period_max + 1):
-        # Fill in empty weekdays
-        if period_num not in per_period.keys():
-            per_period[period_num] = {}
-
-        # Fill in empty lessons on this workday
-        for weekday_num in range(TimePeriod.weekday_min, TimePeriod.weekday_max + 1):
-            if weekday_num not in per_period[period_num].keys():
-                per_period[period_num][weekday_num] = []
-
-        # Order this weekday by periods
-        per_period[period_num] = OrderedDict(sorted(per_period[period_num].items()))
-
-    context["lesson_periods"] = OrderedDict(sorted(per_period.items()))
+    # Add time periods
     context["periods"] = TimePeriod.get_times_dict()
 
     # Build lists with weekdays and corresponding dates (long and short variant)
