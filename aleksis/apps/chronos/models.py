@@ -508,6 +508,8 @@ class LessonSubstitution(ExtensibleModel):
 
 
 class LessonPeriod(ExtensibleModel):
+    label_ = "lesson_period"
+
     objects = LessonPeriodManager.from_queryset(LessonPeriodQuerySet)()
 
     lesson = models.ForeignKey("Lesson", models.CASCADE, related_name="lesson_periods")
