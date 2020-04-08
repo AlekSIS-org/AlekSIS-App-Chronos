@@ -2,8 +2,8 @@
 
 <div style="
         {# Display background color only if no badge exists and it is not the old room and there are no holidays #}
-        {% if not lesson_period.get_substitution.cancelled and not lesson_period.is_hol %}
-          {% if not lesson_period.room != lesson_period.get_room or type != 1 %}
+        {% if not lesson_period.get_substitution.cancelled and not lesson_period.get_substitution.cancelled_for_teachers %}
+          {% if not type == "room" or lesson_period.room == lesson_period.get_room or lesson_period.get_room == el %}
             {% if lesson_period.lesson.subject.colour_fg %}
               color: {{ lesson_period.lesson.subject.colour_fg }};
             {% endif %}
@@ -14,8 +14,7 @@
         {% endif %}
         "
         {# Add CSS class for sub when it's a sub #}
-     class="
-             {% if lesson_period.get_substitution and smart %}{% if lesson_period.substitution.table.is_event %}lesson-with-event{% else %}lesson-with-sub{% endif %}{% endif %}"
+     class="{% if lesson_period.get_substitution and smart %}{% if lesson_period.substitution.table.is_event %}lesson-with-event{% else %}lesson-with-sub{% endif %}{% endif %}"
 >
   <p>
     {% if lesson_period.is_hol and smart %}
@@ -23,10 +22,10 @@
     {% elif lesson_period.get_substitution and smart %}
       {% with sub=lesson_period.get_substitution %}
         {# SUBSTITUTION #}
-        {% if type == "room" and lesson_period.room != lesson_period.get_room %}
+        {% if type == "room" and lesson_period.room != lesson_period.get_room and lesson_period.get_room != el %}
           {# When it's the old room, let it empty #}
 
-        {% elif lesson_period.get_substitution.cancelled %}
+        {% elif sub.cancelled or sub.cancelled_for_teachers %}
           {# When a badge (cancellation, etc.) exists, then display it with the teacher#}
 
           {# Class or room > Display teacher #}
@@ -35,7 +34,8 @@
           {% endif %}
 
           {# Badge #}
-          <span class="badge new green darken-2">{% trans "Cancelled" %}</span>
+          <span class="badge new green darken-2">{% if sub.cancelled_for_teachers %}
+            {% trans "Cancelled for teachers" %}{% else %}{% trans "Cancelled" %}{% endif %}</span>
 
         {% else %}
           {# Display sub #}
@@ -58,30 +58,29 @@
         {% endif %}
 
 
-        {# When it isn't a room or the old plan, then display the extra text (e. g. work orders) AND NOT A EVENT#}
-        {% if not lesson_period.substitution.table.is_event %}
-          {% if not type == "room"  or not lesson_period.is_old %}
-            <br>
-            <small>
-              <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
-            </small>
-          {% endif %}
+        {# When it isn't a room or the old plan, then display the extra text (e. g. work orders) #}
+        {% if not lesson_period.room == lesson_period.get_room and lesson_period.get_room != el and sub.comment %}
+          <br>
+          <small>
+            <em>{{ lesson_period.get_substitution.comment }}</em>
+          </small>
         {% endif %}
+
         {# Display the extra text for events #}
-        {% if lesson_period.substitution.table.is_event %}
-          {% if type == 0 and lesson_period.substitution.table.classes == "" and lesson_period.substitution.table.rooms|length == 0 and lesson_period.substitutions.table.teachers|length == 0 %}
-            <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
-          {% elif type == 2 and  lesson_period.substitution.table.teachers|length == 0  and  lesson_period.substitution.table.rooms|length == 0 %}
-            <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
-          {% elif type == 1  and  lesson_period.substitution.table.teachers|length == 0 and lesson_period.substitution.table.classes == "" %}
-            <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
-          {% else %}
-            <br>
-            <small>
-              <em>{{ lesson_period.substitution.table.text|default:"" }}</em>
-            </small>
-          {% endif %}
-        {% endif %}
+{#        {% if lesson_period.substitution.table.is_event %}#}
+{#          {% if type == 0 and lesson_period.substitution.table.classes == "" and lesson_period.substitution.table.rooms|length == 0 and lesson_period.substitutions.table.teachers|length == 0 %}#}
+{#            <em>{{ lesson_period.substitution.table.text|default:"" }}</em>#}
+{#          {% elif type == 2 and  lesson_period.substitution.table.teachers|length == 0  and  lesson_period.substitution.table.rooms|length == 0 %}#}
+{#            <em>{{ lesson_period.substitution.table.text|default:"" }}</em>#}
+{#          {% elif type == 1  and  lesson_period.substitution.table.teachers|length == 0 and lesson_period.substitution.table.classes == "" %}#}
+{#            <em>{{ lesson_period.substitution.table.text|default:"" }}</em>#}
+{#          {% else %}#}
+{#            <br>#}
+{#            <small>#}
+{#              <em>{{ lesson_period.substitution.table.text|default:"" }}</em>#}
+{#            </small>#}
+{#          {% endif %}#}
+{#        {% endif %}#}
       {% endwith %}
 
 
