@@ -120,15 +120,17 @@
         <div class="col s2">
           {% if row.type == "period" %}
             {% include "chronos/partials/period_time.html" with period=row.period periods=periods %}
-          {% else %}
-            {% trans "Break" %}
           {% endif %}
         </div>
 
         {% for col in row.cols %}
           {# A lesson #}
           <div class="col s2">
-            {% include "chronos/partials/elements.html" with elements=col %}
+            {% if row.type == "period" %}
+              {% include "chronos/partials/elements.html" with elements=col %}
+            {% else %}
+              {% include "chronos/partials/supervision.html" with supervision=col %}
+            {% endif %}
           </div>
         {% endfor %}
       </div>
@@ -160,7 +162,11 @@
             {% if forloop.counter0 == i %}
               <div class="col s8">
                 {# A lesson #}
-                {% include "chronos/partials/elements.html" with elements=col %}
+                {% if row.type == "period" %}
+                  {% include "chronos/partials/elements.html" with elements=col %}
+                {% else %}
+                  {% include "chronos/partials/supervision.html" with supervision=col %}
+                {% endif %}
               </div>
             {% endif %}
           {% endfor %}

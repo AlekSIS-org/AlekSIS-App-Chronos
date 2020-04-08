@@ -727,10 +727,42 @@ class Break(ExtensibleModel):
         verbose_name_plural = _("Breaks")
 
 
+class SupervisionQuerySet(models.QuerySet):
+    def annotate_week(self, week: Union[CalendarWeek, int]):
+        """ Annotate all lessons in the QuerySet with the number of the provided calendar week. """
+
+        if isinstance(week, CalendarWeek):
+            week_num = week.week
+        else:
+            week_num = week
+
+        return self.annotate(_week=models.Value(week_num, models.IntegerField()))
+
+
 class Supervision(ExtensibleModel):
+    objects = models.Manager.from_queryset(SupervisionQuerySet)()
+
     area = models.ForeignKey(SupervisionArea, models.CASCADE, verbose_name=_("Supervision area"), related_name="supervisions")
     break_item = models.ForeignKey(Break, models.CASCADE, verbose_name=_("Break"), related_name="supervisions")
     teacher = models.ForeignKey("core.Person", models.CASCADE, related_name="supervisions", verbose_name=_("Teacher"))
+
+    def get_substitution(
+        self, week: Optional[int] = None
+    ) -> Optional[SupervisionSubstitution]:
+        wanted_week = week or getattr(self, "_week", None) or CalendarWeek().week
+        wanted_week = CalendarWeek(week=wanted_week)
+        # We iterate over all substitutions because this can make use of
+        # prefetching when this model is loaded from outside, in contrast
+        # to .filter()
+        for substitution in self.substitutions.all():
+            for weekday in range(0, 7):
+                if substitution.date == wanted_week[weekday]:
+                    return substitution
+        return None
+
+    @property
+    def teachers(self):
+        return [self.teacher]
 
     class Meta:
         ordering = ["area", "break_item"]
@@ -742,6 +774,10 @@ class SupervisionSubstitution(ExtensibleModel):
     date = models.DateField(verbose_name=_("Date"))
     supervision = models.ForeignKey(Supervision, models.CASCADE, verbose_name=_("Supervision"), related_name="substitutions")
     teacher = models.ForeignKey("core.Person", models.CASCADE, related_name="substituted_supervisions", verbose_name=_("Teacher"))
+
+    @property
+    def teachers(self):
+        return [self.teacher]
 
     class Meta:
         ordering = ["date", "supervision"]

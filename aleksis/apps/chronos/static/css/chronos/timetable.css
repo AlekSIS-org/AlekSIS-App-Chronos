@@ -26,6 +26,10 @@ li.active > a > .sidenav-badge {
     min-height: 65px;
 }
 
+.supervision-card {
+    min-height: 35px;
+}
+
 .lesson-card .card-content {
     padding: 0;
     text-align: center;
