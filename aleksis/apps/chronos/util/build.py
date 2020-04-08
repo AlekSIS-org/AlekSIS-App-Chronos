@@ -81,12 +81,11 @@ def build_timetable(type_: str, pk: int, week: CalendarWeek):
             cols = []
             for weekday in range(TimePeriod.weekday_min, TimePeriod.weekday_max + 1):
                 col = []
-                if row["type"] == "period":
 
-                    # Add lesson periods
-                    if period in lesson_periods_per_period:
-                        if weekday in lesson_periods_per_period[period]:
-                            col += lesson_periods_per_period[period][weekday]
+                # Add lesson periods
+                if period in lesson_periods_per_period:
+                    if weekday in lesson_periods_per_period[period]:
+                        col += lesson_periods_per_period[period][weekday]
 
                 cols.append(col)
 
