@@ -66,17 +66,18 @@ def my_timetable(
 
     if has_person(request.user):
         person = request.user.person
+        type_ = person.timetable_type
 
-        lesson_periods = LessonPeriod.objects.daily_lessons_for_person(person, wanted_day)
+        # Build timetable
+        timetable = build_timetable("person", person, wanted_day)
 
-        if lesson_periods is None:
+        if type_ is None:
             # If no student or teacher, redirect to all timetables
             return redirect("all_timetables")
 
-        type_ = person.timetable_type
         super_el = person.timetable_object
 
-        context["lesson_periods"] = lesson_periods.per_period_one_day()
+        context["timetable"] = timetable
         context["super"] = {"type": type_, "el": super_el}
         context["type"] = type_
         context["day"] = wanted_day

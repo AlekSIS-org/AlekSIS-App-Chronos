@@ -1,15 +1,40 @@
 from collections import OrderedDict
+from datetime import date
+from typing import Union
 
 from calendarweek import CalendarWeek
+from django.apps import apps
 
-from aleksis.apps.chronos.models import LessonPeriod, TimePeriod, Break, Supervision
+from aleksis.core.models import Person
+
+LessonPeriod = apps.get_model("chronos", "LessonPeriod")
+TimePeriod = apps.get_model("chronos", "TimePeriod")
+Break = apps.get_model("chronos", "Break")
+Supervision = apps.get_model("chronos", "Supervision")
 
 
-def build_timetable(type_: str, pk: int, week: CalendarWeek):
+def build_timetable(
+    type_: str, obj: Union[int, Person], date_ref: Union[CalendarWeek, date]
+):
     needed_breaks = []
 
+    if not isinstance(obj, int):
+        pk = obj.pk
+    else:
+        pk = obj
+
+    is_person = False
+    if type_ == "person":
+        is_person = True
+        type_ = obj.timetable_type
+
     # Get matching lesson periods
-    lesson_periods = LessonPeriod.objects.in_week(week).filter_from_type(type_, pk)
+    if is_person:
+        lesson_periods = LessonPeriod.objects.daily_lessons_for_person(obj, date_ref)
+    else:
+        lesson_periods = LessonPeriod.objects.in_week(date_ref).filter_from_type(
+            type_, obj
+        )
 
     # Sort lesson periods in a dict
     lesson_periods_per_period = {}
@@ -18,16 +43,26 @@ def build_timetable(type_: str, pk: int, week: CalendarWeek):
         weekday = lesson_period.period.weekday
 
         if period not in lesson_periods_per_period:
-            lesson_periods_per_period[period] = {}
+            lesson_periods_per_period[period] = [] if is_person else {}
 
-        if weekday not in lesson_periods_per_period[period]:
+        if not is_person and weekday not in lesson_periods_per_period[period]:
             lesson_periods_per_period[period][weekday] = []
 
-        lesson_periods_per_period[period][weekday].append(lesson_period)
+        if is_person:
+            lesson_periods_per_period[period].append(lesson_period)
+        else:
+            lesson_periods_per_period[period][weekday].append(lesson_period)
 
     if type_ == "teacher":
         # Get matching supervisions
-        supervisions = Supervision.objects.filter(teacher=pk).annotate_week(week)
+        if is_person:
+            week = CalendarWeek.from_date(date_ref)
+        else:
+            week = date_ref
+        supervisions = Supervision.objects.filter(teacher=obj).annotate_week(week)
+
+        if is_person:
+            supervisions.filter_by_weekday(date_ref.weekday())
 
         supervisions_per_period_after = {}
         for supervision in supervisions:
@@ -38,10 +73,16 @@ def build_timetable(type_: str, pk: int, week: CalendarWeek):
             if period_after_break not in needed_breaks:
                 needed_breaks.append(period_after_break)
 
-            if period_after_break not in supervisions_per_period_after:
+            if (
+                not is_person
+                and period_after_break not in supervisions_per_period_after
+            ):
                 supervisions_per_period_after[period_after_break] = {}
 
-            supervisions_per_period_after[period_after_break][weekday] = supervision
+            if is_person:
+                supervisions_per_period_after[period_after_break] = supervision
+            else:
+                supervisions_per_period_after[period_after_break][weekday] = supervision
 
     # Get ordered breaks
     breaks = OrderedDict(sorted(Break.get_breaks_dict().items()))
@@ -58,16 +99,24 @@ def build_timetable(type_: str, pk: int, week: CalendarWeek):
                 "time_end": break_.time_end,
             }
 
-            cols = []
+            if not is_person:
+                cols = []
 
-            for weekday in range(TimePeriod.weekday_min, TimePeriod.weekday_max + 1):
+                for weekday in range(
+                    TimePeriod.weekday_min, TimePeriod.weekday_max + 1
+                ):
+                    col = None
+                    if period in supervisions_per_period_after:
+                        if weekday in supervisions_per_period_after[period]:
+                            col = supervisions_per_period_after[period][weekday]
+                    cols.append(col)
+
+                row["cols"] = cols
+            else:
                 col = None
                 if period in supervisions_per_period_after:
-                    if weekday in supervisions_per_period_after[period]:
-                        col = supervisions_per_period_after[period][weekday]
-                cols.append(col)
-
-            row["cols"] = cols
+                    col = supervisions_per_period_after[period]
+                row["col"] = col
             rows.append(row)
 
         # Lesson
@@ -78,18 +127,31 @@ def build_timetable(type_: str, pk: int, week: CalendarWeek):
                 "time_start": break_.before_period.time_start,
                 "time_end": break_.before_period.time_end,
             }
-            cols = []
-            for weekday in range(TimePeriod.weekday_min, TimePeriod.weekday_max + 1):
+
+            if not is_person:
+                cols = []
+                for weekday in range(
+                    TimePeriod.weekday_min, TimePeriod.weekday_max + 1
+                ):
+                    col = []
+
+                    # Add lesson periods
+                    if period in lesson_periods_per_period:
+                        if weekday in lesson_periods_per_period[period]:
+                            col += lesson_periods_per_period[period][weekday]
+
+                    cols.append(col)
+
+                row["cols"] = cols
+            else:
                 col = []
 
                 # Add lesson periods
                 if period in lesson_periods_per_period:
-                    if weekday in lesson_periods_per_period[period]:
-                        col += lesson_periods_per_period[period][weekday]
+                    col += lesson_periods_per_period[period]
 
-                cols.append(col)
+                row["col"] = col
 
-            row["cols"] = cols
             rows.append(row)
 
     return rows

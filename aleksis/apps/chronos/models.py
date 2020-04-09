@@ -569,21 +569,24 @@ class TimetableWidget(DashboardWidget):
     template = "chronos/widget.html"
 
     def get_context(self):
+        from aleksis.apps.chronos.util.build import build_timetable # noqa
+
         request = get_request()
         context = {"has_plan": True}
         wanted_day = TimePeriod.get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
         if has_person(request.user):
             person = request.user.person
-
-            lesson_periods = LessonPeriod.objects.daily_lessons_for_person(person, wanted_day)
             type_ = person.timetable_type
+
+            # Build timetable
+            timetable = build_timetable("person", person, wanted_day)
 
             if type_ is None:
                 # If no student or teacher, redirect to all timetables
                 context["has_plan"] = False
             else:
-                context["lesson_periods"] = lesson_periods.per_period_one_day()
+                context["timetable"] = timetable
                 context["type"] = type_
                 context["day"] = wanted_day
                 context["periods"] = TimePeriod.get_times_dict()
@@ -737,6 +740,12 @@ class SupervisionQuerySet(models.QuerySet):
             week_num = week
 
         return self.annotate(_week=models.Value(week_num, models.IntegerField()))
+
+    def filter_by_weekday(self, weekday: int):
+        self.filter(
+            Q(break_item__before_period__weekday=weekday)
+            | Q(break_item__after_period__weekday=weekday)
+        )
 
 
 class Supervision(ExtensibleModel):
