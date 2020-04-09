@@ -1,19 +1,16 @@
-{% if not sub.is_event %}
-  {% if sub.sub.type == 1 and sub.lesson_period.lesson.teachers.all %}
+{% if sub.cancelled and sub.lesson_period.lesson.teachers.all %}
+  {% include "chronos/partials/teachers.html" with teachers=sub.lesson_period.lesson.teachers.all %}
+{% elif sub.teachers.all and sub.lesson_period.lesson.teachers.all %}
+  <s>
     {% include "chronos/partials/teachers.html" with teachers=sub.lesson_period.lesson.teachers.all %}
-  {% elif sub.teachers.all and sub.lesson_period.lesson.teachers.all %}
-    <s>
-      {% include "chronos/partials/teachers.html" with teachers=sub.lesson_period.lesson.teachers.all %}
-    </s>
-    →
-    <strong>
-      {% include "chronos/partials/teachers.html" with teachers=sub.teachers.all %}
-    </strong>
-  {% elif sub.teachers.all and not sub.lesson_period.lesson.teachers.all %}
+  </s>
+  →
+  <strong>
     {% include "chronos/partials/teachers.html" with teachers=sub.teachers.all %}
-  {% elif sub.lesson_period.lesson.teachers.all %}
-    {% include "chronos/partials/teachers.html" with teachers=sub.lesson_period.lesson.teachers.all %}
-  {% endif %}
-{% else %}
+  </strong>
+{% elif sub.teachers.all and not sub.lesson_period.lesson.teachers.all %}
   {% include "chronos/partials/teachers.html" with teachers=sub.teachers.all %}
+{% elif sub.lesson_period.lesson.teachers.all %}
+  {% include "chronos/partials/teachers.html" with teachers=sub.lesson_period.lesson.teachers.all %}
 {% endif %}
+

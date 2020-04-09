@@ -57,37 +57,38 @@
         </p>
       </td>
     {% endif %}
-    {% for sub in substitutions %}
-      <tr class="{% if sub.type_ == "cancellation" %}green-text{% else %}black-text{% endif %}">
+    {% for item in substitutions %}
+      <tr class="
+      {% if item.type == "substitution" %}
+        {% if item.el.cancelled or item.el.cancelled_for_teachers %}green-text{% else %}black-text{% endif %}
+      {% endif %}
+      ">
         {# TODO: Extend support for blue and purple (supervisions and events) #}
         <td>
-          {% include "chronos/partials/groups.html" with groups=sub.lesson_period.lesson.groups.all %}
+          {% include "chronos/partials/groups.html" with groups=item.el.lesson_period.lesson.groups.all %}
         </td>
         <td>
           <strong>
-            {{ sub.lesson_period.period.period }}.
+            {{ item.el.lesson_period.period.period }}.
           </strong>
         </td>
         <td>
-          {% include "chronos/partials/subs/teachers.html" %}
+          {% include "chronos/partials/subs/teachers.html" with sub=item.el %}
         </td>
         <td>
-          {% include "chronos/partials/subs/subject.html" %}
+          {% include "chronos/partials/subs/subject.html" with sub=item.el %}
         </td>
         <td>
-          {% include "chronos/partials/subs/room.html" %}
+          {% include "chronos/partials/subs/room.html" with sub=item.el %}
         </td>
         <td>
-          {% if sub.cancelled %}
-            {# TODO: Support other cases#}
-            <span class="badge new green hide-on-med-and-up">{% trans "Cancelled" %}</span>
-          {% endif %}
-          {#          <em>{{ sub.text|default:"" }}</em>#}
+          <span class="hide-on-med-and-up">
+            {% include "chronos/partials/subs/badge.html" with sub=item.el %}
+          </span>
+          <em>{{ sub.comment|default:"" }}</em>
         </td>
         <td class="hide-on-small-and-down">
-          {% if sub.cancelled %}
-            <span class="badge new green darken-2">{% trans "Cancelled" %}</span>
-          {% endif %}
+          {% include "chronos/partials/subs/badge.html" with sub=item.el %}
         </td>
       </tr>
     {% endfor %}

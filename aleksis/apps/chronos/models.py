@@ -4,6 +4,7 @@ from collections import OrderedDict
 from datetime import date, datetime, timedelta, time
 from typing import Dict, Optional, Tuple, Union
 
+from constance import config
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -442,6 +443,18 @@ class Lesson(ExtensibleModel):
     def group_names(self, sep: Optional[str] = ", ") -> str:
         return sep.join([group.short_name for group in self.groups.all()])
 
+    @property
+    def groups_to_show(self) -> models.QuerySet:
+        groups = self.groups.all()
+        if groups.count() == 1 and groups[0].parent_groups.all() and config.CHRONOS_USE_PARENT_GROUPS:
+            return groups[0].parent_groups.all()
+        else:
+            return groups
+
+    @property
+    def groups_to_show_names(self, sep: Optional[str] = ", ") -> str:
+        return sep.join([group.short_name for group in self.groups_to_show])
+
     def get_calendar_week(self, week: int):
         year = self.date_start.year
         if week < int(self.date_start.strftime("%V")):
@@ -485,9 +498,10 @@ class LessonSubstitution(ExtensibleModel):
 
     @property
     def type_(self):
-        # TODO: Add cases events and supervisions
         if self.cancelled:
             return "cancellation"
+        elif self.cancelled_for_teachers:
+            return "cancellation_for_teachers"
         else:
             return "substitution"
 

@@ -18,7 +18,7 @@ from aleksis.core.util import messages
 from .forms import LessonSubstitutionForm
 from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
 from .tables import LessonsTable
-from .util.build import build_timetable
+from .util.build import build_timetable, build_substitutions_list
 from .util.js import date_unix
 from .util.date import CalendarWeek, get_weeks_for_year
 from aleksis.core.util.core_helpers import has_person
@@ -295,12 +295,14 @@ def substitutions(
         day_contexts = {wanted_day: {"day": wanted_day}}
 
     for day in day_contexts:
-        subs = LessonSubstitution.objects.on_day(day).order_by("lesson_period__lesson__groups", "lesson_period__period")
+        subs = build_substitutions_list(day)
         day_contexts[day]["substitutions"] = subs
 
         day_contexts[day]["announcements"] = Announcement.for_timetables().on_date(day).filter(show_in_timetables=True)
 
         if config.CHRONOS_SUBSTITUTIONS_SHOW_HEADER_BOX:
+            subs = LessonSubstitution.objects.on_day(day).order_by("lesson_period__lesson__groups",
+                                                                   "lesson_period__period")
             day_contexts[day]["affected_teachers"] = subs.affected_teachers()
             day_contexts[day]["affected_groups"] = subs.affected_groups()
 

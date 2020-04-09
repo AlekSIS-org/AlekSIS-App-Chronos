@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from datetime import date
-from typing import Union
+from typing import Union, List
 
 from calendarweek import CalendarWeek
 from django.apps import apps
@@ -11,6 +11,7 @@ LessonPeriod = apps.get_model("chronos", "LessonPeriod")
 TimePeriod = apps.get_model("chronos", "TimePeriod")
 Break = apps.get_model("chronos", "Break")
 Supervision = apps.get_model("chronos", "Supervision")
+LessonSubstitution = apps.get_model("chronos", "LessonSubstitution")
 
 
 def build_timetable(
@@ -153,5 +154,30 @@ def build_timetable(
                 row["col"] = col
 
             rows.append(row)
+
+    return rows
+
+
+def build_substitutions_list(wanted_day: date) -> List[dict]:
+    rows = []
+
+    subs = LessonSubstitution.objects.on_day(wanted_day).order_by(
+        "lesson_period__lesson__groups", "lesson_period__period"
+    )
+
+    for sub in subs:
+        if not sub.cancelled_for_teachers:
+            sort_a = sub.lesson_period.lesson.group_names
+        else:
+            sort_a = "Z.{}".format(sub.lesson_period.lesson.teacher_names)
+
+        row = {
+            "type": "substitution",
+            "sort_a": sort_a,
+            "sort_b": "{}".format(sub.lesson_period.period.period),
+            "el": sub,
+        }
+
+        rows.append(row)
 
     return rows

@@ -34,8 +34,7 @@
           {% endif %}
 
           {# Badge #}
-          <span class="badge new green darken-2">{% if sub.cancelled_for_teachers %}
-            {% trans "Cancelled for teachers" %}{% else %}{% trans "Cancelled" %}{% endif %}</span>
+          {% include "chronos/partials/subs/badge.html" with sub=sub %}
 
         {% else %}
           {# Display sub #}
