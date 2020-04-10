@@ -222,7 +222,7 @@ class LessonPeriodQuerySet(LessonDataQuerySet):
         if type_ == "teacher":
             # Teacher
 
-            return person.lesson_periods_as_teacher
+            return self.filter_teacher(person)
 
         elif type_ == "group":
             # Student
@@ -760,6 +760,18 @@ class SupervisionQuerySet(models.QuerySet):
             Q(break_item__before_period__weekday=weekday)
             | Q(break_item__after_period__weekday=weekday)
         )
+
+    def filter_by_teacher(self, teacher: Union[Person, int]):
+        """ Filter for all supervisions given by a certain teacher. """
+
+        if self.count() > 0:
+            week = CalendarWeek(week=self[0]._week)
+
+            dates = [week[w] for w in range(0, 7)]
+
+            return self.filter(Q(substitutions__teacher=teacher, substitutions__date__in=dates) | Q(teacher=teacher))
+
+        return self
 
 
 class Supervision(ExtensibleModel):
