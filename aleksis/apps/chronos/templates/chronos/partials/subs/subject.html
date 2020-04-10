@@ -1,24 +1,28 @@
 {% load i18n %}
 
-{% if not sub.lesson_period.lesson.subject and not sub.subject %}
-{% elif sub.cancelled or sub.cancelled_for_teachers %}
-  <span data-position="bottom" class="tooltipped" data-tooltip="{{ sub.lesson_period.lesson.subject.name }}">
-    <s>{{ sub.lesson_period.lesson.subject.abbrev }}</s>
+{% if type == "substitution" %}
+  {% if not el.lesson_period.lesson.subject and not el.subject %}
+  {% elif el.cancelled or el.cancelled_for_teachers %}
+    <span data-position="bottom" class="tooltipped" data-tooltip="{{ el.lesson_period.lesson.subject.name }}">
+    <s>{{ el.lesson_period.lesson.subject.abbrev }}</s>
   </span>
-{% elif sub.subject and sub.lesson_period.lesson.subject %}
-  <span data-position="bottom" class="tooltipped" data-tooltip="{{ sub.lesson_period.lesson.subject.name }}">
-    <s>{{ sub.lesson_period.lesson.subject.abbrev }}</s>
+  {% elif el.subject and el.lesson_period.lesson.subject %}
+    <span data-position="bottom" class="tooltipped" data-tooltip="{{ el.lesson_period.lesson.subject.name }}">
+    <s>{{ el.lesson_period.lesson.subject.abbrev }}</s>
   </span>
-  →
-  <span data-position="bottom" class="tooltipped" data-tooltip="{{ sub.subject.name }}">
-    <strong>{{ sub.subject.abbrev }}</strong>
+    →
+    <span data-position="bottom" class="tooltipped" data-tooltip="{{ el.subject.name }}">
+    <strong>{{ el.subject.abbrev }}</strong>
   </span>
-{% elif sub.subject and not sub.lesson_period.lesson.subject %}
-  <span data-position="bottom" class="tooltipped" data-tooltip="{{ sub.subject.name }}">
-    <strong>{{ sub.subject.abbrev }}</strong>
+  {% elif el.subject and not el.lesson_period.lesson.subject %}
+    <span data-position="bottom" class="tooltipped" data-tooltip="{{ el.subject.name }}">
+    <strong>{{ el.subject.abbrev }}</strong>
   </span>
-{% else %}
-  <span data-position="bottom" class="tooltipped" data-tooltip="{{ sub.lesson_period.lesson.subject.name }}">
-    <strong>{{ sub.lesson_period.lesson.subject.abbrev }}</strong>
+  {% else %}
+    <span data-position="bottom" class="tooltipped" data-tooltip="{{ el.lesson_period.lesson.subject.name }}">
+    <strong>{{ el.lesson_period.lesson.subject.abbrev }}</strong>
   </span>
+  {% endif %}
+{% elif type == "supervision_substitution" %}
+  {% trans "Supervision" %}
 {% endif %}

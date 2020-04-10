@@ -1,16 +1,25 @@
-{% if sub.cancelled and sub.lesson_period.lesson.teachers.all %}
-  {% include "chronos/partials/teachers.html" with teachers=sub.lesson_period.lesson.teachers.all %}
-{% elif sub.teachers.all and sub.lesson_period.lesson.teachers.all %}
+{% if type == "substitution" %}
+  {% if el.cancelled and el.lesson_period.lesson.teachers.all %}
+    {% include "chronos/partials/teachers.html" with teachers=el.lesson_period.lesson.teachers.all %}
+  {% elif el.teachers.all and el.lesson_period.lesson.teachers.all %}
+    <s>
+      {% include "chronos/partials/teachers.html" with teachers=el.lesson_period.lesson.teachers.all %}
+    </s>
+    →
+    <strong>
+      {% include "chronos/partials/teachers.html" with teachers=el.teachers.all %}
+    </strong>
+  {% elif el.teachers.all and not el.lesson_period.lesson.teachers.all %}
+    {% include "chronos/partials/teachers.html" with teachers=el.teachers.all %}
+  {% elif el.lesson_period.lesson.teachers.all %}
+    {% include "chronos/partials/teachers.html" with teachers=el.lesson_period.lesson.teachers.all %}
+  {% endif %}
+{% elif type == "supervision_substitution" %}
   <s>
-    {% include "chronos/partials/teachers.html" with teachers=sub.lesson_period.lesson.teachers.all %}
+    {% include "chronos/partials/teachers.html" with teachers=el.supervision.teachers %}
   </s>
   →
   <strong>
-    {% include "chronos/partials/teachers.html" with teachers=sub.teachers.all %}
+    {% include "chronos/partials/teachers.html" with teachers=el.teachers %}
   </strong>
-{% elif sub.teachers.all and not sub.lesson_period.lesson.teachers.all %}
-  {% include "chronos/partials/teachers.html" with teachers=sub.teachers.all %}
-{% elif sub.lesson_period.lesson.teachers.all %}
-  {% include "chronos/partials/teachers.html" with teachers=sub.lesson_period.lesson.teachers.all %}
 {% endif %}
-

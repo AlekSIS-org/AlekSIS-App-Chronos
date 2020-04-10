@@ -12,6 +12,7 @@ TimePeriod = apps.get_model("chronos", "TimePeriod")
 Break = apps.get_model("chronos", "Break")
 Supervision = apps.get_model("chronos", "Supervision")
 LessonSubstitution = apps.get_model("chronos", "LessonSubstitution")
+SupervisionSubstitution = apps.get_model("chronos", "SupervisionSubstitution")
 
 
 def build_timetable(
@@ -179,5 +180,23 @@ def build_substitutions_list(wanted_day: date) -> List[dict]:
         }
 
         rows.append(row)
+
+    # Get supervision substitutions
+    super_subs = SupervisionSubstitution.objects.filter(date=wanted_day)
+
+    for super_sub in super_subs:
+        row = {
+            "type": "supervision_substitution",
+            "sort_a": "Z.{}".format(super_sub.teacher),
+            "sort_b": "{}".format(super_sub.supervision.break_item.after_period_number),
+            "el": super_sub
+        }
+        rows.append(row)
+
+    # Sort all items
+    def sorter(row: dict):
+        return row["sort_a"] + row["sort_b"]
+
+    rows.sort(key=sorter)
 
     return rows

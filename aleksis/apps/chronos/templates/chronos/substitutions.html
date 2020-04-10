@@ -58,28 +58,24 @@
       </td>
     {% endif %}
     {% for item in substitutions %}
-      <tr class="
-      {% if item.type == "substitution" %}
-        {% if item.el.cancelled or item.el.cancelled_for_teachers %}green-text{% else %}black-text{% endif %}
-      {% endif %}
-      ">
-        {# TODO: Extend support for blue and purple (supervisions and events) #}
+      <tr class="{% include "chronos/partials/subs/colour.html" with item=item %}">
+        {# TODO: Extend support for purple (events) #}
         <td>
-          {% include "chronos/partials/groups.html" with groups=item.el.lesson_period.lesson.groups.all %}
+          {% if item.type == "substitution" %}
+            {% include "chronos/partials/groups.html" with groups=item.el.lesson_period.lesson.groups.all %}
+          {% endif %}
         </td>
         <td>
-          <strong>
-            {{ item.el.lesson_period.period.period }}.
-          </strong>
+         {% include "chronos/partials/subs/period.html" with type=item.type el=item.el %}
         </td>
         <td>
-          {% include "chronos/partials/subs/teachers.html" with sub=item.el %}
+          {% include "chronos/partials/subs/teachers.html" with type=item.type el=item.el %}
         </td>
         <td>
-          {% include "chronos/partials/subs/subject.html" with sub=item.el %}
+          {% include "chronos/partials/subs/subject.html" with type=item.type el=item.el %}
         </td>
         <td>
-          {% include "chronos/partials/subs/room.html" with sub=item.el %}
+          {% include "chronos/partials/subs/room.html" with type=item.type el=item.el %}
         </td>
         <td>
           <span class="hide-on-med-and-up">

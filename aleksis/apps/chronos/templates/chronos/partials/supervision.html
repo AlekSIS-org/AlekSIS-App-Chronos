@@ -18,13 +18,7 @@
             {{ supervision.area.short_name }}
           </span>
           {% if supervision.get_substitution and smart %}
-            <s>
-              {% include "chronos/partials/teachers.html" with teachers=supervision.teachers %}
-            </s>
-            →
-            <strong>
-              {% include "chronos/partials/teachers.html" with teachers=supervision.get_substitution.teachers %}
-            </strong>
+            {% include "chronos/partials/subs/teachers.html" with type="supervision_substitution" el=supervision.get_substitution %}
           {% elif type == "supervision_area" %}
             {% include "chronos/partials/teachers.html" with teachers=supervision.teachers %}
           {% endif %}

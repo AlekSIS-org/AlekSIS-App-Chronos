@@ -45,14 +45,14 @@
           {% endif %}
 
           {# Display teacher with tooltip #}
-          {% include "chronos/partials/subs/teachers.html" %}
+          {% include "chronos/partials/subs/teachers.html" with type="substitution" el=sub %}
 
           {# Display subject #}
-          {% include "chronos/partials/subs/subject.html" %}
+          {% include "chronos/partials/subs/subject.html" with type="substitution" el=sub %}
 
           {# Teacher or class > display room #}
           {% if type == "teacher" or type == "group" %}
-            {% include "chronos/partials/subs/room.html" %}
+            {% include "chronos/partials/subs/room.html" with type="substitution" el=sub %}
           {% endif %}
         {% endif %}
 
