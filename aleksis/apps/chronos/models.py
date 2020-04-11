@@ -234,12 +234,12 @@ class LessonPeriodQuerySet(LessonDataQuerySet):
             return None
 
     def daily_lessons_for_person(self, person: Person, wanted_day: date) -> Optional[models.QuerySet]:
-        lesson_periods = LessonPeriod.objects.filter_from_person(person)
-
-        if lesson_periods is None:
+        if person.timetable_type is None:
             return None
 
-        return lesson_periods.on_day(wanted_day)
+        lesson_periods = LessonPeriod.objects.on_day(wanted_day).filter_from_person(person)
+
+        return lesson_periods
 
     def per_period_one_day(self) -> OrderedDict:
         """ Group selected lessons per period for one day """
