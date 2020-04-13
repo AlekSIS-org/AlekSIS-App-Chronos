@@ -629,7 +629,10 @@ class AbsenceReason(ExtensibleModel):
 
 class Absence(ExtensibleModel):
     reason = models.ForeignKey("AbsenceReason", on_delete=models.CASCADE, related_name="absences")
-    person = models.ManyToManyField("core.Person", related_name="absences")
+
+    teacher = models.ForeignKey("core.Person", on_delete=models.CASCADE, related_name="absences", null=True, blank=True)
+    group = models.ForeignKey("core.Group", on_delete=models.CASCADE, related_name="absences", null=True, blank=True)
+    room = models.ForeignKey("Room", on_delete=models.CASCADE, related_name="absences", null=True, blank=True)
 
     date_start = models.DateField(verbose_name=_("Effective start date of absence"), null=True)
     date_end = models.DateField(verbose_name=_("Effective end date of absence"), null=True)
