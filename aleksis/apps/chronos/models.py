@@ -830,7 +830,7 @@ class Event(ExtensibleModel):
     title = models.CharField(verbose_name=_("Title"), max_length=50)
     date_start = models.DateField(verbose_name=_("Effective start date of event"), null=True)
     date_end = models.DateField(verbose_name=_("Effective end date of event"), null=True)
-    absence_reason = models.ForeignKey("AbsenceReason", on_delete=models.CASCADE, related_name="absence_reason", verbose_name=_("Absence reason"))
+
     period_from = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of event"), related_name="+")
     period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of event"), related_name="+")
 
