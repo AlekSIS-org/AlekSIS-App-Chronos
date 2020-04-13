@@ -143,18 +143,18 @@ class LessonDataQuerySet(models.QuerySet):
     def filter_teacher(self, teacher: Union[Person, int]):
         """ Filter for all lessons given by a certain teacher. """
 
-        return self.filter(
-            Q(**{self._subst_path + "teachers": teacher, self._subst_path + "week": F("_week"),})
-            | Q(**{self._period_path + "lesson__teachers": teacher})
-        )
+        qs1 = self.filter(**{self._period_path + "lesson__teachers": teacher})
+        qs2 = self.filter(**{self._subst_path + "teachers": teacher, self._subst_path + "week": F("_week"), })
+
+        return qs1.union(qs2)
 
     def filter_room(self, room: Union[Room, int]):
         """ Filter for all lessons taking part in a certain room. """
 
-        return self.filter(
-            Q(**{self._subst_path + "room": room, self._subst_path + "week": F("_week"),})
-            | Q(**{self._period_path + "room": room})
-        )
+        qs1 = self.filter(**{self._period_path + "room": room})
+        qs2 = self.filter(**{self._subst_path + "room": room, self._subst_path + "week": F("_week"),})
+
+        return qs1.union(qs2)
 
     def annotate_week(self, week: Union[CalendarWeek, int]):
         """ Annotate all lessons in the QuerySet with the number of the provided calendar week. """
@@ -227,7 +227,7 @@ class LessonPeriodQuerySet(LessonDataQuerySet):
         elif type_ == "group":
             # Student
 
-            return person.lesson_periods_as_participant
+            return self.filter(lesson__groups__members=person)
 
         else:
             # If no student or teacher
@@ -237,7 +237,7 @@ class LessonPeriodQuerySet(LessonDataQuerySet):
         if person.timetable_type is None:
             return None
 
-        lesson_periods = LessonPeriod.objects.on_day(wanted_day).filter_from_person(person)
+        lesson_periods = self.on_day(wanted_day).filter_from_person(person)
 
         return lesson_periods
 
@@ -765,7 +765,10 @@ class SupervisionQuerySet(models.QuerySet):
         """ Filter for all supervisions given by a certain teacher. """
 
         if self.count() > 0:
-            week = CalendarWeek(week=self[0]._week)
+            if hasattr(self[0], "_week"):
+                week = CalendarWeek(week=self[0]._week)
+            else:
+                week = CalendarWeek.current_week()
 
             dates = [week[w] for w in range(0, 7)]
 
