@@ -15,7 +15,7 @@ from django.http.request import QueryDict
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import classproperty
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from calendarweek.django import CalendarWeek, i18n_day_names_lazy, i18n_day_abbrs_lazy
 from colorfield.fields import ColorField
