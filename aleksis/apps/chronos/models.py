@@ -827,7 +827,8 @@ class SupervisionSubstitution(ExtensibleModel):
 
 
 class Event(ExtensibleModel):
-    title = models.CharField(verbose_name=_("Title"), max_length=50)
+    title = models.CharField(verbose_name=_("Title"), max_length=255, blank=True, null=True)
+
     date_start = models.DateField(verbose_name=_("Effective start date of event"), null=True)
     date_end = models.DateField(verbose_name=_("Effective end date of event"), null=True)
 
