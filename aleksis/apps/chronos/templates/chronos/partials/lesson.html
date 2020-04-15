@@ -14,7 +14,7 @@
         {% endif %}
         "
         {# Add CSS class for sub when it's a sub #}
-     class="{% if lesson_period.get_substitution and smart %}{% if lesson_period.substitution.table.is_event %}lesson-with-event{% else %}lesson-with-sub{% endif %}{% endif %}"
+     class="{% if lesson_period.get_substitution and smart %}lesson-with-sub{% endif %}"
 >
   <p>
     {% if lesson_period.is_hol and smart %}
@@ -64,22 +64,6 @@
             <em>{{ lesson_period.get_substitution.comment }}</em>
           </small>
         {% endif %}
-
-        {# Display the extra text for events #}
-{#        {% if lesson_period.substitution.table.is_event %}#}
-{#          {% if type == 0 and lesson_period.substitution.table.classes == "" and lesson_period.substitution.table.rooms|length == 0 and lesson_period.substitutions.table.teachers|length == 0 %}#}
-{#            <em>{{ lesson_period.substitution.table.text|default:"" }}</em>#}
-{#          {% elif type == 2 and  lesson_period.substitution.table.teachers|length == 0  and  lesson_period.substitution.table.rooms|length == 0 %}#}
-{#            <em>{{ lesson_period.substitution.table.text|default:"" }}</em>#}
-{#          {% elif type == 1  and  lesson_period.substitution.table.teachers|length == 0 and lesson_period.substitution.table.classes == "" %}#}
-{#            <em>{{ lesson_period.substitution.table.text|default:"" }}</em>#}
-{#          {% else %}#}
-{#            <br>#}
-{#            <small>#}
-{#              <em>{{ lesson_period.substitution.table.text|default:"" }}</em>#}
-{#            </small>#}
-{#          {% endif %}#}
-{#        {% endif %}#}
       {% endwith %}
 
 

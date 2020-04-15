@@ -13,6 +13,7 @@ Break = apps.get_model("chronos", "Break")
 Supervision = apps.get_model("chronos", "Supervision")
 LessonSubstitution = apps.get_model("chronos", "LessonSubstitution")
 SupervisionSubstitution = apps.get_model("chronos", "SupervisionSubstitution")
+Event = apps.get_model("chronos", "Event")
 
 
 def build_timetable(
@@ -54,6 +55,62 @@ def build_timetable(
             lesson_periods_per_period[period].append(lesson_period)
         else:
             lesson_periods_per_period[period][weekday].append(lesson_period)
+
+    # Get events
+    if is_person:
+        events = Event.objects.on_day(date_ref).filter_from_person(obj)
+    else:
+        events = Event.objects.in_week(date_ref).filter_from_type(type_, obj)
+
+    # Sort events in a dict
+    events_per_period = {}
+    for event in events:
+        if not is_person and event.date_start < date_ref[TimePeriod.weekday_min]:
+            # If start date not in current week, set weekday and period to min
+            weekday_from = TimePeriod.weekday_min
+            period_from_first_weekday = TimePeriod.period_min
+        else:
+            weekday_from = event.date_start.weekday()
+            period_from_first_weekday = event.period_from.period
+
+        if not is_person and event.date_end > date_ref[TimePeriod.weekday_max]:
+            # If end date not in current week, set weekday and period to max
+            weekday_to = TimePeriod.weekday_max
+            period_to_last_weekday = TimePeriod.period_max
+        else:
+            weekday_to = event.date_end.weekday()
+            period_to_last_weekday = event.period_to.period
+
+        for weekday in range(weekday_from, weekday_to + 1):
+            if is_person and weekday != date_ref.weekday():
+                # If daily timetable for person, skip other weekdays
+                continue
+
+            if weekday == weekday_from:
+                # If start day, use start period
+                period_from = period_from_first_weekday
+            else:
+                # If not start day, use min period
+                period_from = TimePeriod.period_min
+
+            if weekday == weekday_to:
+                # If end day, use end period
+                period_to = period_to_last_weekday
+            else:
+                # If not end day, use max period
+                period_to = TimePeriod.period_max
+
+            for period in range(period_from, period_to +1):
+                if period not in events_per_period:
+                    events_per_period[period] = [] if is_person else {}
+
+                if not is_person and weekday not in events_per_period[period]:
+                    events_per_period[period][weekday] = []
+
+                if is_person:
+                    events_per_period[period].append(event)
+                else:
+                    events_per_period[period][weekday].append(event)
 
     if type_ == "teacher":
         # Get matching supervisions
@@ -121,7 +178,7 @@ def build_timetable(
                 row["col"] = col
             rows.append(row)
 
-        # Lesson
+        # Period
         if period <= TimePeriod.period_max:
             row = {
                 "type": "period",
@@ -142,6 +199,11 @@ def build_timetable(
                         if weekday in lesson_periods_per_period[period]:
                             col += lesson_periods_per_period[period][weekday]
 
+                    # Add events
+                    if period in events_per_period:
+                        if weekday in events_per_period[period]:
+                            col += events_per_period[period][weekday]
+
                     cols.append(col)
 
                 row["cols"] = cols
@@ -151,6 +213,10 @@ def build_timetable(
                 # Add lesson periods
                 if period in lesson_periods_per_period:
                     col += lesson_periods_per_period[period]
+
+                # Add events
+                if period in events_per_period:
+                    col += events_per_period[period]
 
                 row["col"] = col
 

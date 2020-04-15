@@ -619,6 +619,33 @@ class TimetableWidget(DashboardWidget):
         verbose_name = _("Timetable widget")
 
 
+class DateRangeQuerySet(models.QuerySet):
+    def within_dates(self, start: date, end: date):
+        """ Filter for all events within a date range. """
+
+        return self.filter(date_start__lte=end, date_end__gte=start)
+
+    def in_week(self, wanted_week: CalendarWeek):
+        """ Filter for all events within a calendar week. """
+
+        return self.within_dates(wanted_week[0], wanted_week[6])
+
+    def on_day(self, day: date):
+        """ Filter for all events on a certain day. """
+
+        return self.within_dates(day, day)
+
+    def at_time(self, when: Optional[datetime] = None):
+        """ Filter for the events taking place at a certain point in time. """
+
+        now = when or datetime.now()
+
+        return self.on_day(now.date()).filter(
+            period_from__time_start__lte=now.time(),
+            period_to__time_end__gte=now.time()
+        )
+
+
 class AbsenceReason(ExtensibleModel):
     short_name = models.CharField(verbose_name=_("Short name"), max_length=255)
     name = models.CharField(verbose_name=_("Name"), blank=True, null=True, max_length=255)
@@ -826,7 +853,67 @@ class SupervisionSubstitution(ExtensibleModel):
         verbose_name_plural = _("Supervision substitutions")
 
 
+class EventQuerySet(DateRangeQuerySet):
+    def filter_participant(self, person: Union[Person, int]):
+        """ Filter for all lessons a participant (student) attends. """
+
+        return self.filter(Q(groups_members=person))
+
+    def filter_group(self, group: Union[Group, int]):
+        """ Filter for all events a group (class) attends. """
+
+        if isinstance(group, int):
+            group = Group.objects.get(pk=group)
+
+        if group.parent_groups.all():
+            # Prevent to show lessons multiple times
+            return self.filter(groups=group)
+        else:
+            return self.filter(Q(groups=group) | Q(groups__parent_groups=group))
+
+    def filter_teacher(self, teacher: Union[Person, int]):
+        """ Filter for all lessons given by a certain teacher. """
+
+        return self.filter(teachers=teacher)
+
+    def filter_room(self, room: Union[Room, int]):
+        """ Filter for all lessons taking part in a certain room. """
+
+        return self.filter(rooms=room)
+
+    def filter_from_type(self, type_: str, pk: int) -> Optional[models.QuerySet]:
+        if type_ == "group":
+            return self.filter_group(pk)
+        elif type_ == "teacher":
+            return self.filter_teacher(pk)
+        elif type_ == "room":
+            return self.filter_room(pk)
+        else:
+            return None
+
+    def filter_from_person(self, person: Person) -> Optional[models.QuerySet]:
+        type_ = person.timetable_type
+
+        if type_ == "teacher":
+            # Teacher
+
+            return self.filter_teacher(person)
+
+        elif type_ == "group":
+            # Student
+
+            return self.filter_participant(person)
+
+        else:
+            # If no student or teacher
+            return None
+
+
 class Event(ExtensibleModel):
+    label_ = "event"
+
+    objects = models.Manager.from_queryset(EventQuerySet)()
+
     title = models.CharField(verbose_name=_("Title"), max_length=255, blank=True, null=True)
 
     date_start = models.DateField(verbose_name=_("Effective start date of event"), null=True)
