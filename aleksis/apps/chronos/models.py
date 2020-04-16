@@ -4,6 +4,7 @@ from collections import OrderedDict
 from datetime import date, datetime, timedelta, time
 from typing import Dict, Optional, Tuple, Union
 
+from constance import config
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -142,18 +143,18 @@ class LessonDataQuerySet(models.QuerySet):
     def filter_teacher(self, teacher: Union[Person, int]):
         """ Filter for all lessons given by a certain teacher. """
 
-        return self.filter(
-            Q(**{self._subst_path + "teachers": teacher, self._subst_path + "week": F("_week"),})
-            | Q(**{self._period_path + "lesson__teachers": teacher})
-        )
+        qs1 = self.filter(**{self._period_path + "lesson__teachers": teacher})
+        qs2 = self.filter(**{self._subst_path + "teachers": teacher, self._subst_path + "week": F("_week"), })
+
+        return qs1.union(qs2)
 
     def filter_room(self, room: Union[Room, int]):
         """ Filter for all lessons taking part in a certain room. """
 
-        return self.filter(
-            Q(**{self._subst_path + "room": room, self._subst_path + "week": F("_week"),})
-            | Q(**{self._period_path + "room": room})
-        )
+        qs1 = self.filter(**{self._period_path + "room": room})
+        qs2 = self.filter(**{self._subst_path + "room": room, self._subst_path + "week": F("_week"),})
+
+        return qs1.union(qs2)
 
     def annotate_week(self, week: Union[CalendarWeek, int]):
         """ Annotate all lessons in the QuerySet with the number of the provided calendar week. """
@@ -221,24 +222,24 @@ class LessonPeriodQuerySet(LessonDataQuerySet):
         if type_ == "teacher":
             # Teacher
 
-            return person.lesson_periods_as_teacher
+            return self.filter_teacher(person)
 
         elif type_ == "group":
             # Student
 
-            return person.lesson_periods_as_participant
+            return self.filter(lesson__groups__members=person)
 
         else:
             # If no student or teacher
             return None
 
     def daily_lessons_for_person(self, person: Person, wanted_day: date) -> Optional[models.QuerySet]:
-        lesson_periods = LessonPeriod.objects.filter_from_person(person)
-
-        if lesson_periods is None:
+        if person.timetable_type is None:
             return None
 
-        return lesson_periods.on_day(wanted_day)
+        lesson_periods = self.on_day(wanted_day).filter_from_person(person)
+
+        return lesson_periods
 
     def per_period_one_day(self) -> OrderedDict:
         """ Group selected lessons per period for one day """
@@ -442,6 +443,18 @@ class Lesson(ExtensibleModel):
     def group_names(self, sep: Optional[str] = ", ") -> str:
         return sep.join([group.short_name for group in self.groups.all()])
 
+    @property
+    def groups_to_show(self) -> models.QuerySet:
+        groups = self.groups.all()
+        if groups.count() == 1 and groups[0].parent_groups.all() and config.CHRONOS_USE_PARENT_GROUPS:
+            return groups[0].parent_groups.all()
+        else:
+            return groups
+
+    @property
+    def groups_to_show_names(self, sep: Optional[str] = ", ") -> str:
+        return sep.join([group.short_name for group in self.groups_to_show])
+
     def get_calendar_week(self, week: int):
         year = self.date_start.year
         if week < int(self.date_start.strftime("%V")):
@@ -485,9 +498,10 @@ class LessonSubstitution(ExtensibleModel):
 
     @property
     def type_(self):
-        # TODO: Add cases events and supervisions
         if self.cancelled:
             return "cancellation"
+        elif self.cancelled_for_teachers:
+            return "cancellation_for_teachers"
         else:
             return "substitution"
 
@@ -508,6 +522,8 @@ class LessonSubstitution(ExtensibleModel):
 
 
 class LessonPeriod(ExtensibleModel):
+    label_ = "lesson_period"
+
     objects = LessonPeriodManager.from_queryset(LessonPeriodQuerySet)()
 
     lesson = models.ForeignKey("Lesson", models.CASCADE, related_name="lesson_periods")
@@ -567,21 +583,25 @@ class TimetableWidget(DashboardWidget):
     template = "chronos/widget.html"
 
     def get_context(self):
+        from aleksis.apps.chronos.util.build import build_timetable # noqa
+
         request = get_request()
         context = {"has_plan": True}
         wanted_day = TimePeriod.get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
         if has_person(request.user):
             person = request.user.person
-
-            lesson_periods = LessonPeriod.objects.daily_lessons_for_person(person, wanted_day)
             type_ = person.timetable_type
+
+            # Build timetable
+            timetable = build_timetable("person", person, wanted_day)
 
             if type_ is None:
                 # If no student or teacher, redirect to all timetables
                 context["has_plan"] = False
             else:
-                context["lesson_periods"] = lesson_periods.per_period_one_day()
+                context["timetable"] = timetable
+                context["holiday"] = Holiday.on_day(wanted_day)
                 context["type"] = type_
                 context["day"] = wanted_day
                 context["periods"] = TimePeriod.get_times_dict()
@@ -600,9 +620,36 @@ class TimetableWidget(DashboardWidget):
         verbose_name = _("Timetable widget")
 
 
+class DateRangeQuerySet(models.QuerySet):
+    def within_dates(self, start: date, end: date):
+        """ Filter for all events within a date range. """
+
+        return self.filter(date_start__lte=end, date_end__gte=start)
+
+    def in_week(self, wanted_week: CalendarWeek):
+        """ Filter for all events within a calendar week. """
+
+        return self.within_dates(wanted_week[0], wanted_week[6])
+
+    def on_day(self, day: date):
+        """ Filter for all events on a certain day. """
+
+        return self.within_dates(day, day)
+
+    def at_time(self, when: Optional[datetime] = None):
+        """ Filter for the events taking place at a certain point in time. """
+
+        now = when or datetime.now()
+
+        return self.on_day(now.date()).filter(
+            period_from__time_start__lte=now.time(),
+            period_to__time_end__gte=now.time()
+        )
+
+
 class AbsenceReason(ExtensibleModel):
-    title = models.CharField(verbose_name=_("Title"), max_length=50)
-    description = models.TextField(verbose_name=_("Description"), blank=True, null=True)
+    short_name = models.CharField(verbose_name=_("Short name"), max_length=255)
+    name = models.CharField(verbose_name=_("Name"), blank=True, null=True, max_length=255)
 
     class Meta:
         verbose_name = _("Absence reason")
@@ -610,7 +657,10 @@ class AbsenceReason(ExtensibleModel):
 
 class Absence(ExtensibleModel):
     reason = models.ForeignKey("AbsenceReason", on_delete=models.CASCADE, related_name="absences")
-    person = models.ManyToManyField("core.Person", related_name="absences")
+
+    teacher = models.ForeignKey("core.Person", on_delete=models.CASCADE, related_name="absences", null=True, blank=True)
+    group = models.ForeignKey("core.Group", on_delete=models.CASCADE, related_name="absences", null=True, blank=True)
+    room = models.ForeignKey("Room", on_delete=models.CASCADE, related_name="absences", null=True, blank=True)
 
     date_start = models.DateField(verbose_name=_("Effective start date of absence"), null=True)
     date_end = models.DateField(verbose_name=_("Effective end date of absence"), null=True)
@@ -642,11 +692,37 @@ class Exam(ExtensibleModel):
         verbose_name_plural = _("Exams")
 
 
+class HolidayQuerySet(DateRangeQuerySet):
+    pass
+
+
 class Holiday(ExtensibleModel):
+    objects = models.Manager.from_queryset(HolidayQuerySet)()
+
     title = models.CharField(verbose_name=_("Title of the holidays"), max_length=50)
     date_start = models.DateField(verbose_name=_("Effective start date of holidays"), null=True)
     date_end = models.DateField(verbose_name=_("Effective end date of holidays"), null=True)
     comments = models.TextField(verbose_name=_("Comments"), null=True, blank=True)
+
+    @classmethod
+    def on_day(cls, day: date) -> Optional["Holiday"]:
+        holidays = cls.objects.on_day(day)
+        if holidays.exists():
+            return holidays[0]
+        else:
+            return None
+
+    @classmethod
+    def in_week(cls, week: CalendarWeek) -> Dict[int, Optional["Holiday"]]:
+        per_weekday = {}
+
+        for weekday in range(TimePeriod.weekday_min, TimePeriod.weekday_max + 1):
+            holiday_date = week[weekday]
+            holidays = Holiday.objects.on_day(holiday_date)
+            if holidays.exists():
+                per_weekday[weekday] = holidays[0]
+
+        return per_weekday
 
     class Meta:
         ordering = ["date_start"]
@@ -687,12 +763,36 @@ class Break(ExtensibleModel):
         )
 
     @property
+    def after_period_number(self):
+        return (
+            self.after_period.period
+            if self.after_period
+            else self.before_period.period - 1
+        )
+
+    @property
     def before_period_number(self):
         return (
             self.before_period.period
             if self.before_period
             else self.after_period.period + 1
         )
+
+    @property
+    def time_start(self):
+        return self.after_period.time_end if self.after_period else None
+
+    @property
+    def time_end(self):
+        return self.before_period.time_start if self.before_period else None
+
+    @classmethod
+    def get_breaks_dict(cls) -> Dict[int, Tuple[datetime, datetime]]:
+        breaks = {}
+        for break_ in cls.objects.all():
+            breaks[break_.before_period_number] = break_
+
+        return breaks
 
     class Meta:
         ordering = ["after_period"]
@@ -701,10 +801,63 @@ class Break(ExtensibleModel):
         verbose_name_plural = _("Breaks")
 
 
+class SupervisionQuerySet(models.QuerySet):
+    def annotate_week(self, week: Union[CalendarWeek, int]):
+        """ Annotate all lessons in the QuerySet with the number of the provided calendar week. """
+
+        if isinstance(week, CalendarWeek):
+            week_num = week.week
+        else:
+            week_num = week
+
+        return self.annotate(_week=models.Value(week_num, models.IntegerField()))
+
+    def filter_by_weekday(self, weekday: int):
+        self.filter(
+            Q(break_item__before_period__weekday=weekday)
+            | Q(break_item__after_period__weekday=weekday)
+        )
+
+    def filter_by_teacher(self, teacher: Union[Person, int]):
+        """ Filter for all supervisions given by a certain teacher. """
+
+        if self.count() > 0:
+            if hasattr(self[0], "_week"):
+                week = CalendarWeek(week=self[0]._week)
+            else:
+                week = CalendarWeek.current_week()
+
+            dates = [week[w] for w in range(0, 7)]
+
+            return self.filter(Q(substitutions__teacher=teacher, substitutions__date__in=dates) | Q(teacher=teacher))
+
+        return self
+
+
 class Supervision(ExtensibleModel):
+    objects = models.Manager.from_queryset(SupervisionQuerySet)()
+
     area = models.ForeignKey(SupervisionArea, models.CASCADE, verbose_name=_("Supervision area"), related_name="supervisions")
     break_item = models.ForeignKey(Break, models.CASCADE, verbose_name=_("Break"), related_name="supervisions")
     teacher = models.ForeignKey("core.Person", models.CASCADE, related_name="supervisions", verbose_name=_("Teacher"))
+
+    def get_substitution(
+        self, week: Optional[int] = None
+    ) -> Optional[SupervisionSubstitution]:
+        wanted_week = week or getattr(self, "_week", None) or CalendarWeek().week
+        wanted_week = CalendarWeek(week=wanted_week)
+        # We iterate over all substitutions because this can make use of
+        # prefetching when this model is loaded from outside, in contrast
+        # to .filter()
+        for substitution in self.substitutions.all():
+            for weekday in range(0, 7):
+                if substitution.date == wanted_week[weekday]:
+                    return substitution
+        return None
+
+    @property
+    def teachers(self):
+        return [self.teacher]
 
     class Meta:
         ordering = ["area", "break_item"]
@@ -717,17 +870,82 @@ class SupervisionSubstitution(ExtensibleModel):
     supervision = models.ForeignKey(Supervision, models.CASCADE, verbose_name=_("Supervision"), related_name="substitutions")
     teacher = models.ForeignKey("core.Person", models.CASCADE, related_name="substituted_supervisions", verbose_name=_("Teacher"))
 
+    @property
+    def teachers(self):
+        return [self.teacher]
+
     class Meta:
         ordering = ["date", "supervision"]
         verbose_name = _("Supervision substitution")
         verbose_name_plural = _("Supervision substitutions")
 
 
+class EventQuerySet(DateRangeQuerySet):
+    def filter_participant(self, person: Union[Person, int]):
+        """ Filter for all lessons a participant (student) attends. """
+
+        return self.filter(Q(groups_members=person))
+
+    def filter_group(self, group: Union[Group, int]):
+        """ Filter for all events a group (class) attends. """
+
+        if isinstance(group, int):
+            group = Group.objects.get(pk=group)
+
+        if group.parent_groups.all():
+            # Prevent to show lessons multiple times
+            return self.filter(groups=group)
+        else:
+            return self.filter(Q(groups=group) | Q(groups__parent_groups=group))
+
+    def filter_teacher(self, teacher: Union[Person, int]):
+        """ Filter for all lessons given by a certain teacher. """
+
+        return self.filter(teachers=teacher)
+
+    def filter_room(self, room: Union[Room, int]):
+        """ Filter for all lessons taking part in a certain room. """
+
+        return self.filter(rooms=room)
+
+    def filter_from_type(self, type_: str, pk: int) -> Optional[models.QuerySet]:
+        if type_ == "group":
+            return self.filter_group(pk)
+        elif type_ == "teacher":
+            return self.filter_teacher(pk)
+        elif type_ == "room":
+            return self.filter_room(pk)
+        else:
+            return None
+
+    def filter_from_person(self, person: Person) -> Optional[models.QuerySet]:
+        type_ = person.timetable_type
+
+        if type_ == "teacher":
+            # Teacher
+
+            return self.filter_teacher(person)
+
+        elif type_ == "group":
+            # Student
+
+            return self.filter_participant(person)
+
+        else:
+            # If no student or teacher
+            return None
+
+
 class Event(ExtensibleModel):
-    title = models.CharField(verbose_name=_("Title"), max_length=50)
+    label_ = "event"
+
+    objects = models.Manager.from_queryset(EventQuerySet)()
+
+    title = models.CharField(verbose_name=_("Title"), max_length=255, blank=True, null=True)
+
     date_start = models.DateField(verbose_name=_("Effective start date of event"), null=True)
     date_end = models.DateField(verbose_name=_("Effective end date of event"), null=True)
-    absence_reason = models.ForeignKey("AbsenceReason", on_delete=models.CASCADE, related_name="absence_reason", verbose_name=_("Absence reason"))
+
     period_from = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of event"), related_name="+")
     period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of event"), related_name="+")
 

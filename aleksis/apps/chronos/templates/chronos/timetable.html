@@ -57,51 +57,7 @@
       </div>
 
       {# Week select #}
-      <div class="col s12 m6 right">
-        <div class="col s2 no-print">
-          <a class="waves-effect waves-teal btn-flat btn-flat-medium right" href="{{ url_prev }}">
-            <i class="material-icons center">navigate_before</i>
-          </a>
-        </div>
-
-        {% with wanted_week=week %}
-          <div class="input-field col s8 no-margin hide-on-med-and-up">
-            <select id="calendar-week-1">
-              {% for week in weeks %}
-                <option value="{{ week.week }}" {% if week == wanted_week %}
-                        selected {% endif %}>{% trans "CW" %} {{ week.week }} ({{ week.0|date:"SHORT_DATE_FORMAT" }}–{{ week.6|date:"SHORT_DATE_FORMAT" }})
-                </option>
-              {% endfor %}
-            </select>
-          </div>
-
-          <div class="input-field col s8 no-margin hide-on-med-and-down">
-            <select id="calendar-week-2">
-              {% for week in weeks %}
-                <option value="{{ week.week }}" {% if week == wanted_week %}
-                        selected {% endif %}>{% trans "CW" %} {{ week.week }} ({{ week.0|date:"j.n" }}–{{ week.6|date:"SHORT_DATE_FORMAT" }})
-                </option>
-              {% endfor %}
-            </select>
-          </div>
-
-          <div class="input-field col s8 no-margin hide-on-small-and-down hide-on-large-only">
-            <select id="calendar-week-3">
-              {% for week in weeks %}
-                <option value="{{ week.week }}" {% if week == wanted_week %}
-                        selected {% endif %}>{% trans "CW" %} {{ week.week }} ({{ week.0|date:"j.n" }}–{{ week.6|date:"j.n" }})
-                </option>
-              {% endfor %}
-            </select>
-          </div>
-        {% endwith %}
-
-        <div class="col s2 no-print">
-          <a class="waves-effect waves-teal btn-flat btn-flat-medium left" href="{{ url_next }}">
-            <i class="material-icons center">navigate_next</i>
-          </a>
-        </div>
-      </div>
+      {% include "chronos/partials/week_select.html" with wanted_week=week %}
 
     {% else %}
       {# Show if regular #}
@@ -124,34 +80,34 @@
 
       </div>
       {# Show short weekdays on tablets #}
-      {% for i, weekday, date in weekdays_short %}
+      {% for weekday in weekdays_short %}
         <div class="col s2 hide-on-large-only">
           <div class="card timetable-title-card">
             <div class="card-content">
-                            <span class="card-title">
-                                {{ weekday }}
-                            </span>
-              {{ date }}
-              {#              {% if day.1 %}#}
-              {#                <span class="badge new blue center-align holiday-badge">{{ day.1.0 }}</span>#}
-              {#              {% endif %}#}
+              <span class="card-title">
+                {{ weekday.name }}
+              </span>
+              {{ weekday.date }}
+              {% if weekday.holiday %}
+                <br/>{% include "chronos/partials/holiday.html" with holiday=weekday.holiday %}
+              {% endif %}
             </div>
           </div>
         </div>
       {% endfor %}
 
       {# Show long weekdays elsewere #}
-      {% for i, weekday, date in weekdays %}
+      {% for weekday in weekdays %}
         <div class="col s2 hide-on-med-only">
           <div class="card timetable-title-card">
             <div class="card-content">
-                            <span class="card-title">
-                                {{ weekday }}
-                            </span>
-              {{ date }}
-              {#              {% if day.1 %}#}
-              {#                <span class="badge new blue center-align holiday-badge">{{ day.1.0 }}</span>#}
-              {#              {% endif %}#}
+              <span class="card-title">
+                {{ weekday.name }}
+              </span>
+              {{ weekday.date }}
+              {% if weekday.holiday %}
+                <br/>{% include "chronos/partials/holiday.html" with holiday=weekday.holiday %}
+              {% endif %}
             </div>
           </div>
         </div>
@@ -159,17 +115,22 @@
     </div>
 
     {#  Lessons #}
-    {% for period, lesson_periods_period in lesson_periods.items %}
-
+    {% for row in timetable %}
       <div class="row">
         <div class="col s2">
-          {% include "chronos/partials/period_time.html" with period=period periods=periods %}
+          {% if row.type == "period" %}
+            {% include "chronos/partials/period_time.html" with period=row.period periods=periods %}
+          {% endif %}
         </div>
 
-        {% for weekday, lessons in lesson_periods_period.items %}
+        {% for col in row.cols %}
           {# A lesson #}
           <div class="col s2">
-            {% include "chronos/partials/lesson.html" with lessons=lessons %}
+            {% if row.type == "period" %}
+              {% include "chronos/partials/elements.html" with elements=col %}
+            {% else %}
+              {% include "chronos/partials/supervision.html" with supervision=col %}
+            {% endif %}
           </div>
         {% endfor %}
       </div>
@@ -178,30 +139,33 @@
 
   {# show 5 seperate ones on mobiles #}
   <div class="timetable-plan hide-on-med-and-up">
-    {% for i, weekday, date in weekdays %}
+    {% for weekday in weekdays %}
       <div class="card timetable-mobile-title-card">
         <div class="card-content">
-                    <span class="card-title">
-                        {{ weekday }}
-                    </span>
-          {{ date }}
-          {#          {% if day.1 %}#}
-          {#            <span class="badge new blue center-align holiday-badge">{{ day.1.0 }}</span>#}
-          {#          {% endif %}#}
-          {#          &nbsp;#}
+          <span class="card-title">
+            {{ weekday.name }}
+          </span>
+          {{ weekday.date }}
+          {% if weekday.holiday %}
+            <br/>{% include "chronos/partials/holiday.html" with holiday=weekday.holiday %}
+          {% endif %}
         </div>
       </div>
-      {% for period, lesson_periods_period in lesson_periods.items %}
+      {% for row in timetable %}
         <div class="row">
           <div class="col s4">
-            {% include "chronos/partials/period_time.html" with period=period periods=periods %}
+            {% include "chronos/partials/period_time.html" with period=row.period periods=periods %}
           </div>
 
-          {% for weekday, lessons in lesson_periods_period.items %}
-            {% if forloop.counter0 == i %}
+          {% for col in row.cols %}
+            {% if forloop.counter0 == weekday.key %}
               <div class="col s8">
                 {# A lesson #}
-                {% include "chronos/partials/lesson.html" with lessons=lessons %}
+                {% if row.type == "period" %}
+                  {% include "chronos/partials/elements.html" with elements=col %}
+                {% else %}
+                  {% include "chronos/partials/supervision.html" with supervision=col %}
+                {% endif %}
               </div>
             {% endif %}
           {% endfor %}

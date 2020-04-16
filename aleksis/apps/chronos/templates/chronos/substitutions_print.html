@@ -46,38 +46,35 @@
       {% endif %}
 
       <tbody>
-      {% for sub in c.substitutions %}
-        <tr class="{% if sub.type_ == "cancellation" %}green-text{% else %}black-text{% endif %} ">
+      {% for item in c.substitutions %}
+        {% ifchanged item.el.lesson_period.lesson.groups_to_show_names %}
+          </tbody>
+          <tbody class="{% cycle "striped" "not-striped" %}">
+        {% endifchanged %}
+
+        <tr class="{% include "chronos/partials/subs/colour.html" with item=item %}">
           <td>
-            {% include "chronos/partials/groups.html" with groups=sub.lesson_period.lesson.groups.all %}
-          </td>
-          <td>
-            <strong>
-              {{ sub.lesson_period.period.period }}.
-            </strong>
-          </td>
-          <td>
-            {% include "chronos/partials/subs/teachers.html" %}
-          </td>
-          <td>
-            {% include "chronos/partials/subs/subject.html" %}
-          </td>
-          <td>
-            {% include "chronos/partials/subs/room.html" %}
-          </td>
-          <td>
-            {% if sub.cancelled %}
-              {# TODO: Support other cases#}
-              <span class="badge new green">{% trans "Cancelled" %}</span>
+            {% if item.type == "substitution" %}
+              {% include "chronos/partials/groups.html" with groups=item.el.lesson_period.lesson.groups.all %}
             {% endif %}
-            {#          <em>{{ sub.text|default:"" }}</em>#}
+          </td>
+          <td>
+            {% include "chronos/partials/subs/period.html" with type=item.type el=item.el %}
+          </td>
+          <td>
+            {% include "chronos/partials/subs/teachers.html" with type=item.type el=item.el %}
+          </td>
+          <td>
+            {% include "chronos/partials/subs/subject.html" with type=item.type el=item.el %}
+          </td>
+          <td>
+            {% include "chronos/partials/subs/room.html" with type=item.type el=item.el %}
+          </td>
+          <td>
+            {% include "chronos/partials/subs/badge.html" with sub=item.el %}
+            <em>{{ sub.comment|default:"" }}</em>
           </td>
         </tr>
-
-        {% ifchanged sub.lesson_period.lesson.groups %}
-          </tbody>
-          <tbody class="{% cycle "not-striped" "striped" %}">
-        {% endifchanged %}
       {% endfor %}
       </tbody>
     </table>

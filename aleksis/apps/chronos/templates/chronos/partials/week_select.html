@@ -1,0 +1,45 @@
+{% load i18n %}
+
+<div class="col s12 m6 right">
+  <div class="col s2 no-print">
+    <a class="waves-effect waves-teal btn-flat btn-flat-medium right" href="{{ url_prev }}">
+      <i class="material-icons center">navigate_before</i>
+    </a>
+  </div>
+
+  <div class="input-field col s8 no-margin hide-on-med-and-up">
+    <select id="calendar-week-1">
+      {% for week in weeks %}
+        <option value="{{ week.week }}" {% if week == wanted_week %}
+                selected {% endif %}>{% trans "CW" %} {{ week.week }} ({{ week.0|date:"SHORT_DATE_FORMAT" }}–{{ week.6|date:"SHORT_DATE_FORMAT" }})
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="input-field col s8 no-margin hide-on-med-and-down">
+    <select id="calendar-week-2">
+      {% for week in weeks %}
+        <option value="{{ week.week }}" {% if week == wanted_week %}
+                selected {% endif %}>{% trans "CW" %} {{ week.week }} ({{ week.0|date:"j.n." }}–{{ week.6|date:"SHORT_DATE_FORMAT" }})
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="input-field col s8 no-margin hide-on-small-and-down hide-on-large-only">
+    <select id="calendar-week-3">
+      {% for week in weeks %}
+        <option value="{{ week.week }}" {% if week == wanted_week %}
+                selected {% endif %}>{% trans "CW" %} {{ week.week }} ({{ week.0|date:"j.n." }}–{{ week.6|date:"j.n." }})
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col s2 no-print">
+    <a class="waves-effect waves-teal btn-flat btn-flat-medium left" href="{{ url_next }}">
+      <i class="material-icons center">navigate_next</i>
+    </a>
+  </div>
+</div>
