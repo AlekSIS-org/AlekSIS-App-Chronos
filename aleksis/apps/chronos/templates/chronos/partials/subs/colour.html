@@ -1,0 +1,9 @@
+{% if item.type == "substitution" %}
+  {% if item.el.cancelled or item.el.cancelled_for_teachers %}
+    green-text
+  {% else %}
+    black-text
+  {% endif %}
+{% elif item.type == "supervision_substitution" %}
+  blue-text
+{% endif %}

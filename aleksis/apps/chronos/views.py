@@ -16,8 +16,9 @@ from aleksis.core.decorators import admin_required
 from aleksis.core.models import Person, Group, Announcement
 from aleksis.core.util import messages
 from .forms import LessonSubstitutionForm
-from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
+from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room, Holiday
 from .tables import LessonsTable
+from .util.build import build_timetable, build_substitutions_list, build_weekdays
 from .util.js import date_unix
 from .util.date import CalendarWeek, get_weeks_for_year
 from aleksis.core.util.core_helpers import has_person
@@ -65,17 +66,19 @@ def my_timetable(
 
     if has_person(request.user):
         person = request.user.person
+        type_ = person.timetable_type
 
-        lesson_periods = LessonPeriod.objects.daily_lessons_for_person(person, wanted_day)
+        # Build timetable
+        timetable = build_timetable("person", person, wanted_day)
 
-        if lesson_periods is None:
+        if type_ is None:
             # If no student or teacher, redirect to all timetables
             return redirect("all_timetables")
 
-        type_ = person.timetable_type
         super_el = person.timetable_object
 
-        context["lesson_periods"] = lesson_periods.per_period_one_day()
+        context["timetable"] = timetable
+        context["holiday"] = Holiday.on_day(wanted_day)
         context["super"] = {"type": type_, "el": super_el}
         context["type"] = type_
         context["day"] = wanted_day
@@ -120,55 +123,16 @@ def timetable(
         # TODO: On not used days show next week
         wanted_week = CalendarWeek()
 
-    lesson_periods = LessonPeriod.objects.in_week(wanted_week)
-    lesson_periods = lesson_periods.filter_from_type(type_, pk)
+    # Build timetable
+    timetable = build_timetable(type_, pk, wanted_week)
+    context["timetable"] = timetable
 
-    # Regroup lesson periods per weekday
-    per_period = {}
-    for lesson_period in lesson_periods:
-        added = False
-        if lesson_period.period.period in per_period:
-            if lesson_period.period.weekday in per_period[lesson_period.period.period]:
-                per_period[lesson_period.period.period][
-                    lesson_period.period.weekday
-                ].append(lesson_period)
-                added = True
-
-        if not added:
-            per_period.setdefault(lesson_period.period.period, {})[
-                lesson_period.period.weekday
-            ] = [lesson_period]
-
-    # Fill in empty lessons
-    for period_num in range(TimePeriod.period_min, TimePeriod.period_max + 1):
-        # Fill in empty weekdays
-        if period_num not in per_period.keys():
-            per_period[period_num] = {}
-
-        # Fill in empty lessons on this workday
-        for weekday_num in range(TimePeriod.weekday_min, TimePeriod.weekday_max + 1):
-            if weekday_num not in per_period[period_num].keys():
-                per_period[period_num][weekday_num] = []
-
-        # Order this weekday by periods
-        per_period[period_num] = OrderedDict(sorted(per_period[period_num].items()))
-
-    context["lesson_periods"] = OrderedDict(sorted(per_period.items()))
+    # Add time periods
     context["periods"] = TimePeriod.get_times_dict()
 
     # Build lists with weekdays and corresponding dates (long and short variant)
-    context["weekdays"] = [
-        (key, weekday, wanted_week[key])
-        for key, weekday in TimePeriod.WEEKDAY_CHOICES[
-            TimePeriod.weekday_min : TimePeriod.weekday_max + 1
-        ]
-    ]
-    context["weekdays_short"] = [
-        (key, weekday, wanted_week[key])
-        for key, weekday in TimePeriod.WEEKDAY_CHOICES_SHORT[
-            TimePeriod.weekday_min : TimePeriod.weekday_max + 1
-        ]
-    ]
+    context["weekdays"] = build_weekdays(TimePeriod.WEEKDAY_CHOICES, wanted_week)
+    context["weekdays_short"] = build_weekdays(TimePeriod.WEEKDAY_CHOICES_SHORT, wanted_week)
 
     context["weeks"] = get_weeks_for_year(year=wanted_week.year)
     context["week"] = wanted_week
@@ -322,12 +286,14 @@ def substitutions(
         day_contexts = {wanted_day: {"day": wanted_day}}
 
     for day in day_contexts:
-        subs = LessonSubstitution.objects.on_day(day).order_by("lesson_period__lesson__groups", "lesson_period__period")
+        subs = build_substitutions_list(day)
         day_contexts[day]["substitutions"] = subs
 
         day_contexts[day]["announcements"] = Announcement.for_timetables().on_date(day).filter(show_in_timetables=True)
 
         if config.CHRONOS_SUBSTITUTIONS_SHOW_HEADER_BOX:
+            subs = LessonSubstitution.objects.on_day(day).order_by("lesson_period__lesson__groups",
+                                                                   "lesson_period__period")
             day_contexts[day]["affected_teachers"] = subs.affected_teachers()
             day_contexts[day]["affected_groups"] = subs.affected_groups()
 

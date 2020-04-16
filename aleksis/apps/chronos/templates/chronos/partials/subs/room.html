@@ -1,47 +1,45 @@
-{% if not sub.is_event %}
-  {% if sub.sub.type == 3 %}
-    {# Supervisement #}
-    {{ sub.sub.corridor.name }}
-  {% elif sub.sub.type == 1 or sub.sub.type == 2 %}
+{% if type == "substitution" %}
+  {% if el.cancelled or el.cancelled_for_teachers %}
     {# Canceled lesson: no room #}
-  {% elif sub.room and sub.lesson_period.room %}
+  {% elif el.room and el.lesson_period.room %}
     {# New and old room available #}
     <span class="tooltipped" data-position="bottom"
-          data-tooltip="{{ sub.lesson_period.room.name }} → {{ sub.lesson_period.room.name }}">
-            <a href="{% url "timetable" "room" sub.lesson_period.room.pk %}">
-                <s>{{ sub.lesson_period.room.short_name }}</s>
-            </a>
-            →
-            <a href="{% url "timetable" "room" sub.room.pk %}">
-                <strong>{{ sub.room.short_name }}</strong>
-            </a>
-        </span>
-  {% elif sub.room and not sub.lesson_period.room %}
+          data-tooltip="{{ el.lesson_period.room.name }} → {{ el.lesson_period.room.name }}"
+          title="{{ el.lesson_period.room.name }} → {{ el.lesson_period.room.name }}">
+      <a href="{% url "timetable" "room" el.lesson_period.room.pk %}">
+          <s>{{ el.lesson_period.room.short_name }}</s>
+      </a>
+      →
+      <a href="{% url "timetable" "room" el.room.pk %}">
+          <strong>{{ el.room.short_name }}</strong>
+      </a>
+    </span>
+  {% elif el.room and not el.lesson_period.room %}
     {# Only new room available #}
     <span class="tooltipped" data-position="bottom"
-          data-tooltip="{{ sub.room.name }}">
-            <a href="{% url "timetable" "room" sub.room.pk %}">
-                {{ sub.room.short_name }}
-            </a>
-        </span>
-  {% elif not sub.room and not sub.lesson_period.room %}
+          data-tooltip="{{ el.room.name }}"
+          title="{{ el.room.name }}">
+      <a href="{% url "timetable" "room" el.room.pk %}">
+          {{ el.room.short_name }}
+      </a>
+    </span>
+  {% elif not el.room and not el.lesson_period.room %}
     {# Nothing to view #}
   {% else %}
     {# Only old room available #}
     <span class="tooltipped" data-position="bottom"
-          data-tooltip="{{ sub.lesson_period.room.name }}">
-            <a href="{% url "timetable" "room" sub.lesson_period.room.pk %}">
-                {{ sub.lesson_period.room.short_name }}
-            </a>
-        </span>
+          data-tooltip="{{ el.lesson_period.room.name }}"
+          title="{{ el.lesson_period.room.name }}">
+      <a href="{% url "timetable" "room" el.lesson_period.room.pk %}">
+          {{ el.lesson_period.room.short_name }}
+      </a>
+    </span>
   {% endif %}
-{% else %}
-  {% for room in sub.rooms %}
-    <span class="tooltipped" data-position="bottom"
-          data-tooltip="{{ room.name }}">
-            <a href="{% url "timetable_smart_plan" "room" room.id %}">
-                <strong>{{ room.short_name }}{% if not forloop.last %},{% endif %}</strong>
-            </a>
-        </span>
-  {% endfor %}
+{% elif type == "supervision_substitution" %}
+  {% with supervision=el.supervision %}
+    <span data-position="bottom" class="tooltipped"
+          data-tooltip="{{ supervision.area.name }}" title="{{ supervision.area.name }}">
+      {{ supervision.area.short_name }}
+    </span>
+  {% endwith %}
 {% endif %}
