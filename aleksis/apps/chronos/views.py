@@ -16,9 +16,9 @@ from aleksis.core.decorators import admin_required
 from aleksis.core.models import Person, Group, Announcement
 from aleksis.core.util import messages
 from .forms import LessonSubstitutionForm
-from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room
+from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room, Holiday
 from .tables import LessonsTable
-from .util.build import build_timetable, build_substitutions_list
+from .util.build import build_timetable, build_substitutions_list, build_weekdays
 from .util.js import date_unix
 from .util.date import CalendarWeek, get_weeks_for_year
 from aleksis.core.util.core_helpers import has_person
@@ -78,6 +78,7 @@ def my_timetable(
         super_el = person.timetable_object
 
         context["timetable"] = timetable
+        context["holiday"] = Holiday.on_day(wanted_day)
         context["super"] = {"type": type_, "el": super_el}
         context["type"] = type_
         context["day"] = wanted_day
@@ -130,18 +131,8 @@ def timetable(
     context["periods"] = TimePeriod.get_times_dict()
 
     # Build lists with weekdays and corresponding dates (long and short variant)
-    context["weekdays"] = [
-        (key, weekday, wanted_week[key])
-        for key, weekday in TimePeriod.WEEKDAY_CHOICES[
-            TimePeriod.weekday_min : TimePeriod.weekday_max + 1
-        ]
-    ]
-    context["weekdays_short"] = [
-        (key, weekday, wanted_week[key])
-        for key, weekday in TimePeriod.WEEKDAY_CHOICES_SHORT[
-            TimePeriod.weekday_min : TimePeriod.weekday_max + 1
-        ]
-    ]
+    context["weekdays"] = build_weekdays(TimePeriod.WEEKDAY_CHOICES, wanted_week)
+    context["weekdays_short"] = build_weekdays(TimePeriod.WEEKDAY_CHOICES_SHORT, wanted_week)
 
     context["weeks"] = get_weeks_for_year(year=wanted_week.year)
     context["week"] = wanted_week

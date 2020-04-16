@@ -601,6 +601,7 @@ class TimetableWidget(DashboardWidget):
                 context["has_plan"] = False
             else:
                 context["timetable"] = timetable
+                context["holiday"] = Holiday.on_day(wanted_day)
                 context["type"] = type_
                 context["day"] = wanted_day
                 context["periods"] = TimePeriod.get_times_dict()
@@ -691,11 +692,37 @@ class Exam(ExtensibleModel):
         verbose_name_plural = _("Exams")
 
 
+class HolidayQuerySet(DateRangeQuerySet):
+    pass
+
+
 class Holiday(ExtensibleModel):
+    objects = models.Manager.from_queryset(HolidayQuerySet)()
+
     title = models.CharField(verbose_name=_("Title of the holidays"), max_length=50)
     date_start = models.DateField(verbose_name=_("Effective start date of holidays"), null=True)
     date_end = models.DateField(verbose_name=_("Effective end date of holidays"), null=True)
     comments = models.TextField(verbose_name=_("Comments"), null=True, blank=True)
+
+    @classmethod
+    def on_day(cls, day: date) -> Optional["Holiday"]:
+        holidays = cls.objects.on_day(day)
+        if holidays.exists():
+            return holidays[0]
+        else:
+            return None
+
+    @classmethod
+    def in_week(cls, week: CalendarWeek) -> Dict[int, Optional["Holiday"]]:
+        per_weekday = {}
+
+        for weekday in range(TimePeriod.weekday_min, TimePeriod.weekday_max + 1):
+            holiday_date = week[weekday]
+            holidays = Holiday.objects.on_day(holiday_date)
+            if holidays.exists():
+                per_weekday[weekday] = holidays[0]
+
+        return per_weekday
 
     class Meta:
         ordering = ["date_start"]

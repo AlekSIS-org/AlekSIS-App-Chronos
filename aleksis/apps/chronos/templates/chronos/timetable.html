@@ -80,34 +80,34 @@
 
       </div>
       {# Show short weekdays on tablets #}
-      {% for i, weekday, date in weekdays_short %}
+      {% for weekday in weekdays_short %}
         <div class="col s2 hide-on-large-only">
           <div class="card timetable-title-card">
             <div class="card-content">
-                            <span class="card-title">
-                                {{ weekday }}
-                            </span>
-              {{ date }}
-              {#              {% if day.1 %}#}
-              {#                <span class="badge new blue center-align holiday-badge">{{ day.1.0 }}</span>#}
-              {#              {% endif %}#}
+              <span class="card-title">
+                {{ weekday.name }}
+              </span>
+              {{ weekday.date }}
+              {% if weekday.holiday %}
+                <br/>{% include "chronos/partials/holiday.html" with holiday=weekday.holiday %}
+              {% endif %}
             </div>
           </div>
         </div>
       {% endfor %}
 
       {# Show long weekdays elsewere #}
-      {% for i, weekday, date in weekdays %}
+      {% for weekday in weekdays %}
         <div class="col s2 hide-on-med-only">
           <div class="card timetable-title-card">
             <div class="card-content">
-                            <span class="card-title">
-                                {{ weekday }}
-                            </span>
-              {{ date }}
-              {#              {% if day.1 %}#}
-              {#                <span class="badge new blue center-align holiday-badge">{{ day.1.0 }}</span>#}
-              {#              {% endif %}#}
+              <span class="card-title">
+                {{ weekday.name }}
+              </span>
+              {{ weekday.date }}
+              {% if weekday.holiday %}
+                <br/>{% include "chronos/partials/holiday.html" with holiday=weekday.holiday %}
+              {% endif %}
             </div>
           </div>
         </div>
@@ -139,17 +139,16 @@
 
   {# show 5 seperate ones on mobiles #}
   <div class="timetable-plan hide-on-med-and-up">
-    {% for i, weekday, date in weekdays %}
+    {% for weekday in weekdays %}
       <div class="card timetable-mobile-title-card">
         <div class="card-content">
-                    <span class="card-title">
-                        {{ weekday }}
-                    </span>
-          {{ date }}
-          {#          {% if day.1 %}#}
-          {#            <span class="badge new blue center-align holiday-badge">{{ day.1.0 }}</span>#}
-          {#          {% endif %}#}
-          {#          &nbsp;#}
+          <span class="card-title">
+            {{ weekday.name }}
+          </span>
+          {{ weekday.date }}
+          {% if weekday.holiday %}
+            <br/>{% include "chronos/partials/holiday.html" with holiday=weekday.holiday %}
+          {% endif %}
         </div>
       </div>
       {% for row in timetable %}
@@ -159,7 +158,7 @@
           </div>
 
           {% for col in row.cols %}
-            {% if forloop.counter0 == i %}
+            {% if forloop.counter0 == weekday.key %}
               <div class="col s8">
                 {# A lesson #}
                 {% if row.type == "period" %}

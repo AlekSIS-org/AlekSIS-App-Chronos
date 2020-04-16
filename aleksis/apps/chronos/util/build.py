@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from datetime import date
-from typing import Union, List
+from typing import Union, List, Tuple
 
 from calendarweek import CalendarWeek
 from django.apps import apps
@@ -14,6 +14,7 @@ Supervision = apps.get_model("chronos", "Supervision")
 LessonSubstitution = apps.get_model("chronos", "LessonSubstitution")
 SupervisionSubstitution = apps.get_model("chronos", "SupervisionSubstitution")
 Event = apps.get_model("chronos", "Event")
+Holiday = apps.get_model("chronos", "Holiday")
 
 
 def build_timetable(
@@ -30,6 +31,12 @@ def build_timetable(
     if type_ == "person":
         is_person = True
         type_ = obj.timetable_type
+
+    # Get matching holidays
+    if is_person:
+        holiday = Holiday.on_day(date_ref)
+    else:
+        holidays_per_weekday = Holiday.in_week(date_ref)
 
     # Get matching lesson periods
     if is_person:
@@ -165,7 +172,10 @@ def build_timetable(
                     TimePeriod.weekday_min, TimePeriod.weekday_max + 1
                 ):
                     col = None
-                    if period in supervisions_per_period_after:
+                    if (
+                        period in supervisions_per_period_after
+                        and weekday not in holidays_per_weekday
+                    ):
                         if weekday in supervisions_per_period_after[period]:
                             col = supervisions_per_period_after[period][weekday]
                     cols.append(col)
@@ -173,7 +183,7 @@ def build_timetable(
                 row["cols"] = cols
             else:
                 col = None
-                if period in supervisions_per_period_after:
+                if period in supervisions_per_period_after and not holiday:
                     col = supervisions_per_period_after[period]
                 row["col"] = col
             rows.append(row)
@@ -195,12 +205,18 @@ def build_timetable(
                     col = []
 
                     # Add lesson periods
-                    if period in lesson_periods_per_period:
+                    if (
+                        period in lesson_periods_per_period
+                        and weekday not in holidays_per_weekday
+                    ):
                         if weekday in lesson_periods_per_period[period]:
                             col += lesson_periods_per_period[period][weekday]
 
                     # Add events
-                    if period in events_per_period:
+                    if (
+                        period in events_per_period
+                        and weekday not in holidays_per_weekday
+                    ):
                         if weekday in events_per_period[period]:
                             col += events_per_period[period][weekday]
 
@@ -211,11 +227,11 @@ def build_timetable(
                 col = []
 
                 # Add lesson periods
-                if period in lesson_periods_per_period:
+                if period in lesson_periods_per_period and not holiday:
                     col += lesson_periods_per_period[period]
 
                 # Add events
-                if period in events_per_period:
+                if period in events_per_period and not holiday:
                     col += events_per_period[period]
 
                 row["col"] = col
@@ -266,3 +282,24 @@ def build_substitutions_list(wanted_day: date) -> List[dict]:
     rows.sort(key=sorter)
 
     return rows
+
+
+def build_weekdays(
+    base: List[Tuple[int, str]], wanted_week: CalendarWeek
+) -> List[dict]:
+    holidays_per_weekday = Holiday.in_week(wanted_week)
+
+    weekdays = []
+    for key, name in base[TimePeriod.weekday_min : TimePeriod.weekday_max + 1]:
+
+        weekday = {
+            "key": key,
+            "name": name,
+            "date": wanted_week[key],
+            "holiday": holidays_per_weekday[key]
+            if key in holidays_per_weekday
+            else None,
+        }
+        weekdays.append(weekday)
+
+    return weekdays

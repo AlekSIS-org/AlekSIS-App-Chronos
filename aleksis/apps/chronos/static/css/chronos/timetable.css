@@ -57,6 +57,8 @@ li.active > a > .sidenav-badge {
 .timetable-mobile-title-card {
     margin-top: 50px;
     margin-bottom: .60rem;
+    display: flex;
+    flex-grow: 1;
 }
 
 .timetable-mobile-title-card:first-child {
@@ -115,4 +117,24 @@ table.substitutions td, table.substitutions th {
 
 .black-text-a a {
     color: black;
+}
+
+.holiday-badge {
+    float: left !important;
+    position: relative;
+    margin-left: 0 !important;
+    left: 50%;
+    transform: translate(-50%);
+    width: auto;
+    height: auto !important;
+    min-height: 26px;
+    margin-top: 5px;
+}
+
+.holiday-card .card-content{
+    width: 100%;
+}
+
+.holiday-card .holiday-badge {
+    margin-top: 0;
 }
