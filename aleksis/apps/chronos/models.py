@@ -385,6 +385,8 @@ class TimePeriod(ExtensibleModel):
         unique_together = [["weekday", "period"]]
         ordering = ["weekday", "period"]
         indexes = [models.Index(fields=["time_start", "time_end"])]
+        verbose_name = _("Time period")
+        verbose_name_plural = _("Time periods")
 
 
 class Subject(ExtensibleModel):
@@ -472,6 +474,8 @@ class Lesson(ExtensibleModel):
     class Meta:
         ordering = ["date_start", "subject"]
         indexes = [models.Index(fields=["date_start", "date_end"])]
+        verbose_name = _("Lesson")
+        verbose_name_plural = _("Lessons")
 
 
 class LessonSubstitution(ExtensibleModel):
@@ -534,6 +538,8 @@ class LessonSubstitution(ExtensibleModel):
                 name="either_substituted_or_cancelled",
             )
         ]
+        verbose_name = _("Lesson substitution")
+        verbose_name_plural = _("Lesson substitutions")
 
 
 class LessonPeriod(ExtensibleModel):
@@ -590,6 +596,8 @@ class LessonPeriod(ExtensibleModel):
     class Meta:
         ordering = ["lesson__date_start", "period__weekday", "period__period", "lesson__subject"]
         indexes = [models.Index(fields=["lesson", "period"])]
+        verbose_name = _("Lesson period")
+        verbose_name_plural = _("Lesson periods")
 
 
 class TimetableWidget(DashboardWidget):
