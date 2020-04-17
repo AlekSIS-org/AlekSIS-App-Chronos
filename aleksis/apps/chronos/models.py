@@ -655,7 +655,21 @@ class AbsenceReason(ExtensibleModel):
         verbose_name = _("Absence reason")
         verbose_name_plural = _("Absence reasons")
 
+
+class AbsenceQuerySet(DateRangeQuerySet):
+    def absent_teachers(self):
+        return Person.objects.filter(absences__in=self).annotate(absences_count=Count("absences"))
+
+    def absent_groups(self):
+        return Group.objects.filter(absences__in=self).annotate(absences_count=Count("absences"))
+
+    def absent_rooms(self):
+        return Person.objects.filter(absences__in=self).annotate(absences_count=Count("absences"))
+
+
 class Absence(ExtensibleModel):
+    objects = models.Manager.from_queryset(AbsenceQuerySet)()
+
     reason = models.ForeignKey("AbsenceReason", on_delete=models.CASCADE, related_name="absences")
 
     teacher = models.ForeignKey("core.Person", on_delete=models.CASCADE, related_name="absences", null=True, blank=True)

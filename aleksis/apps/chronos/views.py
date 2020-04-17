@@ -16,7 +16,7 @@ from aleksis.core.decorators import admin_required
 from aleksis.core.models import Person, Group, Announcement
 from aleksis.core.util import messages
 from .forms import LessonSubstitutionForm
-from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room, Holiday
+from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room, Holiday, Absence
 from .tables import LessonsTable
 from .util.build import build_timetable, build_substitutions_list, build_weekdays
 from .util.js import date_unix
@@ -294,6 +294,9 @@ def substitutions(
         if config.CHRONOS_SUBSTITUTIONS_SHOW_HEADER_BOX:
             subs = LessonSubstitution.objects.on_day(day).order_by("lesson_period__lesson__groups",
                                                                    "lesson_period__period")
+            absences = Absence.objects.on_day(day)
+            day_contexts[day]["absent_teachers"] = absences.absent_teachers()
+            day_contexts[day]["absent_groups"] = absences.absent_groups()
             day_contexts[day]["affected_teachers"] = subs.affected_teachers()
             day_contexts[day]["affected_groups"] = subs.affected_groups()
 
