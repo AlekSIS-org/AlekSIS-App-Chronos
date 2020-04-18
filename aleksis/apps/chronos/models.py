@@ -1030,3 +1030,22 @@ class Event(ExtensibleModel):
         indexes = [models.Index(fields=["period_from", "period_to", "date_start", "date_end"])]
         verbose_name = _("Event")
         verbose_name_plural = _("Events")
+
+
+class ExtraLesson(ExtensibleModel):
+    week = models.IntegerField(verbose_name=_("Week"), default=CalendarWeek.current_week)
+    period = models.ForeignKey("TimePeriod", models.CASCADE, related_name="extra_lessons")
+
+    subject = models.ForeignKey("Subject", on_delete=models.CASCADE, related_name="extra_lessons", verbose_name=_("Subject"))
+    groups = models.ManyToManyField("core.Group", related_name="extra_lessons", verbose_name=_("Groups"))
+    teachers = models.ManyToManyField("core.Person", related_name="extra_lessons_as_teacher", verbose_name=_("Teachers"))
+    room = models.ForeignKey("Room", models.CASCADE, null=True, related_name="extra_lessons", verbose_name=_("Room"))
+
+    comment = models.CharField(verbose_name=_("Comment"), blank=True, null=True, max_length=255)
+
+    def __str__(self):
+        return "{}, {}, {}".format(self.week, self.period, self.subject)
+
+    class Meta:
+        verbose_name = _("Extra lesson")
+        verbose_name_plural = _("Extra lessons")

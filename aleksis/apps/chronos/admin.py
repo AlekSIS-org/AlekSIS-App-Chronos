@@ -17,6 +17,7 @@ from .models import (
     AbsenceReason,
     Break,
     TimePeriod,
+    ExtraLesson,
 )
 from .util.format import format_date_period, format_m2m
 
@@ -89,6 +90,19 @@ class EventAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Event, EventAdmin)
+
+
+class ExtraLessonAdmin(admin.ModelAdmin):
+    def _groups(self, obj):
+        return format_m2m(obj.groups)
+
+    def _teachers(self, obj):
+        return format_m2m(obj.teachers)
+
+    list_display = ("week", "period", "subject", "_groups", "_teachers", "room")
+
+
+admin.site.register(ExtraLesson, ExtraLessonAdmin)
 
 
 class HolidayAdmin(admin.ModelAdmin):
