@@ -16,12 +16,14 @@ from django.http.request import QueryDict
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import classproperty
+from django.utils.formats import date_format
 from django.utils.translation import gettext_lazy as _
 
 from calendarweek.django import CalendarWeek, i18n_day_names_lazy, i18n_day_abbrs_lazy
 from colorfield.fields import ColorField
 from django_global_request.middleware import get_request
 
+from aleksis.apps.chronos.util.format import format_m2m
 from aleksis.core.mixins import ExtensibleModel
 from aleksis.core.models import Group, Person, DashboardWidget
 
@@ -288,11 +290,9 @@ class TimePeriod(ExtensibleModel):
     time_end = models.TimeField(verbose_name=_("Time the period ends"))
 
     def __str__(self) -> str:
-        return "%s, %d. period (%s - %s)" % (
-            self.weekday,
+        return "{}, {}.".format(
+            self.get_weekday_display(),
             self.period,
-            self.time_start,
-            self.time_end,
         )
 
     @classmethod
@@ -385,6 +385,8 @@ class TimePeriod(ExtensibleModel):
         unique_together = [["weekday", "period"]]
         ordering = ["weekday", "period"]
         indexes = [models.Index(fields=["time_start", "time_end"])]
+        verbose_name = _("Time period")
+        verbose_name_plural = _("Time periods")
 
 
 class Subject(ExtensibleModel):
@@ -407,7 +409,7 @@ class Subject(ExtensibleModel):
     )
 
     def __str__(self) -> str:
-        return "%s - %s" % (self.abbrev, self.name)
+        return "{} ({})".format(self.abbrev, self.name)
 
     class Meta:
         ordering = ["name", "abbrev"]
@@ -462,9 +464,18 @@ class Lesson(ExtensibleModel):
 
         return CalendarWeek(year=year, week=week)
 
+    def __str__(self):
+        return "{}, {}, {}".format(
+            format_m2m(self.groups),
+            self.subject.abbrev,
+            format_m2m(self.teachers),
+        )
+
     class Meta:
         ordering = ["date_start", "subject"]
         indexes = [models.Index(fields=["date_start", "date_end"])]
+        verbose_name = _("Lesson")
+        verbose_name_plural = _("Lessons")
 
 
 class LessonSubstitution(ExtensibleModel):
@@ -505,6 +516,14 @@ class LessonSubstitution(ExtensibleModel):
         else:
             return "substitution"
 
+    @property
+    def date(self):
+        week = CalendarWeek(week=self.week)
+        return week[self.lesson_period.period.weekday]
+
+    def __str__(self):
+        return "{}, {}".format(str(self.lesson_period), date_format(self.date))
+
     class Meta:
         unique_together = [["lesson_period", "week"]]
         ordering = [
@@ -519,6 +538,8 @@ class LessonSubstitution(ExtensibleModel):
                 name="either_substituted_or_cancelled",
             )
         ]
+        verbose_name = _("Lesson substitution")
+        verbose_name_plural = _("Lesson substitutions")
 
 
 class LessonPeriod(ExtensibleModel):
@@ -567,16 +588,16 @@ class LessonPeriod(ExtensibleModel):
         return self.lesson.groups
 
     def __str__(self) -> str:
-        return "%s, %d., %s, %s" % (
-            self.period.get_weekday_display(),
-            self.period.period,
-            ", ".join(list(self.lesson.groups.values_list("short_name", flat=True))),
-            self.lesson.subject.name,
+        return "{}, {}".format(
+            str(self.period),
+            str(self.lesson)
         )
 
     class Meta:
         ordering = ["lesson__date_start", "period__weekday", "period__period", "lesson__subject"]
         indexes = [models.Index(fields=["lesson", "period"])]
+        verbose_name = _("Lesson period")
+        verbose_name_plural = _("Lesson periods")
 
 
 class TimetableWidget(DashboardWidget):
@@ -651,6 +672,12 @@ class AbsenceReason(ExtensibleModel):
     short_name = models.CharField(verbose_name=_("Short name"), max_length=255)
     name = models.CharField(verbose_name=_("Name"), blank=True, null=True, max_length=255)
 
+    def __str__(self):
+        if self.name:
+            return "{} ({})".format(self.short_name, self.name)
+        else:
+            return self.short_name
+
     class Meta:
         verbose_name = _("Absence reason")
         verbose_name_plural = _("Absence reasons")
@@ -681,6 +708,16 @@ class Absence(ExtensibleModel):
     period_from = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of absence"), null=True, related_name="+")
     period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of absence"), null=True, related_name="+")
     comment = models.TextField(verbose_name=_("Comment"), blank=True, null=True)
+
+    def __str__(self):
+        if self.teacher:
+            return str(self.teacher)
+        elif self.group:
+            return str(self.group)
+        elif self.room:
+            return str(self.room)
+        else:
+            return _("Unknown absence")
 
     class Meta:
         ordering = ["date_start"]
@@ -738,6 +775,9 @@ class Holiday(ExtensibleModel):
 
         return per_weekday
 
+    def __str__(self):
+        return self.title
+
     class Meta:
         ordering = ["date_start"]
         indexes = [models.Index(fields=["date_start", "date_end"])]
@@ -750,6 +790,9 @@ class SupervisionArea(ExtensibleModel):
     name = models.CharField(verbose_name=_("Long name"), max_length=50)
     colour_fg = ColorField(default="#000000")
     colour_bg = ColorField()
+
+    def __str__(self):
+        return "{} ({})".format(self.name, self.short_name)
 
     class Meta:
         ordering = ["name"]
@@ -807,6 +850,9 @@ class Break(ExtensibleModel):
             breaks[break_.before_period_number] = break_
 
         return breaks
+
+    def __str__(self):
+        return "{} ({})".format(self.name, self.short_name)
 
     class Meta:
         ordering = ["after_period"]
@@ -873,6 +919,9 @@ class Supervision(ExtensibleModel):
     def teachers(self):
         return [self.teacher]
 
+    def __str__(self):
+        return "{}, {}, {}".format(self.break_item, self.area, self.teacher)
+
     class Meta:
         ordering = ["area", "break_item"]
         verbose_name= _("Supervision")
@@ -887,6 +936,9 @@ class SupervisionSubstitution(ExtensibleModel):
     @property
     def teachers(self):
         return [self.teacher]
+
+    def __str__(self):
+        return "{}, {}".format(self.supervision, date_format(self.date))
 
     class Meta:
         ordering = ["date", "supervision"]
@@ -966,6 +1018,12 @@ class Event(ExtensibleModel):
     groups = models.ManyToManyField("core.Group", related_name="events", verbose_name=_("Groups"))
     rooms = models.ManyToManyField("Room", related_name="events", verbose_name=_("Rooms"))
     teachers = models.ManyToManyField("core.Person", related_name="events", verbose_name=_("Teachers"))
+
+    def __str__(self):
+        if self.title:
+            return self.title
+        else:
+            return _("Event {}".format(self.pk))
 
     class Meta:
         ordering = ["date_start"]
