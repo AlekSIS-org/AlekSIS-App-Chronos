@@ -1,0 +1,7 @@
+{% load i18n %}
+
+{% if sub.cancelled %}
+  <span class="badge new green">{% trans "Cancelled" %}</span>
+{% elif item.el.cancelled_for_teachers %}
+  <span class="badge new green">{% trans "Cancelled for teachers" %}</span>
+{% endif %}

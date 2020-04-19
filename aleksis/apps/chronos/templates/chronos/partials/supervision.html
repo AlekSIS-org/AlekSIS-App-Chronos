@@ -1,0 +1,29 @@
+{% load i18n %}
+
+<div class="card lesson-card supervision-card">
+  <div class="card-content">
+    {% if supervision %}
+      <div style="
+              {% if supervision.area.colour_fg %}
+                color: {{ supervision.area.colour_fg }};
+              {% endif %}
+              {% if supervision.area.colour_bg %}
+                background-color: {{ supervision.area.colour_bg }};
+              {% endif %}
+              " class="{% if supervision.get_substitution and smart %}lesson-with-sub{% endif %}">
+        <p>
+          <strong>{% trans "Supervision" %}</strong>
+          <span data-position="bottom" class="tooltipped"
+                data-tooltip="{{ supervision.area.name }}" title="{{ supervision.area.name }}">
+            {{ supervision.area.short_name }}
+          </span>
+          {% if supervision.get_substitution and smart %}
+            {% include "chronos/partials/subs/teachers.html" with type="supervision_substitution" el=supervision.get_substitution %}
+          {% elif type == "supervision_area" %}
+            {% include "chronos/partials/teachers.html" with teachers=supervision.teachers %}
+          {% endif %}
+        </p>
+      </div>
+    {% endif %}
+  </div>
+</div>

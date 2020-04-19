@@ -1,0 +1,11 @@
+<div class="card lesson-card">
+  <div class="card-content">
+    {% for element in elements %}
+      {% if element.label_ == "lesson_period" %}
+        {% include "chronos/partials/lesson.html" with lesson_period=element %}
+      {% elif element.label_ == "event" %}
+        {% include "chronos/partials/event.html" with event=element %}
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
