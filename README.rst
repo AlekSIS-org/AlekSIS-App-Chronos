@@ -16,11 +16,11 @@ Licence
 
 ::
 
-  Copyright © 2018, 2019 Frank Poetzsch-Heffter <p-h@katharineum.de>
   Copyright © 2018, 2019, 2020 Jonathan Weth <wethjo@katharineum.de>
+  Copyright © 2018, 2019 Frank Poetzsch-Heffter <p-h@katharineum.de>
   Copyright © 2019, 2020 Dominik George <dominik.george@teckids.org>
-  Copyright © 2019 Hangzhi Yu <yuha@katharineum.de>
   Copyright © 2019 Tom Teichler <tom.teichler@teckids.org>
+  Copyright © 2019 Hangzhi Yu <yuha@katharineum.de>
 
   Licenced under the EUPL, version 1.2 or later
 
