@@ -946,14 +946,24 @@ class SupervisionSubstitution(ExtensibleModel):
         verbose_name_plural = _("Supervision substitutions")
 
 
-class EventQuerySet(DateRangeQuerySet):
+class TimetableQuerySet(models.QuerySet):
+    """ Common filters
+
+     Models need following fields:
+     - groups
+     - teachers
+     - rooms (_multiple_rooms=True)/room (_multiple_rooms=False)
+     """
+
+    _multiple_rooms = True
+
     def filter_participant(self, person: Union[Person, int]):
-        """ Filter for all lessons a participant (student) attends. """
+        """ Filter for all objects a participant (student) attends. """
 
         return self.filter(Q(groups_members=person))
 
     def filter_group(self, group: Union[Group, int]):
-        """ Filter for all events a group (class) attends. """
+        """ Filter for all objects a group (class) attends. """
 
         if isinstance(group, int):
             group = Group.objects.get(pk=group)
@@ -970,9 +980,12 @@ class EventQuerySet(DateRangeQuerySet):
         return self.filter(teachers=teacher)
 
     def filter_room(self, room: Union[Room, int]):
-        """ Filter for all lessons taking part in a certain room. """
+        """ Filter for all objects taking part in a certain room. """
 
-        return self.filter(rooms=room)
+        if self._multiple_rooms:
+            return self.filter(rooms=room)
+        else:
+            return self.filter(room=room)
 
     def filter_from_type(self, type_: str, pk: int) -> Optional[models.QuerySet]:
         if type_ == "group":
@@ -1000,6 +1013,10 @@ class EventQuerySet(DateRangeQuerySet):
         else:
             # If no student or teacher
             return None
+
+
+class EventQuerySet(DateRangeQuerySet, TimetableQuerySet):
+    pass
 
 
 class Event(ExtensibleModel):
@@ -1030,3 +1047,44 @@ class Event(ExtensibleModel):
         indexes = [models.Index(fields=["period_from", "period_to", "date_start", "date_end"])]
         verbose_name = _("Event")
         verbose_name_plural = _("Events")
+
+
+class ExtraLessonQuerySet(TimetableQuerySet):
+    _multiple_rooms = False
+
+    def within_dates(self, start: date, end: date):
+        week_start = CalendarWeek.from_date(start)
+        week_end = CalendarWeek.from_date(end)
+
+        return self.filter(
+            week__gte=week_start.week,
+            week__lte=week_end.week,
+            period__weekday__gte=start.weekday(),
+            period__weekday__lte=end.weekday(),
+        )
+
+    def on_day(self, day:date):
+        self.within_dates(day, day)
+
+
+class ExtraLesson(ExtensibleModel):
+    label_ = "extra_lesson"
+
+    objects = models.Manager.from_queryset(ExtraLessonQuerySet)()
+
+    week = models.IntegerField(verbose_name=_("Week"), default=CalendarWeek.current_week)
+    period = models.ForeignKey("TimePeriod", models.CASCADE, related_name="extra_lessons")
+
+    subject = models.ForeignKey("Subject", on_delete=models.CASCADE, related_name="extra_lessons", verbose_name=_("Subject"))
+    groups = models.ManyToManyField("core.Group", related_name="extra_lessons", verbose_name=_("Groups"))
+    teachers = models.ManyToManyField("core.Person", related_name="extra_lessons_as_teacher", verbose_name=_("Teachers"))
+    room = models.ForeignKey("Room", models.CASCADE, null=True, related_name="extra_lessons", verbose_name=_("Room"))
+
+    comment = models.CharField(verbose_name=_("Comment"), blank=True, null=True, max_length=255)
+
+    def __str__(self):
+        return "{}, {}, {}".format(self.week, self.period, self.subject)
+
+    class Meta:
+        verbose_name = _("Extra lesson")
+        verbose_name_plural = _("Extra lessons")

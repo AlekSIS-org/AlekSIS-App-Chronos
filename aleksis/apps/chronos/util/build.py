@@ -4,6 +4,7 @@ from typing import Union, List, Tuple
 
 from calendarweek import CalendarWeek
 from django.apps import apps
+from django.db.models import QuerySet
 
 from aleksis.core.models import Person
 
@@ -15,6 +16,26 @@ LessonSubstitution = apps.get_model("chronos", "LessonSubstitution")
 SupervisionSubstitution = apps.get_model("chronos", "SupervisionSubstitution")
 Event = apps.get_model("chronos", "Event")
 Holiday = apps.get_model("chronos", "Holiday")
+ExtraLesson = apps.get_model("chronos", "ExtraLesson")
+
+
+def group_by_periods(objs: QuerySet, is_person: bool =False) -> dict:
+    per_period = {}
+    for obj in objs:
+        period = obj.period.period
+        weekday = obj.period.weekday
+
+        if period not in per_period:
+            per_period[period] = [] if is_person else {}
+
+        if not is_person and weekday not in per_period[period]:
+            per_period[period][weekday] = []
+
+        if is_person:
+            per_period[period].append(obj)
+        else:
+            per_period[period][weekday].append(obj)
+    return per_period
 
 
 def build_timetable(
@@ -47,21 +68,16 @@ def build_timetable(
         )
 
     # Sort lesson periods in a dict
-    lesson_periods_per_period = {}
-    for lesson_period in lesson_periods:
-        period = lesson_period.period.period
-        weekday = lesson_period.period.weekday
+    lesson_periods_per_period = group_by_periods(lesson_periods, is_person=is_person)
 
-        if period not in lesson_periods_per_period:
-            lesson_periods_per_period[period] = [] if is_person else {}
+    # Get events
+    if is_person:
+        extra_lessons = ExtraLesson.objects.on_day(date_ref).filter_from_person(obj)
+    else:
+        extra_lessons = ExtraLesson.objects.filter(week=date_ref.week).filter_from_type(type_, obj)
 
-        if not is_person and weekday not in lesson_periods_per_period[period]:
-            lesson_periods_per_period[period][weekday] = []
-
-        if is_person:
-            lesson_periods_per_period[period].append(lesson_period)
-        else:
-            lesson_periods_per_period[period][weekday].append(lesson_period)
+    # Sort lesson periods in a dict
+    extra_lessons_per_period = group_by_periods(extra_lessons, is_person=is_person)
 
     # Get events
     if is_person:
@@ -211,6 +227,14 @@ def build_timetable(
                     ):
                         if weekday in lesson_periods_per_period[period]:
                             col += lesson_periods_per_period[period][weekday]
+
+                    # Add extra lessons
+                    if (
+                        period in extra_lessons_per_period
+                        and weekday not in holidays_per_weekday
+                    ):
+                        if weekday in extra_lessons_per_period[period]:
+                            col += extra_lessons_per_period[period][weekday]
 
                     # Add events
                     if (

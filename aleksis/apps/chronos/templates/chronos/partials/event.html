@@ -13,11 +13,7 @@
     {# Teacher or class > Display rooms #}
     {% if type == "teacher" or type == "group" %}
       {% for room in event.rooms.all %}
-        <span class="tooltipped" data-position="bottom" data-tooltip="{{ room.name }}">
-          <a href="{% url "timetable" "room" room.pk %}">
-            {{ room.short_name }}
-          </a>
-        </span>
+        {% include "chronos/partials/room.html" with room=room %}
       {% endfor %}
     {% endif %}
 
