@@ -1068,6 +1068,8 @@ class ExtraLessonQuerySet(TimetableQuerySet):
 
 
 class ExtraLesson(ExtensibleModel):
+    label_ = "extra_lesson"
+
     objects = models.Manager.from_queryset(ExtraLessonQuerySet)()
 
     week = models.IntegerField(verbose_name=_("Week"), default=CalendarWeek.current_week)

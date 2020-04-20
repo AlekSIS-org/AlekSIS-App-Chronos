@@ -1,15 +1,10 @@
 {% load i18n %}
 
 <div style="
-        {# Display background color only if no badge exists and it is not the old room and there are no holidays #}
+        {# Display background color only if lesson is not cancelled and it is not the old room #}
         {% if not lesson_period.get_substitution.cancelled and not lesson_period.get_substitution.cancelled_for_teachers %}
           {% if not type == "room" or lesson_period.room == lesson_period.get_room or lesson_period.get_room == el %}
-            {% if lesson_period.lesson.subject.colour_fg %}
-              color: {{ lesson_period.lesson.subject.colour_fg }};
-            {% endif %}
-            {% if lesson_period.lesson.subject.colour_bg %}
-              background-color: {{ lesson_period.lesson.subject.colour_bg }};
-            {% endif %}
+            {% include "chronos/partials/subject_colour.html" with subject=lesson_period.lesson.subject %}
           {% endif %}
         {% endif %}
         "
@@ -84,20 +79,12 @@
       {% endif %}
 
       {# Display subject #}
-      <strong>
-              <span data-position="bottom" class="tooltipped"
-                    data-tooltip="{{ lesson_period.lesson.subject.name }}">{{ lesson_period.lesson.subject.abbrev }}</span>
-      </strong>
+      {% include "chronos/partials/subject.html" with subject=lesson_period.lesson.subject %}
 
       {# Teacher or class > Display room #}
       {% if type == "teacher" or type == "group" %}
         {% if lesson_period.room %}
-          <span class="tooltipped" data-position="bottom"
-                data-tooltip="{{ lesson_period.room.name }}">
-                                  <a href="{% url "timetable" "room" lesson_period.room.pk %}">
-                                        {{ lesson_period.room.short_name }}
-                                    </a>
-                            </span>
+          {% include "chronos/partials/room.html" with room=lesson_period.room %}
         {% endif %}
       {% endif %}
     {% endif %}

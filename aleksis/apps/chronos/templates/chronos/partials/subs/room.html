@@ -16,24 +16,12 @@
     </span>
   {% elif el.room and not el.lesson_period.room %}
     {# Only new room available #}
-    <span class="tooltipped" data-position="bottom"
-          data-tooltip="{{ el.room.name }}"
-          title="{{ el.room.name }}">
-      <a href="{% url "timetable" "room" el.room.pk %}">
-          {{ el.room.short_name }}
-      </a>
-    </span>
+    {% include "chronos/partials/room.html" with room=el.room %}
   {% elif not el.room and not el.lesson_period.room %}
     {# Nothing to view #}
   {% else %}
     {# Only old room available #}
-    <span class="tooltipped" data-position="bottom"
-          data-tooltip="{{ el.lesson_period.room.name }}"
-          title="{{ el.lesson_period.room.name }}">
-      <a href="{% url "timetable" "room" el.lesson_period.room.pk %}">
-          {{ el.lesson_period.room.short_name }}
-      </a>
-    </span>
+    {% include "chronos/partials/room.html" with room=el.lesson_period.room %}
   {% endif %}
 {% elif type == "supervision_substitution" %}
   {% with supervision=el.supervision %}
