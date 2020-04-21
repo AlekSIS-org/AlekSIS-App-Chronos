@@ -1,0 +1,5 @@
+{% if type == "substitution" %}
+  {% include "chronos/partials/groups.html" with groups=el.lesson_period.lesson.groups.all %}
+{% elif type == "extra_lesson" or type == "event" %}
+  {% include "chronos/partials/groups.html" with groups=el.groups.all %}
+{% endif %}

@@ -61,9 +61,7 @@
       <tr class="{% include "chronos/partials/subs/colour.html" with item=item %}">
         {# TODO: Extend support for purple (events) #}
         <td>
-          {% if item.type == "substitution" %}
-            {% include "chronos/partials/groups.html" with groups=item.el.lesson_period.lesson.groups.all %}
-          {% endif %}
+          {% include "chronos/partials/subs/groups.html" with type=item.type el=item.el %}
         </td>
         <td>
          {% include "chronos/partials/subs/period.html" with type=item.type el=item.el %}
@@ -81,7 +79,7 @@
           <span class="hide-on-med-and-up">
             {% include "chronos/partials/subs/badge.html" with sub=item.el %}
           </span>
-          <em>{{ sub.comment|default:"" }}</em>
+          {% include "chronos/partials/subs/comment.html" with el=item.el %}
         </td>
         <td class="hide-on-small-and-down">
           {% include "chronos/partials/subs/badge.html" with sub=item.el %}

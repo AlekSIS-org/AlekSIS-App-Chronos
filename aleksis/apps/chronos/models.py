@@ -428,19 +428,7 @@ class Room(ExtensibleModel):
         ordering = ["name", "short_name"]
 
 
-class Lesson(ExtensibleModel):
-    subject = models.ForeignKey("Subject", on_delete=models.CASCADE, related_name="lessons")
-    teachers = models.ManyToManyField("core.Person", related_name="lessons_as_teacher")
-    periods = models.ManyToManyField("TimePeriod", related_name="lessons", through="LessonPeriod")
-    groups = models.ManyToManyField("core.Group", related_name="lessons")
-
-    date_start = models.DateField(verbose_name=_("Effective start date of lesson"), null=True)
-    date_end = models.DateField(verbose_name=_("Effective end date of lesson"), null=True)
-
-    @property
-    def teacher_names(self, sep: Optional[str] = ", ") -> str:
-        return sep.join([teacher.full_name for teacher in self.teachers.all()])
-
+class GroupPropertiesMixin:
     @property
     def group_names(self, sep: Optional[str] = ", ") -> str:
         return sep.join([group.short_name for group in self.groups.all()])
@@ -456,6 +444,22 @@ class Lesson(ExtensibleModel):
     @property
     def groups_to_show_names(self, sep: Optional[str] = ", ") -> str:
         return sep.join([group.short_name for group in self.groups_to_show])
+
+
+class TeacherPropertiesMixin:
+    @property
+    def teacher_names(self, sep: Optional[str] = ", ") -> str:
+        return sep.join([teacher.full_name for teacher in self.teachers.all()])
+
+
+class Lesson(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
+    subject = models.ForeignKey("Subject", on_delete=models.CASCADE, related_name="lessons")
+    teachers = models.ManyToManyField("core.Person", related_name="lessons_as_teacher")
+    periods = models.ManyToManyField("TimePeriod", related_name="lessons", through="LessonPeriod")
+    groups = models.ManyToManyField("core.Group", related_name="lessons")
+
+    date_start = models.DateField(verbose_name=_("Effective start date of lesson"), null=True)
+    date_end = models.DateField(verbose_name=_("Effective end date of lesson"), null=True)
 
     def get_calendar_week(self, week: int):
         year = self.date_start.year
@@ -1016,10 +1020,13 @@ class TimetableQuerySet(models.QuerySet):
 
 
 class EventQuerySet(DateRangeQuerySet, TimetableQuerySet):
-    pass
+    def annotate_day(self, day: date):
+        """ Annotate all events in the QuerySet with the provided date. """
+
+        return self.annotate(_date=models.Value(day, models.DateField()))
 
 
-class Event(ExtensibleModel):
+class Event(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
     label_ = "event"
 
     objects = models.Manager.from_queryset(EventQuerySet)()
@@ -1041,6 +1048,22 @@ class Event(ExtensibleModel):
             return self.title
         else:
             return _("Event {}".format(self.pk))
+
+    @property
+    def period_from_on_day(self) -> int:
+        day = getattr(self, "_date", timezone.now().date())
+        if day != self.date_start:
+            return TimePeriod.period_min
+        else:
+            return self.period_from.period
+
+    @property
+    def period_to_on_day(self) -> int:
+        day = getattr(self, "_date", timezone.now().date())
+        if day != self.date_end:
+            return TimePeriod.period_max
+        else:
+            return self.period_to.period
 
     class Meta:
         ordering = ["date_start"]
@@ -1064,10 +1087,10 @@ class ExtraLessonQuerySet(TimetableQuerySet):
         )
 
     def on_day(self, day:date):
-        self.within_dates(day, day)
+        return self.within_dates(day, day)
 
 
-class ExtraLesson(ExtensibleModel):
+class ExtraLesson(ExtensibleModel, GroupPropertiesMixin):
     label_ = "extra_lesson"
 
     objects = models.Manager.from_queryset(ExtraLessonQuerySet)()
