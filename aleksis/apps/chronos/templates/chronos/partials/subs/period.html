@@ -1,6 +1,8 @@
 <strong>
   {% if type == "substitution" %}
     {{ el.lesson_period.period.period }}.
+  {% elif type == "extra_lesson" %}
+    {{ el.period.period }}.
   {% elif type == "supervision_substitution" %}
     {% with break=el.supervision.break_item %}
       {{ break.after_period_number }}./{{ break.before_period_number }}.

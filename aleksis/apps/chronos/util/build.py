@@ -299,6 +299,18 @@ def build_substitutions_list(wanted_day: date) -> List[dict]:
         }
         rows.append(row)
 
+    # Get extra lessons
+    extra_lessons = ExtraLesson.objects.on_day(wanted_day)
+
+    for extra_lesson in extra_lessons:
+        row = {
+            "type": "extra_lesson",
+            "sort_a": "{}".format(extra_lesson.group_names),
+            "sort_b": "{}".format(extra_lesson.period.period),
+            "el": extra_lesson,
+        }
+        rows.append(row)
+
     # Sort all items
     def sorter(row: dict):
         return row["sort_a"] + row["sort_b"]

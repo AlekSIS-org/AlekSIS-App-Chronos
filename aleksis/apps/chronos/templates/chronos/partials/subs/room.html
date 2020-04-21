@@ -30,4 +30,6 @@
       {{ supervision.area.short_name }}
     </span>
   {% endwith %}
+{% elif type == "extra_lesson" %}
+  {% include "chronos/partials/room.html" with room=el.room %}
 {% endif %}

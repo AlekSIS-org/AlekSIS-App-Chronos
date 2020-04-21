@@ -1,5 +1,7 @@
-<span class="tooltipped" data-position="bottom" data-tooltip="{{ room.name }}">
-  <a href="{% url "timetable" "room" room.pk %}">
-    {{ room.short_name }}
-  </a>
-</span>
+{% if room %}
+  <span class="tooltipped" data-position="bottom" data-tooltip="{{ room.name }}">
+    <a href="{% url "timetable" "room" room.pk %}">
+      {{ room.short_name }}
+    </a>
+  </span>
+{% endif %}

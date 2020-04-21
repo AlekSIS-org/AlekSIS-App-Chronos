@@ -54,9 +54,7 @@
 
         <tr class="{% include "chronos/partials/subs/colour.html" with item=item %}">
           <td>
-            {% if item.type == "substitution" %}
-              {% include "chronos/partials/groups.html" with groups=item.el.lesson_period.lesson.groups.all %}
-            {% endif %}
+            {% include "chronos/partials/subs/groups.html" with type=item.type el=item.el %}
           </td>
           <td>
             {% include "chronos/partials/subs/period.html" with type=item.type el=item.el %}
