@@ -15,13 +15,9 @@
     <strong>{{ el.subject.abbrev }}</strong>
   </span>
   {% elif el.subject and not el.lesson_period.lesson.subject %}
-    <span data-position="bottom" class="tooltipped" data-tooltip="{{ el.subject.name }}">
-    <strong>{{ el.subject.abbrev }}</strong>
-  </span>
+    {% include "chronos/partials/subject.html" with subject=el.subject %}
   {% else %}
-    <span data-position="bottom" class="tooltipped" data-tooltip="{{ el.lesson_period.lesson.subject.name }}">
-    <strong>{{ el.lesson_period.lesson.subject.abbrev }}</strong>
-  </span>
+    {% include "chronos/partials/subject.html" with subject=el.lesson_period.lesson.subject %}
   {% endif %}
 {% elif type == "supervision_substitution" %}
   {% trans "Supervision" %}
