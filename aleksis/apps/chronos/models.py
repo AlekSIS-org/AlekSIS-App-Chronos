@@ -1064,7 +1064,7 @@ class ExtraLessonQuerySet(TimetableQuerySet):
         )
 
     def on_day(self, day:date):
-        self.within_dates(day, day)
+        return self.within_dates(day, day)
 
 
 class ExtraLesson(ExtensibleModel):
