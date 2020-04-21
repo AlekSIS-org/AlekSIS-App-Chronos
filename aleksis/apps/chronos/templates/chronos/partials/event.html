@@ -13,7 +13,7 @@
     {# Teacher or class > Display rooms #}
     {% if type == "teacher" or type == "group" %}
       {% for room in event.rooms.all %}
-        {% include "chronos/partials/room.html" with room=room %}
+        {% include "chronos/partials/room.html" with room=room %}{% if not forloop.last %},{% endif %}
       {% endfor %}
     {% endif %}
 
