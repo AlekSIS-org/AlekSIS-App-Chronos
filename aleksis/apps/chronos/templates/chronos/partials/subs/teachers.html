@@ -22,6 +22,6 @@
   <strong>
     {% include "chronos/partials/teachers.html" with teachers=el.teachers %}
   </strong>
-{% elif type == "extra_lesson" %}
+{% elif type == "extra_lesson" or type == "event" %}
   {% include "chronos/partials/teachers.html" with teachers=el.teachers.all %}
 {% endif %}

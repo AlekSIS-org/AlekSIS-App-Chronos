@@ -32,4 +32,8 @@
   {% endwith %}
 {% elif type == "extra_lesson" %}
   {% include "chronos/partials/room.html" with room=el.room %}
+{% elif type == "event" %}
+  {% for room in el.rooms.all %}
+    {% include "chronos/partials/room.html" with room=room %}{% if not forloop.last %},{% endif %}
+  {% endfor %}
 {% endif %}

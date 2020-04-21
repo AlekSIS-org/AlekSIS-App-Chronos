@@ -311,6 +311,23 @@ def build_substitutions_list(wanted_day: date) -> List[dict]:
         }
         rows.append(row)
 
+    # Get events
+    events = Event.objects.on_day(wanted_day).annotate_day(wanted_day)
+
+    for event in events:
+        if event.groups.all():
+            sort_a = event.group_names
+        else:
+            sort_a = "Z.".format(event.teacher_names)
+
+        row = {
+            "type": "event",
+            "sort_a": sort_a,
+            "sort_b": "{}".format(event.period_from_on_day),
+            "el": event,
+        }
+        rows.append(row)
+
     # Sort all items
     def sorter(row: dict):
         return row["sort_a"] + row["sort_b"]

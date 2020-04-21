@@ -79,7 +79,7 @@
           <span class="hide-on-med-and-up">
             {% include "chronos/partials/subs/badge.html" with sub=item.el %}
           </span>
-          <em>{{ item.el.comment|default:"" }}</em>
+          {% include "chronos/partials/subs/comment.html" with el=item.el %}
         </td>
         <td class="hide-on-small-and-down">
           {% include "chronos/partials/subs/badge.html" with sub=item.el %}

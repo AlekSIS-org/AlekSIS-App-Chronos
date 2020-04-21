@@ -23,4 +23,6 @@
   {% trans "Supervision" %}
 {% elif type == "extra_lesson" %}
   {% include "chronos/partials/subject.html" with subject=el.subject %}
+{% elif type == "event" %}
+  {% trans "Event" %}
 {% endif %}

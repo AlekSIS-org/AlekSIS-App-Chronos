@@ -70,7 +70,7 @@
           </td>
           <td>
             {% include "chronos/partials/subs/badge.html" with sub=item.el %}
-            <em>{{ sub.comment|default:"" }}</em>
+            {% include "chronos/partials/subs/comment.html" with el=item.el %}
           </td>
         </tr>
       {% endfor %}
