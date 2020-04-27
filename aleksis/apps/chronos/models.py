@@ -390,9 +390,7 @@ class TimePeriod(ExtensibleModel):
 
 
 class Subject(ExtensibleModel):
-    abbrev = models.CharField(
-        verbose_name=_("Abbreviation of subject in timetable"), max_length=10, unique=True,
-    )
+    short_name = models.CharField(verbose_name=_("Short name of subject"), max_length=10, unique=True)
     name = models.CharField(verbose_name=_("Long name of subject"), max_length=30, unique=True)
 
     colour_fg = models.CharField(
@@ -409,10 +407,10 @@ class Subject(ExtensibleModel):
     )
 
     def __str__(self) -> str:
-        return "{} ({})".format(self.abbrev, self.name)
+        return "{} ({})".format(self.short_name, self.name)
 
     class Meta:
-        ordering = ["name", "abbrev"]
+        ordering = ["name", "short_name"]
 
 
 class Room(ExtensibleModel):
@@ -471,7 +469,7 @@ class Lesson(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
     def __str__(self):
         return "{}, {}, {}".format(
             format_m2m(self.groups),
-            self.subject.abbrev,
+            self.subject.short_name,
             format_m2m(self.teachers),
         )
 
