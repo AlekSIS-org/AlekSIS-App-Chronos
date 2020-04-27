@@ -151,10 +151,10 @@ admin.site.register(Room, RoomAdmin)
 
 class SubjectAdmin(admin.ModelAdmin):
     def _colour(self, obj):
-        return colour_badge(obj.colour_fg, obj.colour_bg, obj.abbrev,)
+        return colour_badge(obj.colour_fg, obj.colour_bg, obj.short_name, )
 
-    list_display = ("abbrev", "name", "_colour")
-    list_display_links = ("abbrev", "name")
+    list_display = ("short_name", "name", "_colour")
+    list_display_links = ("short_name", "name")
 
 
 admin.site.register(Subject, SubjectAdmin)
