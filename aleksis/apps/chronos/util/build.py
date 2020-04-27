@@ -53,6 +53,9 @@ def build_timetable(
         is_person = True
         type_ = obj.timetable_type
 
+    if type_ is None:
+        return None
+
     # Get matching holidays
     if is_person:
         holiday = Holiday.on_day(date_ref)
