@@ -7,11 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-26 15:06+0000\n"
+"POT-Creation-Date: 2020-04-28 13:31+0000\n"
 "PO-Revision-Date: 2020-04-26 15:23+0000\n"
 "Last-Translator: Jonathan Weth <teckids@jonathanweth.de>\n"
-"Language-Team: German <https://translate.edugit.org/projects/aleksis/"
-"aleksis-app-chronos/de/>\n"
+"Language-Team: German <https://translate.edugit.org/projects/aleksis/aleksis-app-chronos/de/>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -75,310 +74,304 @@ msgstr "Stunde"
 msgid "Time periods"
 msgstr "Stunden"
 
-#: models.py:394
-msgid "Abbreviation of subject in timetable"
-msgstr "Kürzel des Faches im Stundenplan"
+#: models.py:393
+#, fuzzy
+#| msgid "Long name of subject"
+msgid "Short name of subject"
+msgstr "Name des Faches"
 
-#: models.py:396
+#: models.py:394
 msgid "Long name of subject"
 msgstr "Name des Faches"
 
-#: models.py:399
+#: models.py:397
 msgid "Foreground colour in timetable"
 msgstr "Vordergrundfarbe im Stundenplan"
 
-#: models.py:405
+#: models.py:403
 msgid "Background colour in timetable"
 msgstr "Hintergrundfarbe im Stundenplan"
 
-#: models.py:420
+#: models.py:418
 msgid "Short name, e.g. room number"
 msgstr "Kurzer Name, z.B. Raumnummer"
 
-#: models.py:422 models.py:794 models.py:809
+#: models.py:420 models.py:792 models.py:807
 msgid "Long name"
 msgstr "Langer Name"
 
-#: models.py:461
+#: models.py:459
 msgid "Effective start date of lesson"
 msgstr "Effektives Startdatum des Unterrichts"
 
-#: models.py:462
+#: models.py:460
 msgid "Effective end date of lesson"
 msgstr "Effektives Enddatum des Unterrichts"
 
-#: models.py:481
+#: models.py:479
 msgid "Lesson"
 msgstr "Unterrichtsstunde"
 
-#: models.py:482 templates/chronos/lessons_day.html:9
+#: models.py:480 templates/chronos/lessons_day.html:9
 #: templates/chronos/lessons_day.html:19
 msgid "Lessons"
 msgstr "Unterrichtsstunden"
 
-#: models.py:488 models.py:1098
+#: models.py:486 models.py:1096
 msgid "Week"
 msgstr "Woche"
 
-#: models.py:498 models.py:1101 templates/chronos/substitutions.html:46
+#: models.py:496 models.py:1099 templates/chronos/substitutions.html:46
 #: templates/chronos/substitutions_print.html:29
 msgid "Subject"
 msgstr "Fach"
 
-#: models.py:503 models.py:1104 templates/chronos/substitutions.html:47
+#: models.py:501 models.py:1102 templates/chronos/substitutions.html:47
 #: templates/chronos/substitutions_print.html:30
 msgid "Room"
 msgstr "Raum"
 
-#: models.py:505
+#: models.py:503
 msgid "Cancelled?"
 msgstr "Entfällt?"
 
-#: models.py:506
+#: models.py:504
 msgid "Cancelled for teachers?"
 msgstr "Entfällt für Lehrkräfte?"
 
-#: models.py:508 models.py:714 models.py:741 models.py:1106
+#: models.py:506 models.py:712 models.py:739 models.py:1104
 msgid "Comment"
 msgstr "Kommentar"
 
-#: models.py:512
+#: models.py:510
 msgid "Lessons can only be either substituted or cancelled."
 msgstr "Unterrichtsstunden können nur entweder vertreten werden oder ausfallen."
 
-#: models.py:545
+#: models.py:543
 msgid "Lesson substitution"
 msgstr "Vertretung"
 
-#: models.py:546
+#: models.py:544
 msgid "Lesson substitutions"
 msgstr "Vertretungen"
 
-#: models.py:603
+#: models.py:601
 msgid "Lesson period"
 msgstr "Unterrichtsstunde"
 
-#: models.py:604
+#: models.py:602
 msgid "Lesson periods"
 msgstr "Unterrichtsstunden"
 
-#: models.py:645
+#: models.py:643
 msgid "Timetable widget"
 msgstr "Stundenplanwidget"
 
-#: models.py:676 models.py:793 models.py:808
+#: models.py:674 models.py:791 models.py:806
 msgid "Short name"
 msgstr "Kurzname"
 
-#: models.py:677
+#: models.py:675
 msgid "Name"
 msgstr "Name"
 
-#: models.py:686
+#: models.py:684
 msgid "Absence reason"
 msgstr "Absenzgrund"
 
-#: models.py:687
+#: models.py:685
 msgid "Absence reasons"
 msgstr "Absenzgründe"
 
-#: models.py:710
+#: models.py:708
 msgid "Effective start date of absence"
 msgstr "Effektives Startdatum der Absenz"
 
-#: models.py:711
+#: models.py:709
 msgid "Effective end date of absence"
 msgstr "Effektives Enddatum der Absenz"
 
-#: models.py:712
+#: models.py:710
 msgid "Effective start period of absence"
 msgstr "Effektive Startstunde der Absenz"
 
-#: models.py:713
+#: models.py:711
 msgid "Effective end period of absence"
 msgstr "Effektive Endstunde der Absenz"
 
-#: models.py:724
+#: models.py:722
 msgid "Unknown absence"
 msgstr "Unbekannte Absenz"
 
-#: models.py:729
+#: models.py:727
 msgid "Absence"
 msgstr "Absenz"
 
-#: models.py:730
+#: models.py:728
 msgid "Absences"
 msgstr "Absenzen"
 
-#: models.py:736
+#: models.py:734
 msgid "Date of exam"
 msgstr "Datum der Klausur"
 
-#: models.py:737
+#: models.py:735
 msgid "Effective start period of exam"
 msgstr "Effektive Startstunde der Klausur"
 
-#: models.py:738
+#: models.py:736
 msgid "Effective end period of exam"
 msgstr "Effektive Endstunde der Klausur"
 
-#: models.py:740 models.py:1034
+#: models.py:738 models.py:1032
 msgid "Title"
 msgstr "Titel"
 
-#: models.py:746
+#: models.py:744
 msgid "Exam"
 msgstr "Klausur"
 
-#: models.py:747
+#: models.py:745
 msgid "Exams"
 msgstr "Klausuren"
 
-#: models.py:757
+#: models.py:755
 msgid "Title of the holidays"
 msgstr "Titel der Ferien"
 
-#: models.py:758
+#: models.py:756
 msgid "Effective start date of holidays"
 msgstr "Effektives Startdatum der Ferien"
 
-#: models.py:759
+#: models.py:757
 msgid "Effective end date of holidays"
 msgstr "Effektives Enddatum der Ferien"
 
-#: models.py:760
+#: models.py:758
 msgid "Comments"
 msgstr "Kommentare"
 
-#: models.py:788
+#: models.py:786
 msgid "Holiday"
 msgstr "Ferien"
 
-#: models.py:789
+#: models.py:787
 msgid "Holidays"
 msgstr "Ferien"
 
-#: models.py:803 models.py:904
+#: models.py:801 models.py:902
 msgid "Supervision area"
 msgstr "Aufsichtsgebiet"
 
-#: models.py:804
+#: models.py:802
 msgid "Supervision areas"
 msgstr "Aufsichtsgebiete"
 
-#: models.py:812
+#: models.py:810
 msgid "Effective start of break"
 msgstr "Effektiver Start der Pause"
 
-#: models.py:815
+#: models.py:813
 msgid "Effective end of break"
 msgstr "Effektives Ende der Pause"
 
-#: models.py:864 models.py:905
+#: models.py:862 models.py:903
 msgid "Break"
 msgstr "Pause"
 
-#: models.py:865
+#: models.py:863
 msgid "Breaks"
 msgstr "Pausen"
 
-#: models.py:906 models.py:938 templates/chronos/substitutions.html:45
+#: models.py:904 models.py:936 templates/chronos/substitutions.html:45
 msgid "Teacher"
 msgstr "Lehrkraft"
 
-#: models.py:931 models.py:937 templates/chronos/partials/subs/subject.html:23
+#: models.py:929 models.py:935 templates/chronos/partials/subs/subject.html:23
 #: templates/chronos/partials/supervision.html:15
 msgid "Supervision"
 msgstr "Aufsicht"
 
-#: models.py:932
+#: models.py:930
 msgid "Supervisions"
 msgstr "Aufsichten"
 
-#: models.py:936
+#: models.py:934
 msgid "Date"
 msgstr "Datum"
 
-#: models.py:949
+#: models.py:947
 msgid "Supervision substitution"
 msgstr "Aufsichtsvertretung"
 
-#: models.py:950
+#: models.py:948
 msgid "Supervision substitutions"
 msgstr "Aufsichtsvertretungen"
 
-#: models.py:1036
+#: models.py:1034
 msgid "Effective start date of event"
 msgstr "Effektives Startdatum der Veranstaltung"
 
-#: models.py:1037
+#: models.py:1035
 msgid "Effective end date of event"
 msgstr "Effektives Enddatum der Veranstaltung"
 
-#: models.py:1039
+#: models.py:1037
 msgid "Effective start period of event"
 msgstr "Effektive Startstunde der Veranstaltung"
 
-#: models.py:1040
+#: models.py:1038
 msgid "Effective end period of event"
 msgstr "Effektive Endstunde der Veranstaltung"
 
-#: models.py:1042 models.py:1102 tables.py:31 templates/chronos/all.html:28
+#: models.py:1040 models.py:1100 tables.py:31 templates/chronos/all.html:28
 msgid "Groups"
 msgstr "Gruppen"
 
-#: models.py:1043 templates/chronos/all.html:39
+#: models.py:1041 templates/chronos/all.html:39
 msgid "Rooms"
 msgstr "Räume"
 
-#: models.py:1044 models.py:1103 tables.py:32 templates/chronos/all.html:17
+#: models.py:1042 models.py:1101 tables.py:32 templates/chronos/all.html:17
 #: templates/chronos/substitutions_print.html:28
 msgid "Teachers"
 msgstr "Lehrkräfte"
 
-#: models.py:1050
+#: models.py:1048
 msgid "Event {}"
 msgstr "Veranstaltung {}"
 
-#: models.py:1071 templates/chronos/partials/subs/subject.html:27
+#: models.py:1069 templates/chronos/partials/subs/subject.html:27
 msgid "Event"
 msgstr "Veranstaltung"
 
-#: models.py:1072
+#: models.py:1070
 msgid "Events"
 msgstr "Veranstaltungen"
 
-#: models.py:1112
+#: models.py:1110
 msgid "Extra lesson"
 msgstr "Sonderstunde"
 
-#: models.py:1113
+#: models.py:1111
 msgid "Extra lessons"
 msgstr "Sonderstunden"
 
 #: settings.py:7
 msgid "If an lesson or substitution has only one group and this group has parent groups, show the parent groups instead of the original group."
-msgstr ""
-"Wenn eine Stunde oder Vertretung nur eine Gruppe hat und diese Gruppe "
-"Elterngruppen hat, zeige die Elterngruppen anstelle der eigentlichen Gruppe."
+msgstr "Wenn eine Stunde oder Vertretung nur eine Gruppe hat und diese Gruppe Elterngruppen hat, zeige die Elterngruppen anstelle der eigentlichen Gruppe."
 
 #: settings.py:15
 msgid "If there are more groups than the limit set in CHRONOS_SHORTEN_GROUPS_LIMIT, add text collapsible."
-msgstr ""
-"Wenn es mehr Gruppen als in CHRONOS_SHORTEN_GROUPS_LIMIT festgelegt gibt, "
-"werden die Gruppenangaben gekürzt."
+msgstr "Wenn es mehr Gruppen als in CHRONOS_SHORTEN_GROUPS_LIMIT festgelegt gibt, werden die Gruppenangaben gekürzt."
 
 #: settings.py:21
 msgid "If there are more groups than this limit and CHRONOS_SHORTEN_GROUPS is enabled, add text collapsible."
-msgstr ""
-"Wenn es mehr Gruppen als dieses Limit gibt und CHRONOS_SHORTEN_GROUPS "
-"aktiviert ist, werden die Gruppenangaben gekürzt."
+msgstr "Wenn es mehr Gruppen als dieses Limit gibt und CHRONOS_SHORTEN_GROUPS aktiviert ist, werden die Gruppenangaben gekürzt."
 
 #: settings.py:26
 msgid "Number of days shown on substitutions print view"
-msgstr ""
-"Anzahl der Tage, die in der Druckansicht des Vertretungsplanes angezeigt "
-"werden soll"
+msgstr "Anzahl der Tage, die in der Druckansicht des Vertretungsplanes angezeigt werden soll"
 
 #: settings.py:30
 msgid "The header box shows affected teachers/groups."
@@ -504,6 +497,9 @@ msgstr "Die Vertretung wurde gespeichert."
 #: views.py:252
 msgid "The substitution has been deleted."
 msgstr "Die Vertretung wurde gelöscht."
+
+#~ msgid "Abbreviation of subject in timetable"
+#~ msgstr "Kürzel des Faches im Stundenplan"
 
 #~ msgid "Group"
 #~ msgstr "Gruppe"
