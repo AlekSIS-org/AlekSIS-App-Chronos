@@ -8,9 +8,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-04-28 13:31+0000\n"
-"PO-Revision-Date: 2020-04-26 15:23+0000\n"
+"PO-Revision-Date: 2020-05-04 13:40+0000\n"
 "Last-Translator: Jonathan Weth <teckids@jonathanweth.de>\n"
-"Language-Team: German <https://translate.edugit.org/projects/aleksis/aleksis-app-chronos/de/>\n"
+"Language-Team: German <https://translate.edugit.org/projects/aleksis/"
+"aleksis-app-chronos/de/>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -37,7 +38,7 @@ msgstr "Alle Stundenpläne"
 
 #: menus.py:28
 msgid "Daily lessons"
-msgstr "Tages-Stunden"
+msgstr "Tagesstunden"
 
 #: menus.py:34 templates/chronos/substitutions.html:11
 #: templates/chronos/substitutions.html:17
@@ -75,10 +76,8 @@ msgid "Time periods"
 msgstr "Stunden"
 
 #: models.py:393
-#, fuzzy
-#| msgid "Long name of subject"
 msgid "Short name of subject"
-msgstr "Name des Faches"
+msgstr "Kurzname des Faches"
 
 #: models.py:394
 msgid "Long name of subject"
@@ -423,7 +422,7 @@ msgstr "Betroffene Gruppen"
 
 #: templates/chronos/partials/subs/badge.html:4
 msgid "Cancelled"
-msgstr "Fällt aus"
+msgstr "Entfall"
 
 #: templates/chronos/partials/subs/badge.html:6
 msgid "Cancelled for teachers"
