@@ -24,7 +24,7 @@
       </h4>
 
       {# Show class teacher and deputy class teacher #}
-      {% if type == "group" and el.owners.all %}
+      {% if type.value == "group" and el.owners.all %}
         <h5>{% trans "Group teachers:" %}
           {% for teacher in el.owners.all %}
             <span data-position="bottom" class="tooltipped"
@@ -50,7 +50,7 @@
         <span class="badge new primary-color left smart-plan-badge">{% trans "SMART PLAN" %}</span>
 
         <a class="waves-effect waves-light btn-flat no-print"
-           href="{% url "timetable_regular" type pk "regular" %}">
+           href="{% url "timetable_regular" type.value pk "regular" %}">
           <i class="material-icons left">slideshow</i>
           {% trans "Show regular timetable" %}
         </a>
@@ -62,7 +62,7 @@
     {% else %}
       {# Show if regular #}
       <a class="waves-effect waves-light btn-flat no-print"
-         href="{% url "timetable" type pk %}">
+         href="{% url "timetable" type.value pk %}">
         <i class="material-icons left">slideshow</i>
         {% trans "Show SMART PLAN" %}
       </a>

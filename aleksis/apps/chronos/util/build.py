@@ -6,6 +6,7 @@ from calendarweek import CalendarWeek
 from django.apps import apps
 from django.db.models import QuerySet
 
+from aleksis.apps.chronos.models import TimetableType
 from aleksis.core.models import Person
 
 LessonPeriod = apps.get_model("chronos", "LessonPeriod")
@@ -39,7 +40,7 @@ def group_by_periods(objs: QuerySet, is_person: bool =False) -> dict:
 
 
 def build_timetable(
-    type_: str, obj: Union[int, Person], date_ref: Union[CalendarWeek, date]
+    type_: Union[TimetableType, str], obj: Union[int, Person], date_ref: Union[CalendarWeek, date]
 ):
     needed_breaks = []
 
@@ -138,7 +139,7 @@ def build_timetable(
                 else:
                     events_per_period[period][weekday].append(event)
 
-    if type_ == "teacher":
+    if type_ == TimetableType.TEACHER:
         # Get matching supervisions
         if is_person:
             week = CalendarWeek.from_date(date_ref)
@@ -175,7 +176,7 @@ def build_timetable(
     rows = []
     for period, break_ in breaks.items():  # period is period after break
         # Break
-        if type_ == "teacher" and period in needed_breaks:
+        if type_ == TimetableType.TEACHER and period in needed_breaks:
             row = {
                 "type": "break",
                 "after_period": break_.after_period_number,

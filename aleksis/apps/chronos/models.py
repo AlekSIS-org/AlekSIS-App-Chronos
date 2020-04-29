@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections import OrderedDict
 from datetime import date, datetime, timedelta, time
+from enum import Enum
 from typing import Dict, Optional, Tuple, Union
 
 from constance import config
@@ -29,6 +30,16 @@ from aleksis.core.models import Group, Person, DashboardWidget
 
 from aleksis.apps.chronos.util.date import week_weekday_from_date
 from aleksis.core.util.core_helpers import has_person
+
+
+class TimetableType(Enum):
+    GROUP = "group"
+    TEACHER = "teacher"
+    ROOM = "room"
+
+    @classmethod
+    def from_string(cls, s: Optional[str]):
+        return cls.__members__.get(s.upper())
 
 
 class LessonPeriodManager(models.Manager):
@@ -208,12 +219,12 @@ class LessonPeriodQuerySet(LessonDataQuerySet):
         if query_data.get("room", None):
             return self.filter_room(int(query_data["room"]))
 
-    def filter_from_type(self, type_: str, pk: int) -> Optional[models.QuerySet]:
-        if type_ == "group":
+    def filter_from_type(self, type_: TimetableType, pk: int) -> Optional[models.QuerySet]:
+        if type_ == TimetableType.GROUP:
             return self.filter_group(pk)
-        elif type_ == "teacher":
+        elif type_ == TimetableType.TEACHER:
             return self.filter_teacher(pk)
-        elif type_ == "room":
+        elif type_ == TimetableType.ROOM:
             return self.filter_room(pk)
         else:
             return None
@@ -221,12 +232,12 @@ class LessonPeriodQuerySet(LessonDataQuerySet):
     def filter_from_person(self, person: Person) -> Optional[models.QuerySet]:
         type_ = person.timetable_type
 
-        if type_ == "teacher":
+        if type_ == TimetableType.TEACHER:
             # Teacher
 
             return self.filter_teacher(person)
 
-        elif type_ == "group":
+        elif type_ == TimetableType.GROUP:
             # Student
 
             return self.filter(lesson__groups__members=person)
@@ -980,12 +991,12 @@ class TimetableQuerySet(models.QuerySet):
         else:
             return self.filter(room=room)
 
-    def filter_from_type(self, type_: str, pk: int) -> Optional[models.QuerySet]:
-        if type_ == "group":
+    def filter_from_type(self, type_: TimetableType, pk: int) -> Optional[models.QuerySet]:
+        if type_ == TimetableType.GROUP:
             return self.filter_group(pk)
-        elif type_ == "teacher":
+        elif type_ == TimetableType.TEACHER:
             return self.filter_teacher(pk)
-        elif type_ == "room":
+        elif type_ == TimetableType.ROOM:
             return self.filter_room(pk)
         else:
             return None
@@ -993,12 +1004,12 @@ class TimetableQuerySet(models.QuerySet):
     def filter_from_person(self, person: Person) -> Optional[models.QuerySet]:
         type_ = person.timetable_type
 
-        if type_ == "teacher":
+        if type_ == TimetableType.TEACHER:
             # Teacher
 
             return self.filter_teacher(person)
 
-        elif type_ == "group":
+        elif type_ == TimetableType.GROUP:
             # Student
 
             return self.filter_participant(person)
