@@ -510,15 +510,6 @@ class LessonSubstitution(ExtensibleModel):
             raise ValidationError(_("Lessons can only be either substituted or cancelled."))
 
     @property
-    def type_(self):
-        if self.cancelled:
-            return "cancellation"
-        elif self.cancelled_for_teachers:
-            return "cancellation_for_teachers"
-        else:
-            return "substitution"
-
-    @property
     def date(self):
         week = CalendarWeek(week=self.week)
         return week[self.lesson_period.period.weekday]
