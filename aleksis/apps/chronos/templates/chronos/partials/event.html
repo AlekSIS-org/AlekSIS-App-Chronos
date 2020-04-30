@@ -1,27 +1,27 @@
 <div class="lesson-with-event">
   <p>
     {# Teacher or room > Display groups #}
-    {% if type == "teacher" or type == "room" %}
+    {% if type.value == "teacher" or type.value == "room" %}
       {% include "chronos/partials/groups.html" with groups=event.groups.all %}
     {% endif %}
 
     {# Class or room > Display teachers #}
-    {% if type == "room" or type == "group" %}
+    {% if type.value == "room" or type.value == "group" %}
       {% include "chronos/partials/teachers.html" with teachers=event.teachers.all %}
     {% endif %}
 
     {# Teacher or class > Display rooms #}
-    {% if type == "teacher" or type == "group" %}
+    {% if type.value == "teacher" or type.value == "group" %}
       {% for room in event.rooms.all %}
         {% include "chronos/partials/room.html" with room=room %}{% if not forloop.last %},{% endif %}
       {% endfor %}
     {% endif %}
 
-    {% if type == "teacher" and not event.groups.all and not event.rooms.all and event.title %}
+    {% if type.value == "teacher" and not event.groups.all and not event.rooms.all and event.title %}
       <em>{{ event.title }}</em>
-    {% elif type == "group" and not event.teachers.all and not event.groups.all and event.title %}
+    {% elif type.value == "group" and not event.teachers.all and not event.groups.all and event.title %}
       <em>{{ event.title }}</em>
-    {% elif type == "room" and not event.teachers.all and not event.groups.all and event.title %}
+    {% elif type.value == "room" and not event.teachers.all and not event.groups.all and event.title %}
       <em>{{ event.title }}</em>
     {% elif event.title %}
       <br/>

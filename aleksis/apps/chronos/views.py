@@ -16,7 +16,7 @@ from aleksis.core.decorators import admin_required
 from aleksis.core.models import Person, Group, Announcement
 from aleksis.core.util import messages
 from .forms import LessonSubstitutionForm
-from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room, Holiday, Absence
+from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room, Holiday, Absence, TimetableType
 from .tables import LessonsTable
 from .util.build import build_timetable, build_substitutions_list, build_weekdays
 from .util.js import date_unix
@@ -108,14 +108,16 @@ def timetable(
 
     is_smart = regular != "regular"
 
-    if type_ == "group":
+    if type_ == TimetableType.GROUP.value:
         el = get_object_or_404(Group, pk=pk)
-    elif type_ == "teacher":
+    elif type_ == TimetableType.TEACHER.value:
         el = get_object_or_404(Person, pk=pk)
-    elif type_ == "room":
+    elif type_ == TimetableType.ROOM.value:
         el = get_object_or_404(Room, pk=pk)
     else:
         return HttpResponseNotFound()
+
+    type_ = TimetableType.from_string(type_)
 
     if year and week:
         wanted_week = CalendarWeek(year=year, week=week)

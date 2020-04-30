@@ -2,19 +2,19 @@
      style="{% include "chronos/partials/subject_colour.html" with subject=extra_lesson.subject %}">
   <p>
     {# Teacher or room > Display groups #}
-    {% if type == "teacher" or type == "room" %}
+    {% if type.value == "teacher" or type.value == "room" %}
       {% include "chronos/partials/groups.html" with groups=extra_lesson.groups.all %}
     {% endif %}
 
     {# Class or room > Display teachers #}
-    {% if type == "room" or type == "group" %}
+    {% if type.value == "room" or type.value == "group" %}
       {% include "chronos/partials/teachers.html" with teachers=extra_lesson.teachers.all %}
     {% endif %}
 
     {% include "chronos/partials/subject.html" with subject=extra_lesson.subject %}
 
     {# Teacher or class > Display rooms #}
-    {% if type == "teacher" or type == "group" %}
+    {% if type.value == "teacher" or type.value == "group" %}
       {% include "chronos/partials/room.html" with room=extra_lesson.room %}
     {% endif %}
 

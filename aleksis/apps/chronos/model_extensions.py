@@ -5,7 +5,7 @@ from jsonstore import BooleanField
 
 from aleksis.core.models import Person, Group, Announcement
 
-from .models import Lesson, LessonPeriod
+from .models import Lesson, LessonPeriod, TimetableType
 
 
 @Person.property
@@ -16,13 +16,13 @@ def is_teacher(self):
 
 
 @Person.property
-def timetable_type(self) -> Optional[str]:
+def timetable_type(self) -> Optional[TimetableType]:
     """ Return which type of timetable this user has """
 
     if self.is_teacher:
-        return "teacher"
+        return TimetableType.TEACHER
     elif self.primary_group:
-        return "group"
+        return TimetableType.GROUP
     else:
         return None
 
@@ -33,9 +33,9 @@ def timetable_object(self) -> Optional[Union[Group, Person]]:
 
     type_ = self.timetable_type
 
-    if type_ == "teacher":
+    if type_ == TimetableType.TEACHER:
         return self
-    elif type_ == "group":
+    elif type_ == TimetableType.GROUP:
         return self.primary_group
     else:
         return None
