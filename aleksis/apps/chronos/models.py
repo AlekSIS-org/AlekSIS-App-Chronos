@@ -1111,3 +1111,13 @@ class ExtraLesson(ExtensibleModel, GroupPropertiesMixin):
     class Meta:
         verbose_name = _("Extra lesson")
         verbose_name_plural = _("Extra lessons")
+
+
+class GlobalPermissions(ExtensibleModel):
+    class Meta:
+        managed = False
+        permissions = (
+            ("view_all_timetables", _("Can view all timetables")),
+            ("view_timetable_overview", _("Can view timetable overview")),
+            ("view_lessons_day", _("Can view all lessons per day")),
+        )

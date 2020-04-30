@@ -16,25 +16,33 @@ MENUS = {
                     "name": _("My timetable"),
                     "url": "my_timetable",
                     "icon": "person",
-                    "validators": ["menu_generator.validators.is_authenticated"],
+                    "validators": [
+                        ("aleksis.core.util.predicates.permission_validator", "chronos.view_my_timetable"),
+                    ],
                 },
                 {
                     "name": _("All timetables"),
                     "url": "all_timetables",
                     "icon": "grid_on",
-                    "validators": ["menu_generator.validators.is_authenticated"],
+                    "validators": [
+                        ("aleksis.core.util.predicates.permission_validator", "chronos.view_timetable_overview"),
+                    ],
                 },
                 {
                     "name": _("Daily lessons"),
                     "url": "lessons_day",
                     "icon": "calendar_today",
-                    "validators": ["menu_generator.validators.is_authenticated"],
+                    "validators": [
+                        ("aleksis.core.util.predicates.permission_validator", "chronos.view_lessons_day"),
+                    ],
                 },
                 {
                     "name": _("Substitutions"),
                     "url": "substitutions",
                     "icon": "update",
-                    "validators": ["menu_generator.validators.is_authenticated"],
+                    "validators": [
+                        ("aleksis.core.util.predicates.permission_validator", "chronos.view_substitutions"),
+                    ],
                 },
             ],
         }
