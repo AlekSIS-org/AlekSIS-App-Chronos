@@ -297,8 +297,8 @@ class TimePeriod(ExtensibleModel):
     weekday = models.PositiveSmallIntegerField(verbose_name=_("Week day"), choices=WEEKDAY_CHOICES)
     period = models.PositiveSmallIntegerField(verbose_name=_("Number of period"))
 
-    time_start = models.TimeField(verbose_name=_("Time the period starts"))
-    time_end = models.TimeField(verbose_name=_("Time the period ends"))
+    time_start = models.TimeField(verbose_name=_("Start time"))
+    time_end = models.TimeField(verbose_name=_("End time"))
 
     def __str__(self) -> str:
         return "{}, {}.".format(
@@ -401,8 +401,8 @@ class TimePeriod(ExtensibleModel):
 
 
 class Subject(ExtensibleModel):
-    short_name = models.CharField(verbose_name=_("Short name of subject"), max_length=10, unique=True)
-    name = models.CharField(verbose_name=_("Long name of subject"), max_length=30, unique=True)
+    short_name = models.CharField(verbose_name=_("Short name"), max_length=10, unique=True)
+    name = models.CharField(verbose_name=_("Long name"), max_length=30, unique=True)
 
     colour_fg = models.CharField(
         verbose_name=_("Foreground colour in timetable"),
@@ -422,12 +422,12 @@ class Subject(ExtensibleModel):
 
     class Meta:
         ordering = ["name", "short_name"]
+        verbose_name = _("Subject")
+        verbose_name_plural = _("Subjects")
 
 
 class Room(ExtensibleModel):
-    short_name = models.CharField(
-        verbose_name=_("Short name, e.g. room number"), max_length=10, unique=True
-    )
+    short_name = models.CharField(verbose_name=_("Short name"), max_length=10, unique=True)
     name = models.CharField(verbose_name=_("Long name"), max_length=30)
 
     def __str__(self) -> str:
@@ -435,6 +435,8 @@ class Room(ExtensibleModel):
 
     class Meta:
         ordering = ["name", "short_name"]
+        verbose_name = _("Room")
+        verbose_name_plural = _("Rooms")
 
 
 class GroupPropertiesMixin:
@@ -462,13 +464,13 @@ class TeacherPropertiesMixin:
 
 
 class Lesson(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
-    subject = models.ForeignKey("Subject", on_delete=models.CASCADE, related_name="lessons")
-    teachers = models.ManyToManyField("core.Person", related_name="lessons_as_teacher")
-    periods = models.ManyToManyField("TimePeriod", related_name="lessons", through="LessonPeriod")
-    groups = models.ManyToManyField("core.Group", related_name="lessons")
+    subject = models.ForeignKey("Subject", on_delete=models.CASCADE, related_name="lessons", verbose_name=_("Subject"))
+    teachers = models.ManyToManyField("core.Person", related_name="lessons_as_teacher", verbose_name=_("Teachers"))
+    periods = models.ManyToManyField("TimePeriod", related_name="lessons", through="LessonPeriod", verbose_name=_("Periods"))
+    groups = models.ManyToManyField("core.Group", related_name="lessons", verbose_name=_("Groups"))
 
-    date_start = models.DateField(verbose_name=_("Effective start date of lesson"), null=True)
-    date_end = models.DateField(verbose_name=_("Effective end date of lesson"), null=True)
+    date_start = models.DateField(verbose_name=_("Start date"), null=True)
+    date_end = models.DateField(verbose_name=_("End date"), null=True)
 
     def get_calendar_week(self, week: int):
         year = self.date_start.year
@@ -496,7 +498,7 @@ class LessonSubstitution(ExtensibleModel):
 
     week = models.IntegerField(verbose_name=_("Week"), default=CalendarWeek.current_week)
 
-    lesson_period = models.ForeignKey("LessonPeriod", models.CASCADE, "substitutions")
+    lesson_period = models.ForeignKey("LessonPeriod", models.CASCADE, "substitutions", verbose_name=_("Lesson period"))
 
     subject = models.ForeignKey(
         "Subject",
@@ -507,7 +509,7 @@ class LessonSubstitution(ExtensibleModel):
         verbose_name=_("Subject"),
     )
     teachers = models.ManyToManyField(
-        "core.Person", related_name="lesson_substitutions", blank=True
+        "core.Person", related_name="lesson_substitutions", blank=True, verbose_name=_("Teachers")
     )
     room = models.ForeignKey("Room", models.CASCADE, null=True, blank=True, verbose_name=_("Room"))
 
@@ -551,10 +553,10 @@ class LessonPeriod(ExtensibleModel):
 
     objects = LessonPeriodManager.from_queryset(LessonPeriodQuerySet)()
 
-    lesson = models.ForeignKey("Lesson", models.CASCADE, related_name="lesson_periods")
-    period = models.ForeignKey("TimePeriod", models.CASCADE, related_name="lesson_periods")
+    lesson = models.ForeignKey("Lesson", models.CASCADE, related_name="lesson_periods", verbose_name=_("Lesson"))
+    period = models.ForeignKey("TimePeriod", models.CASCADE, related_name="lesson_periods", verbose_name=_("Time period"))
 
-    room = models.ForeignKey("Room", models.CASCADE, null=True, related_name="lesson_periods")
+    room = models.ForeignKey("Room", models.CASCADE, null=True, related_name="lesson_periods", verbose_name=_("Room"))
 
     def get_substitution(self, week: Optional[int] = None) -> LessonSubstitution:
         wanted_week = week or getattr(self, "_week", None) or CalendarWeek().week
@@ -643,6 +645,7 @@ class TimetableWidget(DashboardWidget):
     class Meta:
         proxy = True
         verbose_name = _("Timetable widget")
+        verbose_name_plural = _("Timetable widgets")
 
 
 class DateRangeQuerySet(models.QuerySet):
@@ -701,16 +704,16 @@ class AbsenceQuerySet(DateRangeQuerySet):
 class Absence(ExtensibleModel):
     objects = models.Manager.from_queryset(AbsenceQuerySet)()
 
-    reason = models.ForeignKey("AbsenceReason", on_delete=models.SET_NULL, related_name="absences", blank=True, null=True)
+    reason = models.ForeignKey("AbsenceReason", on_delete=models.SET_NULL, related_name="absences", blank=True, null=True, verbose_name=_("Absence reason"))
 
-    teacher = models.ForeignKey("core.Person", on_delete=models.CASCADE, related_name="absences", null=True, blank=True)
-    group = models.ForeignKey("core.Group", on_delete=models.CASCADE, related_name="absences", null=True, blank=True)
-    room = models.ForeignKey("Room", on_delete=models.CASCADE, related_name="absences", null=True, blank=True)
+    teacher = models.ForeignKey("core.Person", on_delete=models.CASCADE, related_name="absences", null=True, blank=True, verbose_name=_("Teacher"))
+    group = models.ForeignKey("core.Group", on_delete=models.CASCADE, related_name="absences", null=True, blank=True, verbose_name=_("Group"))
+    room = models.ForeignKey("Room", on_delete=models.CASCADE, related_name="absences", null=True, blank=True, verbose_name=_("Room"))
 
-    date_start = models.DateField(verbose_name=_("Effective start date of absence"), null=True)
-    date_end = models.DateField(verbose_name=_("Effective end date of absence"), null=True)
-    period_from = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of absence"), null=True, related_name="+")
-    period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of absence"), null=True, related_name="+")
+    date_start = models.DateField(verbose_name=_("Start date"), null=True)
+    date_end = models.DateField(verbose_name=_("End date"), null=True)
+    period_from = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Start period"), null=True, related_name="+")
+    period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("End period"), null=True, related_name="+")
     comment = models.TextField(verbose_name=_("Comment"), blank=True, null=True)
 
     def __str__(self):
@@ -731,11 +734,11 @@ class Absence(ExtensibleModel):
 
 
 class Exam(ExtensibleModel):
-    lesson = models.ForeignKey("Lesson", on_delete=models.CASCADE, related_name="exams")
+    lesson = models.ForeignKey("Lesson", on_delete=models.CASCADE, related_name="exams", verbose_name=_("Lesson"))
 
     date = models.DateField(verbose_name=_("Date of exam"), null=True)
-    period_from = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of exam"), null=True, related_name="+")
-    period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of exam"), null=True, related_name="+")
+    period_from = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Start period"), null=True, related_name="+")
+    period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("End period"), null=True, related_name="+")
 
     title = models.CharField(verbose_name=_("Title"), max_length=50)
     comment = models.TextField(verbose_name=_("Comment"), blank=True, null=True)
@@ -754,9 +757,9 @@ class HolidayQuerySet(DateRangeQuerySet):
 class Holiday(ExtensibleModel):
     objects = models.Manager.from_queryset(HolidayQuerySet)()
 
-    title = models.CharField(verbose_name=_("Title of the holidays"), max_length=50)
-    date_start = models.DateField(verbose_name=_("Effective start date of holidays"), null=True)
-    date_end = models.DateField(verbose_name=_("Effective end date of holidays"), null=True)
+    title = models.CharField(verbose_name=_("Title"), max_length=50)
+    date_start = models.DateField(verbose_name=_("Start date"), null=True)
+    date_end = models.DateField(verbose_name=_("End date"), null=True)
     comments = models.TextField(verbose_name=_("Comments"), null=True, blank=True)
 
     @classmethod
@@ -809,10 +812,10 @@ class Break(ExtensibleModel):
     name = models.CharField(verbose_name=_("Long name"), max_length=50)
 
     after_period = models.ForeignKey("TimePeriod", on_delete=models.CASCADE,
-                                    verbose_name=_("Effective start of break"),
+                                    verbose_name=_("Time period after break starts"),
                                     related_name="break_after", blank=True, null=True)
     before_period = models.ForeignKey("TimePeriod", on_delete=models.CASCADE,
-                                  verbose_name=_("Effective end of break"),
+                                  verbose_name=_("Time period before break ends"),
                                   related_name="break_before", blank=True, null=True)
 
     @property
@@ -1033,11 +1036,11 @@ class Event(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
 
     title = models.CharField(verbose_name=_("Title"), max_length=255, blank=True, null=True)
 
-    date_start = models.DateField(verbose_name=_("Effective start date of event"), null=True)
-    date_end = models.DateField(verbose_name=_("Effective end date of event"), null=True)
+    date_start = models.DateField(verbose_name=_("Start date"), null=True)
+    date_end = models.DateField(verbose_name=_("End date"), null=True)
 
-    period_from = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective start period of event"), related_name="+")
-    period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Effective end period of event"), related_name="+")
+    period_from = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Start time period"), related_name="+")
+    period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("End time period"), related_name="+")
 
     groups = models.ManyToManyField("core.Group", related_name="events", verbose_name=_("Groups"))
     rooms = models.ManyToManyField("Room", related_name="events", verbose_name=_("Rooms"))
@@ -1096,7 +1099,7 @@ class ExtraLesson(ExtensibleModel, GroupPropertiesMixin):
     objects = models.Manager.from_queryset(ExtraLessonQuerySet)()
 
     week = models.IntegerField(verbose_name=_("Week"), default=CalendarWeek.current_week)
-    period = models.ForeignKey("TimePeriod", models.CASCADE, related_name="extra_lessons")
+    period = models.ForeignKey("TimePeriod", models.CASCADE, related_name="extra_lessons", verbose_name=_("Time period"))
 
     subject = models.ForeignKey("Subject", on_delete=models.CASCADE, related_name="extra_lessons", verbose_name=_("Subject"))
     groups = models.ManyToManyField("core.Group", related_name="extra_lessons", verbose_name=_("Groups"))
