@@ -404,18 +404,8 @@ class Subject(ExtensibleModel):
     short_name = models.CharField(verbose_name=_("Short name"), max_length=255, unique=True)
     name = models.CharField(verbose_name=_("Long name"), max_length=255, unique=True)
 
-    colour_fg = models.CharField(
-        verbose_name=_("Foreground colour in timetable"),
-        blank=True,
-        validators=[validators.RegexValidator(r"#[0-9A-F]{6}")],
-        max_length=7,
-    )
-    colour_bg = models.CharField(
-        verbose_name=_("Background colour in timetable"),
-        blank=True,
-        validators=[validators.RegexValidator(r"#[0-9A-F]{6}")],
-        max_length=7,
-    )
+    colour_fg = ColorField(verbose_name=_("Foreground colour"), blank=True)
+    colour_bg = ColorField(verbose_name=_("Background colour"), blank=True)
 
     def __str__(self) -> str:
         return "{} ({})".format(self.short_name, self.name)
