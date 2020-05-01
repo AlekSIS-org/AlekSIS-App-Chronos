@@ -401,8 +401,8 @@ class TimePeriod(ExtensibleModel):
 
 
 class Subject(ExtensibleModel):
-    short_name = models.CharField(verbose_name=_("Short name"), max_length=10, unique=True)
-    name = models.CharField(verbose_name=_("Long name"), max_length=30, unique=True)
+    short_name = models.CharField(verbose_name=_("Short name"), max_length=255, unique=True)
+    name = models.CharField(verbose_name=_("Long name"), max_length=255, unique=True)
 
     colour_fg = models.CharField(
         verbose_name=_("Foreground colour in timetable"),
@@ -427,8 +427,8 @@ class Subject(ExtensibleModel):
 
 
 class Room(ExtensibleModel):
-    short_name = models.CharField(verbose_name=_("Short name"), max_length=10, unique=True)
-    name = models.CharField(verbose_name=_("Long name"), max_length=30)
+    short_name = models.CharField(verbose_name=_("Short name"), max_length=255, unique=True)
+    name = models.CharField(verbose_name=_("Long name"), max_length=255)
 
     def __str__(self) -> str:
         return "%s (%s)" % (self.name, self.short_name)
@@ -740,7 +740,7 @@ class Exam(ExtensibleModel):
     period_from = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("Start period"), null=True, related_name="+")
     period_to = models.ForeignKey("TimePeriod", on_delete=models.CASCADE, verbose_name=_("End period"), null=True, related_name="+")
 
-    title = models.CharField(verbose_name=_("Title"), max_length=50)
+    title = models.CharField(verbose_name=_("Title"), max_length=255)
     comment = models.TextField(verbose_name=_("Comment"), blank=True, null=True)
 
     class Meta:
@@ -757,7 +757,7 @@ class HolidayQuerySet(DateRangeQuerySet):
 class Holiday(ExtensibleModel):
     objects = models.Manager.from_queryset(HolidayQuerySet)()
 
-    title = models.CharField(verbose_name=_("Title"), max_length=50)
+    title = models.CharField(verbose_name=_("Title"), max_length=255)
     date_start = models.DateField(verbose_name=_("Start date"), null=True)
     date_end = models.DateField(verbose_name=_("End date"), null=True)
     comments = models.TextField(verbose_name=_("Comments"), null=True, blank=True)
@@ -793,8 +793,8 @@ class Holiday(ExtensibleModel):
 
 
 class SupervisionArea(ExtensibleModel):
-    short_name = models.CharField(verbose_name=_("Short name"), max_length=10)
-    name = models.CharField(verbose_name=_("Long name"), max_length=50)
+    short_name = models.CharField(verbose_name=_("Short name"), max_length=255)
+    name = models.CharField(verbose_name=_("Long name"), max_length=255)
     colour_fg = ColorField(default="#000000")
     colour_bg = ColorField()
 
@@ -808,8 +808,8 @@ class SupervisionArea(ExtensibleModel):
 
 
 class Break(ExtensibleModel):
-    short_name = models.CharField(verbose_name=_("Short name"), max_length=10)
-    name = models.CharField(verbose_name=_("Long name"), max_length=50)
+    short_name = models.CharField(verbose_name=_("Short name"), max_length=255)
+    name = models.CharField(verbose_name=_("Long name"), max_length=255)
 
     after_period = models.ForeignKey("TimePeriod", on_delete=models.CASCADE,
                                     verbose_name=_("Time period after break starts"),
