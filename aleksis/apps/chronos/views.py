@@ -11,8 +11,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django_tables2 import RequestConfig
+from rules.contrib.views import permission_required
 
-from aleksis.core.decorators import admin_required
 from aleksis.core.models import Person, Group, Announcement
 from aleksis.core.util import messages
 from .forms import LessonSubstitutionForm
@@ -24,7 +24,7 @@ from .util.date import CalendarWeek, get_weeks_for_year
 from aleksis.core.util.core_helpers import has_person
 
 
-@login_required
+@permission_required("chronos.view_timetable_overview")
 def all_timetables(request: HttpRequest) -> HttpResponse:
     context = {}
 
@@ -49,7 +49,7 @@ def all_timetables(request: HttpRequest) -> HttpResponse:
     return render(request, "chronos/all.html", context)
 
 
-@login_required
+@permission_required("chronos.view_my_timetable")
 def my_timetable(
     request: HttpRequest,
     year: Optional[int] = None,
@@ -95,7 +95,25 @@ def my_timetable(
         return redirect("all_timetables")
 
 
-@login_required
+def get_el_by_pk(
+    request: HttpRequest,
+    type_: str,
+    pk: int,
+    year: Optional[int] = None,
+    week: Optional[int] = None,
+    regular: Optional[str] = None,
+):
+    if type_ == TimetableType.GROUP.value:
+        return get_object_or_404(Group, pk=pk)
+    elif type_ == TimetableType.TEACHER.value:
+        return get_object_or_404(Person, pk=pk)
+    elif type_ == TimetableType.ROOM.value:
+        return get_object_or_404(Room, pk=pk)
+    else:
+        return HttpResponseNotFound()
+
+
+@permission_required("chronos.view_timetable", fn=get_el_by_pk)
 def timetable(
     request: HttpRequest,
     type_: str,
@@ -108,14 +126,7 @@ def timetable(
 
     is_smart = regular != "regular"
 
-    if type_ == TimetableType.GROUP.value:
-        el = get_object_or_404(Group, pk=pk)
-    elif type_ == TimetableType.TEACHER.value:
-        el = get_object_or_404(Person, pk=pk)
-    elif type_ == TimetableType.ROOM.value:
-        el = get_object_or_404(Room, pk=pk)
-    else:
-        return HttpResponseNotFound()
+    el = get_el_by_pk(request, type_, pk)
 
     type_ = TimetableType.from_string(type_)
 
@@ -165,7 +176,7 @@ def timetable(
     return render(request, "chronos/timetable.html", context)
 
 
-@login_required
+@permission_required("chronos.view_lessons_day")
 def lessons_day(
     request: HttpRequest,
     year: Optional[int] = None,
@@ -203,16 +214,24 @@ def lessons_day(
     return render(request, "chronos/lessons_day.html", context)
 
 
-@admin_required
+def get_substitution_by_id(request: HttpRequest, id_: int, week: int):
+    lesson_period = get_object_or_404(LessonPeriod, pk=id_)
+    wanted_week = lesson_period.lesson.get_calendar_week(week)
+
+    return LessonSubstitution.objects.filter(
+        week=wanted_week.week, lesson_period=lesson_period
+    ).first()
+
+
+@permission_required("chronos.edit_substitution", fn=get_substitution_by_id)
 def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse:
     context = {}
 
     lesson_period = get_object_or_404(LessonPeriod, pk=id_)
     wanted_week = lesson_period.lesson.get_calendar_week(week)
 
-    lesson_substitution = LessonSubstitution.objects.filter(
-        week=wanted_week.week, lesson_period=lesson_period
-    ).first()
+    lesson_substitution = get_substitution_by_id(request, id_, week)
+
     if lesson_substitution:
         edit_substitution_form = LessonSubstitutionForm(
             request.POST or None, instance=lesson_substitution
@@ -242,14 +261,12 @@ def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse
     return render(request, "chronos/edit_substitution.html", context)
 
 
-@admin_required
+@permission_required("chronos.delete_substitution", fn=get_substitution_by_id)
 def delete_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse:
     lesson_period = get_object_or_404(LessonPeriod, pk=id_)
     wanted_week = lesson_period.lesson.get_calendar_week(week)
 
-    LessonSubstitution.objects.filter(
-        week=wanted_week.week, lesson_period=lesson_period
-    ).delete()
+    get_substitution_by_id(request, id_, week).delete()
 
     messages.success(request, _("The substitution has been deleted."))
 
@@ -260,7 +277,7 @@ def delete_substitution(request: HttpRequest, id_: int, week: int) -> HttpRespon
     )
 
 
-@login_required
+@permission_required("chronos.view_substitutions")
 def substitutions(
     request: HttpRequest,
     year: Optional[int] = None,
