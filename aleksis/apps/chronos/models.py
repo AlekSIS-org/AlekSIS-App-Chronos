@@ -701,7 +701,7 @@ class AbsenceQuerySet(DateRangeQuerySet):
 class Absence(ExtensibleModel):
     objects = models.Manager.from_queryset(AbsenceQuerySet)()
 
-    reason = models.ForeignKey("AbsenceReason", on_delete=models.CASCADE, related_name="absences")
+    reason = models.ForeignKey("AbsenceReason", on_delete=models.SET_NULL, related_name="absences", blank=True, null=True)
 
     teacher = models.ForeignKey("core.Person", on_delete=models.CASCADE, related_name="absences", null=True, blank=True)
     group = models.ForeignKey("core.Group", on_delete=models.CASCADE, related_name="absences", null=True, blank=True)
