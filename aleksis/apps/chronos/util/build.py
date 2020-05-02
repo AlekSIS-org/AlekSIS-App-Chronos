@@ -20,25 +20,6 @@ Holiday = apps.get_model("chronos", "Holiday")
 ExtraLesson = apps.get_model("chronos", "ExtraLesson")
 
 
-def group_by_periods(objs: QuerySet, is_person: bool =False) -> dict:
-    per_period = {}
-    for obj in objs:
-        period = obj.period.period
-        weekday = obj.period.weekday
-
-        if period not in per_period:
-            per_period[period] = [] if is_person else {}
-
-        if not is_person and weekday not in per_period[period]:
-            per_period[period][weekday] = []
-
-        if is_person:
-            per_period[period].append(obj)
-        else:
-            per_period[period][weekday].append(obj)
-    return per_period
-
-
 def build_timetable(
     type_: Union[TimetableType, str], obj: Union[int, Person], date_ref: Union[CalendarWeek, date]
 ):
@@ -72,7 +53,7 @@ def build_timetable(
         )
 
     # Sort lesson periods in a dict
-    lesson_periods_per_period = group_by_periods(lesson_periods, is_person=is_person)
+    lesson_periods_per_period = lesson_periods.group_by_periods(is_person=is_person)
 
     # Get events
     if is_person:
@@ -81,7 +62,7 @@ def build_timetable(
         extra_lessons = ExtraLesson.objects.filter(week=date_ref.week).filter_from_type(type_, obj)
 
     # Sort lesson periods in a dict
-    extra_lessons_per_period = group_by_periods(extra_lessons, is_person=is_person)
+    extra_lessons_per_period = extra_lessons.group_by_periods(is_person=is_person)
 
     # Get events
     if is_person:

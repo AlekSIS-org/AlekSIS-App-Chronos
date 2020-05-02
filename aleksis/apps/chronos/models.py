@@ -179,6 +179,25 @@ class LessonDataQuerySet(models.QuerySet):
 
         return self.annotate(_week=models.Value(week_num, models.IntegerField()))
 
+    def group_by_periods(self, is_person: bool = False) -> dict:
+        per_period = {}
+        for obj in self:
+            period = obj.period.period
+            weekday = obj.period.weekday
+
+            if period not in per_period:
+                per_period[period] = [] if is_person else {}
+
+            if not is_person and weekday not in per_period[period]:
+                per_period[period][weekday] = []
+
+            if is_person:
+                per_period[period].append(obj)
+            else:
+                per_period[period][weekday].append(obj)
+
+        return per_period
+
 
 class LessonPeriodQuerySet(LessonDataQuerySet):
     _period_path = ""
