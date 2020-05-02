@@ -1,4 +1,4 @@
-{% if groups.count > config.CHRONOS_SHORTEN_GROUPS_LIMIT and config.CHRONOS_SHORTEN_GROUPS %}
+{% if groups.count > request.site.preferences.chronos__shorten_groups_limit and request.user.preferences.chronos__shorten_groups %}
   {% include "components/text_collapsible.html" with template="chronos/partials/group.html" qs=groups %}
 {% else %}
   {% for group in groups %}

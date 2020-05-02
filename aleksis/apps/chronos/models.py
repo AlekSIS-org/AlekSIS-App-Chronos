@@ -5,7 +5,6 @@ from datetime import date, datetime, timedelta, time
 from enum import Enum
 from typing import Dict, Optional, Tuple, Union
 
-from constance import config
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -29,7 +28,7 @@ from aleksis.core.mixins import ExtensibleModel
 from aleksis.core.models import Group, Person, DashboardWidget
 
 from aleksis.apps.chronos.util.date import week_weekday_from_date
-from aleksis.core.util.core_helpers import has_person
+from aleksis.core.util.core_helpers import has_person, get_site_preferences
 
 
 class TimetableType(Enum):
@@ -456,7 +455,7 @@ class GroupPropertiesMixin:
     @property
     def groups_to_show(self) -> models.QuerySet:
         groups = self.groups.all()
-        if groups.count() == 1 and groups[0].parent_groups.all() and config.CHRONOS_USE_PARENT_GROUPS:
+        if groups.count() == 1 and groups[0].parent_groups.all() and get_site_preferences()["chronos__use_parent_groups"]:
             return groups[0].parent_groups.all()
         else:
             return groups
@@ -1125,7 +1124,7 @@ class ExtraLesson(ExtensibleModel, GroupPropertiesMixin):
         verbose_name_plural = _("Extra lessons")
 
 
-class GlobalPermissions(ExtensibleModel):
+class ChronosGlobalPermissions(ExtensibleModel):
     class Meta:
         managed = False
         permissions = (

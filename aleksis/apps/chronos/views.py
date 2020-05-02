@@ -2,7 +2,6 @@ from collections import OrderedDict
 from datetime import date, datetime, timedelta
 from typing import Optional, Tuple
 
-from constance import config
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.http import HttpRequest, HttpResponse, HttpResponseNotFound
@@ -21,7 +20,7 @@ from .tables import LessonsTable
 from .util.build import build_timetable, build_substitutions_list, build_weekdays
 from .util.js import date_unix
 from .util.date import CalendarWeek, get_weeks_for_year
-from aleksis.core.util.core_helpers import has_person
+from aleksis.core.util.core_helpers import has_person, get_site_preferences
 
 
 @permission_required("chronos.view_timetable_overview")
@@ -293,7 +292,7 @@ def substitutions(
     else:
         wanted_day = TimePeriod.get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
-    day_number = config.CHRONOS_SUBSTITUTIONS_PRINT_DAY_NUMBER
+    day_number = get_site_preferences()["chronos__substitutions_print_number_of_days"]
     day_contexts = {}
 
     if is_print:
@@ -310,7 +309,7 @@ def substitutions(
 
         day_contexts[day]["announcements"] = Announcement.for_timetables().on_date(day).filter(show_in_timetables=True)
 
-        if config.CHRONOS_SUBSTITUTIONS_SHOW_HEADER_BOX:
+        if get_site_preferences()["chronos__substitutions_show_header_box"]:
             subs = LessonSubstitution.objects.on_day(day).order_by("lesson_period__lesson__groups",
                                                                    "lesson_period__period")
             absences = Absence.objects.on_day(day)
