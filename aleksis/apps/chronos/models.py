@@ -1105,7 +1105,7 @@ class ExtraLesson(ExtensibleModel, GroupPropertiesMixin):
         verbose_name_plural = _("Extra lessons")
 
 
-class GlobalPermissions(ExtensibleModel):
+class ChronosGlobalPermissions(ExtensibleModel):
     class Meta:
         managed = False
         permissions = (
