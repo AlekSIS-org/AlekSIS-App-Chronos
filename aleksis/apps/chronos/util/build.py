@@ -6,7 +6,7 @@ from calendarweek import CalendarWeek
 from django.apps import apps
 from django.db.models import QuerySet
 
-from aleksis.apps.chronos.models import TimetableType
+from aleksis.apps.chronos.managers import TimetableType
 from aleksis.core.models import Person
 
 LessonPeriod = apps.get_model("chronos", "LessonPeriod")

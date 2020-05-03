@@ -15,7 +15,8 @@ from rules.contrib.views import permission_required
 from aleksis.core.models import Person, Group, Announcement
 from aleksis.core.util import messages
 from .forms import LessonSubstitutionForm
-from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room, Holiday, Absence, TimetableType
+from .managers import TimetableType
+from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room, Holiday, Absence
 from .tables import LessonsTable
 from .util.build import build_timetable, build_substitutions_list, build_weekdays
 from .util.js import date_unix

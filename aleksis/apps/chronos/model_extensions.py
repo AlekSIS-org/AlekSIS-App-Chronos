@@ -5,7 +5,8 @@ from jsonstore import BooleanField
 
 from aleksis.core.models import Person, Group, Announcement
 
-from .models import Lesson, LessonPeriod, TimetableType
+from .managers import TimetableType
+from .models import Lesson, LessonPeriod
 
 
 @Person.property
