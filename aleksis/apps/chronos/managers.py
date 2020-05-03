@@ -1,3 +1,15 @@
+from datetime import date, timedelta, datetime
+from typing import Union, Optional, OrderedDict
+
+from aleksis.apps.chronos.util.date import week_weekday_from_date
+from calendarweek import CalendarWeek
+from django.db import models
+from django.db.models import F, Q, Count
+from django.http import QueryDict
+
+from aleksis.core.models import Person, Group
+
+
 class LessonPeriodManager(models.Manager):
     """ Manager adding specific methods to lesson periods. """
 
@@ -117,7 +129,7 @@ class LessonDataQuerySet(models.QuerySet):
 
         return qs1.union(qs2)
 
-    def filter_room(self, room: Union[Room, int]):
+    def filter_room(self, room: Union["Room", int]):
         """ Filter for all lessons taking part in a certain room. """
 
         qs1 = self.filter(**{self._period_path + "room": room})
@@ -159,7 +171,7 @@ class LessonPeriodQuerySet(LessonDataQuerySet):
     _period_path = ""
     _subst_path = "substitutions__"
 
-    def next(self, reference: LessonPeriod, offset: Optional[int] = 1) -> LessonPeriod:
+    def next(self, reference: "LessonPeriod", offset: Optional[int] = 1) -> "LessonPeriod":
         """ Get another lesson in an ordered set of lessons.
 
         By default, it returns the next lesson in the set. By passing the offset argument,
@@ -246,6 +258,7 @@ class LessonSubstitutionQuerySet(LessonDataQuerySet):
 
     def affected_lessons(self):
         """ Return all lessons which are affected by selected substitutions """
+        from .models import Lesson # noaq
 
         return Lesson.objects.filter(lesson_periods__substitutions__in=self)
 
