@@ -70,6 +70,29 @@ class WeekQuerySetMixin:
         return self.annotate(_week=models.Value(week_num, models.IntegerField()))
 
 
+class GroupByPeriodsMixin:
+    def group_by_periods(self, is_person: bool = False) -> dict:
+        """Group a QuerySet of objects with attribute period by period numbers and weekdays."""
+
+        per_period = {}
+        for obj in self:
+            period = obj.period.period
+            weekday = obj.period.weekday
+
+            if period not in per_period:
+                per_period[period] = [] if is_person else {}
+
+            if not is_person and weekday not in per_period[period]:
+                per_period[period][weekday] = []
+
+            if is_person:
+                per_period[period].append(obj)
+            else:
+                per_period[period][weekday].append(obj)
+
+        return per_period
+
+
 class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
     """ Overrides default QuerySet to add specific methods for lesson data. """
 
@@ -174,26 +197,6 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
 
         return qs1.union(qs2)
 
-    def group_by_periods(self, is_person: bool = False) -> dict:
-        """Group a QuerySet of objects with attribute period by period numbers and weekdays."""
-
-        per_period = {}
-        for obj in self:
-            period = obj.period.period
-            weekday = obj.period.weekday
-
-            if period not in per_period:
-                per_period[period] = [] if is_person else {}
-
-            if not is_person and weekday not in per_period[period]:
-                per_period[period][weekday] = []
-
-            if is_person:
-                per_period[period].append(obj)
-            else:
-                per_period[period][weekday].append(obj)
-
-        return per_period
 
     def filter_from_type(
         self, type_: TimetableType, pk: int
@@ -262,7 +265,7 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
         return self.annotate_week(week).all()[next_index]
 
 
-class LessonPeriodQuerySet(LessonDataQuerySet):
+class LessonPeriodQuerySet(LessonDataQuerySet, GroupByPeriodsMixin):
     """QuerySet with custom query methods for lesson periods."""
 
     _period_path = ""
@@ -467,7 +470,7 @@ class EventQuerySet(DateRangeQuerySet, TimetableQuerySet):
         return self.annotate(_date=models.Value(day, models.DateField()))
 
 
-class ExtraLessonQuerySet(TimetableQuerySet):
+class ExtraLessonQuerySet(TimetableQuerySet, GroupByPeriodsMixin):
     """QuerySet with custom query methods for extra lessons."""
 
     _multiple_rooms = False

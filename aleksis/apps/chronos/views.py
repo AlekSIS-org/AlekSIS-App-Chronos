@@ -135,6 +135,9 @@ def timetable(
 
     el = get_el_by_pk(request, type_, pk)
 
+    if type(el) == HttpResponseNotFound:
+        return HttpResponseNotFound()
+
     type_ = TimetableType.from_string(type_)
 
     if year and week:
@@ -164,7 +167,7 @@ def timetable(
     context["smart"] = is_smart
     context["week_select"] = {
         "year": wanted_week.year,
-        "dest": reverse("timetable", args=[type_, pk]),
+        "dest": reverse("timetable", args=[type_.value, pk]),
     }
 
     if is_smart:
@@ -178,10 +181,10 @@ def timetable(
     week_next = wanted_week + 1
 
     context["url_prev"] = reverse(
-        "timetable_by_week", args=[type_, pk, week_prev.year, week_prev.week]
+        "timetable_by_week", args=[type_.value, pk, week_prev.year, week_prev.week]
     )
     context["url_next"] = reverse(
-        "timetable_by_week", args=[type_, pk, week_next.year, week_next.week]
+        "timetable_by_week", args=[type_.value, pk, week_next.year, week_next.week]
     )
 
     return render(request, "chronos/timetable.html", context)
