@@ -2,6 +2,7 @@ from datetime import date, datetime, timedelta
 from enum import Enum
 from typing import Optional, Union
 
+from django.contrib.sites.managers import CurrentSiteManager
 from django.db import models
 from django.db.models import Count, F, Q
 
@@ -26,7 +27,7 @@ class TimetableType(Enum):
         return cls.__members__.get(s.upper())
 
 
-class LessonPeriodManager(models.Manager):
+class LessonPeriodManager(CurrentSiteManager):
     """Manager adding specific methods to lesson periods."""
 
     def get_queryset(self):
@@ -40,7 +41,7 @@ class LessonPeriodManager(models.Manager):
         )
 
 
-class LessonSubstitutionManager(models.Manager):
+class LessonSubstitutionManager(CurrentSiteManager):
     """Manager adding specific methods to lesson substitutions."""
 
     def get_queryset(self):
