@@ -267,12 +267,12 @@ def build_substitutions_list(wanted_day: date) -> List[dict]:
         if not sub.cancelled_for_teachers:
             sort_a = sub.lesson_period.lesson.group_names
         else:
-            sort_a = "Z.{}".format(sub.lesson_period.lesson.teacher_names)
+            sort_a = f"Z.{sub.lesson_period.lesson.teacher_names}"
 
         row = {
             "type": "substitution",
             "sort_a": sort_a,
-            "sort_b": "{}".format(sub.lesson_period.period.period),
+            "sort_b": str(sub.lesson_period.period.period),
             "el": sub,
         }
 
@@ -284,8 +284,8 @@ def build_substitutions_list(wanted_day: date) -> List[dict]:
     for super_sub in super_subs:
         row = {
             "type": "supervision_substitution",
-            "sort_a": "Z.{}".format(super_sub.teacher),
-            "sort_b": "{}".format(super_sub.supervision.break_item.after_period_number),
+            "sort_a": f"Z.{super_sub.teacher}",
+            "sort_b": str(super_sub.supervision.break_item.after_period_number),
             "el": super_sub,
         }
         rows.append(row)
@@ -296,8 +296,8 @@ def build_substitutions_list(wanted_day: date) -> List[dict]:
     for extra_lesson in extra_lessons:
         row = {
             "type": "extra_lesson",
-            "sort_a": "{}".format(extra_lesson.group_names),
-            "sort_b": "{}".format(extra_lesson.period.period),
+            "sort_a": str(extra_lesson.group_names),
+            "sort_b": str(extra_lesson.period.period),
             "el": extra_lesson,
         }
         rows.append(row)
@@ -309,12 +309,12 @@ def build_substitutions_list(wanted_day: date) -> List[dict]:
         if event.groups.all():
             sort_a = event.group_names
         else:
-            sort_a = "Z.".format(event.teacher_names)
+            sort_a = f"Z.{event.teacher_names}"
 
         row = {
             "type": "event",
             "sort_a": sort_a,
-            "sort_b": "{}".format(event.period_from_on_day),
+            "sort_b": str(event.period_from_on_day),
             "el": event,
         }
         rows.append(row)

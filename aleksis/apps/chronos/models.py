@@ -52,7 +52,7 @@ class TimePeriod(ExtensibleModel):
     time_end = models.TimeField(verbose_name=_("End time"))
 
     def __str__(self) -> str:
-        return "{}, {}.".format(self.get_weekday_display(), self.period,)
+        return f"{self.get_weekday_display()}, {self.period}."
 
     @classmethod
     def get_times_dict(cls) -> Dict[int, Tuple[datetime, datetime]]:
@@ -168,7 +168,7 @@ class Subject(ExtensibleModel):
     colour_bg = ColorField(verbose_name=_("Background colour"), blank=True)
 
     def __str__(self) -> str:
-        return "{} ({})".format(self.short_name, self.name)
+        return f"{self.short_name} ({self.name})"
 
     class Meta:
         ordering = ["name", "short_name"]
@@ -183,7 +183,7 @@ class Room(ExtensibleModel):
     name = models.CharField(verbose_name=_("Long name"), max_length=255)
 
     def __str__(self) -> str:
-        return "%s (%s)" % (self.name, self.short_name)
+        return f"{self.name} ({self.short_name})"
 
     class Meta:
         ordering = ["name", "short_name"]
@@ -222,9 +222,7 @@ class Lesson(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
         return CalendarWeek(year=year, week=week)
 
     def __str__(self):
-        return "{}, {}, {}".format(
-            format_m2m(self.groups), self.subject.short_name, format_m2m(self.teachers),
-        )
+        return f"{format_m2m(self.groups)}, {self.subject.short_name}, {format_m2m(self.teachers)}"
 
     class Meta:
         ordering = ["date_start", "subject"]
@@ -281,7 +279,7 @@ class LessonSubstitution(ExtensibleModel):
         return week[self.lesson_period.period.weekday]
 
     def __str__(self):
-        return "{}, {}".format(str(self.lesson_period), date_format(self.date))
+        return f"{self.lesson_period}, {date_format(self.date)}"
 
     class Meta:
         unique_together = [["lesson_period", "week"]]
@@ -363,7 +361,7 @@ class LessonPeriod(ExtensibleModel):
         return self.lesson.groups
 
     def __str__(self) -> str:
-        return "{}, {}".format(str(self.period), str(self.lesson))
+        return f"{self.period}, {self.lesson}"
 
     class Meta:
         ordering = [
@@ -427,7 +425,7 @@ class AbsenceReason(ExtensibleModel):
 
     def __str__(self):
         if self.name:
-            return "{} ({})".format(self.short_name, self.name)
+            return f"{self.short_name} ({self.name})"
         else:
             return self.short_name
 
@@ -587,7 +585,7 @@ class SupervisionArea(ExtensibleModel):
     colour_bg = ColorField()
 
     def __str__(self):
-        return "{} ({})".format(self.name, self.short_name)
+        return f"{self.name} ({self.short_name})"
 
     class Meta:
         ordering = ["name"]
@@ -657,7 +655,7 @@ class Break(ExtensibleModel):
         return breaks
 
     def __str__(self):
-        return "{} ({})".format(self.name, self.short_name)
+        return f"{self.name} ({self.short_name})"
 
     class Meta:
         ordering = ["after_period"]
@@ -704,7 +702,7 @@ class Supervision(ExtensibleModel):
         return [self.teacher]
 
     def __str__(self):
-        return "{}, {}, {}".format(self.break_item, self.area, self.teacher)
+        return f"{self.break_item}, {self.area}, {self.teacher}"
 
     class Meta:
         ordering = ["area", "break_item"]
@@ -732,7 +730,7 @@ class SupervisionSubstitution(ExtensibleModel):
         return [self.teacher]
 
     def __str__(self):
-        return "{}, {}".format(self.supervision, date_format(self.date))
+        return f"{self.supervision}, {date_format(self.date)}"
 
     class Meta:
         ordering = ["date", "supervision"]
@@ -779,7 +777,7 @@ class Event(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
         if self.title:
             return self.title
         else:
-            return _("Event {}".format(self.pk))
+            return _(f"Event {self.pk}")
 
     @property
     def period_from_on_day(self) -> int:
@@ -848,7 +846,7 @@ class ExtraLesson(ExtensibleModel, GroupPropertiesMixin):
     )
 
     def __str__(self):
-        return "{}, {}, {}".format(self.week, self.period, self.subject)
+        return f"{self.week}, {self.period}, {self.subject}"
 
     class Meta:
         verbose_name = _("Extra lesson")
