@@ -1,21 +1,8 @@
 from __future__ import annotations
 
-from datetime import date, datetime, timedelta, time
+from datetime import date, datetime, time, timedelta
 from typing import Dict, Optional, Tuple, Union
 
-from aleksis.apps.chronos.managers import (
-    GroupPropertiesMixin,
-    TeacherPropertiesMixin,
-    LessonSubstitutionManager,
-    LessonSubstitutionQuerySet,
-    LessonPeriodManager,
-    LessonPeriodQuerySet,
-    AbsenceQuerySet,
-    HolidayQuerySet,
-    SupervisionQuerySet,
-    EventQuerySet,
-    ExtraLessonQuerySet,
-)
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Max, Min, Q
@@ -27,16 +14,28 @@ from django.utils.decorators import classproperty
 from django.utils.formats import date_format
 from django.utils.translation import gettext_lazy as _
 
-from calendarweek.django import CalendarWeek, i18n_day_names_lazy, i18n_day_abbrs_lazy
+from calendarweek.django import CalendarWeek, i18n_day_abbrs_lazy, i18n_day_names_lazy
 from colorfield.fields import ColorField
 from django_global_request.middleware import get_request
 
+from aleksis.apps.chronos.managers import (
+    AbsenceQuerySet,
+    EventQuerySet,
+    ExtraLessonQuerySet,
+    GroupPropertiesMixin,
+    HolidayQuerySet,
+    LessonPeriodManager,
+    LessonPeriodQuerySet,
+    LessonSubstitutionManager,
+    LessonSubstitutionQuerySet,
+    SupervisionQuerySet,
+    TeacherPropertiesMixin,
+)
+from aleksis.apps.chronos.util.date import week_weekday_from_date
 from aleksis.apps.chronos.util.format import format_m2m
 from aleksis.core.mixins import ExtensibleModel
-from aleksis.core.models import Group, Person, DashboardWidget
-
-from aleksis.apps.chronos.util.date import week_weekday_from_date
-from aleksis.core.util.core_helpers import has_person, get_site_preferences
+from aleksis.core.models import DashboardWidget, Group, Person
+from aleksis.core.util.core_helpers import get_site_preferences, has_person
 
 
 class TimePeriod(ExtensibleModel):

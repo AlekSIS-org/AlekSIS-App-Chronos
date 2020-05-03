@@ -1,9 +1,10 @@
 from typing import Optional, Union
 
 from django.utils.translation import gettext_lazy as _
+
 from jsonstore import BooleanField
 
-from aleksis.core.models import Person, Group, Announcement
+from aleksis.core.models import Announcement, Group, Person
 
 from .managers import TimetableType
 from .models import Lesson, LessonPeriod

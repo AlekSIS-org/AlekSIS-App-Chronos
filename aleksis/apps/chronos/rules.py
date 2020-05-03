@@ -1,11 +1,12 @@
 from rules import add_perm, always_allow
 
 from aleksis.core.util.predicates import (
-    has_person,
-    has_global_perm,
     has_any_object,
+    has_global_perm,
     has_object_perm,
+    has_person,
 )
+
 from .models import LessonSubstitution
 from .util.predicates import has_timetable_perm
 

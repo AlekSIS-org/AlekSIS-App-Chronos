@@ -1,10 +1,11 @@
 from collections import OrderedDict
 from datetime import date
-from typing import Union, List, Tuple
+from typing import List, Tuple, Union
 
-from calendarweek import CalendarWeek
 from django.apps import apps
 from django.db.models import QuerySet
+
+from calendarweek import CalendarWeek
 
 from aleksis.apps.chronos.managers import TimetableType
 from aleksis.core.models import Person

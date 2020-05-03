@@ -1,14 +1,15 @@
-from datetime import date, timedelta, datetime
+from datetime import date, datetime, timedelta
 from enum import Enum
-from typing import Union, Optional, OrderedDict
+from typing import Optional, OrderedDict, Union
 
-from aleksis.apps.chronos.util.date import week_weekday_from_date
-from calendarweek import CalendarWeek
 from django.db import models
-from django.db.models import F, Q, Count
+from django.db.models import Count, F, Q
 from django.http import QueryDict
 
-from aleksis.core.models import Person, Group
+from calendarweek import CalendarWeek
+
+from aleksis.apps.chronos.util.date import week_weekday_from_date
+from aleksis.core.models import Group, Person
 from aleksis.core.util.core_helpers import get_site_preferences
 
 

@@ -9,19 +9,21 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext as _
+
 from django_tables2 import RequestConfig
 from rules.contrib.views import permission_required
 
-from aleksis.core.models import Person, Group, Announcement
+from aleksis.core.models import Announcement, Group, Person
 from aleksis.core.util import messages
+from aleksis.core.util.core_helpers import get_site_preferences, has_person
+
 from .forms import LessonSubstitutionForm
 from .managers import TimetableType
-from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room, Holiday, Absence
+from .models import Absence, Holiday, LessonPeriod, LessonSubstitution, Room, TimePeriod
 from .tables import LessonsTable
-from .util.build import build_timetable, build_substitutions_list, build_weekdays
-from .util.js import date_unix
+from .util.build import build_substitutions_list, build_timetable, build_weekdays
 from .util.date import CalendarWeek, get_weeks_for_year
-from aleksis.core.util.core_helpers import has_person, get_site_preferences
+from .util.js import date_unix
 
 
 @permission_required("chronos.view_timetable_overview")

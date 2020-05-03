@@ -3,8 +3,8 @@ from django.db.models import Model
 
 from rules import predicate
 
-from aleksis.core.models import Group, Person
 from aleksis.apps.chronos.models import Room
+from aleksis.core.models import Group, Person
 
 
 @predicate

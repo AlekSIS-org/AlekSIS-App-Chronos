@@ -4,22 +4,22 @@ from django.contrib import admin
 from django.utils.html import format_html
 
 from .models import (
-    TimetableWidget,
-    Lesson,
-    LessonSubstitution,
-    SupervisionSubstitution,
-    LessonPeriod,
     Absence,
-    Event,
-    Holiday,
-    Supervision,
-    Subject,
-    SupervisionArea,
-    Room,
     AbsenceReason,
     Break,
-    TimePeriod,
+    Event,
     ExtraLesson,
+    Holiday,
+    Lesson,
+    LessonPeriod,
+    LessonSubstitution,
+    Room,
+    Subject,
+    Supervision,
+    SupervisionArea,
+    SupervisionSubstitution,
+    TimePeriod,
+    TimetableWidget,
 )
 from .util.format import format_date_period, format_m2m
 
