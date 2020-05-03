@@ -362,7 +362,7 @@ class TimetableQuerySet(models.QuerySet):
 
         return self.filter(teachers=teacher)
 
-    def filter_room(self, room: Union[Room, int]):
+    def filter_room(self, room: Union["Room", int]):
         """ Filter for all objects taking part in a certain room. """
 
         if self._multiple_rooms:
