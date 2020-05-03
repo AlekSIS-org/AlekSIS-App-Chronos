@@ -197,7 +197,6 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
 
         return qs1.union(qs2)
 
-
     def filter_from_type(
         self, type_: TimetableType, pk: int
     ) -> Optional[models.QuerySet]:
