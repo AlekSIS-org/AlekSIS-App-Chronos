@@ -1,13 +1,17 @@
 from django import forms
-from django_select2.forms import ModelSelect2MultipleWidget
 from django.utils.translation import gettext_lazy as _
+
+from django_select2.forms import ModelSelect2MultipleWidget
 from material import Fieldset
 
-from .models import LessonSubstitution
 from aleksis.core.forms import AnnouncementForm
+
+from .models import LessonSubstitution
 
 
 class LessonSubstitutionForm(forms.ModelForm):
+    """Form to manage substitutions."""
+
     class Meta:
         model = LessonSubstitution
         fields = ["week", "lesson_period", "subject", "teachers", "room", "cancelled"]

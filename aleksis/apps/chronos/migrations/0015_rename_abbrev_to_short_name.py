@@ -7,17 +7,14 @@ from django.db.models import F
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chronos', '0014_extra_lesson'),
+        ("chronos", "0014_extra_lesson"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='subject',
-            old_name='abbrev',
-            new_name='short_name',
+            model_name="subject", old_name="abbrev", new_name="short_name",
         ),
         migrations.AlterModelOptions(
-            name='subject',
-            options={'ordering': ['name', 'short_name']},
+            name="subject", options={"ordering": ["name", "short_name"]},
         ),
     ]

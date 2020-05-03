@@ -1,9 +1,10 @@
 from typing import Optional, Union
 
 from django.utils.translation import gettext_lazy as _
+
 from jsonstore import BooleanField
 
-from aleksis.core.models import Person, Group, Announcement
+from aleksis.core.models import Announcement, Group, Person
 
 from .managers import TimetableType
 from .models import Lesson, LessonPeriod
@@ -11,14 +12,14 @@ from .models import Lesson, LessonPeriod
 
 @Person.property
 def is_teacher(self):
-    """ Check if the user has lessons as a teacher """
+    """Check if the user has lessons as a teacher."""
 
     return self.lesson_periods_as_teacher.exists()
 
 
 @Person.property
 def timetable_type(self) -> Optional[TimetableType]:
-    """ Return which type of timetable this user has """
+    """Return which type of timetable this user has."""
 
     if self.is_teacher:
         return TimetableType.TEACHER
@@ -30,7 +31,7 @@ def timetable_type(self) -> Optional[TimetableType]:
 
 @Person.property
 def timetable_object(self) -> Optional[Union[Group, Person]]:
-    """ Return the object which has the user's timetable """
+    """Return the object which has the user's timetable."""
 
     type_ = self.timetable_type
 
@@ -44,7 +45,7 @@ def timetable_object(self) -> Optional[Union[Group, Person]]:
 
 @Person.property
 def lessons_as_participant(self):
-    """ Return a `QuerySet` containing all `Lesson`s this person
+    """Return a `QuerySet` containing all `Lesson`s this person
     participates in (as student).
 
     .. note:: Only available when AlekSIS-App-Chronos is installed.
@@ -59,7 +60,7 @@ def lessons_as_participant(self):
 
 @Person.property
 def lesson_periods_as_participant(self):
-    """ Return a `QuerySet` containing all `LessonPeriod`s this person
+    """Return a `QuerySet` containing all `LessonPeriod`s this person
     participates in (as student).
 
     .. note:: Only available when AlekSIS-App-Chronos is installed.
@@ -74,7 +75,7 @@ def lesson_periods_as_participant(self):
 
 @Person.property
 def lesson_periods_as_teacher(self):
-    """ Return a `QuerySet` containing all `Lesson`s this person
+    """Return a `QuerySet` containing all `Lesson`s this person
     gives (as teacher).
 
     .. note:: Only available when AlekSIS-App-Chronos is installed.
@@ -88,8 +89,11 @@ def lesson_periods_as_teacher(self):
 
 
 def for_timetables(cls):
+    """Return all announcements that should be shown in timetable views."""
     return cls.objects.filter(show_in_timetables=True)
 
 
 Announcement.class_method(for_timetables)
-Announcement.field(show_in_timetables=BooleanField(verbose_name=_("Show announcement in timetable views?")))
+Announcement.field(
+    show_in_timetables=BooleanField(verbose_name=_("Show announcement in timetable views?"))
+)

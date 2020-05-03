@@ -1,10 +1,10 @@
 from collections import OrderedDict
 from datetime import date
-from typing import Union, List, Tuple
+from typing import List, Tuple, Union
+
+from django.apps import apps
 
 from calendarweek import CalendarWeek
-from django.apps import apps
-from django.db.models import QuerySet
 
 from aleksis.apps.chronos.managers import TimetableType
 from aleksis.core.models import Person
@@ -21,7 +21,7 @@ ExtraLesson = apps.get_model("chronos", "ExtraLesson")
 
 
 def build_timetable(
-    type_: Union[TimetableType, str], obj: Union[int, Person], date_ref: Union[CalendarWeek, date]
+    type_: Union[TimetableType, str], obj: Union[int, Person], date_ref: Union[CalendarWeek, date],
 ):
     needed_breaks = []
 
@@ -48,9 +48,7 @@ def build_timetable(
     if is_person:
         lesson_periods = LessonPeriod.objects.daily_lessons_for_person(obj, date_ref)
     else:
-        lesson_periods = LessonPeriod.objects.in_week(date_ref).filter_from_type(
-            type_, obj
-        )
+        lesson_periods = LessonPeriod.objects.in_week(date_ref).filter_from_type(type_, obj)
 
     # Sort lesson periods in a dict
     lesson_periods_per_period = lesson_periods.group_by_periods(is_person=is_person)
@@ -108,7 +106,7 @@ def build_timetable(
                 # If not end day, use max period
                 period_to = TimePeriod.period_max
 
-            for period in range(period_from, period_to +1):
+            for period in range(period_from, period_to + 1):
                 if period not in events_per_period:
                     events_per_period[period] = [] if is_person else {}
 
@@ -140,10 +138,7 @@ def build_timetable(
             if period_after_break not in needed_breaks:
                 needed_breaks.append(period_after_break)
 
-            if (
-                not is_person
-                and period_after_break not in supervisions_per_period_after
-            ):
+            if not is_person and period_after_break not in supervisions_per_period_after:
                 supervisions_per_period_after[period_after_break] = {}
 
             if is_person:
@@ -169,9 +164,7 @@ def build_timetable(
             if not is_person:
                 cols = []
 
-                for weekday in range(
-                    TimePeriod.weekday_min, TimePeriod.weekday_max + 1
-                ):
+                for weekday in range(TimePeriod.weekday_min, TimePeriod.weekday_max + 1):
                     col = None
                     if (
                         period in supervisions_per_period_after
@@ -200,32 +193,21 @@ def build_timetable(
 
             if not is_person:
                 cols = []
-                for weekday in range(
-                    TimePeriod.weekday_min, TimePeriod.weekday_max + 1
-                ):
+                for weekday in range(TimePeriod.weekday_min, TimePeriod.weekday_max + 1):
                     col = []
 
                     # Add lesson periods
-                    if (
-                        period in lesson_periods_per_period
-                        and weekday not in holidays_per_weekday
-                    ):
+                    if period in lesson_periods_per_period and weekday not in holidays_per_weekday:
                         if weekday in lesson_periods_per_period[period]:
                             col += lesson_periods_per_period[period][weekday]
 
                     # Add extra lessons
-                    if (
-                        period in extra_lessons_per_period
-                        and weekday not in holidays_per_weekday
-                    ):
+                    if period in extra_lessons_per_period and weekday not in holidays_per_weekday:
                         if weekday in extra_lessons_per_period[period]:
                             col += extra_lessons_per_period[period][weekday]
 
                     # Add events
-                    if (
-                        period in events_per_period
-                        and weekday not in holidays_per_weekday
-                    ):
+                    if period in events_per_period and weekday not in holidays_per_weekday:
                         if weekday in events_per_period[period]:
                             col += events_per_period[period][weekday]
 
@@ -261,12 +243,12 @@ def build_substitutions_list(wanted_day: date) -> List[dict]:
         if not sub.cancelled_for_teachers:
             sort_a = sub.lesson_period.lesson.group_names
         else:
-            sort_a = "Z.{}".format(sub.lesson_period.lesson.teacher_names)
+            sort_a = f"Z.{sub.lesson_period.lesson.teacher_names}"
 
         row = {
             "type": "substitution",
             "sort_a": sort_a,
-            "sort_b": "{}".format(sub.lesson_period.period.period),
+            "sort_b": str(sub.lesson_period.period.period),
             "el": sub,
         }
 
@@ -278,9 +260,9 @@ def build_substitutions_list(wanted_day: date) -> List[dict]:
     for super_sub in super_subs:
         row = {
             "type": "supervision_substitution",
-            "sort_a": "Z.{}".format(super_sub.teacher),
-            "sort_b": "{}".format(super_sub.supervision.break_item.after_period_number),
-            "el": super_sub
+            "sort_a": f"Z.{super_sub.teacher}",
+            "sort_b": str(super_sub.supervision.break_item.after_period_number),
+            "el": super_sub,
         }
         rows.append(row)
 
@@ -290,8 +272,8 @@ def build_substitutions_list(wanted_day: date) -> List[dict]:
     for extra_lesson in extra_lessons:
         row = {
             "type": "extra_lesson",
-            "sort_a": "{}".format(extra_lesson.group_names),
-            "sort_b": "{}".format(extra_lesson.period.period),
+            "sort_a": str(extra_lesson.group_names),
+            "sort_b": str(extra_lesson.period.period),
             "el": extra_lesson,
         }
         rows.append(row)
@@ -303,12 +285,12 @@ def build_substitutions_list(wanted_day: date) -> List[dict]:
         if event.groups.all():
             sort_a = event.group_names
         else:
-            sort_a = "Z.".format(event.teacher_names)
+            sort_a = f"Z.{event.teacher_names}"
 
         row = {
             "type": "event",
             "sort_a": sort_a,
-            "sort_b": "{}".format(event.period_from_on_day),
+            "sort_b": str(event.period_from_on_day),
             "el": event,
         }
         rows.append(row)
@@ -322,9 +304,7 @@ def build_substitutions_list(wanted_day: date) -> List[dict]:
     return rows
 
 
-def build_weekdays(
-    base: List[Tuple[int, str]], wanted_week: CalendarWeek
-) -> List[dict]:
+def build_weekdays(base: List[Tuple[int, str]], wanted_week: CalendarWeek) -> List[dict]:
     holidays_per_weekday = Holiday.in_week(wanted_week)
 
     weekdays = []
@@ -334,9 +314,7 @@ def build_weekdays(
             "key": key,
             "name": name,
             "date": wanted_week[key],
-            "holiday": holidays_per_weekday[key]
-            if key in holidays_per_weekday
-            else None,
+            "holiday": holidays_per_weekday[key] if key in holidays_per_weekday else None,
         }
         weekdays.append(weekday)
 

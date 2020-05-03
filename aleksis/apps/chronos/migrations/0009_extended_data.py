@@ -7,33 +7,43 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chronos', '0008_break_period'),
+        ("chronos", "0008_break_period"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='lesson',
-            name='extended_data',
-            field=django.contrib.postgres.fields.jsonb.JSONField(default=dict, editable=False),
+            model_name="lesson",
+            name="extended_data",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                default=dict, editable=False
+            ),
         ),
         migrations.AddField(
-            model_name='lessonsubstitution',
-            name='extended_data',
-            field=django.contrib.postgres.fields.jsonb.JSONField(default=dict, editable=False),
+            model_name="lessonsubstitution",
+            name="extended_data",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                default=dict, editable=False
+            ),
         ),
         migrations.AddField(
-            model_name='room',
-            name='extended_data',
-            field=django.contrib.postgres.fields.jsonb.JSONField(default=dict, editable=False),
+            model_name="room",
+            name="extended_data",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                default=dict, editable=False
+            ),
         ),
         migrations.AddField(
-            model_name='subject',
-            name='extended_data',
-            field=django.contrib.postgres.fields.jsonb.JSONField(default=dict, editable=False),
+            model_name="subject",
+            name="extended_data",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                default=dict, editable=False
+            ),
         ),
         migrations.AddField(
-            model_name='timeperiod',
-            name='extended_data',
-            field=django.contrib.postgres.fields.jsonb.JSONField(default=dict, editable=False),
+            model_name="timeperiod",
+            name="extended_data",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                default=dict, editable=False
+            ),
         ),
     ]

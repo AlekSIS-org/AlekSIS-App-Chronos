@@ -1,25 +1,25 @@
-#noqa
+# noqa
 
 from django.contrib import admin
 from django.utils.html import format_html
 
 from .models import (
-    TimetableWidget,
-    Lesson,
-    LessonSubstitution,
-    SupervisionSubstitution,
-    LessonPeriod,
     Absence,
-    Event,
-    Holiday,
-    Supervision,
-    Subject,
-    SupervisionArea,
-    Room,
     AbsenceReason,
     Break,
-    TimePeriod,
+    Event,
     ExtraLesson,
+    Holiday,
+    Lesson,
+    LessonPeriod,
+    LessonSubstitution,
+    Room,
+    Subject,
+    Supervision,
+    SupervisionArea,
+    SupervisionSubstitution,
+    TimePeriod,
+    TimetableWidget,
 )
 from .util.format import format_date_period, format_m2m
 
@@ -153,7 +153,7 @@ admin.site.register(Room, RoomAdmin)
 
 class SubjectAdmin(admin.ModelAdmin):
     def _colour(self, obj):
-        return colour_badge(obj.colour_fg, obj.colour_bg, obj.short_name, )
+        return colour_badge(obj.colour_fg, obj.colour_bg, obj.short_name,)
 
     list_display = ("short_name", "name", "_colour")
     list_display_links = ("short_name", "name")

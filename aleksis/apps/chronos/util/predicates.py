@@ -3,13 +3,13 @@ from django.db.models import Model
 
 from rules import predicate
 
-from aleksis.core.models import Group, Person
 from aleksis.apps.chronos.models import Room
+from aleksis.core.models import Group, Person
 
 
 @predicate
 def has_timetable_perm(user: User, obj: Model) -> bool:
-    """ Predicate which checks whether the user is allowed to access the requested timetable """
+    """Predicate which checks whether the user is allowed to access the requested timetable."""
 
     if obj.model is Group:
         return obj in user.person.member_of

@@ -11,7 +11,8 @@
     <select id="calendar-week-1">
       {% for week in weeks %}
         <option value="{{ week.week }}" {% if week == wanted_week %}
-                selected {% endif %}>{% trans "CW" %} {{ week.week }} ({{ week.0|date:"SHORT_DATE_FORMAT" }}–{{ week.6|date:"SHORT_DATE_FORMAT" }})
+                selected {% endif %}>{% trans "CW" %} {{ week.week }}
+          ({{ week.0|date:"SHORT_DATE_FORMAT" }}–{{ week.6|date:"SHORT_DATE_FORMAT" }})
         </option>
       {% endfor %}
     </select>
@@ -21,7 +22,8 @@
     <select id="calendar-week-2">
       {% for week in weeks %}
         <option value="{{ week.week }}" {% if week == wanted_week %}
-                selected {% endif %}>{% trans "CW" %} {{ week.week }} ({{ week.0|date:"j.n." }}–{{ week.6|date:"SHORT_DATE_FORMAT" }})
+                selected {% endif %}>{% trans "CW" %} {{ week.week }}
+          ({{ week.0|date:"j.n." }}–{{ week.6|date:"SHORT_DATE_FORMAT" }})
         </option>
       {% endfor %}
     </select>

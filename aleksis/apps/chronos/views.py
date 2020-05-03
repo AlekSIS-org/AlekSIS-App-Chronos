@@ -1,28 +1,28 @@
-from collections import OrderedDict
-from datetime import date, datetime, timedelta
-from typing import Optional, Tuple
+from datetime import datetime, timedelta
+from typing import Optional
 
-from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.http import HttpRequest, HttpResponse, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext as _
+
 from django_tables2 import RequestConfig
 from rules.contrib.views import permission_required
 
-from aleksis.core.models import Person, Group, Announcement
+from aleksis.core.models import Announcement, Group, Person
 from aleksis.core.util import messages
+from aleksis.core.util.core_helpers import get_site_preferences, has_person
+
 from .forms import LessonSubstitutionForm
 from .managers import TimetableType
-from .models import LessonPeriod, LessonSubstitution, TimePeriod, Room, Holiday, Absence
+from .models import Absence, Holiday, LessonPeriod, LessonSubstitution, Room, TimePeriod
 from .tables import LessonsTable
-from .util.build import build_timetable, build_substitutions_list, build_weekdays
+from .util.build import build_substitutions_list, build_timetable, build_weekdays
 from .util.chronos_helpers import get_el_by_pk, get_substitution_by_id
-from .util.js import date_unix
 from .util.date import CalendarWeek, get_weeks_for_year
-from aleksis.core.util.core_helpers import has_person, get_site_preferences
+from .util.js import date_unix
 
 
 @permission_required("chronos.view_timetable_overview")
@@ -30,19 +30,16 @@ def all_timetables(request: HttpRequest) -> HttpResponse:
     """View all timetables for persons, groups and rooms."""
     context = {}
 
-    teachers = Person.objects.annotate(
-        lessons_count=Count("lessons_as_teacher")
-    ).filter(lessons_count__gt=0)
+    teachers = Person.objects.annotate(lessons_count=Count("lessons_as_teacher")).filter(
+        lessons_count__gt=0
+    )
     groups = Group.objects.annotate(
-        lessons_count=Count("lessons"),
-        child_lessons_count=Count("child_groups__lessons"),
+        lessons_count=Count("lessons"), child_lessons_count=Count("child_groups__lessons"),
     )
     classes = groups.filter(lessons_count__gt=0, parent_groups=None) | groups.filter(
         child_lessons_count__gt=0, parent_groups=None
     )
-    rooms = Room.objects.annotate(lessons_count=Count("lesson_periods")).filter(
-        lessons_count__gt=0
-    )
+    rooms = Room.objects.annotate(lessons_count=Count("lesson_periods")).filter(lessons_count__gt=0)
 
     context["teachers"] = teachers
     context["classes"] = classes
@@ -87,7 +84,9 @@ def my_timetable(
         context["day"] = wanted_day
         context["periods"] = TimePeriod.get_times_dict()
         context["smart"] = True
-        context["announcements"] = Announcement.for_timetables().on_date(wanted_day).for_person(person)
+        context["announcements"] = (
+            Announcement.for_timetables().on_date(wanted_day).for_person(person)
+        )
 
         context["url_prev"], context["url_next"] = TimePeriod.get_prev_next_by_day(
             wanted_day, "my_timetable_by_date"
@@ -113,6 +112,9 @@ def timetable(
     is_smart = regular != "regular"
 
     el = get_el_by_pk(request, type_, pk)
+
+    if type(el) == HttpResponseNotFound:
+        return HttpResponseNotFound()
 
     type_ = TimetableType.from_string(type_)
 
@@ -141,22 +143,24 @@ def timetable(
     context["smart"] = is_smart
     context["week_select"] = {
         "year": wanted_week.year,
-        "dest": reverse("timetable", args=[type_, pk])
+        "dest": reverse("timetable", args=[type_.value, pk]),
     }
 
     if is_smart:
         start = wanted_week[TimePeriod.weekday_min]
         stop = wanted_week[TimePeriod.weekday_max]
-        context["announcements"] = Announcement.for_timetables().relevant_for(el).within_days(start, stop)
+        context["announcements"] = (
+            Announcement.for_timetables().relevant_for(el).within_days(start, stop)
+        )
 
     week_prev = wanted_week - 1
     week_next = wanted_week + 1
 
     context["url_prev"] = reverse(
-        "timetable_by_week", args=[type_, pk, week_prev.year, week_prev.week]
+        "timetable_by_week", args=[type_.value, pk, week_prev.year, week_prev.week]
     )
     context["url_next"] = reverse(
-        "timetable_by_week", args=[type_, pk, week_next.year, week_next.week]
+        "timetable_by_week", args=[type_.value, pk, week_next.year, week_next.week]
     )
 
     return render(request, "chronos/timetable.html", context)
@@ -191,7 +195,7 @@ def lessons_day(
 
     context["datepicker"] = {
         "date": date_unix(wanted_day),
-        "dest": reverse("lessons_day")
+        "dest": reverse("lessons_day"),
     }
 
     context["url_prev"], context["url_next"] = TimePeriod.get_prev_next_by_day(
@@ -230,10 +234,7 @@ def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse
             messages.success(request, _("The substitution has been saved."))
 
             date = wanted_week[lesson_period.period.weekday]
-            return redirect(
-                "lessons_day_by_date",
-                year=date.year, month=date.month, day=date.day
-            )
+            return redirect("lessons_day_by_date", year=date.year, month=date.month, day=date.day)
 
     context["edit_substitution_form"] = edit_substitution_form
 
@@ -254,10 +255,7 @@ def delete_substitution(request: HttpRequest, id_: int, week: int) -> HttpRespon
     messages.success(request, _("The substitution has been deleted."))
 
     date = wanted_week[lesson_period.period.weekday]
-    return redirect(
-        "lessons_day_by_date",
-        year=date.year, month=date.month, day=date.day
-    )
+    return redirect("lessons_day_by_date", year=date.year, month=date.month, day=date.day)
 
 
 @permission_required("chronos.view_substitutions")
@@ -292,11 +290,14 @@ def substitutions(
         subs = build_substitutions_list(day)
         day_contexts[day]["substitutions"] = subs
 
-        day_contexts[day]["announcements"] = Announcement.for_timetables().on_date(day).filter(show_in_timetables=True)
+        day_contexts[day]["announcements"] = (
+            Announcement.for_timetables().on_date(day).filter(show_in_timetables=True)
+        )
 
         if get_site_preferences()["chronos__substitutions_show_header_box"]:
-            subs = LessonSubstitution.objects.on_day(day).order_by("lesson_period__lesson__groups",
-                                                                   "lesson_period__period")
+            subs = LessonSubstitution.objects.on_day(day).order_by(
+                "lesson_period__lesson__groups", "lesson_period__period"
+            )
             absences = Absence.objects.on_day(day)
             day_contexts[day]["absent_teachers"] = absences.absent_teachers()
             day_contexts[day]["absent_groups"] = absences.absent_groups()

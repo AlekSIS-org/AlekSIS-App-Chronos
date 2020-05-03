@@ -13,6 +13,7 @@ from .models import LessonPeriod
 def _css_class_from_lesson_state(
     record: Optional[LessonPeriod] = None, table: Optional[LessonsTable] = None
 ) -> str:
+    """Return CSS class depending on lesson state."""
     if record.get_substitution(record._week):
         if record.get_substitution(record._week).cancelled:
             return "success"
@@ -23,6 +24,8 @@ def _css_class_from_lesson_state(
 
 
 class LessonsTable(tables.Table):
+    """Table for daily lessons and management of substitutions."""
+
     class Meta:
         attrs = {"class": "highlight"}
         row_attrs = {"class": _css_class_from_lesson_state}
@@ -33,6 +36,9 @@ class LessonsTable(tables.Table):
     lesson__subject = tables.Column(accessor="lesson__subject")
     room = tables.Column(accessor="room")
     edit_substitution = tables.LinkColumn(
-        "edit_substitution", args=[A("id"), A("_week")], text=_("Substitution"),
-        attrs={"a": {"class": "btn-flat waves-effect waves-orange"}}, verbose_name=_("Manage substitution")
+        "edit_substitution",
+        args=[A("id"), A("_week")],
+        text=_("Substitution"),
+        attrs={"a": {"class": "btn-flat waves-effect waves-orange"}},
+        verbose_name=_("Manage substitution"),
     )

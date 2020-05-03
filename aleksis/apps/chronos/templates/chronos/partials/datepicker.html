@@ -7,24 +7,24 @@
 {% endif %}
 
 <div class="col s2 no-padding">
-    <a class="waves-effect waves-teal btn-flat btn-flat-medium left" href="{{ url_prev }}">
-        <i class="material-icons center">navigate_before</i>
-    </a>
+  <a class="waves-effect waves-teal btn-flat btn-flat-medium left" href="{{ url_prev }}">
+    <i class="material-icons center">navigate_before</i>
+  </a>
 </div>
 
 {% if display_date_only %}
-    <div class="col s8">
+  <div class="col s8">
     <span class="card-title center-block" id="date">
         {{ day|date:"l" }}, {{ day }}
     </span>
-    </div>
+  </div>
 {% else %}
-    <div class="col s8 no-padding">
-        <input type="text" class="datepicker center-align" id="date">
-    </div>
+  <div class="col s8 no-padding">
+    <input type="text" class="datepicker center-align" id="date">
+  </div>
 {% endif %}
 <div class="col s2 no-padding">
-    <a class="waves-effect waves-teal btn-flat btn-flat-medium right" href="{{ url_next }}">
-        <i class="material-icons center">navigate_next</i>
-    </a>
+  <a class="waves-effect waves-teal btn-flat btn-flat-medium right" href="{{ url_next }}">
+    <i class="material-icons center">navigate_next</i>
+  </a>
 </div>
