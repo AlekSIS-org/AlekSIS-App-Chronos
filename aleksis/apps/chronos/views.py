@@ -64,7 +64,9 @@ def my_timetable(
         wanted_day = timezone.datetime(year=year, month=month, day=day).date()
         wanted_day = TimePeriod.get_next_relevant_day(wanted_day)
     else:
-        wanted_day = TimePeriod.get_next_relevant_day(timezone.now().date(), datetime.now().time())
+        wanted_day = TimePeriod.get_next_relevant_day(
+            timezone.now().date(), datetime.now().time()
+        )
 
     if has_person(request.user):
         person = request.user.person
@@ -86,7 +88,9 @@ def my_timetable(
         context["day"] = wanted_day
         context["periods"] = TimePeriod.get_times_dict()
         context["smart"] = True
-        context["announcements"] = Announcement.for_timetables().on_date(wanted_day).for_person(person)
+        context["announcements"] = (
+            Announcement.for_timetables().on_date(wanted_day).for_person(person)
+        )
 
         context["url_prev"], context["url_next"] = TimePeriod.get_prev_next_by_day(
             wanted_day, "my_timetable_by_date"
@@ -148,7 +152,9 @@ def timetable(
 
     # Build lists with weekdays and corresponding dates (long and short variant)
     context["weekdays"] = build_weekdays(TimePeriod.WEEKDAY_CHOICES, wanted_week)
-    context["weekdays_short"] = build_weekdays(TimePeriod.WEEKDAY_CHOICES_SHORT, wanted_week)
+    context["weekdays_short"] = build_weekdays(
+        TimePeriod.WEEKDAY_CHOICES_SHORT, wanted_week
+    )
 
     context["weeks"] = get_weeks_for_year(year=wanted_week.year)
     context["week"] = wanted_week
@@ -158,13 +164,15 @@ def timetable(
     context["smart"] = is_smart
     context["week_select"] = {
         "year": wanted_week.year,
-        "dest": reverse("timetable", args=[type_, pk])
+        "dest": reverse("timetable", args=[type_, pk]),
     }
 
     if is_smart:
         start = wanted_week[TimePeriod.weekday_min]
         stop = wanted_week[TimePeriod.weekday_max]
-        context["announcements"] = Announcement.for_timetables().relevant_for(el).within_days(start, stop)
+        context["announcements"] = (
+            Announcement.for_timetables().relevant_for(el).within_days(start, stop)
+        )
 
     week_prev = wanted_week - 1
     week_next = wanted_week + 1
@@ -193,7 +201,9 @@ def lessons_day(
         wanted_day = timezone.datetime(year=year, month=month, day=day).date()
         wanted_day = TimePeriod.get_next_relevant_day(wanted_day)
     else:
-        wanted_day = TimePeriod.get_next_relevant_day(timezone.now().date(), datetime.now().time())
+        wanted_day = TimePeriod.get_next_relevant_day(
+            timezone.now().date(), datetime.now().time()
+        )
 
     # Get lessons
     lesson_periods = LessonPeriod.objects.on_day(wanted_day)
@@ -208,7 +218,7 @@ def lessons_day(
 
     context["datepicker"] = {
         "date": date_unix(wanted_day),
-        "dest": reverse("lessons_day")
+        "dest": reverse("lessons_day"),
     }
 
     context["url_prev"], context["url_next"] = TimePeriod.get_prev_next_by_day(
@@ -257,8 +267,7 @@ def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse
 
             date = wanted_week[lesson_period.period.weekday]
             return redirect(
-                "lessons_day_by_date",
-                year=date.year, month=date.month, day=date.day
+                "lessons_day_by_date", year=date.year, month=date.month, day=date.day
             )
 
     context["edit_substitution_form"] = edit_substitution_form
@@ -281,8 +290,7 @@ def delete_substitution(request: HttpRequest, id_: int, week: int) -> HttpRespon
 
     date = wanted_week[lesson_period.period.weekday]
     return redirect(
-        "lessons_day_by_date",
-        year=date.year, month=date.month, day=date.day
+        "lessons_day_by_date", year=date.year, month=date.month, day=date.day
     )
 
 
@@ -301,7 +309,9 @@ def substitutions(
         wanted_day = timezone.datetime(year=year, month=month, day=day).date()
         wanted_day = TimePeriod.get_next_relevant_day(wanted_day)
     else:
-        wanted_day = TimePeriod.get_next_relevant_day(timezone.now().date(), datetime.now().time())
+        wanted_day = TimePeriod.get_next_relevant_day(
+            timezone.now().date(), datetime.now().time()
+        )
 
     day_number = get_site_preferences()["chronos__substitutions_print_number_of_days"]
     day_contexts = {}
@@ -318,11 +328,14 @@ def substitutions(
         subs = build_substitutions_list(day)
         day_contexts[day]["substitutions"] = subs
 
-        day_contexts[day]["announcements"] = Announcement.for_timetables().on_date(day).filter(show_in_timetables=True)
+        day_contexts[day]["announcements"] = (
+            Announcement.for_timetables().on_date(day).filter(show_in_timetables=True)
+        )
 
         if get_site_preferences()["chronos__substitutions_show_header_box"]:
-            subs = LessonSubstitution.objects.on_day(day).order_by("lesson_period__lesson__groups",
-                                                                   "lesson_period__period")
+            subs = LessonSubstitution.objects.on_day(day).order_by(
+                "lesson_period__lesson__groups", "lesson_period__period"
+            )
             absences = Absence.objects.on_day(day)
             day_contexts[day]["absent_teachers"] = absences.absent_teachers()
             day_contexts[day]["absent_groups"] = absences.absent_groups()

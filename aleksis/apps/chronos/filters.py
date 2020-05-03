@@ -12,5 +12,5 @@ class HintForm(Form):
 class HintFilter(django_filters.FilterSet):
     class Meta:
         model = Hint
-        fields = ['from_date', "to_date", "classes", "teachers"]
+        fields = ["from_date", "to_date", "classes", "teachers"]
         form = HintForm

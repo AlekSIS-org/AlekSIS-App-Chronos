@@ -7,27 +7,42 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chronos', '0010_absence_reason_name'),
+        ("chronos", "0010_absence_reason_name"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='absence',
-            name='person',
+        migrations.RemoveField(model_name="absence", name="person",),
+        migrations.AddField(
+            model_name="absence",
+            name="group",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="absences",
+                to="core.Group",
+            ),
         ),
         migrations.AddField(
-            model_name='absence',
-            name='group',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='absences', to='core.Group'),
+            model_name="absence",
+            name="room",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="absences",
+                to="chronos.Room",
+            ),
         ),
         migrations.AddField(
-            model_name='absence',
-            name='room',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='absences', to='chronos.Room'),
-        ),
-        migrations.AddField(
-            model_name='absence',
-            name='teacher',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='absences', to='core.Person'),
+            model_name="absence",
+            name="teacher",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="absences",
+                to="core.Person",
+            ),
         ),
     ]

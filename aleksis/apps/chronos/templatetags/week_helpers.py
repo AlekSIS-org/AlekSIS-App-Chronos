@@ -4,7 +4,11 @@ from typing import Optional, Union
 from django import template
 from django.db.models.query import QuerySet
 
-from aleksis.apps.chronos.util.date import CalendarWeek, week_period_to_date, week_weekday_to_date
+from aleksis.apps.chronos.util.date import (
+    CalendarWeek,
+    week_period_to_date,
+    week_weekday_to_date,
+)
 
 register = template.Library()
 

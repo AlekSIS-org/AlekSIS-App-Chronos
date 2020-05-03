@@ -7,13 +7,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chronos', '0005_remove_school_related'),
+        ("chronos", "0005_remove_school_related"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='lessonperiod',
-            name='extended_data',
-            field=django.contrib.postgres.fields.jsonb.JSONField(default=dict, editable=False),
+            model_name="lessonperiod",
+            name="extended_data",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                default=dict, editable=False
+            ),
         ),
     ]

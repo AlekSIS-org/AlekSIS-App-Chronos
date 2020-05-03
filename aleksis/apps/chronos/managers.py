@@ -93,8 +93,10 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
         """ Filter for all lessons within a calendar week. """
 
         return self.within_dates(
-            wanted_week[0] + timedelta(days=1) * (F(self._period_path + "period__weekday") - 1),
-            wanted_week[0] + timedelta(days=1) * (F(self._period_path + "period__weekday") - 1),
+            wanted_week[0]
+            + timedelta(days=1) * (F(self._period_path + "period__weekday") - 1),
+            wanted_week[0]
+            + timedelta(days=1) * (F(self._period_path + "period__weekday") - 1),
         ).annotate_week(wanted_week)
 
     def on_day(self, day: date):
@@ -129,7 +131,9 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
 
         return self.filter(
             Q(**{self._period_path + "lesson__groups__members": person})
-            | Q(**{self._period_path + "lesson__groups__parent_groups__members": person})
+            | Q(
+                **{self._period_path + "lesson__groups__parent_groups__members": person}
+            )
         )
 
     def filter_group(self, group: Union[Group, int]):
@@ -151,7 +155,12 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
         """ Filter for all lessons given by a certain teacher. """
 
         qs1 = self.filter(**{self._period_path + "lesson__teachers": teacher})
-        qs2 = self.filter(**{self._subst_path + "teachers": teacher, self._subst_path + "week": F("_week"), })
+        qs2 = self.filter(
+            **{
+                self._subst_path + "teachers": teacher,
+                self._subst_path + "week": F("_week"),
+            }
+        )
 
         return qs1.union(qs2)
 
@@ -159,7 +168,9 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
         """ Filter for all lessons taking part in a certain room. """
 
         qs1 = self.filter(**{self._period_path + "room": room})
-        qs2 = self.filter(**{self._subst_path + "room": room, self._subst_path + "week": F("_week"),})
+        qs2 = self.filter(
+            **{self._subst_path + "room": room, self._subst_path + "week": F("_week"),}
+        )
 
         return qs1.union(qs2)
 
@@ -184,7 +195,9 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
 
         return per_period
 
-    def filter_from_type(self, type_: TimetableType, pk: int) -> Optional[models.QuerySet]:
+    def filter_from_type(
+        self, type_: TimetableType, pk: int
+    ) -> Optional[models.QuerySet]:
         """Filter lesson data for a group, teacher or room by provided type."""
 
         if type_ == TimetableType.GROUP:
@@ -215,7 +228,9 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
             # If no student or teacher
             return None
 
-    def daily_lessons_for_person(self, person: Person, wanted_day: date) -> Optional[models.QuerySet]:
+    def daily_lessons_for_person(
+        self, person: Person, wanted_day: date
+    ) -> Optional[models.QuerySet]:
         """Filter lesson data on a day by a person."""
 
         if person.timetable_type is None:
@@ -225,7 +240,9 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
 
         return lesson_periods
 
-    def next(self, reference: "LessonPeriod", offset: Optional[int] = 1) -> "LessonPeriod":
+    def next(
+        self, reference: "LessonPeriod", offset: Optional[int] = 1
+    ) -> "LessonPeriod":
         """ Get another lesson in an ordered set of lessons.
 
         By default, it returns the next lesson in the set. By passing the offset argument,
@@ -260,7 +277,7 @@ class LessonSubstitutionQuerySet(LessonDataQuerySet):
 
     def affected_lessons(self):
         """ Return all lessons which are affected by selected substitutions """
-        from .models import Lesson # noaq
+        from .models import Lesson  # noaq
 
         return Lesson.objects.filter(lesson_periods__substitutions__in=self)
 
@@ -307,8 +324,7 @@ class DateRangeQuerySet(models.QuerySet):
         now = when or datetime.now()
 
         return self.on_day(now.date()).filter(
-            period_from__time_start__lte=now.time(),
-            period_to__time_end__gte=now.time()
+            period_from__time_start__lte=now.time(), period_to__time_end__gte=now.time()
         )
 
 
@@ -316,17 +332,24 @@ class AbsenceQuerySet(DateRangeQuerySet):
     """QuerySet with custom query methods for absences."""
 
     def absent_teachers(self):
-        return Person.objects.filter(absences__in=self).annotate(absences_count=Count("absences"))
+        return Person.objects.filter(absences__in=self).annotate(
+            absences_count=Count("absences")
+        )
 
     def absent_groups(self):
-        return Group.objects.filter(absences__in=self).annotate(absences_count=Count("absences"))
+        return Group.objects.filter(absences__in=self).annotate(
+            absences_count=Count("absences")
+        )
 
     def absent_rooms(self):
-        return Person.objects.filter(absences__in=self).annotate(absences_count=Count("absences"))
+        return Person.objects.filter(absences__in=self).annotate(
+            absences_count=Count("absences")
+        )
 
 
 class HolidayQuerySet(DateRangeQuerySet):
     """QuerySet with custom query methods for holidays."""
+
     pass
 
 
@@ -352,7 +375,10 @@ class SupervisionQuerySet(models.QuerySet, WeekQuerySetMixin):
 
             dates = [week[w] for w in range(0, 7)]
 
-            return self.filter(Q(substitutions__teacher=teacher, substitutions__date__in=dates) | Q(teacher=teacher))
+            return self.filter(
+                Q(substitutions__teacher=teacher, substitutions__date__in=dates)
+                | Q(teacher=teacher)
+            )
 
         return self
 
@@ -398,7 +424,9 @@ class TimetableQuerySet(models.QuerySet):
         else:
             return self.filter(room=room)
 
-    def filter_from_type(self, type_: TimetableType, pk: int) -> Optional[models.QuerySet]:
+    def filter_from_type(
+        self, type_: TimetableType, pk: int
+    ) -> Optional[models.QuerySet]:
         """Filter data for a group, teacher or room by provided type."""
 
         if type_ == TimetableType.GROUP:
@@ -457,7 +485,7 @@ class ExtraLessonQuerySet(TimetableQuerySet):
             period__weekday__lte=end.weekday(),
         )
 
-    def on_day(self, day:date):
+    def on_day(self, day: date):
         """Filter all extra lessons on a day."""
 
         return self.within_dates(day, day)
@@ -476,7 +504,11 @@ class GroupPropertiesMixin:
     @property
     def groups_to_show(self) -> models.QuerySet:
         groups = self.groups.all()
-        if groups.count() == 1 and groups[0].parent_groups.all() and get_site_preferences()["chronos__use_parent_groups"]:
+        if (
+            groups.count() == 1
+            and groups[0].parent_groups.all()
+            and get_site_preferences()["chronos__use_parent_groups"]
+        ):
             return groups[0].parent_groups.all()
         else:
             return groups

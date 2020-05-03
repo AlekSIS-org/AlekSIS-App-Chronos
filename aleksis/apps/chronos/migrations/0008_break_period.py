@@ -7,38 +7,45 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chronos', '0007_advanced_models_from_untis'),
+        ("chronos", "0007_advanced_models_from_untis"),
     ]
 
     operations = [
         migrations.RemoveIndex(
-            model_name='break',
-            name='chronos_bre_weekday_165338_idx',
+            model_name="break", name="chronos_bre_weekday_165338_idx",
         ),
-        migrations.RemoveField(
-            model_name='break',
-            name='time_end',
-        ),
-        migrations.RemoveField(
-            model_name='break',
-            name='time_start',
-        ),
-        migrations.RemoveField(
-            model_name='break',
-            name='weekday',
+        migrations.RemoveField(model_name="break", name="time_end",),
+        migrations.RemoveField(model_name="break", name="time_start",),
+        migrations.RemoveField(model_name="break", name="weekday",),
+        migrations.AddField(
+            model_name="break",
+            name="after_period",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="break_after",
+                to="chronos.TimePeriod",
+                verbose_name="Effective start of break",
+            ),
         ),
         migrations.AddField(
-            model_name='break',
-            name='after_period',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='break_after', to='chronos.TimePeriod', verbose_name='Effective start of break'),
-        ),
-        migrations.AddField(
-            model_name='break',
-            name='before_period',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='break_before', to='chronos.TimePeriod', verbose_name='Effective end of break'),
+            model_name="break",
+            name="before_period",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="break_before",
+                to="chronos.TimePeriod",
+                verbose_name="Effective end of break",
+            ),
         ),
         migrations.AddIndex(
-            model_name='break',
-            index=models.Index(fields=['after_period', 'before_period'], name='chronos_bre_after_p_0f28d3_idx'),
+            model_name="break",
+            index=models.Index(
+                fields=["after_period", "before_period"],
+                name="chronos_bre_after_p_0f28d3_idx",
+            ),
         ),
     ]

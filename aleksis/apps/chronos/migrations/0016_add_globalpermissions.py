@@ -7,19 +7,36 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chronos', '0015_rename_abbrev_to_short_name'),
+        ("chronos", "0015_rename_abbrev_to_short_name"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='GlobalPermissions',
+            name="GlobalPermissions",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('extended_data', django.contrib.postgres.fields.jsonb.JSONField(default=dict, editable=False)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "extended_data",
+                    django.contrib.postgres.fields.jsonb.JSONField(
+                        default=dict, editable=False
+                    ),
+                ),
             ],
             options={
-                'permissions': (('view_all_timetables', 'Can view all timetables'), ('view_timetable_overview', 'Can view timetable overview'), ('view_lessons_day', 'Can view all lessons per day')),
-                'managed': False,
+                "permissions": (
+                    ("view_all_timetables", "Can view all timetables"),
+                    ("view_timetable_overview", "Can view timetable overview"),
+                    ("view_lessons_day", "Can view all lessons per day"),
+                ),
+                "managed": False,
             },
         ),
     ]
