@@ -11,6 +11,8 @@ from django.http import QueryDict
 from aleksis.core.models import Person, Group
 
 class TimetableType(Enum):
+    """Enum for different types of timetables."""
+
     GROUP = "group"
     TEACHER = "teacher"
     ROOM = "room"
@@ -160,6 +162,8 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
         return qs1.union(qs2)
 
     def group_by_periods(self, is_person: bool = False) -> dict:
+        """Group a QuerySet of objects with attribute period by period numbers and weekdays."""
+
         per_period = {}
         for obj in self:
             period = obj.period.period
@@ -179,6 +183,8 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
         return per_period
 
     def filter_from_type(self, type_: TimetableType, pk: int) -> Optional[models.QuerySet]:
+        """Filter lesson data for a group, teacher or room by provided type."""
+
         if type_ == TimetableType.GROUP:
             return self.filter_group(pk)
         elif type_ == TimetableType.TEACHER:
@@ -189,6 +195,8 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
             return None
 
     def filter_from_person(self, person: Person) -> Optional[models.QuerySet]:
+        """Filter lesson data for a person."""
+
         type_ = person.timetable_type
 
         if type_ == TimetableType.TEACHER:
@@ -206,6 +214,8 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
             return None
 
     def daily_lessons_for_person(self, person: Person, wanted_day: date) -> Optional[models.QuerySet]:
+        """Filter lesson data on a day by a person."""
+
         if person.timetable_type is None:
             return None
 
@@ -234,11 +244,15 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
 
 
 class LessonPeriodQuerySet(LessonDataQuerySet):
+    """QuerySet with custom query methods for lesson periods."""
+
     _period_path = ""
     _subst_path = "substitutions__"
 
 
 class LessonSubstitutionQuerySet(LessonDataQuerySet):
+    """QuerySet with custom query methods for substitutions."""
+
     _period_path = "lesson_period__"
     _subst_path = ""
 
@@ -265,6 +279,11 @@ class LessonSubstitutionQuerySet(LessonDataQuerySet):
 
 
 class DateRangeQuerySet(models.QuerySet):
+    """QuerySet with custom query methods for models with date and period ranges.
+
+    Filterable fields: date_start, date_end, period_from, period_to
+    """
+
     def within_dates(self, start: date, end: date):
         """ Filter for all events within a date range. """
 
@@ -292,6 +311,8 @@ class DateRangeQuerySet(models.QuerySet):
 
 
 class AbsenceQuerySet(DateRangeQuerySet):
+    """QuerySet with custom query methods for absences."""
+
     def absent_teachers(self):
         return Person.objects.filter(absences__in=self).annotate(absences_count=Count("absences"))
 
@@ -303,11 +324,16 @@ class AbsenceQuerySet(DateRangeQuerySet):
 
 
 class HolidayQuerySet(DateRangeQuerySet):
+    """QuerySet with custom query methods for holidays."""
     pass
 
 
 class SupervisionQuerySet(models.QuerySet, WeekQuerySetMixin):
+    """QuerySet with custom query methods for supervisions."""
+
     def filter_by_weekday(self, weekday: int):
+        """Filter supervisions by weekday."""
+
         self.filter(
             Q(break_item__before_period__weekday=weekday)
             | Q(break_item__after_period__weekday=weekday)
@@ -330,7 +356,7 @@ class SupervisionQuerySet(models.QuerySet, WeekQuerySetMixin):
 
 
 class TimetableQuerySet(models.QuerySet):
-    """ Common filters
+    """Common query set methods for objects in timetables.
 
      Models need following fields:
      - groups
@@ -371,6 +397,8 @@ class TimetableQuerySet(models.QuerySet):
             return self.filter(room=room)
 
     def filter_from_type(self, type_: TimetableType, pk: int) -> Optional[models.QuerySet]:
+        """Filter data for a group, teacher or room by provided type."""
+
         if type_ == TimetableType.GROUP:
             return self.filter_group(pk)
         elif type_ == TimetableType.TEACHER:
@@ -381,6 +409,8 @@ class TimetableQuerySet(models.QuerySet):
             return None
 
     def filter_from_person(self, person: Person) -> Optional[models.QuerySet]:
+        """Filter data by person."""
+
         type_ = person.timetable_type
 
         if type_ == TimetableType.TEACHER:
@@ -399,6 +429,8 @@ class TimetableQuerySet(models.QuerySet):
 
 
 class EventQuerySet(DateRangeQuerySet, TimetableQuerySet):
+    """QuerySet with custom query methods for events."""
+
     def annotate_day(self, day: date):
         """ Annotate all events in the QuerySet with the provided date. """
 
@@ -406,9 +438,13 @@ class EventQuerySet(DateRangeQuerySet, TimetableQuerySet):
 
 
 class ExtraLessonQuerySet(TimetableQuerySet):
+    """QuerySet with custom query methods for extra lessons."""
+
     _multiple_rooms = False
 
     def within_dates(self, start: date, end: date):
+        """Filter all extra lessons within a specific time range."""
+
         week_start = CalendarWeek.from_date(start)
         week_end = CalendarWeek.from_date(end)
 
@@ -420,10 +456,17 @@ class ExtraLessonQuerySet(TimetableQuerySet):
         )
 
     def on_day(self, day:date):
+        """Filter all extra lessons on a day."""
+
         return self.within_dates(day, day)
 
 
 class GroupPropertiesMixin:
+    """Mixin for common group properties.
+
+    Needed field: `groups`
+    """
+
     @property
     def group_names(self, sep: Optional[str] = ", ") -> str:
         return sep.join([group.short_name for group in self.groups.all()])
@@ -442,6 +485,11 @@ class GroupPropertiesMixin:
 
 
 class TeacherPropertiesMixin:
+    """Mixin for common teacher properties.
+
+    Needed field: `teacher`
+    """
+
     @property
     def teacher_names(self, sep: Optional[str] = ", ") -> str:
         return sep.join([teacher.full_name for teacher in self.teachers.all()])
