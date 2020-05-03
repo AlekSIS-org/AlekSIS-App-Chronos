@@ -21,7 +21,9 @@ ExtraLesson = apps.get_model("chronos", "ExtraLesson")
 
 
 def build_timetable(
-    type_: Union[TimetableType, str], obj: Union[int, Person], date_ref: Union[CalendarWeek, date]
+    type_: Union[TimetableType, str],
+    obj: Union[int, Person],
+    date_ref: Union[CalendarWeek, date],
 ):
     needed_breaks = []
 
@@ -59,7 +61,9 @@ def build_timetable(
     if is_person:
         extra_lessons = ExtraLesson.objects.on_day(date_ref).filter_from_person(obj)
     else:
-        extra_lessons = ExtraLesson.objects.filter(week=date_ref.week).filter_from_type(type_, obj)
+        extra_lessons = ExtraLesson.objects.filter(week=date_ref.week).filter_from_type(
+            type_, obj
+        )
 
     # Sort lesson periods in a dict
     extra_lessons_per_period = extra_lessons.group_by_periods(is_person=is_person)
@@ -108,7 +112,7 @@ def build_timetable(
                 # If not end day, use max period
                 period_to = TimePeriod.period_max
 
-            for period in range(period_from, period_to +1):
+            for period in range(period_from, period_to + 1):
                 if period not in events_per_period:
                     events_per_period[period] = [] if is_person else {}
 
@@ -126,7 +130,9 @@ def build_timetable(
             week = CalendarWeek.from_date(date_ref)
         else:
             week = date_ref
-        supervisions = Supervision.objects.all().annotate_week(week).filter_by_teacher(obj)
+        supervisions = (
+            Supervision.objects.all().annotate_week(week).filter_by_teacher(obj)
+        )
 
         if is_person:
             supervisions.filter_by_weekday(date_ref.weekday())
@@ -280,7 +286,7 @@ def build_substitutions_list(wanted_day: date) -> List[dict]:
             "type": "supervision_substitution",
             "sort_a": "Z.{}".format(super_sub.teacher),
             "sort_b": "{}".format(super_sub.supervision.break_item.after_period_number),
-            "el": super_sub
+            "el": super_sub,
         }
         rows.append(row)
 

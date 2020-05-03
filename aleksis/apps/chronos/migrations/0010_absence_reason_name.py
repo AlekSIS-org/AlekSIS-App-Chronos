@@ -7,27 +7,29 @@ from django.db.models import F
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chronos', '0009_extended_data'),
+        ("chronos", "0009_extended_data"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='absencereason',
-            name='name',
-            field=models.CharField(default=F("description"), blank=True, max_length=255, null=True, verbose_name='Name'),
+            model_name="absencereason",
+            name="name",
+            field=models.CharField(
+                default=F("description"),
+                blank=True,
+                max_length=255,
+                null=True,
+                verbose_name="Name",
+            ),
         ),
         migrations.AddField(
-            model_name='absencereason',
-            name='short_name',
-            field=models.CharField(default=F("title"), max_length=255, verbose_name='Short name'),
+            model_name="absencereason",
+            name="short_name",
+            field=models.CharField(
+                default=F("title"), max_length=255, verbose_name="Short name"
+            ),
             preserve_default=False,
         ),
-        migrations.RemoveField(
-            model_name='absencereason',
-            name='description',
-        ),
-        migrations.RemoveField(
-            model_name='absencereason',
-            name='title',
-        ),
+        migrations.RemoveField(model_name="absencereason", name="description",),
+        migrations.RemoveField(model_name="absencereason", name="title",),
     ]

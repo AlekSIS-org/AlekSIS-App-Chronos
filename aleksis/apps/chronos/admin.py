@@ -1,4 +1,4 @@
-#noqa
+# noqa
 
 from django.contrib import admin
 from django.utils.html import format_html
@@ -153,7 +153,7 @@ admin.site.register(Room, RoomAdmin)
 
 class SubjectAdmin(admin.ModelAdmin):
     def _colour(self, obj):
-        return colour_badge(obj.colour_fg, obj.colour_bg, obj.short_name, )
+        return colour_badge(obj.colour_fg, obj.colour_bg, obj.short_name,)
 
     list_display = ("short_name", "name", "_colour")
     list_display_links = ("short_name", "name")

@@ -88,8 +88,13 @@ def lesson_periods_as_teacher(self):
 
 
 def for_timetables(cls):
+    """Return all announcements that should be shown in timetable views."""
     return cls.objects.filter(show_in_timetables=True)
 
 
 Announcement.class_method(for_timetables)
-Announcement.field(show_in_timetables=BooleanField(verbose_name=_("Show announcement in timetable views?")))
+Announcement.field(
+    show_in_timetables=BooleanField(
+        verbose_name=_("Show announcement in timetable views?")
+    )
+)

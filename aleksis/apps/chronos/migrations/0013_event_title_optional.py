@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chronos', '0012_event_remove_absence_reason'),
+        ("chronos", "0012_event_remove_absence_reason"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='event',
-            name='title',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='Title'),
+            model_name="event",
+            name="title",
+            field=models.CharField(
+                blank=True, max_length=255, null=True, verbose_name="Title"
+            ),
         ),
     ]

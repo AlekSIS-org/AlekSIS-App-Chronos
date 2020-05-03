@@ -6,12 +6,9 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chronos', '0011_absence_for_groups_and_rooms'),
+        ("chronos", "0011_absence_for_groups_and_rooms"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='event',
-            name='absence_reason',
-        ),
+        migrations.RemoveField(model_name="event", name="absence_reason",),
     ]

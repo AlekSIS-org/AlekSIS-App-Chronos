@@ -3,7 +3,10 @@ from django.utils.translation import gettext as _
 from dynamic_preferences.preferences import Section
 from dynamic_preferences.types import BooleanPreference, IntegerPreference
 
-from aleksis.core.registries import site_preferences_registry, person_preferences_registry
+from aleksis.core.registries import (
+    site_preferences_registry,
+    person_preferences_registry,
+)
 
 chronos = Section("chronos", verbose_name=_("Chronos"))
 
@@ -50,10 +53,11 @@ class SubstitutionsPrintNumberOfDays(IntegerPreference):
     default = 2
     verbose_name = _("Number of days shown on substitutions print view")
 
+
 @site_preferences_registry.register
 class SubstitutionsShowHeaderBox(BooleanPreference):
     section = chronos
     name = "substitutions_show_header_box"
     default = True
     verbose_name = _("Show header box in substitution views")
-    help_text =  _("The header box shows affected teachers/groups.")
+    help_text = _("The header box shows affected teachers/groups.")

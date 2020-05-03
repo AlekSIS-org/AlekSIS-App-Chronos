@@ -17,7 +17,10 @@ MENUS = {
                     "url": "my_timetable",
                     "icon": "person",
                     "validators": [
-                        ("aleksis.core.util.predicates.permission_validator", "chronos.view_my_timetable"),
+                        (
+                            "aleksis.core.util.predicates.permission_validator",
+                            "chronos.view_my_timetable",
+                        ),
                     ],
                 },
                 {
@@ -25,7 +28,10 @@ MENUS = {
                     "url": "all_timetables",
                     "icon": "grid_on",
                     "validators": [
-                        ("aleksis.core.util.predicates.permission_validator", "chronos.view_timetable_overview"),
+                        (
+                            "aleksis.core.util.predicates.permission_validator",
+                            "chronos.view_timetable_overview",
+                        ),
                     ],
                 },
                 {
@@ -33,7 +39,10 @@ MENUS = {
                     "url": "lessons_day",
                     "icon": "calendar_today",
                     "validators": [
-                        ("aleksis.core.util.predicates.permission_validator", "chronos.view_lessons_day"),
+                        (
+                            "aleksis.core.util.predicates.permission_validator",
+                            "chronos.view_lessons_day",
+                        ),
                     ],
                 },
                 {
@@ -41,7 +50,10 @@ MENUS = {
                     "url": "substitutions",
                     "icon": "update",
                     "validators": [
-                        ("aleksis.core.util.predicates.permission_validator", "chronos.view_substitutions"),
+                        (
+                            "aleksis.core.util.predicates.permission_validator",
+                            "chronos.view_substitutions",
+                        ),
                     ],
                 },
             ],
