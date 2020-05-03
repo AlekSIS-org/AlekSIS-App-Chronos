@@ -1,3 +1,13 @@
+class TimetableType(Enum):
+    GROUP = "group"
+    TEACHER = "teacher"
+    ROOM = "room"
+
+    @classmethod
+    def from_string(cls, s: Optional[str]):
+        return cls.__members__.get(s.upper())
+
+
 class LessonPeriodManager(models.Manager):
     """ Manager adding specific methods to lesson periods. """
 

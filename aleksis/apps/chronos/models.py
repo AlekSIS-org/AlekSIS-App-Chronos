@@ -31,16 +31,6 @@ from aleksis.apps.chronos.util.date import week_weekday_from_date
 from aleksis.core.util.core_helpers import has_person, get_site_preferences
 
 
-class TimetableType(Enum):
-    GROUP = "group"
-    TEACHER = "teacher"
-    ROOM = "room"
-
-    @classmethod
-    def from_string(cls, s: Optional[str]):
-        return cls.__members__.get(s.upper())
-
-
 class TimePeriod(ExtensibleModel):
     WEEKDAY_CHOICES = list(enumerate(i18n_day_names_lazy()))
     WEEKDAY_CHOICES_SHORT = list(enumerate(i18n_day_abbrs_lazy()))
