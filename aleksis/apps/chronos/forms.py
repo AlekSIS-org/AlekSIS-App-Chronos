@@ -8,6 +8,8 @@ from aleksis.core.forms import AnnouncementForm
 
 
 class LessonSubstitutionForm(forms.ModelForm):
+    """Form to manage substitutions."""
+
     class Meta:
         model = LessonSubstitution
         fields = ["week", "lesson_period", "subject", "teachers", "room", "cancelled"]
