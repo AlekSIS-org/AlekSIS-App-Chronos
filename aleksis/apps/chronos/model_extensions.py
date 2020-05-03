@@ -94,7 +94,5 @@ def for_timetables(cls):
 
 Announcement.class_method(for_timetables)
 Announcement.field(
-    show_in_timetables=BooleanField(
-        verbose_name=_("Show announcement in timetable views?")
-    )
+    show_in_timetables=BooleanField(verbose_name=_("Show announcement in timetable views?"))
 )

@@ -17,15 +17,11 @@ urlpatterns = [
         name="timetable_by_week",
     ),
     path(
-        "timetable/<str:type_>/<int:pk>/<str:regular>/",
-        views.timetable,
-        name="timetable_regular",
+        "timetable/<str:type_>/<int:pk>/<str:regular>/", views.timetable, name="timetable_regular",
     ),
     path("lessons/", views.lessons_day, name="lessons_day"),
     path(
-        "lessons/<int:year>/<int:month>/<int:day>/",
-        views.lessons_day,
-        name="lessons_day_by_date",
+        "lessons/<int:year>/<int:month>/<int:day>/", views.lessons_day, name="lessons_day_by_date",
     ),
     path(
         "lessons/<int:id_>/<int:week>/substition/",
@@ -39,10 +35,7 @@ urlpatterns = [
     ),
     path("substitutions/", views.substitutions, name="substitutions"),
     path(
-        "substitutions/print/",
-        views.substitutions,
-        {"is_print": True},
-        name="substitutions_print",
+        "substitutions/print/", views.substitutions, {"is_print": True}, name="substitutions_print",
     ),
     path(
         "substitutions/<int:year>/<int:month>/<int:day>/",
