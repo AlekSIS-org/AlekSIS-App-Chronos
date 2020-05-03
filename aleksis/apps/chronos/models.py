@@ -77,7 +77,6 @@ class TimePeriod(ExtensibleModel):
         cls, day: Optional[date] = None, time: Optional[time] = None, prev: bool = False
     ) -> date:
         """Return next (previous) day with lessons depending on date and time."""
-
         if day is None:
             day = timezone.now().date()
 
@@ -105,7 +104,6 @@ class TimePeriod(ExtensibleModel):
     @classmethod
     def get_prev_next_by_day(cls, day: date, url: str) -> Tuple[str, str]:
         """Build URLs for previous/next day."""
-
         day_prev = cls.get_next_relevant_day(day - timedelta(days=1), prev=True)
         day_next = cls.get_next_relevant_day(day + timedelta(days=1))
 
@@ -374,7 +372,7 @@ class TimetableWidget(DashboardWidget):
 
 class AbsenceReason(ExtensibleModel):
     short_name = models.CharField(verbose_name=_("Short name"), max_length=255)
-    name = models.CharField(verbose_name=_("Name"), blank=True, null=True, max_length=255)
+    name = models.CharField(verbose_name=_("Name"), blank=True, max_length=255)
 
     def __str__(self):
         if self.name:
