@@ -3,7 +3,6 @@ from datetime import date
 from typing import List, Tuple, Union
 
 from django.apps import apps
-from django.db.models import QuerySet
 
 from calendarweek import CalendarWeek
 

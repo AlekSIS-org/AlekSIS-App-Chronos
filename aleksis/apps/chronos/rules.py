@@ -1,4 +1,4 @@
-from rules import add_perm, always_allow
+from rules import add_perm
 
 from aleksis.core.util.predicates import (
     has_any_object,

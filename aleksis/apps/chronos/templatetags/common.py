@@ -20,7 +20,8 @@ class SetVarNode(template.Node):
 
 @register.tag(name="set")
 def set_var(parser, token):
-    """
+    """Set var.
+
     {% set some_var = '123' %}
     """
     parts = token.split_contents()

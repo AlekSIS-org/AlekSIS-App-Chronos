@@ -1,8 +1,6 @@
-from collections import OrderedDict
-from datetime import date, datetime, timedelta
-from typing import Optional, Tuple
+from datetime import datetime, timedelta
+from typing import Optional
 
-from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.http import HttpRequest, HttpResponse, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect, render

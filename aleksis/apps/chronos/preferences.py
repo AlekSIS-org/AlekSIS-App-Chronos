@@ -3,7 +3,10 @@ from django.utils.translation import gettext as _
 from dynamic_preferences.preferences import Section
 from dynamic_preferences.types import BooleanPreference, IntegerPreference
 
-from aleksis.core.registries import person_preferences_registry, site_preferences_registry
+from aleksis.core.registries import (
+    person_preferences_registry,
+    site_preferences_registry,
+)
 
 chronos = Section("chronos", verbose_name=_("Chronos"))
 
@@ -37,7 +40,8 @@ class ShortenGroupsLimit(IntegerPreference):
     default = 4
     verbose_name = _("Limit of groups for shortening of groups")
     help_text = _(
-        "If an user activates shortening of groups, they will be collapsed if there are more groups than this limit."
+        "If an user activates shortening of groups,"
+        "they will be collapsed if there are more groups than this limit."
     )
 
 

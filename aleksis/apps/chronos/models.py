@@ -31,11 +31,10 @@ from aleksis.apps.chronos.managers import (
     SupervisionQuerySet,
     TeacherPropertiesMixin,
 )
-from aleksis.apps.chronos.util.date import week_weekday_from_date
 from aleksis.apps.chronos.util.format import format_m2m
 from aleksis.core.mixins import ExtensibleModel
-from aleksis.core.models import DashboardWidget, Group, Person
-from aleksis.core.util.core_helpers import get_site_preferences, has_person
+from aleksis.core.models import DashboardWidget
+from aleksis.core.util.core_helpers import has_person
 
 
 class TimePeriod(ExtensibleModel):
@@ -77,7 +76,7 @@ class TimePeriod(ExtensibleModel):
     def get_next_relevant_day(
         cls, day: Optional[date] = None, time: Optional[time] = None, prev: bool = False
     ) -> date:
-        """ Returns next (previous) day with lessons depending on date and time """
+        """Return next (previous) day with lessons depending on date and time."""
 
         if day is None:
             day = timezone.now().date()
@@ -105,7 +104,7 @@ class TimePeriod(ExtensibleModel):
 
     @classmethod
     def get_prev_next_by_day(cls, day: date, url: str) -> Tuple[str, str]:
-        """ Build URLs for previous/next day """
+        """Build URLs for previous/next day."""
 
         day_prev = cls.get_next_relevant_day(day - timedelta(days=1), prev=True)
         day_next = cls.get_next_relevant_day(day + timedelta(days=1))
@@ -235,7 +234,7 @@ class LessonSubstitution(ExtensibleModel):
         default=False, verbose_name=_("Cancelled for teachers?")
     )
 
-    comment = models.TextField(verbose_name=_("Comment"), blank=True, null=True)
+    comment = models.TextField(verbose_name=_("Comment"), blank=True)
 
     def clean(self) -> None:
         if self.subject and self.cancelled:
@@ -441,7 +440,7 @@ class Absence(ExtensibleModel):
         null=True,
         related_name="+",
     )
-    comment = models.TextField(verbose_name=_("Comment"), blank=True, null=True)
+    comment = models.TextField(verbose_name=_("Comment"), blank=True)
 
     def __str__(self):
         if self.teacher:
@@ -482,7 +481,7 @@ class Exam(ExtensibleModel):
     )
 
     title = models.CharField(verbose_name=_("Title"), max_length=255)
-    comment = models.TextField(verbose_name=_("Comment"), blank=True, null=True)
+    comment = models.TextField(verbose_name=_("Comment"), blank=True)
 
     class Meta:
         ordering = ["date"]
@@ -497,7 +496,7 @@ class Holiday(ExtensibleModel):
     title = models.CharField(verbose_name=_("Title"), max_length=255)
     date_start = models.DateField(verbose_name=_("Start date"), null=True)
     date_end = models.DateField(verbose_name=_("End date"), null=True)
-    comments = models.TextField(verbose_name=_("Comments"), null=True, blank=True)
+    comments = models.TextField(verbose_name=_("Comments"), blank=True)
 
     @classmethod
     def on_day(cls, day: date) -> Optional["Holiday"]:
@@ -674,7 +673,7 @@ class Event(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
 
     objects = models.Manager.from_queryset(EventQuerySet)()
 
-    title = models.CharField(verbose_name=_("Title"), max_length=255, blank=True, null=True)
+    title = models.CharField(verbose_name=_("Title"), max_length=255, blank=True)
 
     date_start = models.DateField(verbose_name=_("Start date"), null=True)
     date_end = models.DateField(verbose_name=_("End date"), null=True)
@@ -750,7 +749,7 @@ class ExtraLesson(ExtensibleModel, GroupPropertiesMixin):
         "Room", models.CASCADE, null=True, related_name="extra_lessons", verbose_name=_("Room"),
     )
 
-    comment = models.CharField(verbose_name=_("Comment"), blank=True, null=True, max_length=255)
+    comment = models.CharField(verbose_name=_("Comment"), blank=True, max_length=255)
 
     def __str__(self):
         return f"{self.week}, {self.period}, {self.subject}"
