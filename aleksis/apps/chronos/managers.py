@@ -1,4 +1,5 @@
 from datetime import date, timedelta, datetime
+from enum import Enum
 from typing import Union, Optional, OrderedDict
 
 from aleksis.apps.chronos.util.date import week_weekday_from_date
@@ -8,6 +9,15 @@ from django.db.models import F, Q, Count
 from django.http import QueryDict
 
 from aleksis.core.models import Person, Group
+
+class TimetableType(Enum):
+    GROUP = "group"
+    TEACHER = "teacher"
+    ROOM = "room"
+
+    @classmethod
+    def from_string(cls, s: Optional[str]):
+        return cls.__members__.get(s.upper())
 
 
 class LessonPeriodManager(models.Manager):
@@ -44,7 +54,19 @@ class LessonSubstitutionManager(models.Manager):
         )
 
 
-class LessonDataQuerySet(models.QuerySet):
+class WeekQuerySetMixin:
+    def annotate_week(self, week: Union[CalendarWeek, int]):
+        """ Annotate all lessons in the QuerySet with the number of the provided calendar week. """
+
+        if isinstance(week, CalendarWeek):
+            week_num = week.week
+        else:
+            week_num = week
+
+        return self.annotate(_week=models.Value(week_num, models.IntegerField()))
+
+
+class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
     """ Overrides default QuerySet to add specific methods for lesson data. """
 
     # Overridden in the subclasses. Swaps the paths to the base lesson period
@@ -137,16 +159,6 @@ class LessonDataQuerySet(models.QuerySet):
 
         return qs1.union(qs2)
 
-    def annotate_week(self, week: Union[CalendarWeek, int]):
-        """ Annotate all lessons in the QuerySet with the number of the provided calendar week. """
-
-        if isinstance(week, CalendarWeek):
-            week_num = week.week
-        else:
-            week_num = week
-
-        return self.annotate(_week=models.Value(week_num, models.IntegerField()))
-
     def group_by_periods(self, is_person: bool = False) -> dict:
         per_period = {}
         for obj in self:
@@ -165,46 +177,6 @@ class LessonDataQuerySet(models.QuerySet):
                 per_period[period][weekday].append(obj)
 
         return per_period
-
-
-class LessonPeriodQuerySet(LessonDataQuerySet):
-    _period_path = ""
-    _subst_path = "substitutions__"
-
-    def next(self, reference: "LessonPeriod", offset: Optional[int] = 1) -> "LessonPeriod":
-        """ Get another lesson in an ordered set of lessons.
-
-        By default, it returns the next lesson in the set. By passing the offset argument,
-        the n-th next lesson can be selected. By passing a negative number, the n-th
-        previous lesson can be selected.
-        """
-
-        index = list(self.values_list("id", flat=True)).index(reference.id)
-
-        next_index = index + offset
-        if next_index > self.count() - 1:
-            next_index %= self.count()
-            week = reference._week + 1
-        else:
-            week = reference._week
-
-        return self.annotate_week(week).all()[next_index]
-
-    def filter_from_query(self, query_data: QueryDict) -> models.QuerySet:
-        """ Apply all filters from a GET or POST query.
-
-        This method expects a QueryDict, like the GET or POST attribute of a Request
-        object, that contains one or more of the keys group, teacher or room.
-
-        All three fields are filtered, in order.
-        """
-
-        if query_data.get("group", None):
-            return self.filter_group(int(query_data["group"]))
-        if query_data.get("teacher", None):
-            return self.filter_teacher(int(query_data["teacher"]))
-        if query_data.get("room", None):
-            return self.filter_room(int(query_data["room"]))
 
     def filter_from_type(self, type_: TimetableType, pk: int) -> Optional[models.QuerySet]:
         if type_ == TimetableType.GROUP:
@@ -241,15 +213,29 @@ class LessonPeriodQuerySet(LessonDataQuerySet):
 
         return lesson_periods
 
-    def per_period_one_day(self) -> OrderedDict:
-        """ Group selected lessons per period for one day """
-        per_period = {}
-        for lesson_period in self:
-            if lesson_period.period.period in per_period:
-                per_period[lesson_period.period.period].append(lesson_period)
-            else:
-                per_period[lesson_period.period.period] = [lesson_period]
-        return OrderedDict(sorted(per_period.items()))
+    def next(self, reference: "LessonPeriod", offset: Optional[int] = 1) -> "LessonPeriod":
+        """ Get another lesson in an ordered set of lessons.
+
+        By default, it returns the next lesson in the set. By passing the offset argument,
+        the n-th next lesson can be selected. By passing a negative number, the n-th
+        previous lesson can be selected.
+        """
+
+        index = list(self.values_list("id", flat=True)).index(reference.id)
+
+        next_index = index + offset
+        if next_index > self.count() - 1:
+            next_index %= self.count()
+            week = reference._week + 1
+        else:
+            week = reference._week
+
+        return self.annotate_week(week).all()[next_index]
+
+
+class LessonPeriodQuerySet(LessonDataQuerySet):
+    _period_path = ""
+    _subst_path = "substitutions__"
 
 
 class LessonSubstitutionQuerySet(LessonDataQuerySet):
@@ -319,17 +305,8 @@ class AbsenceQuerySet(DateRangeQuerySet):
 class HolidayQuerySet(DateRangeQuerySet):
     pass
 
-class SupervisionQuerySet(models.QuerySet):
-    def annotate_week(self, week: Union[CalendarWeek, int]):
-        """ Annotate all lessons in the QuerySet with the number of the provided calendar week. """
 
-        if isinstance(week, CalendarWeek):
-            week_num = week.week
-        else:
-            week_num = week
-
-        return self.annotate(_week=models.Value(week_num, models.IntegerField()))
-
+class SupervisionQuerySet(models.QuerySet, WeekQuerySetMixin):
     def filter_by_weekday(self, weekday: int):
         self.filter(
             Q(break_item__before_period__weekday=weekday)
