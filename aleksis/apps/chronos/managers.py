@@ -9,6 +9,8 @@ from django.db.models import F, Q, Count
 from django.http import QueryDict
 
 from aleksis.core.models import Person, Group
+from aleksis.core.util.core_helpers import get_site_preferences
+
 
 class TimetableType(Enum):
     """Enum for different types of timetables."""
