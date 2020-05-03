@@ -88,6 +88,7 @@ def lesson_periods_as_teacher(self):
 
 
 def for_timetables(cls):
+    """Return all announcements that should be shown in timetable views."""
     return cls.objects.filter(show_in_timetables=True)
 
 
