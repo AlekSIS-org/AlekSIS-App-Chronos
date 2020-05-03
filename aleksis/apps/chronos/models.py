@@ -1,18 +1,16 @@
 from __future__ import annotations
 
-from collections import OrderedDict
 from datetime import date, datetime, timedelta, time
-from enum import Enum
 from typing import Dict, Optional, Tuple, Union
 
-from django.core import validators
+from aleksis.apps.chronos.managers import GroupPropertiesMixin, TeacherPropertiesMixin, LessonSubstitutionManager, \
+    LessonSubstitutionQuerySet, LessonPeriodManager, LessonPeriodQuerySet, AbsenceQuerySet, HolidayQuerySet, \
+    SupervisionQuerySet, EventQuerySet, ExtraLessonQuerySet
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import F, Max, Min, Q
-from django.db.models.aggregates import Count
+from django.db.models import Max, Min, Q
 from django.db.models.functions import Coalesce
 from django.forms import Media
-from django.http.request import QueryDict
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import classproperty
