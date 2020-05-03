@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import date, datetime, time, timedelta
 from typing import Dict, Optional, Tuple, Union
 
+from django.contrib.sites.managers import CurrentSiteManager
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Max, Min, Q
@@ -386,7 +387,7 @@ class AbsenceReason(ExtensibleModel):
 
 
 class Absence(ExtensibleModel):
-    objects = models.Manager.from_queryset(AbsenceQuerySet)()
+    objects = CurrentSiteManager.from_queryset(AbsenceQuerySet)()
 
     reason = models.ForeignKey(
         "AbsenceReason",
@@ -489,7 +490,7 @@ class Exam(ExtensibleModel):
 
 
 class Holiday(ExtensibleModel):
-    objects = models.Manager.from_queryset(HolidayQuerySet)()
+    objects = CurrentSiteManager.from_queryset(HolidayQuerySet)()
 
     title = models.CharField(verbose_name=_("Title"), max_length=255)
     date_start = models.DateField(verbose_name=_("Start date"), null=True)
@@ -601,7 +602,7 @@ class Break(ExtensibleModel):
 
 
 class Supervision(ExtensibleModel):
-    objects = models.Manager.from_queryset(SupervisionQuerySet)()
+    objects = CurrentSiteManager.from_queryset(SupervisionQuerySet)()
 
     area = models.ForeignKey(
         SupervisionArea,
@@ -669,7 +670,7 @@ class SupervisionSubstitution(ExtensibleModel):
 class Event(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
     label_ = "event"
 
-    objects = models.Manager.from_queryset(EventQuerySet)()
+    objects = CurrentSiteManager.from_queryset(EventQuerySet)()
 
     title = models.CharField(verbose_name=_("Title"), max_length=255, blank=True)
 
@@ -724,7 +725,7 @@ class Event(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
 class ExtraLesson(ExtensibleModel, GroupPropertiesMixin):
     label_ = "extra_lesson"
 
-    objects = models.Manager.from_queryset(ExtraLessonQuerySet)()
+    objects = CurrentSiteManager.from_queryset(ExtraLessonQuerySet)()
 
     week = models.IntegerField(verbose_name=_("Week"), default=CalendarWeek.current_week)
     period = models.ForeignKey(
