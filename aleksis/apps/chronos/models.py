@@ -239,7 +239,7 @@ class LessonSubstitution(ExtensibleModel):
         if self.subject and self.cancelled:
             raise ValidationError(_("Lessons can only be either substituted or cancelled."))
 
-    @property
+    @property_
     def date(self):
         week = CalendarWeek(week=self.week)
         return week[self.lesson_period.period.weekday]
@@ -563,23 +563,23 @@ class Break(ExtensibleModel):
         null=True,
     )
 
-    @property
+    @property_
     def weekday(self):
         return self.after_period.weekday if self.after_period else self.before_period.weekday
 
-    @property
+    @property_
     def after_period_number(self):
         return self.after_period.period if self.after_period else self.before_period.period - 1
 
-    @property
+    @property_
     def before_period_number(self):
         return self.before_period.period if self.before_period else self.after_period.period + 1
 
-    @property
+    @property_
     def time_start(self):
         return self.after_period.time_end if self.after_period else None
 
-    @property
+    @property_
     def time_end(self):
         return self.before_period.time_start if self.before_period else None
 
@@ -629,7 +629,7 @@ class Supervision(ExtensibleModel):
                     return substitution
         return None
 
-    @property
+    @property_
     def teachers(self):
         return [self.teacher]
 
@@ -654,7 +654,7 @@ class SupervisionSubstitution(ExtensibleModel):
         verbose_name=_("Teacher"),
     )
 
-    @property
+    @property_
     def teachers(self):
         return [self.teacher]
 
@@ -699,7 +699,7 @@ class Event(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
         else:
             return _(f"Event {self.pk}")
 
-    @property
+    @property_
     def period_from_on_day(self) -> int:
         day = getattr(self, "_date", timezone.now().date())
         if day != self.date_start:
@@ -707,7 +707,7 @@ class Event(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
         else:
             return self.period_from.period
 
-    @property
+    @property_
     def period_to_on_day(self) -> int:
         day = getattr(self, "_date", timezone.now().date())
         if day != self.date_end:
