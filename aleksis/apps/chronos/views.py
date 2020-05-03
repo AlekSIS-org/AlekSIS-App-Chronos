@@ -26,6 +26,7 @@ from aleksis.core.util.core_helpers import has_person, get_site_preferences
 
 @permission_required("chronos.view_timetable_overview")
 def all_timetables(request: HttpRequest) -> HttpResponse:
+    """View all timetables for persons, groups and rooms."""
     context = {}
 
     teachers = Person.objects.annotate(
@@ -56,6 +57,7 @@ def my_timetable(
     month: Optional[int] = None,
     day: Optional[int] = None,
 ) -> HttpResponse:
+    """View personal timetable on a specified date."""
     context = {}
 
     if day:
@@ -122,6 +124,7 @@ def timetable(
     week: Optional[int] = None,
     regular: Optional[str] = None,
 ) -> HttpResponse:
+    """View a selected timetable for a person, group or room."""
     context = {}
 
     is_smart = regular != "regular"
@@ -183,6 +186,7 @@ def lessons_day(
     month: Optional[int] = None,
     day: Optional[int] = None,
 ) -> HttpResponse:
+    """View all lessons taking place on a specified day."""
     context = {}
 
     if day:
@@ -225,6 +229,7 @@ def get_substitution_by_id(request: HttpRequest, id_: int, week: int):
 
 @permission_required("chronos.edit_substitution", fn=get_substitution_by_id)
 def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse:
+    """View a form to edit a substitution lessen."""
     context = {}
 
     lesson_period = get_object_or_404(LessonPeriod, pk=id_)
@@ -263,6 +268,10 @@ def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse
 
 @permission_required("chronos.delete_substitution", fn=get_substitution_by_id)
 def delete_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse:
+    """Delete a substitution lesson.
+
+    Redirects back to substition list on success.
+    """
     lesson_period = get_object_or_404(LessonPeriod, pk=id_)
     wanted_week = lesson_period.lesson.get_calendar_week(week)
 
@@ -285,6 +294,7 @@ def substitutions(
     day: Optional[int] = None,
     is_print: bool = False,
 ) -> HttpResponse:
+    """View all substitutions on a spcified day."""
     context = {}
 
     if day:
