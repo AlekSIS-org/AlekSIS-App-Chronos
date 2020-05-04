@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-05-04 15:42+0200\n"
-"PO-Revision-Date: 2020-05-04 13:40+0000\n"
+"PO-Revision-Date: 2020-05-04 14:31+0000\n"
 "Last-Translator: Jonathan Weth <teckids@jonathanweth.de>\n"
-"Language-Team: German <https://translate.edugit.org/projects/aleksis/aleksis-"
-"app-chronos/de/>\n"
+"Language-Team: German <https://translate.edugit.org/projects/aleksis/"
+"aleksis-app-chronos/de/>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -61,11 +61,11 @@ msgstr "Nummer der Stunde"
 
 #: models.py:48
 msgid "Start time"
-msgstr ""
+msgstr "Startzeit"
 
 #: models.py:49
 msgid "End time"
-msgstr ""
+msgstr "Endzeit"
 
 #: models.py:144 models.py:277 models.py:732
 msgid "Time period"
@@ -84,16 +84,12 @@ msgid "Long name"
 msgstr "Langer Name"
 
 #: models.py:152
-#, fuzzy
-#| msgid "Foreground colour in timetable"
 msgid "Foreground colour"
-msgstr "Vordergrundfarbe im Stundenplan"
+msgstr "Vordergrundfarbe"
 
 #: models.py:153
-#, fuzzy
-#| msgid "Background colour in timetable"
 msgid "Background colour"
-msgstr "Hintergrundfarbe im Stundenplan"
+msgstr "Hintergrundfarbe"
 
 #: models.py:160 models.py:179 models.py:224 models.py:739
 #: templates/chronos/substitutions.html:46
@@ -102,10 +98,8 @@ msgid "Subject"
 msgstr "Fach"
 
 #: models.py:161
-#, fuzzy
-#| msgid "Subject"
 msgid "Subjects"
-msgstr "Fach"
+msgstr "Fächer"
 
 #: models.py:173 models.py:229 models.py:281 models.py:423 models.py:748
 #: templates/chronos/substitutions.html:47
@@ -123,8 +117,6 @@ msgid "Teachers"
 msgstr "Lehrkräfte"
 
 #: models.py:185
-#, fuzzy
-#| msgid "Time periods"
 msgid "Periods"
 msgstr "Stunden"
 
@@ -135,11 +127,11 @@ msgstr "Gruppen"
 
 #: models.py:189 models.py:426 models.py:496 models.py:677
 msgid "Start date"
-msgstr ""
+msgstr "Startdatum"
 
 #: models.py:190 models.py:427 models.py:497 models.py:678
 msgid "End date"
-msgstr ""
+msgstr "Enddatum"
 
 #: models.py:205 models.py:274 models.py:463
 msgid "Lesson"
@@ -192,10 +184,8 @@ msgid "Timetable widget"
 msgstr "Stundenplanwidget"
 
 #: models.py:371
-#, fuzzy
-#| msgid "Timetable widget"
 msgid "Timetable widgets"
-msgstr "Stundenplanwidget"
+msgstr "Stundenplanwidgets"
 
 #: models.py:376
 msgid "Name"
@@ -219,16 +209,12 @@ msgid "Group"
 msgstr "Gruppe"
 
 #: models.py:431 models.py:470
-#, fuzzy
-#| msgid "Time period"
 msgid "Start period"
-msgstr "Stunde"
+msgstr "Startstunde"
 
 #: models.py:438 models.py:477
-#, fuzzy
-#| msgid "Lesson period"
 msgid "End period"
-msgstr "Unterrichtsstunde"
+msgstr "Endstunde"
 
 #: models.py:452
 msgid "Unknown absence"
@@ -279,16 +265,12 @@ msgid "Supervision areas"
 msgstr "Aufsichtsgebiete"
 
 #: models.py:552
-#, fuzzy
-#| msgid "Time the period starts"
 msgid "Time period after break starts"
-msgstr "Anfangszeit der Stunde"
+msgstr "Stunde, nach der die Pause startet"
 
 #: models.py:560
-#, fuzzy
-#| msgid "Time the period ends"
 msgid "Time period before break ends"
-msgstr "Endzeit der Stunde"
+msgstr "Stunde nach der Pause"
 
 #: models.py:600 models.py:614
 msgid "Break"
@@ -320,22 +302,17 @@ msgid "Supervision substitutions"
 msgstr "Aufsichtsvertretungen"
 
 #: models.py:683
-#, fuzzy
-#| msgid "Time period"
 msgid "Start time period"
-msgstr "Stunde"
+msgstr "Startstunde"
 
 #: models.py:687
-#, fuzzy
-#| msgid "Time period"
 msgid "End time period"
-msgstr "Stunde"
+msgstr "Endstunde"
 
 #: models.py:700
-#, fuzzy, python-brace-format
-#| msgid "Event {}"
+#, python-brace-format
 msgid "Event {self.pk}"
-msgstr "Veranstaltung {}"
+msgstr "Veranstaltung {self.pk}"
 
 #: models.py:721 templates/chronos/partials/subs/subject.html:27
 msgid "Event"
@@ -354,30 +331,24 @@ msgid "Extra lessons"
 msgstr "Sonderstunden"
 
 #: models.py:765
-#, fuzzy
-#| msgid "All timetables"
 msgid "Can view all timetables"
-msgstr "Alle Stundenpläne"
+msgstr "Kann alle Stundenpläne sehen"
 
 #: models.py:766
-#, fuzzy
-#| msgid "Show week timetable for"
 msgid "Can view timetable overview"
-msgstr "Wochenplan anzeigen für"
+msgstr "Kann Stundenplanübersicht sehen"
 
 #: models.py:767
 msgid "Can view all lessons per day"
-msgstr ""
+msgstr "Kann alle Tagesstunden sehen"
 
 #: preferences.py:8
 msgid "Chronos"
-msgstr ""
+msgstr "Chronos"
 
 #: preferences.py:16
-#, fuzzy
-#| msgid "Show announcement in timetable views?"
 msgid "Use parent groups in timetable views"
-msgstr "Ankündigungen in Stundenplanansichten anzeigen?"
+msgstr "Elterngruppen in Stundenplanansichten benutzen"
 
 #: preferences.py:18
 msgid ""
@@ -388,30 +359,26 @@ msgstr ""
 "Elterngruppen hat, zeige die Elterngruppen anstelle der eigentlichen Gruppe."
 
 #: preferences.py:29
-#, fuzzy
-#| msgid "Show announcement in timetable views?"
 msgid "Shorten groups in timetable views"
-msgstr "Ankündigungen in Stundenplanansichten anzeigen?"
+msgstr "Gruppen in Stundenplanansichten kürzen"
 
 #: preferences.py:30
-#, fuzzy
-#| msgid ""
-#| "If there are more groups than the limit set in "
-#| "CHRONOS_SHORTEN_GROUPS_LIMIT, add text collapsible."
 msgid "If there are more groups than the set limit, they will be collapsed."
 msgstr ""
-"Wenn es mehr Gruppen als in CHRONOS_SHORTEN_GROUPS_LIMIT festgelegt gibt, "
-"werden die Gruppenangaben gekürzt."
+"Wenn es mehr Gruppen als das gesetzte Limit gibt, werden die Gruppenangaben "
+"gekürzt."
 
 #: preferences.py:38
 msgid "Limit of groups for shortening of groups"
-msgstr ""
+msgstr "Anzahl der Gruppen, ab der gekürzt wird"
 
 #: preferences.py:40
 msgid ""
 "If an user activates shortening of groups,they will be collapsed if there "
 "are more groups than this limit."
 msgstr ""
+"Wenn ein Nutzer die Kürzung von Gruppen aktiviert hat, werden sie ab diesem "
+"Limit gekürzt."
 
 #: preferences.py:50
 msgid "Number of days shown on substitutions print view"
@@ -420,10 +387,8 @@ msgstr ""
 "werden soll"
 
 #: preferences.py:58
-#, fuzzy
-#| msgid "Supervision substitutions"
 msgid "Show header box in substitution views"
-msgstr "Aufsichtsvertretungen"
+msgstr "Kopfbox in Vertretungsplänen anzeigen"
 
 #: preferences.py:59
 msgid "The header box shows affected teachers/groups."
