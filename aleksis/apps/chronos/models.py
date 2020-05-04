@@ -233,7 +233,7 @@ class LessonSubstitution(ExtensibleModel):
         default=False, verbose_name=_("Cancelled for teachers?")
     )
 
-    comment = models.TextField(verbose_name=_("Comment"), blank=True)
+    comment = models.TextField(verbose_name=_("Comment"), blank=True, null=True)
 
     def clean(self) -> None:
         if self.subject and self.cancelled:
@@ -373,7 +373,7 @@ class TimetableWidget(DashboardWidget):
 
 class AbsenceReason(ExtensibleModel):
     short_name = models.CharField(verbose_name=_("Short name"), max_length=255)
-    name = models.CharField(verbose_name=_("Name"), blank=True, max_length=255)
+    name = models.CharField(verbose_name=_("Name"), blank=True, null=True, max_length=255)
 
     def __str__(self):
         if self.name:
@@ -439,7 +439,7 @@ class Absence(ExtensibleModel):
         null=True,
         related_name="+",
     )
-    comment = models.TextField(verbose_name=_("Comment"), blank=True)
+    comment = models.TextField(verbose_name=_("Comment"), blank=True, null=True)
 
     def __str__(self):
         if self.teacher:
@@ -480,7 +480,7 @@ class Exam(ExtensibleModel):
     )
 
     title = models.CharField(verbose_name=_("Title"), max_length=255)
-    comment = models.TextField(verbose_name=_("Comment"), blank=True)
+    comment = models.TextField(verbose_name=_("Comment"), blank=True, null=True)
 
     class Meta:
         ordering = ["date"]
@@ -495,7 +495,7 @@ class Holiday(ExtensibleModel):
     title = models.CharField(verbose_name=_("Title"), max_length=255)
     date_start = models.DateField(verbose_name=_("Start date"), null=True)
     date_end = models.DateField(verbose_name=_("End date"), null=True)
-    comments = models.TextField(verbose_name=_("Comments"), blank=True)
+    comments = models.TextField(verbose_name=_("Comments"), blank=True, null=True)
 
     @classmethod
     def on_day(cls, day: date) -> Optional["Holiday"]:
@@ -672,7 +672,7 @@ class Event(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
 
     objects = CurrentSiteManager.from_queryset(EventQuerySet)()
 
-    title = models.CharField(verbose_name=_("Title"), max_length=255, blank=True)
+    title = models.CharField(verbose_name=_("Title"), max_length=255, blank=True, null=True)
 
     date_start = models.DateField(verbose_name=_("Start date"), null=True)
     date_end = models.DateField(verbose_name=_("End date"), null=True)
@@ -748,7 +748,7 @@ class ExtraLesson(ExtensibleModel, GroupPropertiesMixin):
         "Room", models.CASCADE, null=True, related_name="extra_lessons", verbose_name=_("Room"),
     )
 
-    comment = models.CharField(verbose_name=_("Comment"), blank=True, max_length=255)
+    comment = models.CharField(verbose_name=_("Comment"), blank=True, null=True, max_length=255)
 
     def __str__(self):
         return f"{self.week}, {self.period}, {self.subject}"
