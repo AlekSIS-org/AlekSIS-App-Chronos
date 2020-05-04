@@ -12,7 +12,6 @@ from aleksis.apps.chronos.util.date import week_weekday_from_date
 from aleksis.core.models import Group, Person
 from aleksis.core.util.core_helpers import get_site_preferences
 
-from .models import LessonPeriod
 
 
 class TimetableType(Enum):

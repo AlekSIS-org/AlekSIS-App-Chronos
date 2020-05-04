@@ -114,27 +114,27 @@ class TimePeriod(ExtensibleModel):
         return url_prev, url_next
 
     @classproperty
-    def period_min(self, cls) -> int:
+    def period_min(cls) -> int:
         return cls.objects.aggregate(period__min=Coalesce(Min("period"), 1)).get("period__min")
 
     @classproperty
-    def period_max(self, cls) -> int:
+    def period_max(cls) -> int:
         return cls.objects.aggregate(period__max=Coalesce(Max("period"), 7)).get("period__max")
 
     @classproperty
-    def time_min(self, cls) -> Optional[time]:
+    def time_min(cls) -> Optional[time]:
         return cls.objects.aggregate(Min("time_start")).get("time_start__min")
 
     @classproperty
-    def time_max(self, cls) -> Optional[time]:
+    def time_max(cls) -> Optional[time]:
         return cls.objects.aggregate(Max("time_end")).get("time_end__max")
 
     @classproperty
-    def weekday_min(self, cls) -> int:
+    def weekday_min(cls) -> int:
         return cls.objects.aggregate(weekday__min=Coalesce(Min("weekday"), 0)).get("weekday__min")
 
     @classproperty
-    def weekday_max(self, cls) -> int:
+    def weekday_max(cls) -> int:
         return cls.objects.aggregate(weekday__max=Coalesce(Max("weekday"), 6)).get("weekday__max")
 
     class Meta:

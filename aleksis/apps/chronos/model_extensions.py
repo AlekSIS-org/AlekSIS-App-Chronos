@@ -10,13 +10,13 @@ from .managers import TimetableType
 from .models import Lesson, LessonPeriod
 
 
-@Person.property
+@Person.property_
 def is_teacher(self):
     """Check if the user has lessons as a teacher."""
     return self.lesson_periods_as_teacher.exists()
 
 
-@Person.property
+@Person.property_
 def timetable_type(self) -> Optional[TimetableType]:
     """Return which type of timetable this user has."""
     if self.is_teacher:
@@ -27,7 +27,7 @@ def timetable_type(self) -> Optional[TimetableType]:
         return None
 
 
-@Person.property
+@Person.property_
 def timetable_object(self) -> Optional[Union[Group, Person]]:
     """Return the object which has the user's timetable."""
     type_ = self.timetable_type
@@ -40,7 +40,7 @@ def timetable_object(self) -> Optional[Union[Group, Person]]:
         return None
 
 
-@Person.property
+@Person.property_
 def lessons_as_participant(self):
     """Return a `QuerySet` containing all `Lesson`s this person participates in (as student).
 
@@ -53,7 +53,7 @@ def lessons_as_participant(self):
     return Lesson.objects.filter(groups__members=self)
 
 
-@Person.property
+@Person.property_
 def lesson_periods_as_participant(self):
     """Return a `QuerySet` containing all `LessonPeriod`s this person participates in (as student).
 
@@ -66,7 +66,7 @@ def lesson_periods_as_participant(self):
     return LessonPeriod.objects.filter(lesson__groups__members=self)
 
 
-@Person.property
+@Person.property_
 def lesson_periods_as_teacher(self):
     """Return a `QuerySet` containing all `Lesson`s this person gives (as teacher).
 

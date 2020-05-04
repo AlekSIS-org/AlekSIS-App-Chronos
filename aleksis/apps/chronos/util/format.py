@@ -2,8 +2,6 @@ from datetime import date
 
 from django.utils.formats import date_format
 
-from ..models import TimePeriod
-
 
 def format_m2m(f, attr: str = "short_name") -> str:
     """Join a attribute of all elements of a ManyToManyField."""
