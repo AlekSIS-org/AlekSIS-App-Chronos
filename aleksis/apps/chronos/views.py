@@ -20,6 +20,7 @@ from .managers import TimetableType
 from .models import Absence, Holiday, LessonPeriod, LessonSubstitution, Room, TimePeriod
 from .tables import LessonsTable
 from .util.build import build_substitutions_list, build_timetable, build_weekdays
+from .util.chronos_helpers import get_el_by_pk, get_substitution_by_id
 from .util.date import CalendarWeek, get_weeks_for_year
 from .util.js import date_unix
 
@@ -94,24 +95,6 @@ def my_timetable(
         return render(request, "chronos/my_timetable.html", context)
     else:
         return redirect("all_timetables")
-
-
-def get_el_by_pk(
-    request: HttpRequest,
-    type_: str,
-    pk: int,
-    year: Optional[int] = None,
-    week: Optional[int] = None,
-    regular: Optional[str] = None,
-):
-    if type_ == TimetableType.GROUP.value:
-        return get_object_or_404(Group, pk=pk)
-    elif type_ == TimetableType.TEACHER.value:
-        return get_object_or_404(Person, pk=pk)
-    elif type_ == TimetableType.ROOM.value:
-        return get_object_or_404(Room, pk=pk)
-    else:
-        return HttpResponseNotFound()
 
 
 @permission_required("chronos.view_timetable", fn=get_el_by_pk)
@@ -220,15 +203,6 @@ def lessons_day(
     )
 
     return render(request, "chronos/lessons_day.html", context)
-
-
-def get_substitution_by_id(request: HttpRequest, id_: int, week: int):
-    lesson_period = get_object_or_404(LessonPeriod, pk=id_)
-    wanted_week = lesson_period.lesson.get_calendar_week(week)
-
-    return LessonSubstitution.objects.filter(
-        week=wanted_week.week, lesson_period=lesson_period
-    ).first()
 
 
 @permission_required("chronos.edit_substitution", fn=get_substitution_by_id)
