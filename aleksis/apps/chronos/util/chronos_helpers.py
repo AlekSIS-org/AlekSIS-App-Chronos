@@ -3,7 +3,8 @@ from typing import Optional
 from django.http import HttpRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 
-from aleksis.core.models import Person, Group
+from aleksis.core.models import Group, Person
+
 from ..managers import TimetableType
 from ..models import LessonPeriod, LessonSubstitution, Room
 
