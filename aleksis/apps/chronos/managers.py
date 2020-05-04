@@ -2,7 +2,7 @@ from datetime import date, datetime, timedelta
 from enum import Enum
 from typing import Optional, Union
 
-from django.contrib.sites.managers import CurrentSiteManager
+from django.contrib.sites.managers import CurrentSiteManager as _CurrentSiteManager
 from django.db import models
 from django.db.models import Count, F, Q
 
@@ -12,6 +12,9 @@ from aleksis.apps.chronos.util.date import week_weekday_from_date
 from aleksis.core.models import Group, Person
 from aleksis.core.util.core_helpers import get_site_preferences
 
+
+class CurrentSiteManager(_CurrentSiteManager):
+    use_in_migrations = False
 
 
 class TimetableType(Enum):

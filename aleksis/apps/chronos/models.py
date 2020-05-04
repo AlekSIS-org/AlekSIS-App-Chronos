@@ -3,7 +3,6 @@ from __future__ import annotations
 from datetime import date, datetime, time, timedelta
 from typing import Dict, Optional, Tuple, Union
 
-from django.contrib.sites.managers import CurrentSiteManager
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Max, Min, Q
@@ -21,6 +20,7 @@ from django_global_request.middleware import get_request
 
 from aleksis.apps.chronos.managers import (
     AbsenceQuerySet,
+    CurrentSiteManager,
     EventQuerySet,
     ExtraLessonQuerySet,
     GroupPropertiesMixin,
