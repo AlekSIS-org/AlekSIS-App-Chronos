@@ -13,7 +13,6 @@ from aleksis.core.models import Group, Person
 from aleksis.core.util.core_helpers import get_site_preferences
 
 
-
 class TimetableType(Enum):
     """Enum for different types of timetables."""
 
