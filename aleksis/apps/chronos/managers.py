@@ -365,7 +365,7 @@ class TimetableQuerySet(models.QuerySet):
 
     def filter_participant(self, person: Union[Person, int]):
         """Filter for all objects a participant (student) attends."""
-        return self.filter(Q(groups_members=person))
+        return self.filter(Q(groups__members=person))
 
     def filter_group(self, group: Union[Group, int]):
         """Filter for all objects a group (class) attends."""
