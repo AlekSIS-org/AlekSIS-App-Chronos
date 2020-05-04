@@ -81,7 +81,7 @@ class TimePeriod(ExtensibleModel):
         if day is None:
             day = timezone.now().date()
 
-        if time is not None and not prev:
+        if time is not None and cls.time_max and not prev:
             if time > cls.time_max:
                 day += timedelta(days=1)
 
