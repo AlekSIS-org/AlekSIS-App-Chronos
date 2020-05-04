@@ -1,3 +1,5 @@
+# flake8: noqa: DJ01
+
 from __future__ import annotations
 
 from datetime import date, datetime, time, timedelta
