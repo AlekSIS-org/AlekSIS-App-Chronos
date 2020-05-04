@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "AlekSIS-App-Chronos"
-version = "2.0a1"
+version = "2.0a2"
 packages = [
     { include = "aleksis" }
 ]
@@ -9,14 +9,19 @@ include = ["CHANGELOG.rst", "LICENCE.rst"]
 
 description = "AlekSIS (School Information System) — App Χρόνος (digital timetables)"
 authors = ["Dominik George <dominik.george@teckids.org>", "Julian Leucker <leuckeju@katharineum.de>", "Frank Poetzsch-Heffter <p-h@katharineum.de>", "Tom Teichler <tom.teichler@teckids.org>", "Jonathan Weth <wethjo@katharineum.de>", "Hangzhi Yu <yuha@katharineum.de>"]
-license = "EUPL-1.2"
-homepage = "https://aleksis.edugit.io/"
-repository = "https://edugit.org/AlekSIS/Official/AlekSIS-App-Chronos"
-documentation = "https://aleksis.edugit.io/AlekSIS/docs/html/"
+maintainers = ["Jonathan Weth <wethjo@katharineum.de>", "Dominik George <dominik.george@teckids.org>"]
+license = "EUPL-1.2-or-later"
+homepage = "https://aleksis.org/"
+repository = "https://edugit.org/AlekSIS/official/AlekSIS-App-Chronos"
+documentation = "https://aleksis.org/AlekSIS/docs/html/"
+keywords = ["SIS", "education", "school", "timetable", "plans"]
 classifiers = [
+    "Development Status :: 3 - Alpha",
     "Environment :: Web Environment",
+    "Framework :: Django :: 3.0",
     "Intended Audience :: Education",
-    "Topic :: Education"
+    "Topic :: Education",
+    "Typing :: Typed",
 ]
 
 [tool.poetry.dependencies]

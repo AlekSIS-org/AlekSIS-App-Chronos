@@ -19,7 +19,7 @@ django-ckeditor = "^5.8.0"
 django-colorfield = "^0.2.1"
 django-dbbackup = "^3.3.0"
 django-debug-toolbar = "^2.0"
-django-dynamic-preferences = "rev develop"
+django-dynamic-preferences = "rev fixed"
 django-easy-audit = "^1.2rc1"
 django-favicon-plus-reloaded = "^1.0.1"
 django-filter = "^2.2.0"
@@ -207,7 +207,7 @@ description = "A high-level Python Web framework that encourages rapid developme
 name = "django"
 optional = false
 python-versions = ">=3.6"
-version = "3.0.5"
+version = "3.0.6"
 
 [package.dependencies]
 asgiref = ">=3.2,<4.0"
@@ -332,9 +332,9 @@ persisting_theory = ">=0.2.1"
 six = "*"
 
 [package.source]
-reference = "3cb2637e99455260e1988fb969bdce16ba7a9801"
+reference = "7bee176d6a832c200d255bcd1e9d12c85cb1d4f8"
 type = "git"
-url = "https://github.com/EliotBerriot/django-dynamic-preferences"
+url = "https://github.com/hansegucker/django-dynamic-preferences"
 [[package]]
 category = "main"
 description = "Yet another Django audit log app, hopefully the simplest one."
@@ -1151,8 +1151,8 @@ configobj = [
     {file = "configobj-5.0.6.tar.gz", hash = "sha256:a2f5650770e1c87fb335af19a9b7eb73fc05ccf22144eb68db7d00cd2bcb0902"},
 ]
 django = [
-    {file = "Django-3.0.5-py3-none-any.whl", hash = "sha256:642d8eceab321ca743ae71e0f985ff8fdca59f07aab3a9fb362c617d23e33a76"},
-    {file = "Django-3.0.5.tar.gz", hash = "sha256:d4666c2edefa38c5ede0ec1655424c56dc47ceb04b6d8d62a7eac09db89545c1"},
+    {file = "Django-3.0.6-py3-none-any.whl", hash = "sha256:051ba55d42daa3eeda3944a8e4df2bc96d4c62f94316dea217248a22563c3621"},
+    {file = "Django-3.0.6.tar.gz", hash = "sha256:9aaa6a09678e1b8f0d98a948c56482eac3e3dd2ddbfb8de70a868135ef3b5e01"},
 ]
 django-any-js = [
     {file = "django-any-js-1.0.3.post0.tar.gz", hash = "sha256:1da88b44b861b0f54f6b8ea0eb4c7c4fa1a5772e9a4320532cd4e0871a4e23f7"},
