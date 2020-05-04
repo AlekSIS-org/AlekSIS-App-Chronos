@@ -8,7 +8,6 @@ New features
 ~~~~~~~~~~~~
 
 * Header box with absent and affected teachers and groups
-* Models for advanced features from SchoolApps (imported from Untis)
 * Provide smart plan for current day as dashboard widget
 * Roles and permissions for timetable and lists
 * Show events in timetable
@@ -19,20 +18,18 @@ New features
 Minor changes
 ~~~~~~~~~~~~~
 
-* Improve handling of diferent types (substitutions, timetables,…)
+* Improve handling of different types (substitutions, timetables,…)
 * Improve view for groups in timetable views
 * More intelligent personal timetable (checks if current person is teacher,…)
-* Move get_*_by_pk functions to util
-* Move prev/next function to models
-* Refactor timetable view logic
-* Rename field abbrev to short_name
 * Show announcements in timetable views
+* Devs: Move prev/next function to models
+* Devs: Rename field abbrev to short_name
 
 Bug fixes
 ~~~~~~~~~
 
 * Force all lessons in timetable to same height
-* Render empty period correctly
+* Render empty periods correctly
 
 `2.0a1`_
 --------
