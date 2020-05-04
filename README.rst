@@ -9,7 +9,15 @@ This is an application for use with the `AlekSIS`_ platform.
 Features
 --------
 
-The Chronos app provides functionality for digital timetables.
+* Show absent groups in timetable
+* Show absent teachers in timetable
+* Show affected groups in timetable
+* Show affected teachers in timetable
+* Timetables per day
+* Timetables per group
+* Timetables per person
+* Timetables per room
+* Timetables per week
 
 Licence
 -------
