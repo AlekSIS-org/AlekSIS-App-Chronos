@@ -1,6 +1,39 @@
 Changelog
 =========
 
+`2.0a2`_
+--------
+
+New features
+~~~~~~~~~~~~
+
+* Header box with absent and affected teachers and groups
+* Models for advanced features from SchoolApps (imported from Untis)
+* Provide smart plan for current day as dashboard widget
+* Roles and permissions for timetable and lists
+* Show events in timetable
+* Show exams in timetable
+* Show holidays in timetable
+* Show supervision substitutions in timetable and list
+
+Minor changes
+~~~~~~~~~~~~~
+
+* Improve handling of diferent types (substitutions, timetables,…)
+* Improve view for groups in timetable views
+* More intelligent personal timetable (checks if current person is teacher,…)
+* Move get_*_by_pk functions to util
+* Move prev/next function to models
+* Refactor timetable view logic
+* Rename field abbrev to short_name
+* Show announcements in timetable views
+
+Bug fixes
+~~~~~~~~~
+
+* Force all lessons in timetable to same height
+* Render empty period correctly
+
 `2.0a1`_
 --------
 
@@ -69,3 +102,4 @@ _`1.0a1`: https://edugit.org/AlekSIS/Official/AlekSIS-App-Chronos/-/tags/1.0a1
 _`1.0a2`: https://edugit.org/AlekSIS/Official/AlekSIS-App-Chronos/-/tags/1.0a2
 _`1.0a3`: https://edugit.org/AlekSIS/Official/AlekSIS-App-Chronos/-/tags/1.0a3
 _`2.0a1`: https://edugit.org/AlekSIS/Official/AlekSIS-App-Chronos/-/tags/2.0a1
+_`2.0a2`: https://edugit.org/AlekSIS/Official/AlekSIS-App-Chronos/-/tags/2.0a2
