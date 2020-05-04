@@ -193,8 +193,8 @@ class Migration(migrations.Migration):
                 ('extended_data', django.contrib.postgres.fields.jsonb.JSONField(default=dict, editable=False)),
                 ('short_name', models.CharField(max_length=255, unique=True, verbose_name='Short name')),
                 ('name', models.CharField(max_length=255, unique=True, verbose_name='Long name')),
-                ('colour_fg', colorfield.fields.ColorField(blank=True, default='#FFFFFF', max_length=18, verbose_name='Foreground colour')),
-                ('colour_bg', colorfield.fields.ColorField(blank=True, default='#FFFFFF', max_length=18, verbose_name='Background colour')),
+                ('colour_fg', colorfield.fields.ColorField(blank=True, default='', max_length=18, verbose_name='Foreground colour')),
+                ('colour_bg', colorfield.fields.ColorField(blank=True, default='', max_length=18, verbose_name='Background colour')),
                 ('site', models.ForeignKey(default=1, editable=False, on_delete=django.db.models.deletion.CASCADE, to='sites.Site')),
             ],
             options={
