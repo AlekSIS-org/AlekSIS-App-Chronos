@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-05-04 15:42+0200\n"
-"PO-Revision-Date: 2020-05-04 14:31+0000\n"
+"PO-Revision-Date: 2020-07-26 14:09+0000\n"
 "Last-Translator: Jonathan Weth <teckids@jonathanweth.de>\n"
 "Language-Team: German <https://translate.edugit.org/projects/aleksis/"
 "aleksis-app-chronos/de/>\n"
@@ -81,7 +81,7 @@ msgstr "Kurzname"
 
 #: models.py:150 models.py:166 models.py:532 models.py:547
 msgid "Long name"
-msgstr "Langer Name"
+msgstr "Langname"
 
 #: models.py:152
 msgid "Foreground colour"
