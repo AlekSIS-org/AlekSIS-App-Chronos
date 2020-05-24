@@ -4,21 +4,9 @@ stages:
       - test
       - build
 
-variables:
-  GIT_SUBMODULE_STRATEGY: recursive
-  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-  FF_NETWORK_PER_BUILD: "true"
-
-cache:
-  key:
-    files:
-      - poetry.lock
-      - pyproject.toml
-  paths:
-    - .cache/pip
-    - .tox
-
 include:
+    - project: "AlekSIS/official/AlekSIS"
+      file: /ci/general.yml
     - project: "AlekSIS/official/AlekSIS"
       file: /ci/test.yml
     - project: "AlekSIS/official/AlekSIS"
