@@ -1,9 +1,3 @@
-image: registry.edugit.org/teckids/team-sysadmin/docker-images/python-pimped:latest
-
-stages:
-      - test
-      - build
-
 include:
     - project: "AlekSIS/official/AlekSIS"
       file: /ci/general.yml
