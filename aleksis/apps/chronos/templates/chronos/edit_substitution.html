@@ -12,7 +12,7 @@
 
     {% form form=edit_substitution_form %}{% endform %}
 
-    {% include "core/save_button.html" %}
+    {% include "core/partials/save_button.html" %}
     {% if substitution %}
       {# FIXME Respect year as well #}
       <a href="{% url 'delete_substitution' substitution.lesson_period.id substitution.week %}"
