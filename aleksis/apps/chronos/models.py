@@ -75,6 +75,16 @@ class TimePeriod(ExtensibleModel):
 
         return wanted_week[self.weekday]
 
+    def get_datetime_start(self, week: Optional[Union[CalendarWeek, int]] = None) -> datetime:
+        """Get datetime of lesson start in a specific week."""
+        day = self.get_date(week)
+        return datetime.combine(day, self.time_start)
+
+    def get_datetime_end(self, week: Optional[Union[CalendarWeek, int]] = None) -> datetime:
+        """Get datetime of lesson end in a specific week."""
+        day = self.get_date(week)
+        return datetime.combine(day, self.time_end)
+
     @classmethod
     def get_next_relevant_day(
         cls, day: Optional[date] = None, time: Optional[time] = None, prev: bool = False
