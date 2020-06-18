@@ -11,7 +11,7 @@ def week_weekday_from_date(when: date) -> Tuple[CalendarWeek, int]:
 
 def week_weekday_to_date(week: CalendarWeek, weekday: int) -> date:
     """Return a date object for one day in a calendar week."""
-    return week[weekday - 1]
+    return week[weekday]
 
 
 def week_period_to_date(week: Union[CalendarWeek, int], period) -> date:
