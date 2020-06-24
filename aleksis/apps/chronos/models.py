@@ -326,7 +326,7 @@ class LessonPeriod(ExtensibleModel):
         """Get next lesson period of this lesson.
 
         .. warning::
-            To use this property a week had to be annotated to the provided lesson period.
+            To use this property,  the provided lesson period must be annotated with a week.
         """
         return LessonPeriod.objects.filter(lesson=self.lesson).next_lesson(self)
 
