@@ -321,6 +321,35 @@ class LessonPeriod(ExtensibleModel):
     def __str__(self) -> str:
         return f"{self.period}, {self.lesson}"
 
+    @property
+    def next(self) -> "LessonPeriod":
+        """Get next lesson period of this lesson.
+
+        .. warning::
+            To use this property,  the provided lesson period must be annotated with a week.
+        """
+        return LessonPeriod.objects.filter(lesson=self.lesson).next_lesson(self)
+
+    @property
+    def prev(self) -> "LessonPeriod":
+        """Get previous lesson period of this lesson.
+
+        .. warning::
+            To use this property,  the provided lesson period must be annotated with a week.
+        """
+        return LessonPeriod.objects.filter(lesson=self.lesson).next_lesson(self, -1)
+
+    @property
+    def week(self) -> Union[CalendarWeek, None]:
+        """Get annotated week as `CalendarWeek`.
+
+        Defaults to `None` if no week is annotated.
+        """
+        if hasattr(self, "_week"):
+            return CalendarWeek(week=self._week, year=self._year)
+        else:
+            return None
+
     class Meta:
         ordering = [
             "lesson__date_start",

@@ -64,12 +64,13 @@ class LessonSubstitutionManager(CurrentSiteManager):
 class WeekQuerySetMixin:
     def annotate_week(self, week: Union[CalendarWeek, int]):
         """Annotate all lessons in the QuerySet with the number of the provided calendar week."""
-        if isinstance(week, CalendarWeek):
-            week_num = week.week
-        else:
-            week_num = week
+        if isinstance(week, int):
+            week = CalendarWeek(week=week)
 
-        return self.annotate(_week=models.Value(week_num, models.IntegerField()))
+        return self.annotate(
+            _week=models.Value(week.week, models.IntegerField()),
+            _year=models.Value(week.year, models.IntegerField())
+        )
 
 
 class GroupByPeriodsMixin:
@@ -236,6 +237,9 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
         if next_index > self.count() - 1:
             next_index %= self.count()
             week = reference._week + 1
+        elif next_index < 0:
+            next_index = self.count() + next_index
+            week = reference._week - 1
         else:
             week = reference._week
 
