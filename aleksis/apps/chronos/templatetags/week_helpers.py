@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from typing import Optional, Union
 
 from django import template
@@ -36,5 +36,20 @@ def period_to_date(week: Union[CalendarWeek, int], period) -> date:
 
 
 @register.simple_tag
+def period_to_time_start(week: Union[CalendarWeek, int], period) -> date:
+    return period.get_datetime_start(week)
+
+
+@register.simple_tag
+def period_to_time_end(week: Union[CalendarWeek, int], period) -> date:
+    return period.get_datetime_end(week)
+
+
+@register.simple_tag
 def today() -> date:
     return date.today()
+
+
+@register.simple_tag
+def now_datetime() -> datetime:
+    return datetime.now()

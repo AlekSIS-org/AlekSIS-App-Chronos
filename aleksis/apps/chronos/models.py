@@ -36,7 +36,7 @@ from aleksis.apps.chronos.managers import (
 )
 from aleksis.apps.chronos.util.format import format_m2m
 from aleksis.core.mixins import ExtensibleModel
-from aleksis.core.models import DashboardWidget
+from aleksis.core.models import DashboardWidget, SchoolTerm
 from aleksis.core.util.core_helpers import has_person
 
 
@@ -68,12 +68,22 @@ class TimePeriod(ExtensibleModel):
             year = date.today().year
             week_number = week or getattr(self, "_week", None) or CalendarWeek().week
 
-            if week_number < self.school.current_term.date_start.isocalendar()[1]:
+            if week_number < SchoolTerm.current.date_start.isocalendar()[1]:
                 year += 1
 
             wanted_week = CalendarWeek(year=year, week=week_number)
 
         return wanted_week[self.weekday]
+
+    def get_datetime_start(self, week: Optional[Union[CalendarWeek, int]] = None) -> datetime:
+        """Get datetime of lesson start in a specific week."""
+        day = self.get_date(week)
+        return datetime.combine(day, self.time_start)
+
+    def get_datetime_end(self, week: Optional[Union[CalendarWeek, int]] = None) -> datetime:
+        """Get datetime of lesson end in a specific week."""
+        day = self.get_date(week)
+        return datetime.combine(day, self.time_end)
 
     @classmethod
     def get_next_relevant_day(
