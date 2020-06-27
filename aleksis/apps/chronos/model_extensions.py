@@ -7,7 +7,7 @@ from jsonstore import BooleanField
 from aleksis.core.models import Announcement, Group, Person
 
 from .managers import TimetableType
-from .models import Lesson, LessonPeriod
+from .models import Lesson, LessonPeriod, Subject
 
 
 @Person.property_
@@ -88,3 +88,5 @@ Announcement.class_method(for_timetables)
 Announcement.field(
     show_in_timetables=BooleanField(verbose_name=_("Show announcement in timetable views?"))
 )
+
+Group.foreign_key("subject", Subject, related_name="groups")
