@@ -124,7 +124,12 @@ def build_timetable(
             week = CalendarWeek.from_date(date_ref)
         else:
             week = date_ref
-        supervisions = Supervision.objects.all().annotate_week(week).filter_by_teacher(obj)
+        supervisions = (
+            Supervision.objects.in_week(week)
+            .all()
+            .annotate_week(week)
+            .filter_by_teacher(obj)
+        )
 
         if is_person:
             supervisions.filter_by_weekday(date_ref.weekday())

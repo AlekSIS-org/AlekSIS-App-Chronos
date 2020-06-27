@@ -4,13 +4,65 @@ from typing import Optional, Union
 
 from django.contrib.sites.managers import CurrentSiteManager as _CurrentSiteManager
 from django.db import models
-from django.db.models import Count, F, Q
+from django.db.models import Count, F, Q, QuerySet
 
 from calendarweek import CalendarWeek
 
 from aleksis.apps.chronos.util.date import week_weekday_from_date
+from aleksis.core.managers import DateRangeQuerySetMixin, SchoolTermRelatedQuerySet
 from aleksis.core.models import Group, Person
 from aleksis.core.util.core_helpers import get_site_preferences
+
+
+class ValidityRangeQuerySet(QuerySet, DateRangeQuerySetMixin):
+    """Custom query set for validity ranges."""
+
+
+class ValidityRangeRelatedQuerySet(QuerySet):
+    """Custom query set for all models related to validity ranges."""
+
+    def within_dates(self, start: date, end: date) -> "ValidityRangeRelatedQuerySet":
+        """Filter for all objects within a date range."""
+        return self.filter(validity__date_start__lte=end, validity__date_end__gte=start)
+
+    def in_week(self, wanted_week: CalendarWeek) -> "ValidityRangeRelatedQuerySet":
+        """Filter for all objects within a calendar week."""
+        return self.within_dates(wanted_week[0], wanted_week[6])
+
+    def on_day(self, day: date) -> "ValidityRangeRelatedQuerySet":
+        """Filter for all objects on a certain day."""
+        return self.within_dates(day, day)
+
+    def for_validity_range(
+        self, validity_range: "ValidityRange"
+    ) -> "ValidityRangeRelatedQuerySet":
+        return self.filter(validity_range=validity_range)
+
+    def for_current_or_all(self) -> "ValidityRangeRelatedQuerySet":
+        """Get all objects related to current validity range.
+
+        If there is no current validity range, it will return all objects.
+        """
+        from aleksis.apps.chronos.models import ValidityRange
+
+        current_validity_range = ValidityRange.current
+        if current_validity_range:
+            return self.for_validity_range(current_validity_range)
+        else:
+            return self
+
+    def for_current_or_none(self) -> Union["ValidityRangeRelatedQuerySet", None]:
+        """Get all objects related to current validity range.
+
+        If there is no current validity range, it will return `None`.
+        """
+        from aleksis.apps.chronos.models import ValidityRange
+
+        current_validity_range = ValidityRange.current
+        if current_validity_range:
+            return self.for_validity_range(current_validity_range)
+        else:
+            return None
 
 
 class CurrentSiteManager(_CurrentSiteManager):
@@ -108,8 +160,8 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
         """Filter for all lessons within a date range."""
         return self.filter(
             **{
-                self._period_path + "lesson__date_start__lte": start,
-                self._period_path + "lesson__date_end__gte": end,
+                self._period_path + "lesson__validity__date_start__lte": start,
+                self._period_path + "lesson__validity__date_end__gte": end,
             }
         )
 
@@ -137,8 +189,8 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
 
         return self.filter(
             **{
-                self._period_path + "lesson__date_start__lte": now.date(),
-                self._period_path + "lesson__date_end__gte": now.date(),
+                self._period_path + "lesson__validity__date_start__lte": now.date(),
+                self._period_path + "lesson__validity__date_end__gte": now.date(),
                 self._period_path + "period__weekday": now.weekday(),
                 self._period_path + "period__time_start__lte": now.time(),
                 self._period_path + "period__time_end__gte": now.time(),
@@ -282,7 +334,7 @@ class LessonSubstitutionQuerySet(LessonDataQuerySet):
         )
 
 
-class DateRangeQuerySet(models.QuerySet):
+class DateRangeQuerySetMixin:
     """QuerySet with custom query methods for models with date and period ranges.
 
     Filterable fields: date_start, date_end, period_from, period_to
@@ -309,7 +361,7 @@ class DateRangeQuerySet(models.QuerySet):
         )
 
 
-class AbsenceQuerySet(DateRangeQuerySet):
+class AbsenceQuerySet(SchoolTermRelatedQuerySet, DateRangeQuerySetMixin):
     """QuerySet with custom query methods for absences."""
 
     def absent_teachers(self):
@@ -322,13 +374,13 @@ class AbsenceQuerySet(DateRangeQuerySet):
         return Person.objects.filter(absences__in=self).annotate(absences_count=Count("absences"))
 
 
-class HolidayQuerySet(DateRangeQuerySet):
+class HolidayQuerySet(QuerySet, DateRangeQuerySetMixin):
     """QuerySet with custom query methods for holidays."""
 
     pass
 
 
-class SupervisionQuerySet(models.QuerySet, WeekQuerySetMixin):
+class SupervisionQuerySet(ValidityRangeRelatedQuerySet, WeekQuerySetMixin):
     """QuerySet with custom query methods for supervisions."""
 
     def filter_by_weekday(self, weekday: int):
@@ -423,7 +475,9 @@ class TimetableQuerySet(models.QuerySet):
             return None
 
 
-class EventQuerySet(DateRangeQuerySet, TimetableQuerySet):
+class EventQuerySet(
+    SchoolTermRelatedQuerySet, DateRangeQuerySetMixin, TimetableQuerySet
+):
     """QuerySet with custom query methods for events."""
 
     def annotate_day(self, day: date):
@@ -431,7 +485,9 @@ class EventQuerySet(DateRangeQuerySet, TimetableQuerySet):
         return self.annotate(_date=models.Value(day, models.DateField()))
 
 
-class ExtraLessonQuerySet(TimetableQuerySet, GroupByPeriodsMixin):
+class ExtraLessonQuerySet(
+    SchoolTermRelatedQuerySet, TimetableQuerySet, GroupByPeriodsMixin
+):
     """QuerySet with custom query methods for extra lessons."""
 
     _multiple_rooms = False
