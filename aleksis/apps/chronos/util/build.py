@@ -131,7 +131,10 @@ def build_timetable(
         else:
             week = date_ref
         supervisions = (
-            Supervision.objects.all().annotate_week(week).filter_by_teacher(obj)
+            Supervision.objects.in_week(week)
+            .all()
+            .annotate_week(week)
+            .filter_by_teacher(obj)
         )
 
         if is_person:

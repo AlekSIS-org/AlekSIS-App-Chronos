@@ -33,14 +33,86 @@ from aleksis.apps.chronos.managers import (
     LessonSubstitutionQuerySet,
     SupervisionQuerySet,
     TeacherPropertiesMixin,
+    ValidityRangeQuerySet,
 )
+from aleksis.apps.chronos.mixins import ValidityRangeRelatedExtensibleModel
 from aleksis.apps.chronos.util.format import format_m2m
-from aleksis.core.mixins import ExtensibleModel
+from aleksis.core.managers import CurrentSiteManagerWithoutMigrations
+from aleksis.core.mixins import ExtensibleModel, SchoolTermRelatedExtensibleModel
 from aleksis.core.models import DashboardWidget, SchoolTerm
 from aleksis.core.util.core_helpers import has_person
 
 
-class TimePeriod(ExtensibleModel):
+class ValidityRange(ExtensibleModel):
+    """Validity range model.
+
+    This is used to link data to a validity range.
+    """
+
+    objects = CurrentSiteManagerWithoutMigrations.from_queryset(ValidityRangeQuerySet)()
+
+    school_term = models.ForeignKey(
+        SchoolTerm,
+        on_delete=models.CASCADE,
+        verbose_name=_("School term"),
+        related_name="validity_ranges",
+    )
+    name = models.CharField(verbose_name=_("Name"), max_length=255, blank=True)
+
+    date_start = models.DateField(verbose_name=_("Start date"))
+    date_end = models.DateField(verbose_name=_("End date"))
+
+    @classmethod
+    def get_current(cls, day: Optional[date] = None):
+        if not day:
+            day = timezone.now().date()
+        try:
+            return cls.objects.on_day(day).first()
+        except ValidityRange.DoesNotExist:
+            return None
+
+    @classproperty
+    def current(cls):
+        return cls.get_current()
+
+    def clean(self):
+        """Ensure there is only one validity range at each point of time."""
+        if self.date_end < self.date_start:
+            raise ValidationError(
+                _("The start date must be earlier than the end date.")
+            )
+
+        if self.school_term:
+            if (
+                self.date_end > self.school_term.date_end
+                or self.date_start < self.school_term.date_start
+            ):
+                raise ValidationError(
+                    _("The validity range must be within the school term.")
+                )
+
+        qs = ValidityRange.objects.within_dates(self.date_start, self.date_end)
+        if self.pk:
+            qs.exclude(pk=self.pk)
+        if qs.exists():
+            raise ValidationError(
+                _(
+                    "There is already a validity range for this time or a part of this time."
+                )
+            )
+
+    def __str__(self):
+        return (
+            self.name or f"{date_format(self.date_start)}–{date_format(self.date_end)}"
+        )
+
+    class Meta:
+        verbose_name = _("Validity range")
+        verbose_name_plural = _("Validity ranges")
+        unique_together = ["date_start", "date_end"]
+
+
+class TimePeriod(ValidityRangeRelatedExtensibleModel):
     WEEKDAY_CHOICES = list(enumerate(i18n_day_names_lazy()))
     WEEKDAY_CHOICES_SHORT = list(enumerate(i18n_day_abbrs_lazy()))
 
@@ -58,7 +130,7 @@ class TimePeriod(ExtensibleModel):
     @classmethod
     def get_times_dict(cls) -> Dict[int, Tuple[datetime, datetime]]:
         periods = {}
-        for period in cls.objects.all():
+        for period in cls.objects.for_current_or_all().all():
             periods[period.period] = (period.time_start, period.time_end)
 
         return periods
@@ -133,34 +205,51 @@ class TimePeriod(ExtensibleModel):
 
     @classproperty
     def period_min(cls) -> int:
-        return cls.objects.aggregate(period__min=Coalesce(Min("period"), 1)).get(
-            "period__min"
+
+        return (
+            cls.objects.for_current_or_all()
+            .aggregate(period__min=Coalesce(Min("period"), 1))
+            .get("period__min")
         )
 
     @classproperty
     def period_max(cls) -> int:
-        return cls.objects.aggregate(period__max=Coalesce(Max("period"), 7)).get(
-            "period__max"
+        return (
+            cls.objects.for_current_or_all()
+            .aggregate(period__max=Coalesce(Max("period"), 7))
+            .get("period__max")
         )
 
     @classproperty
     def time_min(cls) -> Optional[time]:
-        return cls.objects.aggregate(Min("time_start")).get("time_start__min")
+        return (
+            cls.objects.for_current_or_all()
+            .aggregate(Min("time_start"))
+            .get("time_start__min")
+        )
 
     @classproperty
     def time_max(cls) -> Optional[time]:
-        return cls.objects.aggregate(Max("time_end")).get("time_end__max")
+        return (
+            cls.objects.for_current_or_all()
+            .aggregate(Max("time_end"))
+            .get("time_end__max")
+        )
 
     @classproperty
     def weekday_min(cls) -> int:
-        return cls.objects.aggregate(weekday__min=Coalesce(Min("weekday"), 0)).get(
-            "weekday__min"
+        return (
+            cls.objects.for_current_or_all()
+            .aggregate(weekday__min=Coalesce(Min("weekday"), 0))
+            .get("weekday__min")
         )
 
     @classproperty
     def weekday_max(cls) -> int:
-        return cls.objects.aggregate(weekday__max=Coalesce(Max("weekday"), 6)).get(
-            "weekday__max"
+        return (
+            cls.objects.for_current_or_all()
+            .aggregate(weekday__max=Coalesce(Max("weekday"), 6))
+            .get("weekday__max")
         )
 
     class Meta:
@@ -204,7 +293,9 @@ class Room(ExtensibleModel):
         verbose_name_plural = _("Rooms")
 
 
-class Lesson(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
+class Lesson(
+    ValidityRangeRelatedExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin
+):
     subject = models.ForeignKey(
         "Subject",
         on_delete=models.CASCADE,
@@ -224,13 +315,14 @@ class Lesson(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
         "core.Group", related_name="lessons", verbose_name=_("Groups")
     )
 
-    date_start = models.DateField(verbose_name=_("Start date"), null=True)
-    date_end = models.DateField(verbose_name=_("End date"), null=True)
+    def get_year(self, week: int) -> int:
+        year = self.validity.date_start.year
+        if week < int(self.validity.date_start.strftime("%V")):
+            year += 1
+        return year
 
     def get_calendar_week(self, week: int):
-        year = self.date_start.year
-        if week < int(self.date_start.strftime("%V")):
-            year += 1
+        year = self.get_year(week)
 
         return CalendarWeek(year=year, week=week)
 
@@ -238,8 +330,7 @@ class Lesson(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
         return f"{format_m2m(self.groups)}, {self.subject.short_name}, {format_m2m(self.teachers)}"
 
     class Meta:
-        ordering = ["date_start", "subject"]
-        indexes = [models.Index(fields=["date_start", "date_end"])]
+        ordering = ["validity__date_start", "subject"]
         verbose_name = _("Lesson")
         verbose_name_plural = _("Lessons")
 
@@ -288,7 +379,7 @@ class LessonSubstitution(ExtensibleModel):
 
     @property
     def date(self):
-        week = CalendarWeek(week=self.week)
+        week = CalendarWeek(week=self.week, year=self.lesson_period.lesson.get_year())
         return week[self.lesson_period.period.weekday]
 
     def __str__(self):
@@ -297,7 +388,7 @@ class LessonSubstitution(ExtensibleModel):
     class Meta:
         unique_together = [["lesson_period", "week"]]
         ordering = [
-            "lesson_period__lesson__date_start",
+            "lesson_period__lesson__validity__date_start",
             "week",
             "lesson_period__period__weekday",
             "lesson_period__period__period",
@@ -407,7 +498,7 @@ class LessonPeriod(ExtensibleModel):
 
     class Meta:
         ordering = [
-            "lesson__date_start",
+            "lesson__validity__date_start",
             "period__weekday",
             "period__period",
             "lesson__subject",
@@ -476,7 +567,7 @@ class AbsenceReason(ExtensibleModel):
         verbose_name_plural = _("Absence reasons")
 
 
-class Absence(ExtensibleModel):
+class Absence(SchoolTermRelatedExtensibleModel):
     objects = CurrentSiteManager.from_queryset(AbsenceQuerySet)()
 
     reason = models.ForeignKey(
@@ -548,7 +639,7 @@ class Absence(ExtensibleModel):
         verbose_name_plural = _("Absences")
 
 
-class Exam(ExtensibleModel):
+class Exam(SchoolTermRelatedExtensibleModel):
     lesson = models.ForeignKey(
         "Lesson",
         on_delete=models.CASCADE,
@@ -635,7 +726,7 @@ class SupervisionArea(ExtensibleModel):
         verbose_name_plural = _("Supervision areas")
 
 
-class Break(ExtensibleModel):
+class Break(ValidityRangeRelatedExtensibleModel):
     short_name = models.CharField(verbose_name=_("Short name"), max_length=255)
     name = models.CharField(verbose_name=_("Long name"), max_length=255)
 
@@ -706,7 +797,7 @@ class Break(ExtensibleModel):
         verbose_name_plural = _("Breaks")
 
 
-class Supervision(ExtensibleModel):
+class Supervision(ValidityRangeRelatedExtensibleModel):
     objects = CurrentSiteManager.from_queryset(SupervisionQuerySet)()
 
     area = models.ForeignKey(
@@ -780,7 +871,9 @@ class SupervisionSubstitution(ExtensibleModel):
         verbose_name_plural = _("Supervision substitutions")
 
 
-class Event(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
+class Event(
+    SchoolTermRelatedExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin
+):
     label_ = "event"
 
     objects = CurrentSiteManager.from_queryset(EventQuerySet)()
@@ -846,7 +939,7 @@ class Event(ExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
         verbose_name_plural = _("Events")
 
 
-class ExtraLesson(ExtensibleModel, GroupPropertiesMixin):
+class ExtraLesson(SchoolTermRelatedExtensibleModel, GroupPropertiesMixin):
     label_ = "extra_lesson"
 
     objects = CurrentSiteManager.from_queryset(ExtraLessonQuerySet)()

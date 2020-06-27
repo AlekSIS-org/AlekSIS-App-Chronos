@@ -20,6 +20,7 @@ from .models import (
     SupervisionSubstitution,
     TimePeriod,
     TimetableWidget,
+    ValidityRange,
 )
 from .util.format import format_date_period, format_m2m
 
@@ -201,3 +202,11 @@ class TimetableWidgetAdmin(admin.ModelAdmin):
 
 
 admin.site.register(TimetableWidget, TimetableWidgetAdmin)
+
+
+class ValidityRangeAdmin(admin.ModelAdmin):
+    list_display = ("__str__", "date_start", "date_end")
+    list_display_links = ("__str__", "date_start", "date_end")
+
+
+admin.site.register(ValidityRange, ValidityRangeAdmin)
