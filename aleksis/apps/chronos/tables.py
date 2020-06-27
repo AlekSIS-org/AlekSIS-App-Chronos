@@ -31,8 +31,12 @@ class LessonsTable(tables.Table):
         row_attrs = {"class": _css_class_from_lesson_state}
 
     period__period = tables.Column(accessor="period__period")
-    lesson__groups = tables.Column(accessor="lesson__group_names", verbose_name=_("Groups"))
-    lesson__teachers = tables.Column(accessor="lesson__teacher_names", verbose_name=_("Teachers"))
+    lesson__groups = tables.Column(
+        accessor="lesson__group_names", verbose_name=_("Groups")
+    )
+    lesson__teachers = tables.Column(
+        accessor="lesson__teacher_names", verbose_name=_("Teachers")
+    )
     lesson__subject = tables.Column(accessor="lesson__subject")
     room = tables.Column(accessor="room")
     edit_substitution = tables.LinkColumn(

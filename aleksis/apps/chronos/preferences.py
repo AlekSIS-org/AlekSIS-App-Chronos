@@ -3,7 +3,10 @@ from django.utils.translation import gettext as _
 from dynamic_preferences.preferences import Section
 from dynamic_preferences.types import BooleanPreference, IntegerPreference
 
-from aleksis.core.registries import person_preferences_registry, site_preferences_registry
+from aleksis.core.registries import (
+    person_preferences_registry,
+    site_preferences_registry,
+)
 
 chronos = Section("chronos", verbose_name=_("Chronos"))
 
@@ -27,7 +30,9 @@ class ShortenGroups(BooleanPreference):
     name = "shorten_groups"
     default = True
     verbose_name = _("Shorten groups in timetable views")
-    help_text = _("If there are more groups than the set limit, they will be collapsed.")
+    help_text = _(
+        "If there are more groups than the set limit, they will be collapsed."
+    )
 
 
 @site_preferences_registry.register

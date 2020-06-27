@@ -30,16 +30,19 @@ def all_timetables(request: HttpRequest) -> HttpResponse:
     """View all timetables for persons, groups and rooms."""
     context = {}
 
-    teachers = Person.objects.annotate(lessons_count=Count("lessons_as_teacher")).filter(
-        lessons_count__gt=0
-    )
+    teachers = Person.objects.annotate(
+        lessons_count=Count("lessons_as_teacher")
+    ).filter(lessons_count__gt=0)
     groups = Group.objects.annotate(
-        lessons_count=Count("lessons"), child_lessons_count=Count("child_groups__lessons"),
+        lessons_count=Count("lessons"),
+        child_lessons_count=Count("child_groups__lessons"),
     )
     classes = groups.filter(lessons_count__gt=0, parent_groups=None) | groups.filter(
         child_lessons_count__gt=0, parent_groups=None
     )
-    rooms = Room.objects.annotate(lessons_count=Count("lesson_periods")).filter(lessons_count__gt=0)
+    rooms = Room.objects.annotate(lessons_count=Count("lesson_periods")).filter(
+        lessons_count__gt=0
+    )
 
     context["teachers"] = teachers
     context["classes"] = classes
@@ -62,7 +65,9 @@ def my_timetable(
         wanted_day = timezone.datetime(year=year, month=month, day=day).date()
         wanted_day = TimePeriod.get_next_relevant_day(wanted_day)
     else:
-        wanted_day = TimePeriod.get_next_relevant_day(timezone.now().date(), datetime.now().time())
+        wanted_day = TimePeriod.get_next_relevant_day(
+            timezone.now().date(), datetime.now().time()
+        )
 
     if has_person(request.user):
         person = request.user.person
@@ -133,7 +138,9 @@ def timetable(
 
     # Build lists with weekdays and corresponding dates (long and short variant)
     context["weekdays"] = build_weekdays(TimePeriod.WEEKDAY_CHOICES, wanted_week)
-    context["weekdays_short"] = build_weekdays(TimePeriod.WEEKDAY_CHOICES_SHORT, wanted_week)
+    context["weekdays_short"] = build_weekdays(
+        TimePeriod.WEEKDAY_CHOICES_SHORT, wanted_week
+    )
 
     context["weeks"] = get_weeks_for_year(year=wanted_week.year)
     context["week"] = wanted_week
@@ -180,7 +187,9 @@ def lessons_day(
         wanted_day = timezone.datetime(year=year, month=month, day=day).date()
         wanted_day = TimePeriod.get_next_relevant_day(wanted_day)
     else:
-        wanted_day = TimePeriod.get_next_relevant_day(timezone.now().date(), datetime.now().time())
+        wanted_day = TimePeriod.get_next_relevant_day(
+            timezone.now().date(), datetime.now().time()
+        )
 
     # Get lessons
     lesson_periods = LessonPeriod.objects.on_day(wanted_day)
@@ -234,7 +243,9 @@ def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse
             messages.success(request, _("The substitution has been saved."))
 
             date = wanted_week[lesson_period.period.weekday]
-            return redirect("lessons_day_by_date", year=date.year, month=date.month, day=date.day)
+            return redirect(
+                "lessons_day_by_date", year=date.year, month=date.month, day=date.day
+            )
 
     context["edit_substitution_form"] = edit_substitution_form
 
@@ -255,7 +266,9 @@ def delete_substitution(request: HttpRequest, id_: int, week: int) -> HttpRespon
     messages.success(request, _("The substitution has been deleted."))
 
     date = wanted_week[lesson_period.period.weekday]
-    return redirect("lessons_day_by_date", year=date.year, month=date.month, day=date.day)
+    return redirect(
+        "lessons_day_by_date", year=date.year, month=date.month, day=date.day
+    )
 
 
 @permission_required("chronos.view_substitutions")
@@ -273,7 +286,9 @@ def substitutions(
         wanted_day = timezone.datetime(year=year, month=month, day=day).date()
         wanted_day = TimePeriod.get_next_relevant_day(wanted_day)
     else:
-        wanted_day = TimePeriod.get_next_relevant_day(timezone.now().date(), datetime.now().time())
+        wanted_day = TimePeriod.get_next_relevant_day(
+            timezone.now().date(), datetime.now().time()
+        )
 
     day_number = get_site_preferences()["chronos__substitutions_print_number_of_days"]
     day_contexts = {}
