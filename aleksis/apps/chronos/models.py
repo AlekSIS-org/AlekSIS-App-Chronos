@@ -253,7 +253,7 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
         )
 
     class Meta:
-        unique_together = [["weekday", "period"]]
+        unique_together = [["weekday", "period", "validity"]]
         ordering = ["weekday", "period"]
         indexes = [models.Index(fields=["time_start", "time_end"])]
         verbose_name = _("Time period")

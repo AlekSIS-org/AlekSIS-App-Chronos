@@ -42,7 +42,7 @@ def migrate_lesson(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("core", "0003_auto_20200627_1600"),
+        ("core", "0002_school_term"),
         ("sites", "0002_alter_domain_unique"),
         ("chronos", "0001_initial"),
     ]
