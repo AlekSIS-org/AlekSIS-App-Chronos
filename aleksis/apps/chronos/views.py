@@ -150,7 +150,11 @@ def timetable(
     context["smart"] = is_smart
     context["week_select"] = {
         "year": wanted_week.year,
-        "dest": reverse("timetable", args=[type_.value, pk]),
+        "dest": reverse("timetable", args=[type_.value, pk]).replace(
+            str(wanted_week.year), "year"
+        ).replace(
+            str(wanted_week.week), "cw"
+        ),
     }
 
     if is_smart:
