@@ -87,9 +87,11 @@
               <span class="card-title">
                 {{ weekday.name }}
               </span>
-              {{ weekday.date }}
-              {% if weekday.holiday %}
-                <br/>{% include "chronos/partials/holiday.html" with holiday=weekday.holiday %}
+              {% if smart %}
+                {{ weekday.date }}
+                {% if weekday.holiday %}
+                  <br/>{% include "chronos/partials/holiday.html" with holiday=weekday.holiday %}
+                {% endif %}
               {% endif %}
             </div>
           </div>
@@ -104,9 +106,11 @@
               <span class="card-title">
                 {{ weekday.name }}
               </span>
-              {{ weekday.date }}
-              {% if weekday.holiday %}
-                <br/>{% include "chronos/partials/holiday.html" with holiday=weekday.holiday %}
+              {% if smart %}
+                {{ weekday.date }}
+                {% if weekday.holiday %}
+                  <br/>{% include "chronos/partials/holiday.html" with holiday=weekday.holiday %}
+                {% endif %}
               {% endif %}
             </div>
           </div>
@@ -145,10 +149,12 @@
           <span class="card-title">
             {{ weekday.name }}
           </span>
-          {{ weekday.date }}
-          {% if weekday.holiday %}
-            <br/>{% include "chronos/partials/holiday.html" with holiday=weekday.holiday %}
-          {% endif %}
+          {% if smart %}
+                {{ weekday.date }}
+                {% if weekday.holiday %}
+                  <br/>{% include "chronos/partials/holiday.html" with holiday=weekday.holiday %}
+                {% endif %}
+              {% endif %}
         </div>
       </div>
       {% for row in timetable %}
