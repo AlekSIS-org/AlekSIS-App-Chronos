@@ -169,9 +169,9 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
         """Filter for all lessons within a calendar week."""
         return self.within_dates(
             wanted_week[0]
-            + timedelta(days=1) * (F(self._period_path + "period__weekday") - 1),
+            + timedelta(days=1) * (F(self._period_path + "period__weekday")),
             wanted_week[0]
-            + timedelta(days=1) * (F(self._period_path + "period__weekday") - 1),
+            + timedelta(days=1) * (F(self._period_path + "period__weekday")),
         ).annotate_week(wanted_week)
 
     def on_day(self, day: date):
