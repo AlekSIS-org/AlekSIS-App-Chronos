@@ -203,9 +203,6 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
         """Filter for all lessons a participant (student) attends."""
         return self.filter(
             Q(**{self._period_path + "lesson__groups__members": person})
-            | Q(
-                **{self._period_path + "lesson__groups__parent_groups__members": person}
-            )
         )
 
     def filter_group(self, group: Union[Group, int]):
@@ -268,7 +265,7 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
         elif type_ == TimetableType.GROUP:
             # Student
 
-            return self.filter(lesson__groups__members=person)
+            return self.filter_participant(person)
 
         else:
             # If no student or teacher
