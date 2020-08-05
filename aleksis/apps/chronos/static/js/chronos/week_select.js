@@ -1,7 +1,7 @@
 var data = getJSONScript("week_select");
 
 function goToCalendarWeek(cw, year) {
-    window.location.href = data.dest + year + "/" + cw;
+    window.location.href = data.dest.replace("year", year).replace("cw", cw);
 }
 
 function onCalendarWeekChanged(where) {
