@@ -169,9 +169,9 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
         """Filter for all lessons within a calendar week."""
         return self.within_dates(
             wanted_week[0]
-            + timedelta(days=1) * (F(self._period_path + "period__weekday") - 1),
+            + timedelta(days=1) * (F(self._period_path + "period__weekday")),
             wanted_week[0]
-            + timedelta(days=1) * (F(self._period_path + "period__weekday") - 1),
+            + timedelta(days=1) * (F(self._period_path + "period__weekday")),
         ).annotate_week(wanted_week)
 
     def on_day(self, day: date):
@@ -203,9 +203,6 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
         """Filter for all lessons a participant (student) attends."""
         return self.filter(
             Q(**{self._period_path + "lesson__groups__members": person})
-            | Q(
-                **{self._period_path + "lesson__groups__parent_groups__members": person}
-            )
         )
 
     def filter_group(self, group: Union[Group, int]):
@@ -268,7 +265,7 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
         elif type_ == TimetableType.GROUP:
             # Student
 
-            return self.filter(lesson__groups__members=person)
+            return self.filter_participant(person)
 
         else:
             # If no student or teacher
