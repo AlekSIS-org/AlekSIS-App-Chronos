@@ -36,7 +36,7 @@ class ValidityRangeRelatedQuerySet(QuerySet):
     def for_validity_range(
         self, validity_range: "ValidityRange"
     ) -> "ValidityRangeRelatedQuerySet":
-        return self.filter(validity_range=validity_range)
+        return self.filter(validity=validity_range)
 
     def for_current_or_all(self) -> "ValidityRangeRelatedQuerySet":
         """Get all objects related to current validity range.

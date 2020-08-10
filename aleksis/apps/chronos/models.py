@@ -379,7 +379,7 @@ class LessonSubstitution(ExtensibleModel):
 
     @property
     def date(self):
-        week = CalendarWeek(week=self.week, year=self.lesson_period.lesson.get_year())
+        week = CalendarWeek(week=self.week, year=self.lesson_period.lesson.get_year(self.week))
         return week[self.lesson_period.period.weekday]
 
     def __str__(self):
