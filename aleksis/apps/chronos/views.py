@@ -33,7 +33,7 @@ def all_timetables(request: HttpRequest) -> HttpResponse:
     teachers = Person.objects.annotate(
         lessons_count=Count("lessons_as_teacher")
     ).filter(lessons_count__gt=0)
-    groups = Group.objects.annotate(
+    groups = Group.objects.for_current_school_term_or_all().annotate(
         lessons_count=Count("lessons"),
         child_lessons_count=Count("child_groups__lessons"),
     )
