@@ -1,6 +1,12 @@
+from datetime import date
+from typing import Union
+
 from django.db import models
 from django.utils.translation import gettext as _
 
+from calendarweek import CalendarWeek
+
+from aleksis.apps.chronos.util.date import week_period_to_date
 from aleksis.core.managers import CurrentSiteManagerWithoutMigrations
 from aleksis.core.mixins import ExtensibleModel
 
@@ -25,3 +31,26 @@ class ValidityRangeRelatedExtensibleModel(ExtensibleModel):
 
     class Meta:
         abstract = True
+
+
+class WeekRelatedMixin:
+    @property
+    def date(self) -> date:
+        return week_period_to_date(self.calendar_week, self.lesson_period)
+
+    @property
+    def calendar_week(self) -> CalendarWeek:
+        return CalendarWeek(week=self.week, year=self.year)
+
+
+class WeekAnnotationMixin:
+    @property
+    def week(self) -> Union[CalendarWeek, None]:
+        """Get annotated week as `CalendarWeek`.
+
+        Defaults to `None` if no week is annotated.
+        """
+        if hasattr(self, "_week"):
+            return CalendarWeek(week=self._week, year=self._year)
+        else:
+            return None

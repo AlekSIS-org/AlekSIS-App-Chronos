@@ -14,8 +14,8 @@ def _css_class_from_lesson_state(
     record: Optional[LessonPeriod] = None, table: Optional[LessonsTable] = None
 ) -> str:
     """Return CSS class depending on lesson state."""
-    if record.get_substitution(record._week):
-        if record.get_substitution(record._week).cancelled:
+    if record.get_substitution():
+        if record.get_substitution().cancelled:
             return "success"
         else:
             return "warning"

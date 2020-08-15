@@ -114,10 +114,8 @@ class LessonSubstitutionManager(CurrentSiteManager):
 
 
 class WeekQuerySetMixin:
-    def annotate_week(self, week: Union[CalendarWeek, int]):
+    def annotate_week(self, week: Union[CalendarWeek]):
         """Annotate all lessons in the QuerySet with the number of the provided calendar week."""
-        if isinstance(week, int):
-            week = CalendarWeek(week=week)
 
         return self.annotate(
             _week=models.Value(week.week, models.IntegerField()),
@@ -226,6 +224,7 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
             **{
                 self._subst_path + "teachers": teacher,
                 self._subst_path + "week": F("_week"),
+                self._subst_path + "year": F("_year"),
             }
         )
 
@@ -235,7 +234,11 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
         """Filter for all lessons taking part in a certain room."""
         qs1 = self.filter(**{self._period_path + "room": room})
         qs2 = self.filter(
-            **{self._subst_path + "room": room, self._subst_path + "week": F("_week"),}
+            **{
+                self._subst_path + "room": room,
+                self._subst_path + "week": F("_week"),
+                self._subst_path + "year": F("_year"),
+            }
         )
 
         return qs1.union(qs2)
@@ -302,6 +305,8 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
             week = reference._week - 1
         else:
             week = reference._week
+
+        week = CalendarWeek(week=week, year=reference.lesson.get_year(week))
 
         return self.annotate_week(week).all()[next_index]
 
@@ -409,7 +414,7 @@ class SupervisionQuerySet(ValidityRangeRelatedQuerySet, WeekQuerySetMixin):
         """Filter for all supervisions given by a certain teacher."""
         if self.count() > 0:
             if hasattr(self[0], "_week"):
-                week = CalendarWeek(week=self[0]._week)
+                week = CalendarWeek(week=self[0]._week, year=self[0]._year)
             else:
                 week = CalendarWeek.current_week()
 
@@ -517,6 +522,8 @@ class ExtraLessonQuerySet(
         return self.filter(
             week__gte=week_start.week,
             week__lte=week_end.week,
+            year__gte=week_start.year,
+            year__lte=week_end.year,
             period__weekday__gte=start.weekday(),
             period__weekday__lte=end.weekday(),
         )

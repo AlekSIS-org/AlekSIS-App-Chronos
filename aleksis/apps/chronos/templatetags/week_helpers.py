@@ -22,7 +22,7 @@ def week_end(week: CalendarWeek) -> date:
 @register.filter
 def only_week(qs: QuerySet, week: Optional[CalendarWeek]) -> QuerySet:
     wanted_week = week or CalendarWeek()
-    return qs.filter(week=wanted_week.week)
+    return qs.filter(week=wanted_week.week, year=wanted_week.year)
 
 
 @register.simple_tag
@@ -31,12 +31,12 @@ def weekday_to_date(week: CalendarWeek, weekday: int) -> date:
 
 
 @register.simple_tag
-def period_to_date(week: Union[CalendarWeek, int], period) -> date:
+def period_to_date(week: CalendarWeek, period) -> date:
     return week_period_to_date(week, period)
 
 
 @register.simple_tag
-def period_to_time_start(week: Union[CalendarWeek, int], period) -> date:
+def period_to_time_start(week: CalendarWeek, period) -> date:
     return period.get_datetime_start(week)
 
 

@@ -32,5 +32,5 @@ def get_substitution_by_id(request: HttpRequest, id_: int, week: int):
     wanted_week = lesson_period.lesson.get_calendar_week(week)
 
     return LessonSubstitution.objects.filter(
-        week=wanted_week.week, lesson_period=lesson_period
+        week=wanted_week.week, year=wanted_week.year, lesson_period=lesson_period
     ).first()
