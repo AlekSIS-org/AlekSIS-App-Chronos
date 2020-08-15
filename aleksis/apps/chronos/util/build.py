@@ -61,9 +61,9 @@ def build_timetable(
     if is_person:
         extra_lessons = ExtraLesson.objects.on_day(date_ref).filter_from_person(obj)
     else:
-        extra_lessons = ExtraLesson.objects.filter(week=date_ref.week).filter_from_type(
-            type_, obj
-        )
+        extra_lessons = ExtraLesson.objects.filter(
+            week=date_ref.week, year=date_ref.year
+        ).filter_from_type(type_, obj)
 
     # Sort lesson periods in a dict
     extra_lessons_per_period = extra_lessons.group_by_periods(is_person=is_person)

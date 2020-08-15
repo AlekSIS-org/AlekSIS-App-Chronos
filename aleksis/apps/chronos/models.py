@@ -35,7 +35,12 @@ from aleksis.apps.chronos.managers import (
     TeacherPropertiesMixin,
     ValidityRangeQuerySet,
 )
-from aleksis.apps.chronos.mixins import ValidityRangeRelatedExtensibleModel
+from aleksis.apps.chronos.mixins import (
+    ValidityRangeRelatedExtensibleModel,
+    WeekAnnotationMixin,
+    WeekRelatedMixin,
+)
+from aleksis.apps.chronos.util.date import get_current_year
 from aleksis.apps.chronos.util.format import format_m2m
 from aleksis.core.managers import CurrentSiteManagerWithoutMigrations
 from aleksis.core.mixins import ExtensibleModel, SchoolTermRelatedExtensibleModel
@@ -135,15 +140,12 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
 
         return periods
 
-    def get_date(self, week: Optional[Union[CalendarWeek, int]] = None) -> date:
+    def get_date(self, week: Optional[CalendarWeek] = None) -> date:
         if isinstance(week, CalendarWeek):
             wanted_week = week
         else:
-            year = date.today().year
-            week_number = week or getattr(self, "_week", None) or CalendarWeek().week
-
-            if week_number < SchoolTerm.current.date_start.isocalendar()[1]:
-                year += 1
+            year = getattr(self, "_year", None) or date.today().year
+            week_number = getattr(self, "_week", None) or CalendarWeek().week
 
             wanted_week = CalendarWeek(year=year, week=week_number)
 
@@ -335,12 +337,13 @@ class Lesson(
         verbose_name_plural = _("Lessons")
 
 
-class LessonSubstitution(ExtensibleModel):
+class LessonSubstitution(ExtensibleModel, WeekRelatedMixin):
     objects = LessonSubstitutionManager.from_queryset(LessonSubstitutionQuerySet)()
 
     week = models.IntegerField(
         verbose_name=_("Week"), default=CalendarWeek.current_week
     )
+    year = models.IntegerField(verbose_name=_("Year"), default=get_current_year)
 
     lesson_period = models.ForeignKey(
         "LessonPeriod", models.CASCADE, "substitutions", verbose_name=_("Lesson period")
@@ -379,7 +382,7 @@ class LessonSubstitution(ExtensibleModel):
 
     @property
     def date(self):
-        week = CalendarWeek(week=self.week, year=self.lesson_period.lesson.get_year(self.week))
+        week = CalendarWeek(week=self.week, year=self.year)
         return week[self.lesson_period.period.weekday]
 
     def __str__(self):
@@ -388,7 +391,7 @@ class LessonSubstitution(ExtensibleModel):
     class Meta:
         unique_together = [["lesson_period", "week"]]
         ordering = [
-            "lesson_period__lesson__validity__date_start",
+            "year",
             "week",
             "lesson_period__period__weekday",
             "lesson_period__period__period",
@@ -403,7 +406,7 @@ class LessonSubstitution(ExtensibleModel):
         verbose_name_plural = _("Lesson substitutions")
 
 
-class LessonPeriod(ExtensibleModel):
+class LessonPeriod(ExtensibleModel, WeekAnnotationMixin):
     label_ = "lesson_period"
 
     objects = LessonPeriodManager.from_queryset(LessonPeriodQuerySet)()
@@ -429,14 +432,19 @@ class LessonPeriod(ExtensibleModel):
         verbose_name=_("Room"),
     )
 
-    def get_substitution(self, week: Optional[int] = None) -> LessonSubstitution:
-        wanted_week = week or getattr(self, "_week", None) or CalendarWeek().week
+    def get_substitution(
+        self, week: Optional[CalendarWeek] = None
+    ) -> LessonSubstitution:
+        wanted_week = week or self.week or CalendarWeek()
 
         # We iterate over all substitutions because this can make use of
         # prefetching when this model is loaded from outside, in contrast
         # to .filter()
         for substitution in self.substitutions.all():
-            if substitution.week == wanted_week:
+            if (
+                substitution.week == wanted_week.week
+                and substitution.year == wanted_week.year
+            ):
                 return substitution
         return None
 
@@ -484,17 +492,6 @@ class LessonPeriod(ExtensibleModel):
             To use this property,  the provided lesson period must be annotated with a week.
         """
         return LessonPeriod.objects.filter(lesson=self.lesson).next_lesson(self, -1)
-
-    @property
-    def week(self) -> Union[CalendarWeek, None]:
-        """Get annotated week as `CalendarWeek`.
-
-        Defaults to `None` if no week is annotated.
-        """
-        if hasattr(self, "_week"):
-            return CalendarWeek(week=self._week, year=self._year)
-        else:
-            return None
 
     class Meta:
         ordering = [
@@ -797,7 +794,7 @@ class Break(ValidityRangeRelatedExtensibleModel):
         verbose_name_plural = _("Breaks")
 
 
-class Supervision(ValidityRangeRelatedExtensibleModel):
+class Supervision(ValidityRangeRelatedExtensibleModel, WeekAnnotationMixin):
     objects = CurrentSiteManager.from_queryset(SupervisionQuerySet)()
 
     area = models.ForeignKey(
@@ -816,11 +813,16 @@ class Supervision(ValidityRangeRelatedExtensibleModel):
         verbose_name=_("Teacher"),
     )
 
+    def get_year(self, week: int) -> int:
+        year = self.validity.date_start.year
+        if week < int(self.validity.date_start.strftime("%V")):
+            year += 1
+        return year
+
     def get_substitution(
-        self, week: Optional[int] = None
+        self, week: Optional[CalendarWeek] = None
     ) -> Optional[SupervisionSubstitution]:
-        wanted_week = week or getattr(self, "_week", None) or CalendarWeek().week
-        wanted_week = CalendarWeek(week=wanted_week)
+        wanted_week = week or self.week or CalendarWeek()
         # We iterate over all substitutions because this can make use of
         # prefetching when this model is loaded from outside, in contrast
         # to .filter()
@@ -939,7 +941,9 @@ class Event(
         verbose_name_plural = _("Events")
 
 
-class ExtraLesson(SchoolTermRelatedExtensibleModel, GroupPropertiesMixin):
+class ExtraLesson(
+    SchoolTermRelatedExtensibleModel, GroupPropertiesMixin, WeekRelatedMixin
+):
     label_ = "extra_lesson"
 
     objects = CurrentSiteManager.from_queryset(ExtraLessonQuerySet)()
@@ -947,6 +951,7 @@ class ExtraLesson(SchoolTermRelatedExtensibleModel, GroupPropertiesMixin):
     week = models.IntegerField(
         verbose_name=_("Week"), default=CalendarWeek.current_week
     )
+    year = models.IntegerField(verbose_name=_("Year"), default=get_current_year)
     period = models.ForeignKey(
         "TimePeriod",
         models.CASCADE,
