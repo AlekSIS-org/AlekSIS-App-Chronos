@@ -199,9 +199,7 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
 
     def filter_participant(self, person: Union[Person, int]):
         """Filter for all lessons a participant (student) attends."""
-        return self.filter(
-            Q(**{self._period_path + "lesson__groups__members": person})
-        )
+        return self.filter(Q(**{self._period_path + "lesson__groups__members": person}))
 
     def filter_group(self, group: Union[Group, int]):
         """Filter for all lessons a group (class) regularly attends."""
