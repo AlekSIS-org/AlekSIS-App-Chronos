@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import date, datetime, time, timedelta
-from typing import Dict, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -253,6 +253,23 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
             .aggregate(weekday__max=Coalesce(Max("weekday"), 6))
             .get("weekday__max")
         )
+
+    @classproperty
+    def period_choices(cls) -> List[Tuple[Union[str, int], str]]:
+        """Build choice list of periods for usage within Django."""
+        time_periods = (
+            cls.objects.filter(weekday=cls.weekday_min)
+            .for_current_or_all()
+            .values("period", "time_start", "time_end")
+            .distinct()
+        )
+
+        period_choices = [("", "")] + [
+            (period, f"{period}.")
+            for period in time_periods.values_list("period", flat=True)
+        ]
+
+        return period_choices
 
     class Meta:
         unique_together = [["weekday", "period", "validity"]]
