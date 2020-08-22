@@ -6,7 +6,7 @@ from django.utils.translation import gettext as _
 
 from calendarweek import CalendarWeek
 
-from aleksis.apps.chronos.util.date import week_period_to_date
+from aleksis.apps.chronos.util.date import week_weekday_to_date
 from aleksis.core.managers import CurrentSiteManagerWithoutMigrations
 from aleksis.core.mixins import ExtensibleModel
 
@@ -36,7 +36,9 @@ class ValidityRangeRelatedExtensibleModel(ExtensibleModel):
 class WeekRelatedMixin:
     @property
     def date(self) -> date:
-        return week_period_to_date(self.calendar_week, self.lesson_period)
+        return week_weekday_to_date(
+            self.calendar_week, self.lesson_period.period.weekday
+        )
 
     @property
     def calendar_week(self) -> CalendarWeek:
