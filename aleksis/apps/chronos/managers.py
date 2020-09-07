@@ -112,11 +112,90 @@ class LessonSubstitutionManager(CurrentSiteManager):
             .select_related(
                 "lesson_period",
                 "lesson_period__lesson",
+                "lesson_period__lesson__subject",
                 "subject",
                 "lesson_period__period",
                 "room",
+                "lesson_period__room",
             )
-            .prefetch_related("lesson_period__lesson__groups", "teachers")
+            .prefetch_related(
+                "lesson_period__lesson__groups",
+                "lesson_period__lesson__groups__parent_groups",
+                "teachers",
+                "lesson_period__lesson__teachers",
+            )
+        )
+
+
+class SupervisionManager(CurrentSiteManager):
+    """Manager adding specific methods to supervisions."""
+
+    def get_queryset(self):
+        """Ensure all related data is loaded as well."""
+        return (
+            super()
+            .get_queryset()
+            .select_related(
+                "teacher",
+                "area",
+                "break_item",
+                "break_item__after_period",
+                "break_item__before_period",
+            )
+        )
+
+
+class SupervisionSubstitutionManager(CurrentSiteManager):
+    """Manager adding specific methods to supervision substitutions."""
+
+    def get_queryset(self):
+        """Ensure all related data is loaded as well."""
+        return (
+            super()
+            .get_queryset()
+            .select_related(
+                "teacher",
+                "supervision",
+                "supervision__teacher",
+                "supervision__area",
+                "supervision__break_item",
+                "supervision__break_item__after_period",
+                "supervision__break_item__before_period",
+            )
+        )
+
+
+class EventManager(CurrentSiteManager):
+    """Manager adding specific methods to events."""
+
+    def get_queryset(self):
+        """Ensure all related data is loaded as well."""
+        return (
+            super()
+            .get_queryset()
+            .select_related("period_from", "period_to")
+            .prefetch_related(
+                "groups",
+                "groups__school_term",
+                "groups__parent_groups",
+                "teachers",
+                "rooms",
+            )
+        )
+
+
+class ExtraLessonManager(CurrentSiteManager):
+    """Manager adding specific methods to extra lessons."""
+
+    def get_queryset(self):
+        """Ensure all related data is loaded as well."""
+        return (
+            super()
+            .get_queryset()
+            .select_related("room", "period", "subject")
+            .prefetch_related(
+                "groups", "groups__school_term", "groups__parent_groups", "teachers",
+            )
         )
 
 

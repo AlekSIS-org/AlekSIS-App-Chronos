@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import date, datetime, time, timedelta
 from typing import Dict, List, Optional, Tuple, Union
 
+from cache_memoize import cache_memoize
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Max, Min, Q
@@ -33,7 +34,7 @@ from aleksis.apps.chronos.managers import (
     LessonSubstitutionQuerySet,
     SupervisionQuerySet,
     TeacherPropertiesMixin,
-    ValidityRangeQuerySet,
+    ValidityRangeQuerySet, SupervisionManager, SupervisionSubstitutionManager, EventManager, ExtraLessonManager,
 )
 from aleksis.apps.chronos.mixins import (
     ValidityRangeRelatedExtensibleModel,
@@ -68,6 +69,7 @@ class ValidityRange(ExtensibleModel):
     date_end = models.DateField(verbose_name=_("End date"))
 
     @classmethod
+    @cache_memoize(3600)
     def get_current(cls, day: Optional[date] = None):
         if not day:
             day = timezone.now().date()
@@ -206,6 +208,7 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
         return url_prev, url_next
 
     @classproperty
+    @cache_memoize(3600)
     def period_min(cls) -> int:
 
         return (
@@ -215,6 +218,7 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
         )
 
     @classproperty
+    @cache_memoize(3600)
     def period_max(cls) -> int:
         return (
             cls.objects.for_current_or_all()
@@ -223,6 +227,7 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
         )
 
     @classproperty
+    @cache_memoize(3600)
     def time_min(cls) -> Optional[time]:
         return (
             cls.objects.for_current_or_all()
@@ -231,6 +236,7 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
         )
 
     @classproperty
+    @cache_memoize(3600)
     def time_max(cls) -> Optional[time]:
         return (
             cls.objects.for_current_or_all()
@@ -239,6 +245,7 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
         )
 
     @classproperty
+    @cache_memoize(3600)
     def weekday_min(cls) -> int:
         return (
             cls.objects.for_current_or_all()
@@ -247,6 +254,7 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
         )
 
     @classproperty
+    @cache_memoize(3600)
     def weekday_max(cls) -> int:
         return (
             cls.objects.for_current_or_all()
@@ -255,6 +263,7 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
         )
 
     @classproperty
+    @cache_memoize(3600)
     def period_choices(cls) -> List[Tuple[Union[str, int], str]]:
         """Build choice list of periods for usage within Django."""
         time_periods = (
@@ -812,7 +821,7 @@ class Break(ValidityRangeRelatedExtensibleModel):
 
 
 class Supervision(ValidityRangeRelatedExtensibleModel, WeekAnnotationMixin):
-    objects = CurrentSiteManager.from_queryset(SupervisionQuerySet)()
+    objects = SupervisionManager.from_queryset(SupervisionQuerySet)()
 
     area = models.ForeignKey(
         SupervisionArea,
@@ -863,6 +872,8 @@ class Supervision(ValidityRangeRelatedExtensibleModel, WeekAnnotationMixin):
 
 
 class SupervisionSubstitution(ExtensibleModel):
+    objects = SupervisionSubstitutionManager()
+
     date = models.DateField(verbose_name=_("Date"))
     supervision = models.ForeignKey(
         Supervision,
@@ -895,7 +906,7 @@ class Event(
 ):
     label_ = "event"
 
-    objects = CurrentSiteManager.from_queryset(EventQuerySet)()
+    objects = EventManager.from_queryset(EventQuerySet)()
 
     title = models.CharField(
         verbose_name=_("Title"), max_length=255, blank=True, null=True
@@ -963,7 +974,7 @@ class ExtraLesson(
 ):
     label_ = "extra_lesson"
 
-    objects = CurrentSiteManager.from_queryset(ExtraLessonQuerySet)()
+    objects = ExtraLessonManager.from_queryset(ExtraLessonQuerySet)()
 
     week = models.IntegerField(
         verbose_name=_("Week"), default=CalendarWeek.current_week
