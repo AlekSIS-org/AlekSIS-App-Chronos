@@ -89,7 +89,14 @@ class LessonPeriodManager(CurrentSiteManager):
         return (
             super()
             .get_queryset()
-            .select_related("lesson", "lesson__subject", "period", "room")
+            .select_related(
+                "lesson",
+                "lesson__subject",
+                "period",
+                "room",
+                "lesson__validity",
+                "lesson__validity__school_term",
+            )
             .prefetch_related("lesson__groups", "lesson__teachers", "substitutions")
         )
 
