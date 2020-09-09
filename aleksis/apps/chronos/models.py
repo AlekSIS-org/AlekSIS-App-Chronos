@@ -5,7 +5,6 @@ from __future__ import annotations
 from datetime import date, datetime, time, timedelta
 from typing import Dict, List, Optional, Tuple, Union
 
-from cache_memoize import cache_memoize
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Max, Min, Q
@@ -17,6 +16,7 @@ from django.utils.decorators import classproperty
 from django.utils.formats import date_format
 from django.utils.translation import gettext_lazy as _
 
+from cache_memoize import cache_memoize
 from calendarweek.django import CalendarWeek, i18n_day_abbrs_lazy, i18n_day_names_lazy
 from colorfield.fields import ColorField
 from django_global_request.middleware import get_request
@@ -25,7 +25,9 @@ from aleksis.apps.chronos.managers import (
     AbsenceQuerySet,
     BreakManager,
     CurrentSiteManager,
+    EventManager,
     EventQuerySet,
+    ExtraLessonManager,
     ExtraLessonQuerySet,
     GroupPropertiesMixin,
     HolidayQuerySet,
@@ -33,9 +35,11 @@ from aleksis.apps.chronos.managers import (
     LessonPeriodQuerySet,
     LessonSubstitutionManager,
     LessonSubstitutionQuerySet,
+    SupervisionManager,
     SupervisionQuerySet,
+    SupervisionSubstitutionManager,
     TeacherPropertiesMixin,
-    ValidityRangeQuerySet, SupervisionManager, SupervisionSubstitutionManager, EventManager, ExtraLessonManager,
+    ValidityRangeQuerySet,
 )
 from aleksis.apps.chronos.mixins import (
     ValidityRangeRelatedExtensibleModel,
