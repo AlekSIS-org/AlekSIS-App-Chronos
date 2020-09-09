@@ -89,7 +89,14 @@ class LessonPeriodManager(CurrentSiteManager):
         return (
             super()
             .get_queryset()
-            .select_related("lesson", "lesson__subject", "period", "room")
+            .select_related(
+                "lesson",
+                "lesson__subject",
+                "period",
+                "room",
+                "lesson__validity",
+                "lesson__validity__school_term",
+            )
             .prefetch_related("lesson__groups", "lesson__teachers", "substitutions")
         )
 
@@ -105,12 +112,99 @@ class LessonSubstitutionManager(CurrentSiteManager):
             .select_related(
                 "lesson_period",
                 "lesson_period__lesson",
+                "lesson_period__lesson__subject",
                 "subject",
                 "lesson_period__period",
                 "room",
+                "lesson_period__room",
             )
-            .prefetch_related("lesson_period__lesson__groups", "teachers")
+            .prefetch_related(
+                "lesson_period__lesson__groups",
+                "lesson_period__lesson__groups__parent_groups",
+                "teachers",
+                "lesson_period__lesson__teachers",
+            )
         )
+
+
+class SupervisionManager(CurrentSiteManager):
+    """Manager adding specific methods to supervisions."""
+
+    def get_queryset(self):
+        """Ensure all related data is loaded as well."""
+        return (
+            super()
+            .get_queryset()
+            .select_related(
+                "teacher",
+                "area",
+                "break_item",
+                "break_item__after_period",
+                "break_item__before_period",
+            )
+        )
+
+
+class SupervisionSubstitutionManager(CurrentSiteManager):
+    """Manager adding specific methods to supervision substitutions."""
+
+    def get_queryset(self):
+        """Ensure all related data is loaded as well."""
+        return (
+            super()
+            .get_queryset()
+            .select_related(
+                "teacher",
+                "supervision",
+                "supervision__teacher",
+                "supervision__area",
+                "supervision__break_item",
+                "supervision__break_item__after_period",
+                "supervision__break_item__before_period",
+            )
+        )
+
+
+class EventManager(CurrentSiteManager):
+    """Manager adding specific methods to events."""
+
+    def get_queryset(self):
+        """Ensure all related data is loaded as well."""
+        return (
+            super()
+            .get_queryset()
+            .select_related("period_from", "period_to")
+            .prefetch_related(
+                "groups",
+                "groups__school_term",
+                "groups__parent_groups",
+                "teachers",
+                "rooms",
+            )
+        )
+
+
+class ExtraLessonManager(CurrentSiteManager):
+    """Manager adding specific methods to extra lessons."""
+
+    def get_queryset(self):
+        """Ensure all related data is loaded as well."""
+        return (
+            super()
+            .get_queryset()
+            .select_related("room", "period", "subject")
+            .prefetch_related(
+                "groups", "groups__school_term", "groups__parent_groups", "teachers",
+            )
+        )
+
+
+class BreakManager(CurrentSiteManager):
+    """Manager adding specific methods to breaks."""
+
+    def get_queryset(self):
+        """Ensure all related data is loaded as well."""
+        return super().get_queryset().select_related("before_period", "after_period")
 
 
 class WeekQuerySetMixin:
@@ -242,15 +336,15 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
         return qs1.union(qs2)
 
     def filter_from_type(
-        self, type_: TimetableType, pk: int
+        self, type_: TimetableType, obj: Union[Person, Group, "Room", int]
     ) -> Optional[models.QuerySet]:
         """Filter lesson data for a group, teacher or room by provided type."""
         if type_ == TimetableType.GROUP:
-            return self.filter_group(pk)
+            return self.filter_group(obj)
         elif type_ == TimetableType.TEACHER:
-            return self.filter_teacher(pk)
+            return self.filter_teacher(obj)
         elif type_ == TimetableType.ROOM:
-            return self.filter_room(pk)
+            return self.filter_room(obj)
         else:
             return None
 
@@ -511,15 +605,15 @@ class TimetableQuerySet(models.QuerySet):
             return self.filter(room=room)
 
     def filter_from_type(
-        self, type_: TimetableType, pk: int
+        self, type_: TimetableType, obj: Union[Group, Person, "Room", int]
     ) -> Optional[models.QuerySet]:
         """Filter data for a group, teacher or room by provided type."""
         if type_ == TimetableType.GROUP:
-            return self.filter_group(pk)
+            return self.filter_group(obj)
         elif type_ == TimetableType.TEACHER:
-            return self.filter_teacher(pk)
+            return self.filter_teacher(obj)
         elif type_ == TimetableType.ROOM:
-            return self.filter_room(pk)
+            return self.filter_room(obj)
         else:
             return None
 

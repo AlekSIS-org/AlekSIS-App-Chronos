@@ -16,9 +16,15 @@ def get_el_by_pk(
     year: Optional[int] = None,
     week: Optional[int] = None,
     regular: Optional[str] = None,
+    prefetch: bool = False,
 ):
     if type_ == TimetableType.GROUP.value:
-        return get_object_or_404(Group, pk=pk)
+        return get_object_or_404(
+            Group.objects.prefetch_related("owners", "parent_groups")
+            if prefetch
+            else Group,
+            pk=pk,
+        )
     elif type_ == TimetableType.TEACHER.value:
         return get_object_or_404(Person, pk=pk)
     elif type_ == TimetableType.ROOM.value:

@@ -116,7 +116,7 @@ def timetable(
 
     is_smart = regular != "regular"
 
-    el = get_el_by_pk(request, type_, pk)
+    el = get_el_by_pk(request, type_, pk, prefetch=True)
 
     if type(el) == HttpResponseNotFound:
         return HttpResponseNotFound()
@@ -130,7 +130,7 @@ def timetable(
         wanted_week = CalendarWeek()
 
     # Build timetable
-    timetable = build_timetable(type_, pk, wanted_week)
+    timetable = build_timetable(type_, el, wanted_week)
     context["timetable"] = timetable
 
     # Add time periods

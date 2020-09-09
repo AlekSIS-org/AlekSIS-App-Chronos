@@ -7,7 +7,8 @@ from django.apps import apps
 from calendarweek import CalendarWeek
 
 from aleksis.apps.chronos.managers import TimetableType
-from aleksis.core.models import Person
+from aleksis.apps.chronos.models import Room
+from aleksis.core.models import Group, Person
 
 LessonPeriod = apps.get_model("chronos", "LessonPeriod")
 TimePeriod = apps.get_model("chronos", "TimePeriod")
@@ -22,15 +23,10 @@ ExtraLesson = apps.get_model("chronos", "ExtraLesson")
 
 def build_timetable(
     type_: Union[TimetableType, str],
-    obj: Union[int, Person],
+    obj: Union[Group, Room, Person],
     date_ref: Union[CalendarWeek, date],
 ):
     needed_breaks = []
-
-    if not isinstance(obj, int):
-        pk = obj.pk
-    else:
-        pk = obj
 
     is_person = False
     if type_ == "person":
