@@ -116,7 +116,7 @@ def timetable(
 
     is_smart = regular != "regular"
 
-    el = get_el_by_pk(request, type_, pk)
+    el = get_el_by_pk(request, type_, pk, prefetch=True)
 
     if type(el) == HttpResponseNotFound:
         return HttpResponseNotFound()
