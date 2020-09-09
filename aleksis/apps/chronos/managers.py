@@ -416,6 +416,53 @@ class LessonSubstitutionQuerySet(LessonDataQuerySet):
     _period_path = "lesson_period__"
     _subst_path = ""
 
+    def within_dates(self, start: date, end: date):
+        """Filter for all substitutions within a date range."""
+        start_week = CalendarWeek.from_date(start)
+        end_week = CalendarWeek.from_date(end)
+        return self.filter(
+            week__gte=start_week.week,
+            week__lte=end_week.week,
+            year__gte=start_week.year,
+            year__lte=end_week.year,
+        ).filter(
+            Q(
+                week=start_week.week,
+                year=start_week.year,
+                lesson_period__period__weekday__gte=start.weekday(),
+            )
+            | Q(
+                week=end_week.week,
+                year=end_week.year,
+                lesson_period__period__weekday__lte=end.weekday(),
+            )
+            | (
+                ~Q(week=start_week.week, year=start_week.year)
+                & ~Q(week=end_week.week, year=end_week.year)
+            )
+        )
+
+    def in_week(self, wanted_week: CalendarWeek):
+        """Filter for all lessons within a calendar week."""
+        return self.filter(week=wanted_week.week, year=wanted_week.year).annotate_week(
+            wanted_week
+        )
+
+    def on_day(self, day: date):
+        """Filter for all lessons on a certain day."""
+        week, weekday = week_weekday_from_date(day)
+
+        return self.in_week(week).filter(lesson_period__period__weekday=weekday)
+
+    def at_time(self, when: Optional[datetime] = None):
+        """Filter for the lessons taking place at a certain point in time."""
+        now = when or datetime.now()
+
+        return self.on_day(now.date()).filter(
+            lesson_period__period__time_start__lte=now.time(),
+            lesson_period__period__time_end__gte=now.time(),
+        )
+
     def affected_lessons(self):
         """Return all lessons which are affected by selected substitutions."""
         from .models import Lesson  # noaq
