@@ -130,7 +130,7 @@ def timetable(
         wanted_week = CalendarWeek()
 
     # Build timetable
-    timetable = build_timetable(type_, pk, wanted_week)
+    timetable = build_timetable(type_, el, wanted_week)
     context["timetable"] = timetable
 
     # Add time periods

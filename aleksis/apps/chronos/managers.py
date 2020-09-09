@@ -328,15 +328,15 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
         return qs1.union(qs2)
 
     def filter_from_type(
-        self, type_: TimetableType, pk: int
+        self, type_: TimetableType, obj: Union[Person, Group, "Room", int]
     ) -> Optional[models.QuerySet]:
         """Filter lesson data for a group, teacher or room by provided type."""
         if type_ == TimetableType.GROUP:
-            return self.filter_group(pk)
+            return self.filter_group(obj)
         elif type_ == TimetableType.TEACHER:
-            return self.filter_teacher(pk)
+            return self.filter_teacher(obj)
         elif type_ == TimetableType.ROOM:
-            return self.filter_room(pk)
+            return self.filter_room(obj)
         else:
             return None
 
@@ -550,15 +550,15 @@ class TimetableQuerySet(models.QuerySet):
             return self.filter(room=room)
 
     def filter_from_type(
-        self, type_: TimetableType, pk: int
+        self, type_: TimetableType, obj: Union[Group, Person, "Room", int]
     ) -> Optional[models.QuerySet]:
         """Filter data for a group, teacher or room by provided type."""
         if type_ == TimetableType.GROUP:
-            return self.filter_group(pk)
+            return self.filter_group(obj)
         elif type_ == TimetableType.TEACHER:
-            return self.filter_teacher(pk)
+            return self.filter_teacher(obj)
         elif type_ == TimetableType.ROOM:
-            return self.filter_room(pk)
+            return self.filter_room(obj)
         else:
             return None
 
