@@ -720,11 +720,18 @@ class Holiday(ExtensibleModel):
     @classmethod
     def in_week(cls, week: CalendarWeek) -> Dict[int, Optional["Holiday"]]:
         per_weekday = {}
+        holidays = Holiday.objects.in_week(week)
 
         for weekday in range(TimePeriod.weekday_min, TimePeriod.weekday_max + 1):
             holiday_date = week[weekday]
-            holidays = Holiday.objects.on_day(holiday_date)
-            if holidays.exists():
+            holidays = list(
+                filter(
+                    lambda h: holiday_date >= h.date_start
+                    and holiday_date <= h.date_end,
+                    holidays,
+                )
+            )
+            if holidays:
                 per_weekday[weekday] = holidays[0]
 
         return per_weekday
