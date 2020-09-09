@@ -199,6 +199,14 @@ class ExtraLessonManager(CurrentSiteManager):
         )
 
 
+class BreakManager(CurrentSiteManager):
+    """Manager adding specific methods to breaks."""
+
+    def get_queryset(self):
+        """Ensure all related data is loaded as well."""
+        return super().get_queryset().select_related("before_period", "after_period")
+
+
 class WeekQuerySetMixin:
     def annotate_week(self, week: Union[CalendarWeek]):
         """Annotate all lessons in the QuerySet with the number of the provided calendar week."""

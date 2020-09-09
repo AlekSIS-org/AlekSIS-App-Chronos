@@ -23,6 +23,7 @@ from django_global_request.middleware import get_request
 
 from aleksis.apps.chronos.managers import (
     AbsenceQuerySet,
+    BreakManager,
     CurrentSiteManager,
     EventQuerySet,
     ExtraLessonQuerySet,
@@ -750,6 +751,8 @@ class SupervisionArea(ExtensibleModel):
 
 
 class Break(ValidityRangeRelatedExtensibleModel):
+    objects = BreakManager()
+
     short_name = models.CharField(verbose_name=_("Short name"), max_length=255)
     name = models.CharField(verbose_name=_("Long name"), max_length=255)
 
