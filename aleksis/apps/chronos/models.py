@@ -202,6 +202,26 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
         return day
 
     @classmethod
+    def get_relevant_week_from_datetime(
+        cls, when: Optional[datetime] = None
+    ) -> CalendarWeek:
+        """Return currently relevant week depending on current date and time."""
+        if not when:
+            when = timezone.now()
+
+        day = when.date()
+        time = when.time()
+
+        week = CalendarWeek.from_date(day)
+
+        if cls.weekday_max and day.weekday() > cls.weekday_max:
+            week += 1
+        elif cls.time_max and time > cls.time_max and day.weekday() == cls.weekday_max:
+            week += 1
+
+        return week
+
+    @classmethod
     def get_prev_next_by_day(cls, day: date, url: str) -> Tuple[str, str]:
         """Build URLs for previous/next day."""
         day_prev = cls.get_next_relevant_day(day - timedelta(days=1), prev=True)
