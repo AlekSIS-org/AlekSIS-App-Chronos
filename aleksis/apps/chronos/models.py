@@ -17,7 +17,11 @@ from django.utils.formats import date_format
 from django.utils.translation import gettext_lazy as _
 
 from cache_memoize import cache_memoize
-from calendarweek.django import CalendarWeek, i18n_day_abbrs_lazy, i18n_day_names_lazy
+from calendarweek.django import (
+    CalendarWeek,
+    i18n_day_abbr_choices_lazy,
+    i18n_day_name_choices_lazy,
+)
 from colorfield.fields import ColorField
 from django_global_request.middleware import get_request
 
@@ -125,11 +129,11 @@ class ValidityRange(ExtensibleModel):
 
 
 class TimePeriod(ValidityRangeRelatedExtensibleModel):
-    WEEKDAY_CHOICES = list(enumerate(i18n_day_names_lazy()))
-    WEEKDAY_CHOICES_SHORT = list(enumerate(i18n_day_abbrs_lazy()))
+    WEEKDAY_CHOICES = i18n_day_name_choices_lazy()
+    WEEKDAY_CHOICES_SHORT = i18n_day_abbr_choices_lazy()
 
     weekday = models.PositiveSmallIntegerField(
-        verbose_name=_("Week day"), choices=WEEKDAY_CHOICES
+        verbose_name=_("Week day"), choices=i18n_day_name_choices_lazy()
     )
     period = models.PositiveSmallIntegerField(verbose_name=_("Number of period"))
 
