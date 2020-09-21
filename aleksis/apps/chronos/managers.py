@@ -514,7 +514,7 @@ class DateRangeQuerySetMixin:
         )
 
 
-class AbsenceQuerySet(SchoolTermRelatedQuerySet, DateRangeQuerySetMixin):
+class AbsenceQuerySet(DateRangeQuerySetMixin, SchoolTermRelatedQuerySet):
     """QuerySet with custom query methods for absences."""
 
     def absent_teachers(self):
@@ -637,7 +637,7 @@ class TimetableQuerySet(models.QuerySet):
 
 
 class EventQuerySet(
-    SchoolTermRelatedQuerySet, DateRangeQuerySetMixin, TimetableQuerySet
+    DateRangeQuerySetMixin, SchoolTermRelatedQuerySet, TimetableQuerySet
 ):
     """QuerySet with custom query methods for events."""
 
@@ -647,7 +647,7 @@ class EventQuerySet(
 
 
 class ExtraLessonQuerySet(
-    SchoolTermRelatedQuerySet, TimetableQuerySet, GroupByPeriodsMixin
+    TimetableQuerySet, SchoolTermRelatedQuerySet, GroupByPeriodsMixin
 ):
     """QuerySet with custom query methods for extra lessons."""
 
