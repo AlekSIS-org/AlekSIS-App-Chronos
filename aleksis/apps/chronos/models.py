@@ -105,7 +105,7 @@ class ValidityRange(ExtensibleModel):
 
         qs = ValidityRange.objects.within_dates(self.date_start, self.date_end)
         if self.pk:
-            qs.exclude(pk=self.pk)
+            qs = qs.exclude(pk=self.pk)
         if qs.exists():
             raise ValidationError(
                 _(
