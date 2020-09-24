@@ -12,8 +12,8 @@ from django.db.models.functions import Coalesce
 from django.forms import Media
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.functional import classproperty
 from django.utils.formats import date_format
+from django.utils.functional import classproperty
 from django.utils.translation import gettext_lazy as _
 
 from cache_memoize import cache_memoize
