@@ -244,6 +244,10 @@ def build_timetable(
                 if period in lesson_periods_per_period and not holiday:
                     col += lesson_periods_per_period[period]
 
+                # Add extra lessons
+                if period in extra_lessons_per_period and not holiday:
+                    col += extra_lessons_per_period[period]
+
                 # Add events
                 if period in events_per_period and not holiday:
                     col += events_per_period[period]
