@@ -126,8 +126,7 @@ def timetable(
     if year and week:
         wanted_week = CalendarWeek(year=year, week=week)
     else:
-        # TODO: On not used days show next week
-        wanted_week = CalendarWeek()
+        wanted_week = TimePeriod.get_relevant_week_from_datetime()
 
     # Build timetable
     timetable = build_timetable(type_, el, wanted_week)
