@@ -12,9 +12,7 @@
      class="{% if lesson_period.get_substitution and smart %}lesson-with-sub{% endif %}"
 >
   <p>
-    {% if lesson_period.is_hol and smart %}
-      {# Do nothing #}
-    {% elif lesson_period.get_substitution and smart %}
+    {% if lesson_period.get_substitution and smart %}
       {% with sub=lesson_period.get_substitution %}
         {# SUBSTITUTION #}
         {% if type.value == "room" and lesson_period.room != lesson_period.get_room and lesson_period.get_room != el %}
