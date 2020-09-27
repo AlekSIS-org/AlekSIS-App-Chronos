@@ -12,8 +12,8 @@ from django.db.models.functions import Coalesce
 from django.forms import Media
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.decorators import classproperty
 from django.utils.formats import date_format
+from django.utils.functional import classproperty
 from django.utils.translation import gettext_lazy as _
 
 from cache_memoize import cache_memoize
@@ -109,7 +109,7 @@ class ValidityRange(ExtensibleModel):
 
         qs = ValidityRange.objects.within_dates(self.date_start, self.date_end)
         if self.pk:
-            qs.exclude(pk=self.pk)
+            qs = qs.exclude(pk=self.pk)
         if qs.exists():
             raise ValidationError(
                 _(
@@ -204,6 +204,26 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
                 day = cw[cls.weekday_min]
 
         return day
+
+    @classmethod
+    def get_relevant_week_from_datetime(
+        cls, when: Optional[datetime] = None
+    ) -> CalendarWeek:
+        """Return currently relevant week depending on current date and time."""
+        if not when:
+            when = timezone.now()
+
+        day = when.date()
+        time = when.time()
+
+        week = CalendarWeek.from_date(day)
+
+        if cls.weekday_max and day.weekday() > cls.weekday_max:
+            week += 1
+        elif cls.time_max and time > cls.time_max and day.weekday() == cls.weekday_max:
+            week += 1
+
+        return week
 
     @classmethod
     def get_prev_next_by_day(cls, day: date, url: str) -> Tuple[str, str]:

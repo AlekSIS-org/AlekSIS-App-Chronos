@@ -4,8 +4,8 @@
   {% elif el.room and el.lesson_period.room %}
     {# New and old room available #}
     <span class="tooltipped" data-position="bottom"
-          data-tooltip="{{ el.lesson_period.room.name }} → {{ el.lesson_period.room.name }}"
-          title="{{ el.lesson_period.room.name }} → {{ el.lesson_period.room.name }}">
+          data-tooltip="{{ el.lesson_period.room.name }} → {{ el.room.name }}"
+          title="{{ el.lesson_period.room.name }} → {{ el.room.name }}">
       <a href="{% url "timetable" "room" el.lesson_period.room.pk %}">
           <s>{{ el.lesson_period.room.short_name }}</s>
       </a>
