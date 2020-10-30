@@ -71,7 +71,7 @@ spdx-license-list = "^0.5.0"
 
 [package.extras]
 ldap = ["django-auth-ldap (>=2.2,<3.0)"]
-celery = ["Celery[django,redis] (>=4.4.0,<5.0.0)", "django-celery-results (>=1.1.2,<2.0.0)", "django-celery-beat (>=2.0.0,<3.0.0)", "django-celery-email (>=3.0.0,<4.0.0)", "celery-haystack (>=0.10.0,<0.11.0)"]
+celery = ["Celery[redis,django] (>=4.4.0,<5.0.0)", "django-celery-results (>=1.1.2,<2.0.0)", "django-celery-beat (>=2.0.0,<3.0.0)", "django-celery-email (>=3.0.0,<4.0.0)", "celery-haystack (>=0.10.0,<0.11.0)"]
 
 [package.source]
 type = "git"
@@ -1022,7 +1022,7 @@ flake8 = "*"
 
 [[package]]
 name = "flake8-rst-docstrings"
-version = "0.0.13"
+version = "0.0.14"
 description = "Python docstring reStructuredText (RST) validator"
 category = "dev"
 optional = false
@@ -1929,7 +1929,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "02a4101824af952fc7ec22fb9178e530ac69b36aa4dd334a1dd176aea504e064"
+content-hash = "8bf0d507b46c9b692b7360ff0faa5d9c24b4388ea1c69cdc0a0be9b0979d4119"
 
 [metadata.files]
 alabaster = [
@@ -2276,7 +2276,7 @@ flake8-polyfill = [
     {file = "flake8_polyfill-1.0.2-py2.py3-none-any.whl", hash = "sha256:12be6a34ee3ab795b19ca73505e7b55826d5f6ad7230d31b18e106400169b9e9"},
 ]
 flake8-rst-docstrings = [
-    {file = "flake8-rst-docstrings-0.0.13.tar.gz", hash = "sha256:b1b619d81d879b874533973ac04ee5d823fdbe8c9f3701bfe802bb41813997b4"},
+    {file = "flake8-rst-docstrings-0.0.14.tar.gz", hash = "sha256:8f8bcb18f1408b506dd8ba2c99af3eac6128f6911d4bf6ff874b94caa70182a2"},
 ]
 gitdb = [
     {file = "gitdb-4.0.5-py3-none-any.whl", hash = "sha256:91f36bfb1ab7949b3b40e23736db18231bf7593edada2ba5c3a174a7b23657ac"},
