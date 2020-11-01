@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Optional, Union
 
 from django.utils.translation import gettext_lazy as _
@@ -77,6 +78,38 @@ def lesson_periods_as_teacher(self):
         - Dominik George <dominik.george@teckids.org>
     """
     return LessonPeriod.objects.filter(lesson__teachers=self)
+
+
+@Person.method
+def daily_lessons(self, day: date):
+    """Get all lessons of this person on the given day."""
+    return LessonPeriod.objects.on_day(day).filter_from_person(self)
+
+
+@Person.method
+def next_lesson(self, lesson_period: "LessonPeriod", day: date) -> Union["LessonPeriod", None]:
+    """Get next lesson of the person on the same day."""
+    daily_lessons = self.daily_lessons(day)
+    ids = list(daily_lessons.values_list("id", flat=True))
+    index = ids.index(lesson_period.pk)
+
+    if index + 1 < len(ids):
+        return daily_lessons[index + 1]
+    else:
+        return None
+
+
+@Person.method
+def previous_lesson(self, lesson_period: "LessonPeriod", day: date) -> Union["LessonPeriod", None]:
+    """Get previous lesson of the person on the same day."""
+    daily_lessons = self.daily_lessons(day)
+    ids = list(daily_lessons.values_list("id", flat=True))
+    index = ids.index(lesson_period.pk)
+
+    if index > 0:
+        return daily_lessons[index - 1]
+    else:
+        return None
 
 
 def for_timetables(cls):
