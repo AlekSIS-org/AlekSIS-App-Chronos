@@ -26,7 +26,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.7"
-calendarweek = "^0.4.4"
+calendarweek = "^0.4.6"
 AlekSIS = { git = "https://edugit.org/AlekSIS/official/AlekSIS" }
 
 [tool.poetry.dev-dependencies]
