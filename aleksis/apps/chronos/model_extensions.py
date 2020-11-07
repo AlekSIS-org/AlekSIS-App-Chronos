@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Optional, Union
 
 from django.utils.translation import gettext_lazy as _
@@ -77,6 +78,47 @@ def lesson_periods_as_teacher(self):
         - Dominik George <dominik.george@teckids.org>
     """
     return LessonPeriod.objects.filter(lesson__teachers=self)
+
+
+@Person.method
+def lessons_on_day(self, day: date):
+    """Get all lessons of this person (either as participant or teacher) on the given day."""
+    return (
+        LessonPeriod.objects.on_day(day)
+        .filter_from_person(self)
+        .order_by("period__period")
+    )
+
+
+@Person.method
+def _adjacent_lesson(
+    self, lesson_period: "LessonPeriod", day: date, offset: int = 1
+) -> Union["LessonPeriod", None]:
+    """Get next/previous lesson of the person (either as participant or teacher) on the same day."""
+    daily_lessons = self.lessons_on_day(day)
+    ids = list(daily_lessons.values_list("id", flat=True))
+    index = ids.index(lesson_period.pk)
+
+    if (offset > 0 and index + offset < len(ids)) or (offset < 0 and index >= -offset):
+        return daily_lessons[index + offset]
+    else:
+        return None
+
+
+@Person.method
+def next_lesson(
+    self, lesson_period: "LessonPeriod", day: date
+) -> Union["LessonPeriod", None]:
+    """Get next lesson of the person (either as participant or teacher) on the same day."""
+    return self._adjacent_lesson(lesson_period, day)
+
+
+@Person.method
+def previous_lesson(
+    self, lesson_period: "LessonPeriod", day: date
+) -> Union["LessonPeriod", None]:
+    """Get previous lesson of the person (either as participant or teacher) on the same day."""
+    return self._adjacent_lesson(lesson_period, day, offset=-1)
 
 
 def for_timetables(cls):
