@@ -344,6 +344,9 @@ class Room(ExtensibleModel):
     def __str__(self) -> str:
         return f"{self.name} ({self.short_name})"
 
+    def get_absolute_url(self) -> str:
+        return reverse("timetable", args=["room", self.id])
+
     class Meta:
         ordering = ["name", "short_name"]
         verbose_name = _("Room")
