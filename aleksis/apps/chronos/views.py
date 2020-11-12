@@ -30,18 +30,22 @@ def all_timetables(request: HttpRequest) -> HttpResponse:
     """View all timetables for persons, groups and rooms."""
     context = {}
 
-    teachers = Person.objects.annotate(
-        lessons_count=Count("lessons_as_teacher")
-    ).filter(lessons_count__gt=0)
+    teachers = (
+        Person.objects.annotate(lessons_count=Count("lessons_as_teacher"))
+        .filter(lessons_count__gt=0)
+        .order_by("short_name", "last_name")
+    )
     groups = Group.objects.for_current_school_term_or_all().annotate(
         lessons_count=Count("lessons"),
         child_lessons_count=Count("child_groups__lessons"),
     )
     classes = groups.filter(lessons_count__gt=0, parent_groups=None) | groups.filter(
         child_lessons_count__gt=0, parent_groups=None
-    )
-    rooms = Room.objects.annotate(lessons_count=Count("lesson_periods")).filter(
-        lessons_count__gt=0
+    ).order_by("short_name", "name")
+    rooms = (
+        Room.objects.annotate(lessons_count=Count("lesson_periods"))
+        .filter(lessons_count__gt=0)
+        .order_by("short_name", "name")
     )
 
     context["teachers"] = teachers
