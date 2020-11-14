@@ -210,7 +210,6 @@ class BreakManager(CurrentSiteManager):
 class WeekQuerySetMixin:
     def annotate_week(self, week: Union[CalendarWeek]):
         """Annotate all lessons in the QuerySet with the number of the provided calendar week."""
-
         return self.annotate(
             _week=models.Value(week.week, models.IntegerField()),
             _year=models.Value(week.year, models.IntegerField()),

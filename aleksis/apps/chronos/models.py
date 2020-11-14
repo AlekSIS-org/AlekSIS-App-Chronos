@@ -17,11 +17,7 @@ from django.utils.functional import classproperty
 from django.utils.translation import gettext_lazy as _
 
 from cache_memoize import cache_memoize
-from calendarweek.django import (
-    CalendarWeek,
-    i18n_day_abbr_choices_lazy,
-    i18n_day_name_choices_lazy,
-)
+from calendarweek.django import CalendarWeek, i18n_day_abbr_choices_lazy, i18n_day_name_choices_lazy
 from colorfield.fields import ColorField
 from django_global_request.middleware import get_request
 

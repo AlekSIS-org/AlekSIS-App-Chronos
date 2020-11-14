@@ -1,5 +1,5 @@
 from datetime import date
-from typing import List, Tuple, Union
+from typing import List, Tuple
 
 from django.utils import timezone
 
@@ -37,5 +37,4 @@ def get_weeks_for_year(year: int) -> List[CalendarWeek]:
 
 def get_current_year() -> int:
     """Get current year."""
-
     return timezone.now().year
