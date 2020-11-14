@@ -32,7 +32,7 @@ secondary = true
 [tool.poetry.dependencies]
 python = "^3.7"
 calendarweek = "^0.4.6"
-aleksis-core = "^2.0a3"
+aleksis-core = "^2.0a3.dev0"
 
 [tool.poetry.dev-dependencies]
 sphinx = "^3.0"
