@@ -52,11 +52,11 @@
         {% endif %}
 
 
-        {# When it isn't a room or the old plan, then display the extra text (e. g. work orders) #}
-        {% if not lesson_period.room == lesson_period.get_room and lesson_period.get_room != el and sub.comment %}
+        {# Display the comment (e. g. work orders) #}
+        {% if sub.comment %}
           <br>
           <small>
-            <em>{{ lesson_period.get_substitution.comment }}</em>
+            <em>{{ sub.comment }}</em>
           </small>
         {% endif %}
       {% endwith %}
