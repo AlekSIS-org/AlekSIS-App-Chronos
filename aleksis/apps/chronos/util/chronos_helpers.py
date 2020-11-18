@@ -20,10 +20,7 @@ def get_el_by_pk(
 ):
     if type_ == TimetableType.GROUP.value:
         return get_object_or_404(
-            Group.objects.prefetch_related("owners", "parent_groups")
-            if prefetch
-            else Group,
-            pk=pk,
+            Group.objects.prefetch_related("owners", "parent_groups") if prefetch else Group, pk=pk,
         )
     elif type_ == TimetableType.TEACHER.value:
         return get_object_or_404(Person, pk=pk)

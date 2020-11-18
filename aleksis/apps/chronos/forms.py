@@ -26,6 +26,4 @@ class LessonSubstitutionForm(forms.ModelForm):
         }
 
 
-AnnouncementForm.add_node_to_layout(
-    Fieldset(_("Options for timetables"), "show_in_timetables")
-)
+AnnouncementForm.add_node_to_layout(Fieldset(_("Options for timetables"), "show_in_timetables"))

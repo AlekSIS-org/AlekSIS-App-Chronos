@@ -83,11 +83,7 @@ def lesson_periods_as_teacher(self):
 @Person.method
 def lessons_on_day(self, day: date):
     """Get all lessons of this person (either as participant or teacher) on the given day."""
-    return (
-        LessonPeriod.objects.on_day(day)
-        .filter_from_person(self)
-        .order_by("period__period")
-    )
+    return LessonPeriod.objects.on_day(day).filter_from_person(self).order_by("period__period")
 
 
 @Person.method
@@ -106,17 +102,13 @@ def _adjacent_lesson(
 
 
 @Person.method
-def next_lesson(
-    self, lesson_period: "LessonPeriod", day: date
-) -> Union["LessonPeriod", None]:
+def next_lesson(self, lesson_period: "LessonPeriod", day: date) -> Union["LessonPeriod", None]:
     """Get next lesson of the person (either as participant or teacher) on the same day."""
     return self._adjacent_lesson(lesson_period, day)
 
 
 @Person.method
-def previous_lesson(
-    self, lesson_period: "LessonPeriod", day: date
-) -> Union["LessonPeriod", None]:
+def previous_lesson(self, lesson_period: "LessonPeriod", day: date) -> Union["LessonPeriod", None]:
     """Get previous lesson of the person (either as participant or teacher) on the same day."""
     return self._adjacent_lesson(lesson_period, day, offset=-1)
 
@@ -128,9 +120,7 @@ def for_timetables(cls):
 
 Announcement.class_method(for_timetables)
 Announcement.field(
-    show_in_timetables=BooleanField(
-        verbose_name=_("Show announcement in timetable views?")
-    )
+    show_in_timetables=BooleanField(verbose_name=_("Show announcement in timetable views?"))
 )
 
 Group.foreign_key("subject", Subject, related_name="groups")

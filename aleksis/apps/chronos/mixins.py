@@ -16,9 +16,7 @@ from .managers import ValidityRangeRelatedQuerySet
 class ValidityRangeRelatedExtensibleModel(ExtensibleModel):
     """Add relation to validity range."""
 
-    objects = CurrentSiteManagerWithoutMigrations.from_queryset(
-        ValidityRangeRelatedQuerySet
-    )()
+    objects = CurrentSiteManagerWithoutMigrations.from_queryset(ValidityRangeRelatedQuerySet)()
 
     validity = models.ForeignKey(
         "chronos.ValidityRange",
@@ -36,9 +34,7 @@ class ValidityRangeRelatedExtensibleModel(ExtensibleModel):
 class WeekRelatedMixin:
     @property
     def date(self) -> date:
-        return week_weekday_to_date(
-            self.calendar_week, self.lesson_period.period.weekday
-        )
+        return week_weekday_to_date(self.calendar_week, self.lesson_period.period.weekday)
 
     @property
     def calendar_week(self) -> CalendarWeek:

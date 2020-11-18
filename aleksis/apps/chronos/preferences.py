@@ -27,9 +27,7 @@ class ShortenGroups(BooleanPreference):
     name = "shorten_groups"
     default = True
     verbose_name = _("Shorten groups in timetable views")
-    help_text = _(
-        "If there are more groups than the set limit, they will be collapsed."
-    )
+    help_text = _("If there are more groups than the set limit, they will be collapsed.")
 
 
 @site_preferences_registry.register
