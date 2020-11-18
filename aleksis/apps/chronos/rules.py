@@ -11,9 +11,7 @@ from .models import LessonSubstitution
 from .util.predicates import has_timetable_perm
 
 # View timetable overview
-view_timetable_overview_predicate = has_person & has_global_perm(
-    "chronos.view_timetable_overview"
-)
+view_timetable_overview_predicate = has_person & has_global_perm("chronos.view_timetable_overview")
 add_perm("chronos.view_timetable_overview", view_timetable_overview_predicate)
 
 # View my timetable

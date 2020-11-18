@@ -90,33 +90,25 @@ class ValidityRange(ExtensibleModel):
     def clean(self):
         """Ensure there is only one validity range at each point of time."""
         if self.date_end < self.date_start:
-            raise ValidationError(
-                _("The start date must be earlier than the end date.")
-            )
+            raise ValidationError(_("The start date must be earlier than the end date."))
 
         if self.school_term:
             if (
                 self.date_end > self.school_term.date_end
                 or self.date_start < self.school_term.date_start
             ):
-                raise ValidationError(
-                    _("The validity range must be within the school term.")
-                )
+                raise ValidationError(_("The validity range must be within the school term."))
 
         qs = ValidityRange.objects.within_dates(self.date_start, self.date_end)
         if self.pk:
             qs = qs.exclude(pk=self.pk)
         if qs.exists():
             raise ValidationError(
-                _(
-                    "There is already a validity range for this time or a part of this time."
-                )
+                _("There is already a validity range for this time or a part of this time.")
             )
 
     def __str__(self):
-        return (
-            self.name or f"{date_format(self.date_start)}–{date_format(self.date_end)}"
-        )
+        return self.name or f"{date_format(self.date_start)}–{date_format(self.date_end)}"
 
     class Meta:
         verbose_name = _("Validity range")
@@ -158,16 +150,12 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
 
         return wanted_week[self.weekday]
 
-    def get_datetime_start(
-        self, week: Optional[Union[CalendarWeek, int]] = None
-    ) -> datetime:
+    def get_datetime_start(self, week: Optional[Union[CalendarWeek, int]] = None) -> datetime:
         """Get datetime of lesson start in a specific week."""
         day = self.get_date(week)
         return datetime.combine(day, self.time_start)
 
-    def get_datetime_end(
-        self, week: Optional[Union[CalendarWeek, int]] = None
-    ) -> datetime:
+    def get_datetime_end(self, week: Optional[Union[CalendarWeek, int]] = None) -> datetime:
         """Get datetime of lesson end in a specific week."""
         day = self.get_date(week)
         return datetime.combine(day, self.time_end)
@@ -202,9 +190,7 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
         return day
 
     @classmethod
-    def get_relevant_week_from_datetime(
-        cls, when: Optional[datetime] = None
-    ) -> CalendarWeek:
+    def get_relevant_week_from_datetime(cls, when: Optional[datetime] = None) -> CalendarWeek:
         """Return currently relevant week depending on current date and time."""
         if not when:
             when = timezone.now()
@@ -254,20 +240,12 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
     @classproperty
     @cache_memoize(3600)
     def time_min(cls) -> Optional[time]:
-        return (
-            cls.objects.for_current_or_all()
-            .aggregate(Min("time_start"))
-            .get("time_start__min")
-        )
+        return cls.objects.for_current_or_all().aggregate(Min("time_start")).get("time_start__min")
 
     @classproperty
     @cache_memoize(3600)
     def time_max(cls) -> Optional[time]:
-        return (
-            cls.objects.for_current_or_all()
-            .aggregate(Max("time_end"))
-            .get("time_end__max")
-        )
+        return cls.objects.for_current_or_all().aggregate(Max("time_end")).get("time_end__max")
 
     @classproperty
     @cache_memoize(3600)
@@ -299,8 +277,7 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
         )
 
         period_choices = [("", "")] + [
-            (period, f"{period}.")
-            for period in time_periods.values_list("period", flat=True)
+            (period, f"{period}.") for period in time_periods.values_list("period", flat=True)
         ]
 
         return period_choices
@@ -314,9 +291,7 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
 
 
 class Subject(ExtensibleModel):
-    short_name = models.CharField(
-        verbose_name=_("Short name"), max_length=255, unique=True
-    )
+    short_name = models.CharField(verbose_name=_("Short name"), max_length=255, unique=True)
     name = models.CharField(verbose_name=_("Long name"), max_length=255, unique=True)
 
     colour_fg = ColorField(verbose_name=_("Foreground colour"), blank=True)
@@ -332,9 +307,7 @@ class Subject(ExtensibleModel):
 
 
 class Room(ExtensibleModel):
-    short_name = models.CharField(
-        verbose_name=_("Short name"), max_length=255, unique=True
-    )
+    short_name = models.CharField(verbose_name=_("Short name"), max_length=255, unique=True)
     name = models.CharField(verbose_name=_("Long name"), max_length=255)
 
     def __str__(self) -> str:
@@ -349,27 +322,17 @@ class Room(ExtensibleModel):
         verbose_name_plural = _("Rooms")
 
 
-class Lesson(
-    ValidityRangeRelatedExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin
-):
+class Lesson(ValidityRangeRelatedExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
     subject = models.ForeignKey(
-        "Subject",
-        on_delete=models.CASCADE,
-        related_name="lessons",
-        verbose_name=_("Subject"),
+        "Subject", on_delete=models.CASCADE, related_name="lessons", verbose_name=_("Subject"),
     )
     teachers = models.ManyToManyField(
         "core.Person", related_name="lessons_as_teacher", verbose_name=_("Teachers")
     )
     periods = models.ManyToManyField(
-        "TimePeriod",
-        related_name="lessons",
-        through="LessonPeriod",
-        verbose_name=_("Periods"),
+        "TimePeriod", related_name="lessons", through="LessonPeriod", verbose_name=_("Periods"),
     )
-    groups = models.ManyToManyField(
-        "core.Group", related_name="lessons", verbose_name=_("Groups")
-    )
+    groups = models.ManyToManyField("core.Group", related_name="lessons", verbose_name=_("Groups"))
 
     def get_year(self, week: int) -> int:
         year = self.validity.date_start.year
@@ -394,9 +357,7 @@ class Lesson(
 class LessonSubstitution(ExtensibleModel, WeekRelatedMixin):
     objects = LessonSubstitutionManager.from_queryset(LessonSubstitutionQuerySet)()
 
-    week = models.IntegerField(
-        verbose_name=_("Week"), default=CalendarWeek.current_week
-    )
+    week = models.IntegerField(verbose_name=_("Week"), default=CalendarWeek.current_week)
     year = models.IntegerField(verbose_name=_("Year"), default=get_current_year)
 
     lesson_period = models.ForeignKey(
@@ -412,14 +373,9 @@ class LessonSubstitution(ExtensibleModel, WeekRelatedMixin):
         verbose_name=_("Subject"),
     )
     teachers = models.ManyToManyField(
-        "core.Person",
-        related_name="lesson_substitutions",
-        blank=True,
-        verbose_name=_("Teachers"),
+        "core.Person", related_name="lesson_substitutions", blank=True, verbose_name=_("Teachers"),
     )
-    room = models.ForeignKey(
-        "Room", models.CASCADE, null=True, blank=True, verbose_name=_("Room")
-    )
+    room = models.ForeignKey("Room", models.CASCADE, null=True, blank=True, verbose_name=_("Room"))
 
     cancelled = models.BooleanField(default=False, verbose_name=_("Cancelled?"))
     cancelled_for_teachers = models.BooleanField(
@@ -430,9 +386,7 @@ class LessonSubstitution(ExtensibleModel, WeekRelatedMixin):
 
     def clean(self) -> None:
         if self.subject and self.cancelled:
-            raise ValidationError(
-                _("Lessons can only be either substituted or cancelled.")
-            )
+            raise ValidationError(_("Lessons can only be either substituted or cancelled."))
 
     @property
     def date(self):
@@ -466,39 +420,24 @@ class LessonPeriod(ExtensibleModel, WeekAnnotationMixin):
     objects = LessonPeriodManager.from_queryset(LessonPeriodQuerySet)()
 
     lesson = models.ForeignKey(
-        "Lesson",
-        models.CASCADE,
-        related_name="lesson_periods",
-        verbose_name=_("Lesson"),
+        "Lesson", models.CASCADE, related_name="lesson_periods", verbose_name=_("Lesson"),
     )
     period = models.ForeignKey(
-        "TimePeriod",
-        models.CASCADE,
-        related_name="lesson_periods",
-        verbose_name=_("Time period"),
+        "TimePeriod", models.CASCADE, related_name="lesson_periods", verbose_name=_("Time period"),
     )
 
     room = models.ForeignKey(
-        "Room",
-        models.CASCADE,
-        null=True,
-        related_name="lesson_periods",
-        verbose_name=_("Room"),
+        "Room", models.CASCADE, null=True, related_name="lesson_periods", verbose_name=_("Room"),
     )
 
-    def get_substitution(
-        self, week: Optional[CalendarWeek] = None
-    ) -> LessonSubstitution:
+    def get_substitution(self, week: Optional[CalendarWeek] = None) -> LessonSubstitution:
         wanted_week = week or self.week or CalendarWeek()
 
         # We iterate over all substitutions because this can make use of
         # prefetching when this model is loaded from outside, in contrast
         # to .filter()
         for substitution in self.substitutions.all():
-            if (
-                substitution.week == wanted_week.week
-                and substitution.year == wanted_week.year
-            ):
+            if substitution.week == wanted_week.week and substitution.year == wanted_week.year:
                 return substitution
         return None
 
@@ -567,9 +506,7 @@ class TimetableWidget(DashboardWidget):
 
         request = get_request()
         context = {"has_plan": True}
-        wanted_day = TimePeriod.get_next_relevant_day(
-            timezone.now().date(), datetime.now().time()
-        )
+        wanted_day = TimePeriod.get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
         if has_person(request.user):
             person = request.user.person
@@ -603,9 +540,7 @@ class TimetableWidget(DashboardWidget):
 
 class AbsenceReason(ExtensibleModel):
     short_name = models.CharField(verbose_name=_("Short name"), max_length=255)
-    name = models.CharField(
-        verbose_name=_("Name"), blank=True, null=True, max_length=255
-    )
+    name = models.CharField(verbose_name=_("Name"), blank=True, null=True, max_length=255)
 
     def __str__(self):
         if self.name:
@@ -692,10 +627,7 @@ class Absence(SchoolTermRelatedExtensibleModel):
 
 class Exam(SchoolTermRelatedExtensibleModel):
     lesson = models.ForeignKey(
-        "Lesson",
-        on_delete=models.CASCADE,
-        related_name="exams",
-        verbose_name=_("Lesson"),
+        "Lesson", on_delete=models.CASCADE, related_name="exams", verbose_name=_("Lesson"),
     )
 
     date = models.DateField(verbose_name=_("Date of exam"), null=True)
@@ -749,9 +681,7 @@ class Holiday(ExtensibleModel):
             holiday_date = week[weekday]
             holidays = list(
                 filter(
-                    lambda h: holiday_date >= h.date_start
-                    and holiday_date <= h.date_end,
-                    holidays,
+                    lambda h: holiday_date >= h.date_start and holiday_date <= h.date_end, holidays,
                 )
             )
             if holidays:
@@ -809,27 +739,15 @@ class Break(ValidityRangeRelatedExtensibleModel):
 
     @property
     def weekday(self):
-        return (
-            self.after_period.weekday
-            if self.after_period
-            else self.before_period.weekday
-        )
+        return self.after_period.weekday if self.after_period else self.before_period.weekday
 
     @property
     def after_period_number(self):
-        return (
-            self.after_period.period
-            if self.after_period
-            else self.before_period.period - 1
-        )
+        return self.after_period.period if self.after_period else self.before_period.period - 1
 
     @property
     def before_period_number(self):
-        return (
-            self.before_period.period
-            if self.before_period
-            else self.after_period.period + 1
-        )
+        return self.before_period.period if self.before_period else self.after_period.period + 1
 
     @property
     def time_start(self):
@@ -870,10 +788,7 @@ class Supervision(ValidityRangeRelatedExtensibleModel, WeekAnnotationMixin):
         Break, models.CASCADE, verbose_name=_("Break"), related_name="supervisions"
     )
     teacher = models.ForeignKey(
-        "core.Person",
-        models.CASCADE,
-        related_name="supervisions",
-        verbose_name=_("Teacher"),
+        "core.Person", models.CASCADE, related_name="supervisions", verbose_name=_("Teacher"),
     )
 
     def get_year(self, week: int) -> int:
@@ -913,10 +828,7 @@ class SupervisionSubstitution(ExtensibleModel):
 
     date = models.DateField(verbose_name=_("Date"))
     supervision = models.ForeignKey(
-        Supervision,
-        models.CASCADE,
-        verbose_name=_("Supervision"),
-        related_name="substitutions",
+        Supervision, models.CASCADE, verbose_name=_("Supervision"), related_name="substitutions",
     )
     teacher = models.ForeignKey(
         "core.Person",
@@ -938,16 +850,12 @@ class SupervisionSubstitution(ExtensibleModel):
         verbose_name_plural = _("Supervision substitutions")
 
 
-class Event(
-    SchoolTermRelatedExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin
-):
+class Event(SchoolTermRelatedExtensibleModel, GroupPropertiesMixin, TeacherPropertiesMixin):
     label_ = "event"
 
     objects = EventManager.from_queryset(EventQuerySet)()
 
-    title = models.CharField(
-        verbose_name=_("Title"), max_length=255, blank=True, null=True
-    )
+    title = models.CharField(verbose_name=_("Title"), max_length=255, blank=True, null=True)
 
     date_start = models.DateField(verbose_name=_("Start date"), null=True)
     date_end = models.DateField(verbose_name=_("End date"), null=True)
@@ -959,18 +867,11 @@ class Event(
         related_name="+",
     )
     period_to = models.ForeignKey(
-        "TimePeriod",
-        on_delete=models.CASCADE,
-        verbose_name=_("End time period"),
-        related_name="+",
+        "TimePeriod", on_delete=models.CASCADE, verbose_name=_("End time period"), related_name="+",
     )
 
-    groups = models.ManyToManyField(
-        "core.Group", related_name="events", verbose_name=_("Groups")
-    )
-    rooms = models.ManyToManyField(
-        "Room", related_name="events", verbose_name=_("Rooms")
-    )
+    groups = models.ManyToManyField("core.Group", related_name="events", verbose_name=_("Groups"))
+    rooms = models.ManyToManyField("Room", related_name="events", verbose_name=_("Rooms"))
     teachers = models.ManyToManyField(
         "core.Person", related_name="events", verbose_name=_("Teachers")
     )
@@ -999,29 +900,20 @@ class Event(
 
     class Meta:
         ordering = ["date_start"]
-        indexes = [
-            models.Index(fields=["period_from", "period_to", "date_start", "date_end"])
-        ]
+        indexes = [models.Index(fields=["period_from", "period_to", "date_start", "date_end"])]
         verbose_name = _("Event")
         verbose_name_plural = _("Events")
 
 
-class ExtraLesson(
-    SchoolTermRelatedExtensibleModel, GroupPropertiesMixin, WeekRelatedMixin
-):
+class ExtraLesson(SchoolTermRelatedExtensibleModel, GroupPropertiesMixin, WeekRelatedMixin):
     label_ = "extra_lesson"
 
     objects = ExtraLessonManager.from_queryset(ExtraLessonQuerySet)()
 
-    week = models.IntegerField(
-        verbose_name=_("Week"), default=CalendarWeek.current_week
-    )
+    week = models.IntegerField(verbose_name=_("Week"), default=CalendarWeek.current_week)
     year = models.IntegerField(verbose_name=_("Year"), default=get_current_year)
     period = models.ForeignKey(
-        "TimePeriod",
-        models.CASCADE,
-        related_name="extra_lessons",
-        verbose_name=_("Time period"),
+        "TimePeriod", models.CASCADE, related_name="extra_lessons", verbose_name=_("Time period"),
     )
 
     subject = models.ForeignKey(
@@ -1034,21 +926,13 @@ class ExtraLesson(
         "core.Group", related_name="extra_lessons", verbose_name=_("Groups")
     )
     teachers = models.ManyToManyField(
-        "core.Person",
-        related_name="extra_lessons_as_teacher",
-        verbose_name=_("Teachers"),
+        "core.Person", related_name="extra_lessons_as_teacher", verbose_name=_("Teachers"),
     )
     room = models.ForeignKey(
-        "Room",
-        models.CASCADE,
-        null=True,
-        related_name="extra_lessons",
-        verbose_name=_("Room"),
+        "Room", models.CASCADE, null=True, related_name="extra_lessons", verbose_name=_("Room"),
     )
 
-    comment = models.CharField(
-        verbose_name=_("Comment"), blank=True, null=True, max_length=255
-    )
+    comment = models.CharField(verbose_name=_("Comment"), blank=True, null=True, max_length=255)
 
     def __str__(self):
         return f"{self.week}, {self.period}, {self.subject}"

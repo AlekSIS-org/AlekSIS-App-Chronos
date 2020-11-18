@@ -33,9 +33,7 @@ class ValidityRangeRelatedQuerySet(QuerySet):
         """Filter for all objects on a certain day."""
         return self.within_dates(day, day)
 
-    def for_validity_range(
-        self, validity_range: "ValidityRange"
-    ) -> "ValidityRangeRelatedQuerySet":
+    def for_validity_range(self, validity_range: "ValidityRange") -> "ValidityRangeRelatedQuerySet":
         return self.filter(validity=validity_range)
 
     def for_current_or_all(self) -> "ValidityRangeRelatedQuerySet":
@@ -175,11 +173,7 @@ class EventManager(CurrentSiteManager):
             .get_queryset()
             .select_related("period_from", "period_to")
             .prefetch_related(
-                "groups",
-                "groups__school_term",
-                "groups__parent_groups",
-                "teachers",
-                "rooms",
+                "groups", "groups__school_term", "groups__parent_groups", "teachers", "rooms",
             )
         )
 
@@ -193,9 +187,7 @@ class ExtraLessonManager(CurrentSiteManager):
             super()
             .get_queryset()
             .select_related("room", "period", "subject")
-            .prefetch_related(
-                "groups", "groups__school_term", "groups__parent_groups", "teachers",
-            )
+            .prefetch_related("groups", "groups__school_term", "groups__parent_groups", "teachers",)
         )
 
 
@@ -259,10 +251,8 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
     def in_week(self, wanted_week: CalendarWeek):
         """Filter for all lessons within a calendar week."""
         return self.within_dates(
-            wanted_week[0]
-            + timedelta(days=1) * (F(self._period_path + "period__weekday")),
-            wanted_week[0]
-            + timedelta(days=1) * (F(self._period_path + "period__weekday")),
+            wanted_week[0] + timedelta(days=1) * (F(self._period_path + "period__weekday")),
+            wanted_week[0] + timedelta(days=1) * (F(self._period_path + "period__weekday")),
         ).annotate_week(wanted_week)
 
     def on_day(self, day: date):
@@ -376,9 +366,7 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
 
         return lesson_periods
 
-    def next_lesson(
-        self, reference: "LessonPeriod", offset: Optional[int] = 1
-    ) -> "LessonPeriod":
+    def next_lesson(self, reference: "LessonPeriod", offset: Optional[int] = 1) -> "LessonPeriod":
         """Get another lesson in an ordered set of lessons.
 
         By default, it returns the next lesson in the set. By passing the offset argument,
@@ -443,9 +431,7 @@ class LessonSubstitutionQuerySet(LessonDataQuerySet):
 
     def in_week(self, wanted_week: CalendarWeek):
         """Filter for all lessons within a calendar week."""
-        return self.filter(week=wanted_week.week, year=wanted_week.year).annotate_week(
-            wanted_week
-        )
+        return self.filter(week=wanted_week.week, year=wanted_week.year).annotate_week(wanted_week)
 
     def on_day(self, day: date):
         """Filter for all lessons on a certain day."""
@@ -475,8 +461,7 @@ class LessonSubstitutionQuerySet(LessonDataQuerySet):
         selected substitutions (as substituted or substituting).
         """
         return Person.objects.filter(
-            Q(lessons_as_teacher__in=self.affected_lessons())
-            | Q(lesson_substitutions__in=self)
+            Q(lessons_as_teacher__in=self.affected_lessons()) | Q(lesson_substitutions__in=self)
         ).annotate(lessons_count=Count("lessons_as_teacher"))
 
     def affected_groups(self):
@@ -517,19 +502,13 @@ class AbsenceQuerySet(DateRangeQuerySetMixin, SchoolTermRelatedQuerySet):
     """QuerySet with custom query methods for absences."""
 
     def absent_teachers(self):
-        return Person.objects.filter(absences__in=self).annotate(
-            absences_count=Count("absences")
-        )
+        return Person.objects.filter(absences__in=self).annotate(absences_count=Count("absences"))
 
     def absent_groups(self):
-        return Group.objects.filter(absences__in=self).annotate(
-            absences_count=Count("absences")
-        )
+        return Group.objects.filter(absences__in=self).annotate(absences_count=Count("absences"))
 
     def absent_rooms(self):
-        return Person.objects.filter(absences__in=self).annotate(
-            absences_count=Count("absences")
-        )
+        return Person.objects.filter(absences__in=self).annotate(absences_count=Count("absences"))
 
 
 class HolidayQuerySet(QuerySet, DateRangeQuerySetMixin):
@@ -635,9 +614,7 @@ class TimetableQuerySet(models.QuerySet):
             return None
 
 
-class EventQuerySet(
-    DateRangeQuerySetMixin, SchoolTermRelatedQuerySet, TimetableQuerySet
-):
+class EventQuerySet(DateRangeQuerySetMixin, SchoolTermRelatedQuerySet, TimetableQuerySet):
     """QuerySet with custom query methods for events."""
 
     def annotate_day(self, day: date):
@@ -645,9 +622,7 @@ class EventQuerySet(
         return self.annotate(_date=models.Value(day, models.DateField()))
 
 
-class ExtraLessonQuerySet(
-    TimetableQuerySet, SchoolTermRelatedQuerySet, GroupByPeriodsMixin
-):
+class ExtraLessonQuerySet(TimetableQuerySet, SchoolTermRelatedQuerySet, GroupByPeriodsMixin):
     """QuerySet with custom query methods for extra lessons."""
 
     _multiple_rooms = False

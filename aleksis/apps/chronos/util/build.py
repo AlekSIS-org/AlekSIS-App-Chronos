@@ -46,9 +46,7 @@ def build_timetable(
     if is_person:
         lesson_periods = LessonPeriod.objects.daily_lessons_for_person(obj, date_ref)
     else:
-        lesson_periods = LessonPeriod.objects.in_week(date_ref).filter_from_type(
-            type_, obj
-        )
+        lesson_periods = LessonPeriod.objects.in_week(date_ref).filter_from_type(type_, obj)
 
     # Sort lesson periods in a dict
     lesson_periods_per_period = lesson_periods.group_by_periods(is_person=is_person)
@@ -127,10 +125,7 @@ def build_timetable(
         else:
             week = date_ref
         supervisions = (
-            Supervision.objects.in_week(week)
-            .all()
-            .annotate_week(week)
-            .filter_by_teacher(obj)
+            Supervision.objects.in_week(week).all().annotate_week(week).filter_by_teacher(obj)
         )
 
         if is_person:
@@ -145,10 +140,7 @@ def build_timetable(
             if period_after_break not in needed_breaks:
                 needed_breaks.append(period_after_break)
 
-            if (
-                not is_person
-                and period_after_break not in supervisions_per_period_after
-            ):
+            if not is_person and period_after_break not in supervisions_per_period_after:
                 supervisions_per_period_after[period_after_break] = {}
 
             if is_person:
@@ -174,9 +166,7 @@ def build_timetable(
             if not is_person:
                 cols = []
 
-                for weekday in range(
-                    TimePeriod.weekday_min, TimePeriod.weekday_max + 1
-                ):
+                for weekday in range(TimePeriod.weekday_min, TimePeriod.weekday_max + 1):
                     col = None
                     if (
                         period in supervisions_per_period_after
@@ -205,32 +195,21 @@ def build_timetable(
 
             if not is_person:
                 cols = []
-                for weekday in range(
-                    TimePeriod.weekday_min, TimePeriod.weekday_max + 1
-                ):
+                for weekday in range(TimePeriod.weekday_min, TimePeriod.weekday_max + 1):
                     col = []
 
                     # Add lesson periods
-                    if (
-                        period in lesson_periods_per_period
-                        and weekday not in holidays_per_weekday
-                    ):
+                    if period in lesson_periods_per_period and weekday not in holidays_per_weekday:
                         if weekday in lesson_periods_per_period[period]:
                             col += lesson_periods_per_period[period][weekday]
 
                     # Add extra lessons
-                    if (
-                        period in extra_lessons_per_period
-                        and weekday not in holidays_per_weekday
-                    ):
+                    if period in extra_lessons_per_period and weekday not in holidays_per_weekday:
                         if weekday in extra_lessons_per_period[period]:
                             col += extra_lessons_per_period[period][weekday]
 
                     # Add events
-                    if (
-                        period in events_per_period
-                        and weekday not in holidays_per_weekday
-                    ):
+                    if period in events_per_period and weekday not in holidays_per_weekday:
                         if weekday in events_per_period[period]:
                             col += events_per_period[period][weekday]
 
@@ -331,9 +310,7 @@ def build_substitutions_list(wanted_day: date) -> List[dict]:
     return rows
 
 
-def build_weekdays(
-    base: List[Tuple[int, str]], wanted_week: CalendarWeek
-) -> List[dict]:
+def build_weekdays(base: List[Tuple[int, str]], wanted_week: CalendarWeek) -> List[dict]:
     holidays_per_weekday = Holiday.in_week(wanted_week)
 
     weekdays = []
@@ -343,9 +320,7 @@ def build_weekdays(
             "key": key,
             "name": name,
             "date": wanted_week[key],
-            "holiday": holidays_per_weekday[key]
-            if key in holidays_per_weekday
-            else None,
+            "holiday": holidays_per_weekday[key] if key in holidays_per_weekday else None,
         }
         weekdays.append(weekday)
 
