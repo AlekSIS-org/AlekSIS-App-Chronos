@@ -245,18 +245,41 @@ def build_substitutions_list(wanted_day: date) -> List[dict]:
         "lesson_period__lesson__groups", "lesson_period__period"
     )
 
-    for sub in subs:
+    start_period = None
+    for i, sub in enumerate(subs):
         if not sub.cancelled_for_teachers:
             sort_a = sub.lesson_period.lesson.group_names
         else:
             sort_a = f"Z.{sub.lesson_period.lesson.teacher_names}"
+
+        # Get next substitution
+        next_sub = subs[i + 1] if i + 1 < len(subs) else None
+
+        # Check if next substitution is equal with this substitution
+        if (
+            next_sub
+            and sub.comment == next_sub.comment
+            and sub.cancelled == next_sub.cancelled
+            and sub.subject == next_sub.subject
+            and sub.room == next_sub.room
+            and sub.lesson_period.lesson == next_sub.lesson_period.lesson
+            and set(sub.teachers.all()) == set(next_sub.teachers.all())
+        ):
+            if not start_period:
+                start_period = sub.lesson_period.period.period
+            continue
 
         row = {
             "type": "substitution",
             "sort_a": sort_a,
             "sort_b": str(sub.lesson_period.period.period),
             "el": sub,
+            "start_period": start_period if start_period else sub.lesson_period.period.period,
+            "end_period": sub.lesson_period.period.period,
         }
+
+        if start_period:
+            start_period = None
 
         rows.append(row)
 
