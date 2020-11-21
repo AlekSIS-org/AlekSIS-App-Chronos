@@ -1,6 +1,8 @@
 <strong>
-  {% if type == "substitution" %}
+  {% if type == "substitution" and item.start_period == item.end_period %}
     {{ el.lesson_period.period.period }}.
+  {% elif type == "substitution"  %}
+    {{ item.start_period }}.–{{ item.end_period }}.
   {% elif type == "extra_lesson" %}
     {{ el.period.period }}.
   {% elif type == "event" %}
