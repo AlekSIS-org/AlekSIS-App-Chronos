@@ -522,7 +522,7 @@ class SupervisionQuerySet(ValidityRangeRelatedQuerySet, WeekQuerySetMixin):
 
     def filter_by_weekday(self, weekday: int):
         """Filter supervisions by weekday."""
-        self.filter(
+        return self.filter(
             Q(break_item__before_period__weekday=weekday)
             | Q(break_item__after_period__weekday=weekday)
         )
