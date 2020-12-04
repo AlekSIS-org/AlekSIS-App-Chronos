@@ -23,7 +23,7 @@
             </strong>
           </div>
           <div class="col s12 m9 black-text-a">
-            {% include "chronos/partials/groups.html" with groups=absent_groups %}
+            {% include "chronos/partials/groups.html" with groups=absent_groups no_collapsible=True %}
           </div>
         </div>
       {% endif %}
@@ -47,7 +47,7 @@
             </strong>
           </div>
           <div class="col s12 m9 black-text-a">
-            {% include "chronos/partials/groups.html" with groups=affected_groups %}
+            {% include "chronos/partials/groups.html" with groups=affected_groups no_collapsible=True %}
           </div>
         </div>
       {% endif %}

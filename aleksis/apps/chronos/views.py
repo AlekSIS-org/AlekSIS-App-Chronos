@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import HttpRequest, HttpResponse, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -311,7 +311,15 @@ def substitutions(
             day_contexts[day]["absent_teachers"] = absences.absent_teachers()
             day_contexts[day]["absent_groups"] = absences.absent_groups()
             day_contexts[day]["affected_teachers"] = subs.affected_teachers()
-            day_contexts[day]["affected_groups"] = subs.affected_groups()
+            affected_groups = subs.affected_groups()
+            if get_site_preferences()["chronos__affected_groups_parent_groups"]:
+                groups_with_parent_groups = affected_groups.filter(parent_groups__isnull=False)
+                groups_without_parent_groups = affected_groups.filter(parent_groups__isnull=True)
+                affected_groups = Group.objects.filter(
+                    Q(child_groups__pk__in=groups_with_parent_groups.values_list("pk", flat=True))
+                    | Q(pk__in=groups_without_parent_groups.values_list("pk", flat=True))
+                ).distinct()
+            day_contexts[day]["affected_groups"] = affected_groups
 
     if not is_print:
         context = day_contexts[wanted_day]
