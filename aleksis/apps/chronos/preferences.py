@@ -57,3 +57,13 @@ class SubstitutionsShowHeaderBox(BooleanPreference):
     default = True
     verbose_name = _("Show header box in substitution views")
     help_text = _("The header box shows affected teachers/groups.")
+
+
+@site_preferences_registry.register
+class AffectedGroupsUseParentGroups(BooleanPreference):
+    section = chronos
+    name = "affected_groups_parent_groups"
+    default = True
+    verbose_name = _(
+        "Show parent groups in header box in substitution views instead of original groups"
+    )

@@ -1,5 +1,5 @@
 {% if groups.count == 1 and groups.0.parent_groups.all and request.site.preferences.chronos__use_parent_groups %}
-  {% include "chronos/partials/groups_part.html" with groups=groups.0.parent_groups.all %}
+  {% include "chronos/partials/groups_part.html" with groups=groups.0.parent_groups.all no_collapsible=no_collapsible %}
 {% else %}
-  {% include "chronos/partials/groups_part.html" with groups=groups %}
+  {% include "chronos/partials/groups_part.html" with groups=groups no_collapsible=no_collapsible %}
 {% endif %}
