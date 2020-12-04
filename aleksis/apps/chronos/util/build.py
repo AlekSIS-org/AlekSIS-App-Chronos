@@ -248,7 +248,7 @@ def build_substitutions_list(wanted_day: date) -> List[dict]:
     start_period = None
     for i, sub in enumerate(subs):
         if not sub.cancelled_for_teachers:
-            sort_a = sub.lesson_period.lesson.group_names
+            sort_a = sub.lesson_period.lesson.groups_to_show_names
         else:
             sort_a = f"Z.{sub.lesson_period.lesson.teacher_names}"
 
