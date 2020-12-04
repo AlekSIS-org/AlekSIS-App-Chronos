@@ -460,14 +460,20 @@ class LessonSubstitutionQuerySet(LessonDataQuerySet):
         Return all teachers which are affected by
         selected substitutions (as substituted or substituting).
         """
-        return Person.objects.filter(
-            Q(lessons_as_teacher__in=self.affected_lessons()) | Q(lesson_substitutions__in=self)
-        ).annotate(lessons_count=Count("lessons_as_teacher"))
+        return (
+            Person.objects.filter(
+                Q(lessons_as_teacher__in=self.affected_lessons()) | Q(lesson_substitutions__in=self)
+            )
+            .annotate(lessons_count=Count("lessons_as_teacher"))
+            .order_by("short_name")
+        )
 
     def affected_groups(self):
         """Return all groups which are affected by selected substitutions."""
-        return Group.objects.filter(lessons__in=self.affected_lessons()).annotate(
-            lessons_count=Count("lessons")
+        return (
+            Group.objects.filter(lessons__in=self.affected_lessons())
+            .annotate(lessons_count=Count("lessons"))
+            .order_by("short_name")
         )
 
 
@@ -502,13 +508,25 @@ class AbsenceQuerySet(DateRangeQuerySetMixin, SchoolTermRelatedQuerySet):
     """QuerySet with custom query methods for absences."""
 
     def absent_teachers(self):
-        return Person.objects.filter(absences__in=self).annotate(absences_count=Count("absences"))
+        return (
+            Person.objects.filter(absences__in=self)
+            .annotate(absences_count=Count("absences"))
+            .order_by("short_name")
+        )
 
     def absent_groups(self):
-        return Group.objects.filter(absences__in=self).annotate(absences_count=Count("absences"))
+        return (
+            Group.objects.filter(absences__in=self)
+            .annotate(absences_count=Count("absences"))
+            .order_by("short_name")
+        )
 
     def absent_rooms(self):
-        return Person.objects.filter(absences__in=self).annotate(absences_count=Count("absences"))
+        return (
+            Person.objects.filter(absences__in=self)
+            .annotate(absences_count=Count("absences"))
+            .order_by("short_name")
+        )
 
 
 class HolidayQuerySet(QuerySet, DateRangeQuerySetMixin):
