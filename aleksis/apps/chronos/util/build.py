@@ -129,7 +129,7 @@ def build_timetable(
         )
 
         if is_person:
-            supervisions.filter_by_weekday(date_ref.weekday())
+            supervisions = supervisions.filter_by_weekday(date_ref.weekday())
 
         supervisions_per_period_after = {}
         for supervision in supervisions:
