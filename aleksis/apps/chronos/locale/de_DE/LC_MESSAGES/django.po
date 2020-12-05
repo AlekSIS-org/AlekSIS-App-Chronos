@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-12-05 21:26+0100\n"
-"PO-Revision-Date: 2020-09-06 17:49+0000\n"
+"PO-Revision-Date: 2020-12-05 20:51+0000\n"
 "Last-Translator: Jonathan Weth <teckids@jonathanweth.de>\n"
-"Language-Team: German <https://translate.edugit.org/projects/aleksis/aleksis-app-chronos/de/>\n"
+"Language-Team: German <https://translate.edugit.org/projects/aleksis/"
+"aleksis-app-chronos/de/>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.1.1\n"
+"X-Generator: Weblate 4.3.2\n"
 
 #: forms.py:29
 msgid "Options for timetables"
@@ -48,7 +49,7 @@ msgstr "Vertretungen"
 
 #: mixins.py:25
 msgid "Linked validity range"
-msgstr ""
+msgstr "Zugeordneter Gültigkeitsbereich"
 
 #: model_extensions.py:123
 msgid "Show announcement in timetable views?"
@@ -56,7 +57,7 @@ msgstr "Ankündigungen in Stundenplanansichten anzeigen?"
 
 #: models.py:68
 msgid "School term"
-msgstr ""
+msgstr "Schuljahr"
 
 #: models.py:71 models.py:543
 msgid "Name"
@@ -72,23 +73,25 @@ msgstr "Enddatum"
 
 #: models.py:93
 msgid "The start date must be earlier than the end date."
-msgstr ""
+msgstr "Das Startdatum muss vor dem Enddatum liegen."
 
 #: models.py:100
 msgid "The validity range must be within the school term."
-msgstr ""
+msgstr "Der Gültigkeitsbereich muss innerhalb des Schuljahres liegen."
 
 #: models.py:107
 msgid "There is already a validity range for this time or a part of this time."
 msgstr ""
+"Es gibt bereits einen Gültigkeitsbereich für diesen Zeitraum oder einen Teil "
+"diesen Zeitraumes."
 
 #: models.py:114
 msgid "Validity range"
-msgstr ""
+msgstr "Gültigkeitsbereich"
 
 #: models.py:115
 msgid "Validity ranges"
-msgstr ""
+msgstr "Gültigkeitsbereiche"
 
 #: models.py:124
 msgid "Week day"
@@ -179,7 +182,7 @@ msgstr "Woche"
 
 #: models.py:361 models.py:914
 msgid "Year"
-msgstr ""
+msgstr "Jahr"
 
 #: models.py:364 models.py:497
 msgid "Lesson period"
@@ -413,10 +416,10 @@ msgid "The header box shows affected teachers/groups."
 msgstr "Die Kopfbox zeigt betroffene Lehrkräfte/Gruppen."
 
 #: preferences.py:68
-#, fuzzy
-#| msgid "Show header box in substitution views"
 msgid "Show parent groups in header box in substitution views instead of original groups"
-msgstr "Kopfbox in Vertretungsplänen anzeigen"
+msgstr ""
+"Elterngruppen in der Kopfbox in Vertretungsplänen an Stelle der eigentlichen "
+"Gruppen anzeigen"
 
 #: tables.py:41
 msgid "Substitution"
