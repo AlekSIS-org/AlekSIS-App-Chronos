@@ -10,4 +10,4 @@ def format_m2m(f, attr: str = "short_name") -> str:
 
 def format_date_period(day: date, period: "TimePeriod") -> str:
     """Format date and time period."""
-    return f"{date_format(date_format(day))}, {period.period}."
+    return f"{date_format(day)}, {period.period}."
