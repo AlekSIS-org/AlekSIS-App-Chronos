@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-04 15:42+0200\n"
+"POT-Creation-Date: 2020-12-05 21:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,297 +45,329 @@ msgstr ""
 msgid "Substitutions"
 msgstr ""
 
-#: model_extensions.py:89
+#: mixins.py:25
+msgid "Linked validity range"
+msgstr ""
+
+#: model_extensions.py:123
 msgid "Show announcement in timetable views?"
 msgstr ""
 
-#: models.py:45
+#: models.py:68
+msgid "School term"
+msgstr ""
+
+#: models.py:71 models.py:543
+msgid "Name"
+msgstr ""
+
+#: models.py:73 models.py:593 models.py:663 models.py:860
+msgid "Start date"
+msgstr ""
+
+#: models.py:74 models.py:594 models.py:664 models.py:861
+msgid "End date"
+msgstr ""
+
+#: models.py:93
+msgid "The start date must be earlier than the end date."
+msgstr ""
+
+#: models.py:100
+msgid "The validity range must be within the school term."
+msgstr ""
+
+#: models.py:107
+msgid "There is already a validity range for this time or a part of this time."
+msgstr ""
+
+#: models.py:114
+msgid "Validity range"
+msgstr ""
+
+#: models.py:115
+msgid "Validity ranges"
+msgstr ""
+
+#: models.py:124
 msgid "Week day"
 msgstr ""
 
-#: models.py:46
+#: models.py:126
 msgid "Number of period"
 msgstr ""
 
-#: models.py:48
+#: models.py:128
 msgid "Start time"
 msgstr ""
 
-#: models.py:49
+#: models.py:129
 msgid "End time"
 msgstr ""
 
-#: models.py:144 models.py:277 models.py:732
+#: models.py:289 models.py:426 models.py:916
 msgid "Time period"
 msgstr ""
 
-#: models.py:145
+#: models.py:290
 msgid "Time periods"
 msgstr ""
 
-#: models.py:149 models.py:165 models.py:375 models.py:531 models.py:546
+#: models.py:294 models.py:310 models.py:542 models.py:703 models.py:720
 msgid "Short name"
 msgstr ""
 
-#: models.py:150 models.py:166 models.py:532 models.py:547
+#: models.py:295 models.py:311 models.py:704 models.py:721
 msgid "Long name"
 msgstr ""
 
-#: models.py:152
+#: models.py:297
 msgid "Foreground colour"
 msgstr ""
 
-#: models.py:153
+#: models.py:298
 msgid "Background colour"
 msgstr ""
 
-#: models.py:160 models.py:179 models.py:224 models.py:739
+#: models.py:305 models.py:327 models.py:373 models.py:923
 #: templates/chronos/substitutions.html:46
 #: templates/chronos/substitutions_print.html:29
 msgid "Subject"
 msgstr ""
 
-#: models.py:161
+#: models.py:306
 msgid "Subjects"
 msgstr ""
 
-#: models.py:173 models.py:229 models.py:281 models.py:423 models.py:748
+#: models.py:321 models.py:378 models.py:430 models.py:590 models.py:932
 #: templates/chronos/substitutions.html:47
 #: templates/chronos/substitutions_print.html:30
 msgid "Room"
 msgstr ""
 
-#: models.py:174 models.py:691 templates/chronos/all.html:39
+#: models.py:322 models.py:874 templates/chronos/all.html:39
 msgid "Rooms"
 msgstr ""
 
-#: models.py:182 models.py:227 models.py:693 models.py:745 tables.py:35
+#: models.py:330 models.py:376 models.py:876 models.py:929 tables.py:35
 #: templates/chronos/all.html:17 templates/chronos/substitutions_print.html:28
 msgid "Teachers"
 msgstr ""
 
-#: models.py:185
+#: models.py:333
 msgid "Periods"
 msgstr ""
 
-#: models.py:187 models.py:690 models.py:742 tables.py:34
+#: models.py:335 models.py:873 models.py:926 tables.py:34
 #: templates/chronos/all.html:28
 msgid "Groups"
 msgstr ""
 
-#: models.py:189 models.py:426 models.py:496 models.py:677
-msgid "Start date"
-msgstr ""
-
-#: models.py:190 models.py:427 models.py:497 models.py:678
-msgid "End date"
-msgstr ""
-
-#: models.py:205 models.py:274 models.py:463
+#: models.py:353 models.py:423 models.py:630
 msgid "Lesson"
 msgstr ""
 
-#: models.py:206 templates/chronos/lessons_day.html:9
+#: models.py:354 templates/chronos/lessons_day.html:9
 #: templates/chronos/lessons_day.html:19
 msgid "Lessons"
 msgstr ""
 
-#: models.py:212 models.py:730
+#: models.py:360 models.py:913
 msgid "Week"
 msgstr ""
 
-#: models.py:215 models.py:330
+#: models.py:361 models.py:914
+msgid "Year"
+msgstr ""
+
+#: models.py:364 models.py:497
 msgid "Lesson period"
 msgstr ""
 
-#: models.py:231
+#: models.py:380
 msgid "Cancelled?"
 msgstr ""
 
-#: models.py:233
+#: models.py:382
 msgid "Cancelled for teachers?"
 msgstr ""
 
-#: models.py:236 models.py:442 models.py:483 models.py:751
+#: models.py:385 models.py:609 models.py:650 models.py:935
 msgid "Comment"
 msgstr ""
 
-#: models.py:240
+#: models.py:389
 msgid "Lessons can only be either substituted or cancelled."
 msgstr ""
 
-#: models.py:264
+#: models.py:413
 msgid "Lesson substitution"
 msgstr ""
 
-#: models.py:265
+#: models.py:414
 msgid "Lesson substitutions"
 msgstr ""
 
-#: models.py:331
+#: models.py:498
 msgid "Lesson periods"
 msgstr ""
 
-#: models.py:370
+#: models.py:537
 msgid "Timetable widget"
 msgstr ""
 
-#: models.py:371
+#: models.py:538
 msgid "Timetable widgets"
 msgstr ""
 
-#: models.py:376
-msgid "Name"
-msgstr ""
-
-#: models.py:385 models.py:398
+#: models.py:552 models.py:565
 msgid "Absence reason"
 msgstr ""
 
-#: models.py:386
+#: models.py:553
 msgid "Absence reasons"
 msgstr ""
 
-#: models.py:407 models.py:617 models.py:654
+#: models.py:574 models.py:791 models.py:837
 #: templates/chronos/substitutions.html:45
 msgid "Teacher"
 msgstr ""
 
-#: models.py:415
+#: models.py:582
 msgid "Group"
 msgstr ""
 
-#: models.py:431 models.py:470
+#: models.py:598 models.py:637
 msgid "Start period"
 msgstr ""
 
-#: models.py:438 models.py:477
+#: models.py:605 models.py:644
 msgid "End period"
 msgstr ""
 
-#: models.py:452
+#: models.py:619
 msgid "Unknown absence"
 msgstr ""
 
-#: models.py:457
+#: models.py:624
 msgid "Absence"
 msgstr ""
 
-#: models.py:458
+#: models.py:625
 msgid "Absences"
 msgstr ""
 
-#: models.py:466
+#: models.py:633
 msgid "Date of exam"
 msgstr ""
 
-#: models.py:482 models.py:495 models.py:675
+#: models.py:649 models.py:662 models.py:858
 msgid "Title"
 msgstr ""
 
-#: models.py:488
+#: models.py:655
 msgid "Exam"
 msgstr ""
 
-#: models.py:489
+#: models.py:656
 msgid "Exams"
 msgstr ""
 
-#: models.py:498
+#: models.py:665
 msgid "Comments"
 msgstr ""
 
-#: models.py:526
+#: models.py:698
 msgid "Holiday"
 msgstr ""
 
-#: models.py:527
+#: models.py:699
 msgid "Holidays"
 msgstr ""
 
-#: models.py:541 models.py:610
+#: models.py:713 models.py:784
 msgid "Supervision area"
 msgstr ""
 
-#: models.py:542
+#: models.py:714
 msgid "Supervision areas"
 msgstr ""
 
-#: models.py:552
+#: models.py:726
 msgid "Time period after break starts"
 msgstr ""
 
-#: models.py:560
+#: models.py:734
 msgid "Time period before break ends"
 msgstr ""
 
-#: models.py:600 models.py:614
+#: models.py:774 models.py:788
 msgid "Break"
 msgstr ""
 
-#: models.py:601
+#: models.py:775
 msgid "Breaks"
 msgstr ""
 
-#: models.py:641 models.py:648 templates/chronos/partials/subs/subject.html:23
+#: models.py:822 models.py:831 templates/chronos/partials/subs/subject.html:23
 #: templates/chronos/partials/supervision.html:15
 msgid "Supervision"
 msgstr ""
 
-#: models.py:642
+#: models.py:823
 msgid "Supervisions"
 msgstr ""
 
-#: models.py:646
+#: models.py:829
 msgid "Date"
 msgstr ""
 
-#: models.py:666
+#: models.py:849
 msgid "Supervision substitution"
 msgstr ""
 
-#: models.py:667
+#: models.py:850
 msgid "Supervision substitutions"
 msgstr ""
 
-#: models.py:683
+#: models.py:866
 msgid "Start time period"
 msgstr ""
 
-#: models.py:687
+#: models.py:870
 msgid "End time period"
 msgstr ""
 
-#: models.py:700
+#: models.py:883
 #, python-brace-format
 msgid "Event {self.pk}"
 msgstr ""
 
-#: models.py:721 templates/chronos/partials/subs/subject.html:27
+#: models.py:904 templates/chronos/partials/subs/subject.html:27
 msgid "Event"
 msgstr ""
 
-#: models.py:722
+#: models.py:905
 msgid "Events"
 msgstr ""
 
-#: models.py:757
+#: models.py:941
 msgid "Extra lesson"
 msgstr ""
 
-#: models.py:758
+#: models.py:942
 msgid "Extra lessons"
 msgstr ""
 
-#: models.py:765
+#: models.py:949
 msgid "Can view all timetables"
 msgstr ""
 
-#: models.py:766
+#: models.py:950
 msgid "Can view timetable overview"
 msgstr ""
 
-#: models.py:767
+#: models.py:951
 msgid "Can view all lessons per day"
 msgstr ""
 
@@ -348,9 +380,7 @@ msgid "Use parent groups in timetable views"
 msgstr ""
 
 #: preferences.py:18
-msgid ""
-"If an lesson or substitution has only one group and this group has parent "
-"groups, show the parent groups instead of the original group."
+msgid "If an lesson or substitution has only one group and this group has parent groups, show the parent groups instead of the original group."
 msgstr ""
 
 #: preferences.py:29
@@ -366,9 +396,7 @@ msgid "Limit of groups for shortening of groups"
 msgstr ""
 
 #: preferences.py:40
-msgid ""
-"If an user activates shortening of groups,they will be collapsed if there "
-"are more groups than this limit."
+msgid "If an user activates shortening of groups,they will be collapsed if there are more groups than this limit."
 msgstr ""
 
 #: preferences.py:50
@@ -381,6 +409,10 @@ msgstr ""
 
 #: preferences.py:59
 msgid "The header box shows affected teachers/groups."
+msgstr ""
+
+#: preferences.py:68
+msgid "Show parent groups in header box in substitution views instead of original groups"
 msgstr ""
 
 #: tables.py:41
@@ -490,10 +522,10 @@ msgstr ""
 msgid "Go to smart plan"
 msgstr ""
 
-#: views.py:234
+#: views.py:243
 msgid "The substitution has been saved."
 msgstr ""
 
-#: views.py:255
+#: views.py:264
 msgid "The substitution has been deleted."
 msgstr ""
