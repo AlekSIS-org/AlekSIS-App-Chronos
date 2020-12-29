@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext as _
+from django.views.decorators.cache import never_cache
 
 from django_tables2 import RequestConfig
 from rules.contrib.views import permission_required
@@ -214,6 +215,7 @@ def lessons_day(
     return render(request, "chronos/lessons_day.html", context)
 
 
+@never_cache
 @permission_required("chronos.edit_substitution", fn=get_substitution_by_id)
 def edit_substitution(request: HttpRequest, id_: int, week: int) -> HttpResponse:
     """View a form to edit a substitution lessen."""
