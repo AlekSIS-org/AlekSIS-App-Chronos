@@ -469,13 +469,27 @@ class LessonPeriod(ExtensibleModel, WeekAnnotationMixin):
         return f"{self.period}, {self.lesson}"
 
     @property
+    def _equal_lessons(self):
+        """Get all lesson periods with equal lessons in the whole school term."""
+
+        qs = LessonPeriod.objects.filter(
+            lesson__subject=self.lesson.subject,
+            lesson__validity__school_term=self.lesson.validity.school_term,
+        )
+        for group in self.lesson.groups.all():
+            qs = qs.filter(lesson__groups=group)
+        for teacher in self.lesson.teachers.all():
+            qs = qs.filter(lesson__teachers=teacher)
+        return qs
+
+    @property
     def next(self) -> "LessonPeriod":
         """Get next lesson period of this lesson.
 
         .. warning::
             To use this property,  the provided lesson period must be annotated with a week.
         """
-        return LessonPeriod.objects.filter(lesson=self.lesson).next_lesson(self)
+        return self._equal_lessons.next_lesson(self)
 
     @property
     def prev(self) -> "LessonPeriod":
@@ -484,7 +498,7 @@ class LessonPeriod(ExtensibleModel, WeekAnnotationMixin):
         .. warning::
             To use this property,  the provided lesson period must be annotated with a week.
         """
-        return LessonPeriod.objects.filter(lesson=self.lesson).next_lesson(self, -1)
+        return self._equal_lessons.next_lesson(self, -1)
 
     class Meta:
         ordering = [
