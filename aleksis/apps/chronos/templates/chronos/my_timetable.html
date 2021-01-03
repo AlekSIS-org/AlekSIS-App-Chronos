@@ -13,7 +13,7 @@
 
 {% block content %}
   <div class="row no-margin">
-    <div class="col m12 s12 l6 xl4">
+    <div class="col s12">
       <h4>
         {% trans "My timetable" %} <i>{{ el }}</i>
         <span class="badge new primary-color ">{% trans "SMART PLAN" %}</span>
@@ -24,36 +24,43 @@
     </div>
   </div>
 
-  <div class="row nomargin">
+  <div class="row nomargin hide-on-large-only">
     <div class="col m12 s12 l6 xl4">
       {% include "core/partials/announcements.html" with announcements=announcements %}
     </div>
   </div>
 
-  <div class="row">
-    <div class="timetable-plan col s12 m12 xl4">
+  <div class="row nomargin hide-on-large-med-and-down">
+    <div class="col m12 s12 l6 xl4">
+      {% include "core/partials/announcements.html" with announcements=week_announcements %}
+    </div>
+  </div>
 
-      {#  Date #}
-
-      <div class="row">
-        <div class="col s12">
-          <div class="card timetable-title-card">
-            <div class="card-content">
-                    <span class="card-title">
-                        {% include "chronos/partials/datepicker.html" with display_date_only=1 %}
-{#                      {% if holiday %}#}
-{#                        <span class="badge new blue center-align holiday-badge">{{ holiday.0 }}</span>#}
-{#                      {% endif %}#}
-                    </span>
-            </div>
-          </div>
-
+    <div class="row">
+    <div class="col s12">
+      <div class="card timetable-title-card">
+        <div class="card-content">
+            <span class="card-title">
+                {% include "chronos/partials/datepicker.html" with display_date_only=1 %}
+                <span class="show-on-medium-and-down hide-on-large-only">
+                {% if weekday.date == today %}
+                    <br/> {% include "chronos/partials/today.html" %}
+                {% endif %}
+                </span>
+            </span>
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <div class="row hide-on-large-only">
+    <div class="timetable-plan col s12 m12 xl4">
       {#  Lessons #}
       {% include "chronos/partials/lessons_col.html" with lesson_periods=lesson_periods %}
-
     </div>
+  </div>
+  <div class="row timetable-plan hide-on-med-and-down">
+      {% include "chronos/partials/week_timetable.html" with timetable=week_timetable active_day=day today=today %}
   </div>
 {% endblock %}
