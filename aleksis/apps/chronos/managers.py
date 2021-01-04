@@ -209,7 +209,7 @@ class WeekQuerySetMixin:
 
 
 class GroupByPeriodsMixin:
-    def group_by_periods(self, is_person: bool = False) -> dict:
+    def group_by_periods(self, is_week: bool = False) -> dict:
         """Group a QuerySet of objects with attribute period by period numbers and weekdays."""
         per_period = {}
         for obj in self:
@@ -217,12 +217,12 @@ class GroupByPeriodsMixin:
             weekday = obj.period.weekday
 
             if period not in per_period:
-                per_period[period] = [] if is_person else {}
+                per_period[period] = [] if not is_week else {}
 
-            if not is_person and weekday not in per_period[period]:
+            if is_week and weekday not in per_period[period]:
                 per_period[period][weekday] = []
 
-            if is_person:
+            if not is_week:
                 per_period[period].append(obj)
             else:
                 per_period[period][weekday].append(obj)

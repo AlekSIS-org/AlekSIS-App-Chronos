@@ -71,12 +71,15 @@ def my_timetable(
     else:
         wanted_day = TimePeriod.get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
+    wanted_week = CalendarWeek.from_date(wanted_day)
+
     if has_person(request.user):
         person = request.user.person
         type_ = person.timetable_type
 
         # Build timetable
         timetable = build_timetable("person", person, wanted_day)
+        week_timetable = build_timetable("person", person, wanted_week)
 
         if type_ is None:
             # If no student or teacher, redirect to all timetables
@@ -85,16 +88,25 @@ def my_timetable(
         super_el = person.timetable_object
 
         context["timetable"] = timetable
+        context["week_timetable"] = week_timetable
         context["holiday"] = Holiday.on_day(wanted_day)
         context["super"] = {"type": type_, "el": super_el}
         context["type"] = type_
         context["day"] = wanted_day
+        context["today"] = timezone.now().date()
+        context["week"] = wanted_week
         context["periods"] = TimePeriod.get_times_dict()
         context["smart"] = True
         context["announcements"] = (
             Announcement.for_timetables().on_date(wanted_day).for_person(person)
         )
-
+        context["week_announcements"] = (
+            Announcement.for_timetables()
+            .within_days(wanted_week[0], wanted_week[6])
+            .for_person(person)
+        )
+        context["weekdays"] = build_weekdays(TimePeriod.WEEKDAY_CHOICES, wanted_week)
+        context["weekdays_short"] = build_weekdays(TimePeriod.WEEKDAY_CHOICES_SHORT, wanted_week)
         context["url_prev"], context["url_next"] = TimePeriod.get_prev_next_by_day(
             wanted_day, "my_timetable_by_date"
         )
