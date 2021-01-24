@@ -83,7 +83,7 @@ def lesson_periods_as_teacher(self):
 @Person.method
 def lessons_on_day(self, day: date):
     """Get all lessons of this person (either as participant or teacher) on the given day."""
-    return LessonPeriod.objects.on_day(day).filter_from_person(self).order_by("period__period")
+    return LessonPeriod.objects.order_by("period__period").on_day(day).filter_from_person(self)
 
 
 @Person.method
@@ -92,6 +92,10 @@ def _adjacent_lesson(
 ) -> Union["LessonPeriod", None]:
     """Get next/previous lesson of the person (either as participant or teacher) on the same day."""
     daily_lessons = self.lessons_on_day(day)
+
+    if not daily_lessons:
+        return None
+
     ids = list(daily_lessons.values_list("id", flat=True))
     index = ids.index(lesson_period.pk)
 
