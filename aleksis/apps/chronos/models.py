@@ -19,7 +19,6 @@ from django.utils.translation import gettext_lazy as _
 from cache_memoize import cache_memoize
 from calendarweek.django import CalendarWeek, i18n_day_abbr_choices_lazy, i18n_day_name_choices_lazy
 from colorfield.fields import ColorField
-from django_global_request.middleware import get_request
 
 from aleksis.apps.chronos.managers import (
     AbsenceQuerySet,
@@ -515,10 +514,9 @@ class LessonPeriod(ExtensibleModel, WeekAnnotationMixin):
 class TimetableWidget(DashboardWidget):
     template = "chronos/widget.html"
 
-    def get_context(self):
+    def get_context(self, request):
         from aleksis.apps.chronos.util.build import build_timetable  # noqa
 
-        request = get_request()
         context = {"has_plan": True}
         wanted_day = TimePeriod.get_next_relevant_day(timezone.now().date(), datetime.now().time())
 
