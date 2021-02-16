@@ -218,7 +218,7 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
         return url_prev, url_next
 
     @classmethod
-    def get_from_period(cls, period: int, day: date):
+    def get_from_period(cls, period: int, day: date) -> "TimePeriod":
         return cls.objects.on_day(day).filter(period=period).first()
 
     @classproperty
@@ -348,7 +348,8 @@ class Lesson(ValidityRangeRelatedExtensibleModel, GroupPropertiesMixin, TeacherP
 
         return CalendarWeek(year=year, week=week)
 
-    def get_teachers(self):
+    def get_teachers(self) -> models.query.QuerySet:
+        """Get teachers relation."""
         return self.teachers
 
     def __str__(self):
@@ -900,6 +901,10 @@ class Event(SchoolTermRelatedExtensibleModel, GroupPropertiesMixin, TeacherPrope
 
     @property
     def raw_period_from_on_day(self) -> TimePeriod:
+        """Get start period on the annotated day (as TimePeriod object).
+
+        If there is no date annotated, it will use the current date.
+        """
         day = getattr(self, "_date", timezone.now().date())
         if day != self.date_start:
             return TimePeriod.get_from_period(TimePeriod.period_min, day)
@@ -908,6 +913,10 @@ class Event(SchoolTermRelatedExtensibleModel, GroupPropertiesMixin, TeacherPrope
 
     @property
     def raw_period_to_on_day(self) -> TimePeriod:
+        """Get end period on the annotated day (as TimePeriod object).
+
+        If there is no date annotated, it will use the current date.
+        """
         day = getattr(self, "_date", timezone.now().date())
         if day != self.date_end:
             return TimePeriod.get_from_period(TimePeriod.period_max, day)
@@ -916,19 +925,29 @@ class Event(SchoolTermRelatedExtensibleModel, GroupPropertiesMixin, TeacherPrope
 
     @property
     def period_from_on_day(self) -> int:
+        """Get start period on the annotated day (as period number).
+
+        If there is no date annotated, it will use the current date.
+        """
         return self.raw_period_from_on_day.period
 
     @property
     def period_to_on_day(self) -> int:
+        """Get end period on the annotated day (as period number).
+
+        If there is no date annotated, it will use the current date.
+        """
         return self.raw_period_to_on_day.period
 
-    def get_start_weekday(self, week) -> int:
+    def get_start_weekday(self, week: CalendarWeek) -> int:
+        """Get start date of an event in a specific week."""
         if self.date_start < week[TimePeriod.weekday_min]:
             return TimePeriod.weekday_min
         else:
             return self.date_start.weekday()
 
-    def get_end_weekday(self, week) -> int:
+    def get_end_weekday(self, week: CalendarWeek) -> int:
+        """Get end date of an event in a specific week."""
         if self.date_end > week[TimePeriod.weekday_max]:
             return TimePeriod.weekday_max
         else:
@@ -939,9 +958,11 @@ class Event(SchoolTermRelatedExtensibleModel, GroupPropertiesMixin, TeacherPrope
         self._date = day
 
     def get_groups(self) -> models.query.QuerySet:
+        """Get groups relation."""
         return self.groups
 
     def get_teachers(self) -> models.query.QuerySet:
+        """Get teachers relation."""
         return self.teachers
 
     class Meta:
@@ -986,12 +1007,15 @@ class ExtraLesson(
         return f"{self.week}, {self.period}, {self.subject}"
 
     def get_groups(self) -> models.query.QuerySet:
+        """Get groups relation."""
         return self.groups
 
     def get_teachers(self) -> models.query.QuerySet:
+        """Get teachers relation."""
         return self.teachers
 
-    def get_subject(self) -> models.query.QuerySet:
+    def get_subject(self) -> Subject:
+        """Get subject."""
         return self.subject
 
     class Meta:
