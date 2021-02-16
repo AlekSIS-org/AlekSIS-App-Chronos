@@ -218,7 +218,11 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
         return url_prev, url_next
 
     @classmethod
-    def get_from_period(cls, period: int, day: date) -> "TimePeriod":
+    def from_period(cls, period: int, day: date) -> "TimePeriod":
+        """Get `TimePeriod` object for a period on a specific date.
+
+        This will respect the relation to validity ranges.
+        """
         return cls.objects.on_day(day).filter(period=period).first()
 
     @classproperty
@@ -907,7 +911,7 @@ class Event(SchoolTermRelatedExtensibleModel, GroupPropertiesMixin, TeacherPrope
         """
         day = getattr(self, "_date", timezone.now().date())
         if day != self.date_start:
-            return TimePeriod.get_from_period(TimePeriod.period_min, day)
+            return TimePeriod.from_period(TimePeriod.period_min, day)
         else:
             return self.period_from
 
@@ -919,7 +923,7 @@ class Event(SchoolTermRelatedExtensibleModel, GroupPropertiesMixin, TeacherPrope
         """
         day = getattr(self, "_date", timezone.now().date())
         if day != self.date_end:
-            return TimePeriod.get_from_period(TimePeriod.period_max, day)
+            return TimePeriod.from_period(TimePeriod.period_max, day)
         else:
             return self.period_to
 
