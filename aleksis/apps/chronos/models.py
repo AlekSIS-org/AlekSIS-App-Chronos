@@ -217,6 +217,10 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
 
         return url_prev, url_next
 
+    @classmethod
+    def get_from_period(cls, period: int, day: date):
+        return cls.objects.on_day(day).filter(period=period).first()
+
     @classproperty
     @cache_memoize(3600)
     def period_min(cls) -> int:
@@ -895,20 +899,44 @@ class Event(SchoolTermRelatedExtensibleModel, GroupPropertiesMixin, TeacherPrope
             return _(f"Event {self.pk}")
 
     @property
-    def period_from_on_day(self) -> int:
+    def raw_period_from_on_day(self) -> TimePeriod:
         day = getattr(self, "_date", timezone.now().date())
         if day != self.date_start:
-            return TimePeriod.period_min
+            return TimePeriod.get_from_period(TimePeriod.period_min, day)
         else:
-            return self.period_from.period
+            return self.period_from
+
+    @property
+    def raw_period_to_on_day(self) -> TimePeriod:
+        day = getattr(self, "_date", timezone.now().date())
+        if day != self.date_end:
+            return TimePeriod.get_from_period(TimePeriod.period_max, day)
+        else:
+            return self.period_to
+
+    @property
+    def period_from_on_day(self) -> int:
+        return self.raw_period_from_on_day.period
 
     @property
     def period_to_on_day(self) -> int:
-        day = getattr(self, "_date", timezone.now().date())
-        if day != self.date_end:
-            return TimePeriod.period_max
+        return self.raw_period_to_on_day.period
+
+    def get_start_weekday(self, week) -> int:
+        if self.date_start < week[TimePeriod.weekday_min]:
+            return TimePeriod.weekday_min
         else:
-            return self.period_to.period
+            return self.date_start.weekday()
+
+    def get_end_weekday(self, week) -> int:
+        if self.date_end > week[TimePeriod.weekday_max]:
+            return TimePeriod.weekday_max
+        else:
+            return self.date_end.weekday()
+
+    def annotate_day(self, day: date):
+        """Annotate event with the provided date."""
+        self._date = day
 
     def get_groups(self) -> models.query.QuerySet:
         return self.groups
