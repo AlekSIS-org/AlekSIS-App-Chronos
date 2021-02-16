@@ -344,6 +344,9 @@ class Lesson(ValidityRangeRelatedExtensibleModel, GroupPropertiesMixin, TeacherP
 
         return CalendarWeek(year=year, week=week)
 
+    def get_teachers(self):
+        return self.teachers
+
     def __str__(self):
         return f"{format_m2m(self.groups)}, {self.subject.short_name}, {format_m2m(self.teachers)}"
 
@@ -413,7 +416,7 @@ class LessonSubstitution(ExtensibleModel, WeekRelatedMixin):
         verbose_name_plural = _("Lesson substitutions")
 
 
-class LessonPeriod(ExtensibleModel, WeekAnnotationMixin):
+class LessonPeriod(WeekAnnotationMixin, TeacherPropertiesMixin, ExtensibleModel):
     label_ = "lesson_period"
 
     objects = LessonPeriodManager.from_queryset(LessonPeriodQuerySet)()
@@ -457,9 +460,6 @@ class LessonPeriod(ExtensibleModel, WeekAnnotationMixin):
             return self.get_substitution().room
         else:
             return self.room
-
-    def get_teacher_names(self, sep: Optional[str] = ", ") -> str:
-        return sep.join([teacher.full_name for teacher in self.get_teachers().all()])
 
     def get_groups(self) -> models.query.QuerySet:
         return self.lesson.groups
@@ -910,6 +910,12 @@ class Event(SchoolTermRelatedExtensibleModel, GroupPropertiesMixin, TeacherPrope
         else:
             return self.period_to.period
 
+    def get_groups(self) -> models.query.QuerySet:
+        return self.groups
+
+    def get_teachers(self) -> models.query.QuerySet:
+        return self.teachers
+
     class Meta:
         ordering = ["date_start"]
         indexes = [models.Index(fields=["period_from", "period_to", "date_start", "date_end"])]
@@ -917,7 +923,9 @@ class Event(SchoolTermRelatedExtensibleModel, GroupPropertiesMixin, TeacherPrope
         verbose_name_plural = _("Events")
 
 
-class ExtraLesson(SchoolTermRelatedExtensibleModel, GroupPropertiesMixin, WeekRelatedMixin):
+class ExtraLesson(
+    GroupPropertiesMixin, TeacherPropertiesMixin, WeekRelatedMixin, SchoolTermRelatedExtensibleModel
+):
     label_ = "extra_lesson"
 
     objects = ExtraLessonManager.from_queryset(ExtraLessonQuerySet)()
@@ -948,6 +956,15 @@ class ExtraLesson(SchoolTermRelatedExtensibleModel, GroupPropertiesMixin, WeekRe
 
     def __str__(self):
         return f"{self.week}, {self.period}, {self.subject}"
+
+    def get_groups(self) -> models.query.QuerySet:
+        return self.groups
+
+    def get_teachers(self) -> models.query.QuerySet:
+        return self.teachers
+
+    def get_subject(self) -> models.query.QuerySet:
+        return self.subject
 
     class Meta:
         verbose_name = _("Extra lesson")
