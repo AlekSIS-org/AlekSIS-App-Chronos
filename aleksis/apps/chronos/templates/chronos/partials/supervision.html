@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="card lesson-card supervision-card">
+<div class="card lesson-card supervision-card {% if active_day and week_day == active_day %} z-depth-5 active {% endif %}">
   <div class="card-content">
     {% if supervision %}
       <div style="
