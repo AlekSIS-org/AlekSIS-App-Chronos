@@ -1,12 +1,12 @@
 {#  Week days #}
 <div class="row">
-    <div class="col s1">
+    <div class="col {% if active_day %}s1{% else %}s2{% endif %}">
 
     </div>
     {# Show short weekdays on tablets #}
     {% for weekday in weekdays_short %}
     <div class="col s2 hide-on-large-only">
-        <div class="card timetable-title-card">
+        <div class="card timetable-title-card {% if active_day and weekday.date == active_day %} z-depth-5 {% endif %}">
             <div class="card-content">
               <span class="card-title">
                 {{ weekday.name }}
@@ -28,7 +28,7 @@
     {# Show long weekdays elsewere #}
     {% for weekday in weekdays %}
     <div class="col {% if weekday.date == active_day %} s3 {% else %} s2 {% endif %} hide-on-med-only">
-        <div class="card timetable-title-card {% if weekday.date == active_day %} z-depth-5 {% endif %}">
+        <div class="card timetable-title-card {% if active_day and weekday.date == active_day %} z-depth-5 {% endif %}">
             <div class="card-content">
               <span class="card-title">
                 {{ weekday.name }}
@@ -51,7 +51,7 @@
 {#  Lessons #}
 {% for row in timetable %}
 <div class="row">
-    <div class="col s1">
+    <div class="col {% if active_day %}s1{% else %}s2{% endif %}">
         {% if row.type == "period" %}
         {% include "chronos/partials/period_time.html" with period=row.period periods=periods %}
         {% endif %}

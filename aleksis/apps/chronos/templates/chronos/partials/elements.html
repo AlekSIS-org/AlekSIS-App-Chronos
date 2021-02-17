@@ -1,4 +1,4 @@
-<div class="card lesson-card {% if week_day == active_day %} z-depth-5 active {% endif %}">
+<div class="card lesson-card {% if active_day and week_day == active_day %} z-depth-5 active {% endif %}">
   <div class="card-content">
     {% for element in elements %}
       {% if element.label_ == "lesson_period" %}
