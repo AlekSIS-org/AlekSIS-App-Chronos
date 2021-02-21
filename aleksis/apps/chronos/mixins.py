@@ -34,7 +34,8 @@ class ValidityRangeRelatedExtensibleModel(ExtensibleModel):
 class WeekRelatedMixin:
     @property
     def date(self) -> date:
-        return week_weekday_to_date(self.calendar_week, self.lesson_period.period.weekday)
+        period = self.lesson_period.period if hasattr(self, "lesson_period") else self.period
+        return week_weekday_to_date(self.calendar_week, period.weekday)
 
     @property
     def calendar_week(self) -> CalendarWeek:
@@ -42,6 +43,11 @@ class WeekRelatedMixin:
 
 
 class WeekAnnotationMixin:
+    def annotate_week(self, week: CalendarWeek):
+        """Annotate this lesson with the number of the provided calendar week."""
+        self._week = week.week
+        self._year = week.year
+
     @property
     def week(self) -> Union[CalendarWeek, None]:
         """Get annotated week as `CalendarWeek`.

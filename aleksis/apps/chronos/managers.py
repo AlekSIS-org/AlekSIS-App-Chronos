@@ -699,4 +699,8 @@ class TeacherPropertiesMixin:
 
     @property
     def teacher_names(self, sep: Optional[str] = ", ") -> str:
-        return sep.join([teacher.full_name for teacher in self.teachers.all()])
+        return sep.join([teacher.full_name for teacher in self.get_teachers().all()])
+
+    @property
+    def teacher_short_names(self, sep: str = ", ") -> str:
+        return sep.join([teacher.short_name for teacher in self.get_teachers().all()])
