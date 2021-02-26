@@ -97,6 +97,12 @@ def _adjacent_lesson(
         return None
 
     ids = list(daily_lessons.values_list("id", flat=True))
+
+    # Check if the lesson period is one of the person's lesson periods on this day
+    # and return None if it's not so
+    if lesson_period.pk not in ids:
+        return None
+
     index = ids.index(lesson_period.pk)
 
     if (offset > 0 and index + offset < len(ids)) or (offset < 0 and index >= -offset):
