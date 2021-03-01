@@ -223,7 +223,7 @@ class TimePeriod(ValidityRangeRelatedExtensibleModel):
 
         This will respect the relation to validity ranges.
         """
-        return cls.objects.on_day(day).filter(period=period).first()
+        return cls.objects.on_day(day).filter(period=period, weekday=day.weekday()).first()
 
     @classproperty
     @cache_memoize(3600)
