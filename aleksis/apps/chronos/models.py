@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import date, datetime, time, timedelta
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, Iterator, List, Optional, Tuple, Union
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -684,6 +684,11 @@ class Holiday(ExtensibleModel):
     date_start = models.DateField(verbose_name=_("Start date"), null=True)
     date_end = models.DateField(verbose_name=_("End date"), null=True)
     comments = models.TextField(verbose_name=_("Comments"), blank=True, null=True)
+
+    def get_days(self) -> Iterator[date]:
+        delta = self.date_end - self.date_start
+        for i in range(delta.days + 1):
+            yield self.date_start + timedelta(days=i)
 
     @classmethod
     def on_day(cls, day: date) -> Optional["Holiday"]:

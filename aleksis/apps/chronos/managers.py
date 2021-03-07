@@ -1,10 +1,12 @@
 from datetime import date, datetime, timedelta
 from enum import Enum
-from typing import Optional, Union
+from typing import Iterable, Optional, Union
 
 from django.contrib.sites.managers import CurrentSiteManager as _CurrentSiteManager
 from django.db import models
-from django.db.models import Count, F, Q, QuerySet
+from django.db.models import Count, ExpressionWrapper, F, Func, Q, QuerySet, Value
+from django.db.models.fields import DateField
+from django.db.models.functions import Concat
 
 from calendarweek import CalendarWeek
 
@@ -298,6 +300,13 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
                 | Q(**{self._period_path + "lesson__groups__parent_groups": group})
             )
 
+    def filter_groups(self, groups: Iterable[Group]) -> QuerySet:
+        """Filter for all lessons one of the groups regularly attends."""
+        return self.filter(
+            Q(**{self._period_path + "lesson__groups__in": groups})
+            | Q(**{self._period_path + "lesson__groups__parent_groups__in": groups})
+        )
+
     def filter_teacher(self, teacher: Union[Person, int]):
         """Filter for all lessons given by a certain teacher."""
         qs1 = self.filter(**{self._period_path + "lesson__teachers": teacher})
@@ -589,6 +598,10 @@ class TimetableQuerySet(models.QuerySet):
         else:
             return self.filter(Q(groups=group) | Q(groups__parent_groups=group))
 
+    def filter_groups(self, groups: Iterable[Group]) -> QuerySet:
+        """Filter for all objects one of the groups attends."""
+        return self.filter(Q(groups__in=groups) | Q(groups__parent_groups__in=groups)).distinct()
+
     def filter_teacher(self, teacher: Union[Person, int]):
         """Filter for all lessons given by a certain teacher."""
         return self.filter(teachers=teacher)
@@ -662,6 +675,19 @@ class ExtraLessonQuerySet(TimetableQuerySet, SchoolTermRelatedQuerySet, GroupByP
     def on_day(self, day: date):
         """Filter all extra lessons on a day."""
         return self.within_dates(day, day)
+
+    def annotate_day(self):
+        weekday_to_date = ExpressionWrapper(
+            Func(
+                Concat(F("year"), F("week")),
+                Value("IYYYIW"),
+                output_field=DateField(),
+                function="TO_DATE",
+            )
+            + F("period__weekday"),
+            output_field=DateField(),
+        )
+        return self.annotate(day=weekday_to_date)
 
 
 class GroupPropertiesMixin:
