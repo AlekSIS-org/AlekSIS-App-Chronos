@@ -700,13 +700,13 @@ class Holiday(ExtensibleModel):
 
         for weekday in range(TimePeriod.weekday_min, TimePeriod.weekday_max + 1):
             holiday_date = week[weekday]
-            holidays = list(
+            filtered_holidays = list(
                 filter(
                     lambda h: holiday_date >= h.date_start and holiday_date <= h.date_end, holidays,
                 )
             )
-            if holidays:
-                per_weekday[weekday] = holidays[0]
+            if filtered_holidays:
+                per_weekday[weekday] = filtered_holidays[0]
 
         return per_weekday
 
