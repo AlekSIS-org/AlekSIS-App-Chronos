@@ -1,10 +1,12 @@
 from datetime import date, datetime, timedelta
 from enum import Enum
-from typing import Optional, Union
+from typing import Iterable, List, Optional, Union
 
 from django.contrib.sites.managers import CurrentSiteManager as _CurrentSiteManager
 from django.db import models
-from django.db.models import Count, F, Q, QuerySet
+from django.db.models import Count, ExpressionWrapper, F, Func, Q, QuerySet, Value
+from django.db.models.fields import DateField
+from django.db.models.functions import Concat
 
 from calendarweek import CalendarWeek
 
@@ -298,6 +300,13 @@ class LessonDataQuerySet(models.QuerySet, WeekQuerySetMixin):
                 | Q(**{self._period_path + "lesson__groups__parent_groups": group})
             )
 
+    def filter_groups(self, groups: Iterable[Group]) -> QuerySet:
+        """Filter for all lessons one of the groups regularly attends."""
+        return self.filter(
+            Q(**{self._period_path + "lesson__groups__in": groups})
+            | Q(**{self._period_path + "lesson__groups__parent_groups__in": groups})
+        )
+
     def filter_teacher(self, teacher: Union[Person, int]):
         """Filter for all lessons given by a certain teacher."""
         qs1 = self.filter(**{self._period_path + "lesson__teachers": teacher})
@@ -503,6 +512,13 @@ class DateRangeQuerySetMixin:
             period_from__time_start__lte=now.time(), period_to__time_end__gte=now.time()
         )
 
+    def exclude_holidays(self, holidays: Iterable["Holiday"]) -> QuerySet:
+        """Exclude all objects which are in the provided holidays."""
+        q = Q()
+        for holiday in holidays:
+            q = q | Q(date_start__lte=holiday.date_end, date_end__gte=holiday.date_start)
+        return self.exclude(q)
+
 
 class AbsenceQuerySet(DateRangeQuerySetMixin, SchoolTermRelatedQuerySet):
     """QuerySet with custom query methods for absences."""
@@ -532,7 +548,12 @@ class AbsenceQuerySet(DateRangeQuerySetMixin, SchoolTermRelatedQuerySet):
 class HolidayQuerySet(QuerySet, DateRangeQuerySetMixin):
     """QuerySet with custom query methods for holidays."""
 
-    pass
+    def get_all_days(self) -> List[date]:
+        """Get all days included in the selected holidays."""
+        holiday_days = []
+        for holiday in self:
+            holiday_days += list(holiday.get_days())
+        return holiday_days
 
 
 class SupervisionQuerySet(ValidityRangeRelatedQuerySet, WeekQuerySetMixin):
@@ -588,6 +609,10 @@ class TimetableQuerySet(models.QuerySet):
             return self.filter(groups=group)
         else:
             return self.filter(Q(groups=group) | Q(groups__parent_groups=group))
+
+    def filter_groups(self, groups: Iterable[Group]) -> QuerySet:
+        """Filter for all objects one of the groups attends."""
+        return self.filter(Q(groups__in=groups) | Q(groups__parent_groups__in=groups)).distinct()
 
     def filter_teacher(self, teacher: Union[Person, int]):
         """Filter for all lessons given by a certain teacher."""
@@ -647,21 +672,31 @@ class ExtraLessonQuerySet(TimetableQuerySet, SchoolTermRelatedQuerySet, GroupByP
 
     def within_dates(self, start: date, end: date):
         """Filter all extra lessons within a specific time range."""
-        week_start = CalendarWeek.from_date(start)
-        week_end = CalendarWeek.from_date(end)
-
-        return self.filter(
-            week__gte=week_start.week,
-            week__lte=week_end.week,
-            year__gte=week_start.year,
-            year__lte=week_end.year,
-            period__weekday__gte=start.weekday(),
-            period__weekday__lte=end.weekday(),
-        )
+        return self.annotate_day().filter(day__gte=start, day__lte=end)
 
     def on_day(self, day: date):
         """Filter all extra lessons on a day."""
         return self.within_dates(day, day)
+
+    def annotate_day(self):
+        weekday_to_date = ExpressionWrapper(
+            Func(
+                Concat(F("year"), F("week")),
+                Value("IYYYIW"),
+                output_field=DateField(),
+                function="TO_DATE",
+            )
+            + F("period__weekday"),
+            output_field=DateField(),
+        )
+        return self.annotate(day=weekday_to_date)
+
+    def exclude_holidays(self, holidays: Iterable["Holiday"]) -> QuerySet:
+        """Exclude all extra lessons which are in the provided holidays."""
+        q = Q()
+        for holiday in holidays:
+            q = q | Q(day__lte=holiday.date_end, day__gte=holiday.date_start)
+        return self.annotate_day().exclude(q)
 
 
 class GroupPropertiesMixin:
